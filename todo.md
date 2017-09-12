@@ -15,8 +15,8 @@ Instructions:
 Possible Approaches:
 
 1. Delete missing rows. But this drops outliers (e.g. needed 100mA but only had 50mA).
-2. Assume missing at random (MAR). But that's not true (see example above).
-3. The technique that doesn't assume MAR.
+2. Assume missing at random (MAR). But that's not true (as noted in point 1 above).
+3. A technique that doesn't assume MAR.
 
 Option 1 is easy, but option 3 is best. Perhaps I can start with a script that does option 1, and replace that code if I come up with a better option.
 
@@ -27,7 +27,7 @@ Possible Approaches:
 1. PCA. It's common but not true factor analysis.
 2. Maximum likelihood.
 3. Principal Axis Factors.
-4. ICA? Is it a superset of ML and PAF, or different.
+4. ICA? Is it a superset of ML and PAF, or different?
 5. Something else?
 
 Options 2 and 3 were in [EFABestPractices]. Again, I'll start with 1 but eventually move to something else.
