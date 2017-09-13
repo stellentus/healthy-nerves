@@ -11,12 +11,12 @@ function analyze()
 
 	% Verify participant names are the same; then only save one list
 	indices = verifyNames(cParticipantNames, mParticipantNames);
-	[cData, mData, participants] = deleteColumns(cData, mData, cParticipantNames, indices);
+	[participants, cData, mData] = deleteColumns(indices, cParticipantNames, cData, mData);
 	clear cParticipantNames mParticipantNames indices;
 
 	% Verify measure names are the same; then only save one list
 	indices = verifyNames(cMeasureNames, mMeasureNames);
-	[cData, mData, measures] = deleteRows(cData, mData, cMeasureNames, indices);
+	[measures, cData, mData] = deleteRows(indices, cMeasureNames, cData, mData);
 	clear cMeasureNames mMeasureNames indices;
 
 	% Handle missing data by deleting NaN columns
@@ -24,13 +24,13 @@ function analyze()
 	%    1. cData and mData with their individual NaN columns removed
 	%    2. cDataMatched and mDataMatched with NaN removed from both
 	indices = columnsWithNaN(participants, cData, mData);
-	[cDataMatched, mDataMatched, participants] = deleteColumns(cData, mData, participants, indices);
+	[participants, cDataMatched, mDataMatched] = deleteColumns(indices, participants, cData, mData);
 
 	indices = columnsWithNaN(participants, cData);
-	[cData, cData, participants] = deleteColumns(cData, cData, participants, indices);
+	[participants, cData, cData] = deleteColumns(indices, participants, cData);
 
 	indices = columnsWithNaN(participants, mData);
-	[mData, mData, participants] = deleteColumns(mData, mData, participants, indices);
+	[participants, mData, mData] = deleteColumns(indices, participants, mData, mData);
 	clear indices;
 end
 
@@ -59,13 +59,13 @@ function [indices, list1] = verifyNames(list1, list2)
 	end
 end
 
-function [data1, data2, participants] = deleteColumns(data1, data2, participants, indices)
+function [participants, data1, data2] = deleteColumns(indices, participants, data1, data2)
 	data1 = data1(:, indices);
 	data2 = data2(:, indices);
 	participants = participants(indices);
 end
 
-function [data1, data2, measures] = deleteRows(data1, data2, measures, indices)
+function [measures, data1, data2] = deleteRows(indices, measures, data1, data2)
 	data1 = data1(indices, :);
 	data2 = data2(indices, :);
 	measures = measures(indices);
