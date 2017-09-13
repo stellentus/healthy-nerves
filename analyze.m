@@ -11,19 +11,19 @@ function analyze()
 
 	% Verify participant names are the same; then only save one list
 	indices = verifyNames(cParticipantNames, mParticipantNames);
-	participants = cParticipantNames(indices);
+	participants = cParticipantNames;
+	[cData, mData, participants] = deleteColumns(cData, mData, participants, indices);
 	clear cParticipantNames mParticipantNames indices;
 
 	% Verify measure names are the same; then only save one list
 	indices = verifyNames(cMeasureNames, mMeasureNames);
-	measures = cMeasureNames(indices);
+	measures = cMeasureNames;
+	[cData, mData, measures] = deleteRows(cData, mData, measures, indices);
 	clear cMeasureNames mMeasureNames indices;
 
 	% Handle missing data by deleting NaN columns
 	indices = columnsWithNaN(cData, mData, participants);
-	cData = cData(:, indices);
-	mData = mData(:, indices);
-	participants = participants(indices);
+	[cData, mData, participants] = deleteColumns(cData, mData, participants, indices);
 	clear indices;
 end
 
@@ -50,4 +50,16 @@ function [indices, list1] = verifyNames(list1, list2)
 			indices(i) = false;
 		end
 	end
+end
+
+function [data1, data2, participants] = deleteColumns(data1, data2, participants, indices)
+	data1 = data1(:, indices);
+	data2 = data2(:, indices);
+	participants = participants(indices);
+end
+
+function [data1, data2, measures] = deleteRows(data1, data2, measures, indices)
+	data1 = data1(indices, :);
+	data2 = data2(indices, :);
+	measures = measures(indices);
 end
