@@ -20,7 +20,7 @@ function analyze()
 	clear cMeasureNames mMeasureNames indices;
 
 	% Handle missing data by deleting NaN columns
-	indices = columnsWithNaN(cData, mData, participants);
+	indices = columnsWithNaN(participants, cData, mData);
 	[cData, mData, participants] = deleteColumns(cData, mData, participants, indices);
 	clear indices;
 end

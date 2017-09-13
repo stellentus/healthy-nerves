@@ -1,5 +1,5 @@
 % columnsWithNaN returns any column with NaN from BOTH datasets
-function [indices] = columnsWithNaN(data1, data2, participant)
+function [indices] = columnsWithNaN(participant, data1, data2)
 	% Calculate which columns contain NaN for each type
 	cNan = sum(isnan(data1));
 	mNan = sum(isnan(data2));
