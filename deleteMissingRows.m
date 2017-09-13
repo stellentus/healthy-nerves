@@ -1,5 +1,5 @@
-% handleMissingData deletes any column with NaN from BOTH datasets
-function [cData, cParticipant, mData, mParticipant] = handleMissingData(cData, cParticipant, mData, mParticipant)
+% deleteMissingRows deletes any column with NaN from BOTH datasets
+function [cData, cParticipant, mData, mParticipant] = deleteMissingRows(cData, cParticipant, mData, mParticipant)
 	% Calculate which columns contain NaN for each type
 	cNan = sum(isnan(cData));
 	mNan = sum(isnan(mData));

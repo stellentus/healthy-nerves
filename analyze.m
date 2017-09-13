@@ -24,7 +24,7 @@ function analyze()
 	end
 
 	% Handle missing data
-	[cData, participants, mData, participants] = handleMissingData(cData, participants, mData, participants);
+	[cData, participants, mData, participants] = deleteMissingRows(cData, participants, mData, participants);
 end
 
 % stats confirms the MEF stats match what Matlab calculates
