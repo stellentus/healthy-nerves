@@ -10,7 +10,7 @@ Instructions:
 3. Label the columns as a structure array.
 4. Save it as a data file.
 
-## Missing Data
+## Missing Data <!-- DONE (deleting missing rows) -->
 
 Possible Approaches:
 
