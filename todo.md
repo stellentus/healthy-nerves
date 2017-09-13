@@ -2,7 +2,7 @@
 
 We were working toward EFA where the extraction of the components (or factors) was done using Principal Components Analysis (PCA). This is the short range goal as PCA may not be the best solution for our data. One alternative is Independent Components Analysis (or ICA).
 
-## Export Data from MEF Files to Matlab
+## Export Data from MEF Files to Matlab <!-- DONE -->
 
 Instructions:
 1. Export MEF to Excel.
