@@ -17,14 +17,16 @@ function analyze()
 	end
 
 	% Verify measure names are the same; then only save one list
-	[ok, measures] = verifyNames(cMeasureNames, mMeasureNames);
-	clear cMeasureNames mMeasureNames;
-	if ~ok
-		return
-	end
+	indices = verifyNames(cMeasureNames, mMeasureNames);
+	measures = cMeasureNames(indices);
+	clear cMeasureNames mMeasureNames indices;
 
-	% Handle missing data
-	[cData, mData, participants] = deleteMissingRows(cData, mData, participants);
+	% Handle missing data by deleting NaN rows
+	indices = rowsWithNaN(cData, mData, participants);
+	cData = cData(:, indices);
+	mData = mData(:, indices);
+	participants = participants(indices);
+	clear indices;
 end
 
 % stats confirms the MEF stats match what Matlab calculates
@@ -42,12 +44,12 @@ function compare(names, expected, actual, statName)
 	end
 end
 
-function [ok, list1] = verifyNames(list1, list2)
-	ok = true;
+function [indices, list1] = verifyNames(list1, list2)
+	indices = true(1, length(list1));
 	for i = 1:length(list1)
 		if list1(i) ~= list2
 			disp('ERROR: The names at index ' + string(i) + ' don''t match: "' + string(list1(i)) + '" and "' + string(list2(i)) + '".');
-			ok = false;
+			indices(i) = false;
 		end
 	end
 end
