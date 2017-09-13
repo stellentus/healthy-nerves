@@ -7,6 +7,7 @@ function analyze()
 	% Print warnings if something is odd
 	stats(mData, mStats, mMeasureNames);
 	stats(cData, cStats, cMeasureNames);
+	clear mStats cStats; % We don't need them anymore
 
 	% Handle missing data
 	[cData, cParticipantNames, mData, mParticipantNames] = handleMissingData(cData, cParticipantNames, mData, mParticipantNames);
