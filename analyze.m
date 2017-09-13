@@ -10,11 +10,9 @@ function analyze()
 	clear mStats cStats; % We don't need them anymore
 
 	% Verify participant names are the same; then only save one list
-	[ok, participants] = verifyNames(cParticipantNames, mParticipantNames);
-	clear cParticipantNames mParticipantNames;
-	if ~ok
-		return
-	end
+	indices = verifyNames(cParticipantNames, mParticipantNames);
+	participants = cParticipantNames(indices);
+	clear cParticipantNames mParticipantNames indices;
 
 	% Verify measure names are the same; then only save one list
 	indices = verifyNames(cMeasureNames, mMeasureNames);
