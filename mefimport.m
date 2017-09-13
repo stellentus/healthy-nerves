@@ -8,19 +8,19 @@ function [data, measureNames, participantNames, stats] = mefimport(filepath)
 	clear raw;
 
 	% Import the columns we care about
-	measureNames = stripped([2:end], 1);
-	averages = stripped([2:end], 2);
-	counts = stripped([2:end], 3);
-	SDs = stripped([2:end], 4);
-	SEs = stripped([2:end], 5);
+	measureNames = string(stripped([2:end], 1));
+	averages = cell2mat(stripped([2:end], 2));
+	counts = cell2mat(stripped([2:end], 3));
+	SDs = cell2mat(stripped([2:end], 4));
+	SEs = cell2mat(stripped([2:end], 5));
 	stats = struct('average', averages, 'count', counts, 'SD', SDs, 'SE', SEs);
 	clear averages counts SDs SEs;
 
 	% Import the rows we care about
-	participantNames = stripped(1, [6:end]);
+	participantNames = string(stripped(1, [6:end]));
 
 	% Import the data
-	data = stripped([2:end], [6:end]);
+	data = cell2mat(stripped([2:end], [6:end]));
 
 	clear stripped;
 end
