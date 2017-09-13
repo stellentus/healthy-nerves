@@ -19,8 +19,8 @@ function analyze()
 	measures = cMeasureNames(indices);
 	clear cMeasureNames mMeasureNames indices;
 
-	% Handle missing data by deleting NaN rows
-	indices = rowsWithNaN(cData, mData, participants);
+	% Handle missing data by deleting NaN columns
+	indices = columnsWithNaN(cData, mData, participants);
 	cData = cData(:, indices);
 	mData = mData(:, indices);
 	participants = participants(indices);
