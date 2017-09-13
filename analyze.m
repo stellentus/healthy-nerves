@@ -27,10 +27,10 @@ function analyze()
 	[participants, cDataMatched, mDataMatched] = deleteColumns(indices, participants, cData, mData);
 
 	indices = columnsWithNaN(participants, cData);
-	[participants, cData, cData] = deleteColumns(indices, participants, cData);
+	[participants, cData] = deleteColumns(indices, participants, cData);
 
 	indices = columnsWithNaN(participants, mData);
-	[participants, mData, mData] = deleteColumns(indices, participants, mData, mData);
+	[participants, mData] = deleteColumns(indices, participants, mData);
 	clear indices;
 end
 
@@ -61,7 +61,11 @@ end
 
 function [participants, data1, data2] = deleteColumns(indices, participants, data1, data2)
 	data1 = data1(:, indices);
-	data2 = data2(:, indices);
+	if nargin == 4
+		data2 = data2(:, indices);
+	else
+		data2 = [];
+	end
 	participants = participants(indices);
 end
 
