@@ -32,6 +32,9 @@ function [measures, matchedParticipants, cDataMatched, mDataMatched] = analyze()
 	indices = columnsWithNaN(participants, mData);
 	[mParticipants, mData] = deleteColumns(indices, participants, mData);
 	clear indices participants;
+
+	% Print all measures correlated between the datasets.
+	correlations(measures, cDataMatched, mDataMatched)
 end
 
 % stats confirms the MEF stats match what Matlab calculates
