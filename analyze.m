@@ -24,14 +24,14 @@ function analyze()
 	%    1. cData and mData with their individual NaN columns removed
 	%    2. cDataMatched and mDataMatched with NaN removed from both
 	indices = columnsWithNaN(participants, cData, mData);
-	[participants, cDataMatched, mDataMatched] = deleteColumns(indices, participants, cData, mData);
+	[matchedParticipants, cDataMatched, mDataMatched] = deleteColumns(indices, participants, cData, mData);
 
 	indices = columnsWithNaN(participants, cData);
-	[participants, cData] = deleteColumns(indices, participants, cData);
+	[cParticipants, cData] = deleteColumns(indices, participants, cData);
 
 	indices = columnsWithNaN(participants, mData);
-	[participants, mData] = deleteColumns(indices, participants, mData);
-	clear indices;
+	[mParticipants, mData] = deleteColumns(indices, participants, mData);
+	clear indices participants;
 end
 
 % stats confirms the MEF stats match what Matlab calculates
