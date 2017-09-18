@@ -10,11 +10,16 @@ function [indices] = columnsWithNaN(participant, data1, data2)
 	end
 
 	indices = true(1, length(participant));
+	deletions = [];
 	for i = 1:length(participant)
 		% If either dataset contains NaN for this index, flag it.
 		if cNan(i) > 0 || mNan(i) > 0
 			indices(i) = false;
-			disp('Deleting participant "' + participant(i) + '" because one of the data points is missing.');
+			deletions = [deletions; participant(i)];
 		end
+	end
+
+	if ~isempty(deletions)
+		disp('Deleting participants "' + strjoin(deletions, ', ') + '" because one of the data points is missing.');
 	end
 end
