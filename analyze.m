@@ -2,18 +2,18 @@
 function [measures, participants, cDataMatched, mDataMatched] = analyze()
 	[measures, allParticipants, cData, mData] = import();
 
-	% Handle missing data by deleting NaN columns
+	% Handle missing data by deleting NaN rows
 	% Create 2 versions of the data:
-	%    1. cData and mData with their individual NaN columns removed
+	%    1. cData and mData with their individual NaN rows removed
 	%    2. cDataMatched and mDataMatched with NaN removed from both
-	indices = columnsWithNaN(allParticipants, cData, mData);
-	[participants, cDataMatched, mDataMatched] = deleteColumns(indices, allParticipants, cData, mData);
+	indices = rowsWithNaN(allParticipants, cData, mData);
+	[participants, cDataMatched, mDataMatched] = deleteRows(indices, allParticipants, cData, mData);
 
-	indices = columnsWithNaN(allParticipants, cData);
-	[cParticipants, cData] = deleteColumns(indices, allParticipants, cData);
+	indices = rowsWithNaN(allParticipants, cData);
+	[cParticipants, cData] = deleteRows(indices, allParticipants, cData);
 
-	indices = columnsWithNaN(allParticipants, mData);
-	[mParticipants, mData] = deleteColumns(indices, allParticipants, mData);
+	indices = rowsWithNaN(allParticipants, mData);
+	[mParticipants, mData] = deleteRows(indices, allParticipants, mData);
 	clear indices allParticipants;
 
 	% Print all measures correlated between the datasets.
@@ -30,18 +30,26 @@ function [measures, participants, cData, mData] = import()
 	[mData, mMeasureNames, mParticipantNames, mStats] = mefimport('data/MedianRepeatedmeasures.xlsx');
 
 	% Print warnings if something is odd
-	stats(mData, mStats, mMeasureNames);
 	stats(cData, cStats, cMeasureNames);
+	stats(mData, mStats, mMeasureNames);
 	clear mStats cStats; % We don't need them anymore
+
+	% Transpose everything
+	cData = cData.';
+	mData = mData.';
+	cMeasureNames = cMeasureNames.';
+	mMeasureNames = mMeasureNames.';
+	cParticipantNames = cParticipantNames.';
+	mParticipantNames = mParticipantNames.';
 
 	% Verify participant names are the same; then only save one list
 	indices = verifyNames(cParticipantNames, mParticipantNames);
-	[participants, cData, mData] = deleteColumns(indices, cParticipantNames, cData, mData);
+	[participants, cData, mData] = deleteRows(indices, cParticipantNames, cData, mData);
 	clear cParticipantNames mParticipantNames indices;
 
 	% Verify measure names are the same; then only save one list
 	indices = verifyNames(cMeasureNames, mMeasureNames);
-	[measures, cData, mData] = deleteRows(indices, cMeasureNames, cData, mData);
+	[measures, cData, mData] = deleteColumns(indices, cMeasureNames, cData, mData);
 	clear cMeasureNames mMeasureNames indices;
 end
 
@@ -61,7 +69,7 @@ function compare(names, expected, actual, statName)
 end
 
 function [indices, list1] = verifyNames(list1, list2)
-	indices = true(1, length(list1));
+	indices = true(length(list1), 1);
 	for i = 1:length(list1)
 		if list1(i) ~= list2
 			disp('ERROR: The names at index ' + string(i) + ' don''t match: "' + string(list1(i)) + '" and "' + string(list2(i)) + '".');
@@ -70,18 +78,18 @@ function [indices, list1] = verifyNames(list1, list2)
 	end
 end
 
-function [participants, data1, data2] = deleteColumns(indices, participants, data1, data2)
-	data1 = data1(:, indices);
+function [participants, data1, data2] = deleteRows(indices, participants, data1, data2)
+	data1 = data1(indices, :);
 	if nargin == 4
-		data2 = data2(:, indices);
+		data2 = data2(indices, :);
 	else
 		data2 = [];
 	end
 	participants = participants(indices);
 end
 
-function [measures, data1, data2] = deleteRows(indices, measures, data1, data2)
-	data1 = data1(indices, :);
-	data2 = data2(indices, :);
+function [measures, data1, data2] = deleteColumns(indices, measures, data1, data2)
+	data1 = data1(:, indices);
+	data2 = data2(:, indices);
 	measures = measures(indices);
 end
