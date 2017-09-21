@@ -34,7 +34,7 @@ function [measures, matchedParticipants, cDataMatched, mDataMatched] = analyze()
 	clear indices allParticipants;
 
 	% Print all measures correlated between the datasets.
-	correlations(measures, cDataMatched, mDataMatched)
+	correlations(measures, cDataMatched, mDataMatched);
 end
 
 % stats confirms the MEF stats match what Matlab calculates
