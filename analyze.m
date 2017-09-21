@@ -11,7 +11,7 @@ function [measures, matchedParticipants, cDataMatched, mDataMatched] = analyze()
 
 	% Verify participant names are the same; then only save one list
 	indices = verifyNames(cParticipantNames, mParticipantNames);
-	[participants, cData, mData] = deleteColumns(indices, cParticipantNames, cData, mData);
+	[allParticipants, cData, mData] = deleteColumns(indices, cParticipantNames, cData, mData);
 	clear cParticipantNames mParticipantNames indices;
 
 	% Verify measure names are the same; then only save one list
@@ -23,15 +23,15 @@ function [measures, matchedParticipants, cDataMatched, mDataMatched] = analyze()
 	% Create 2 versions of the data:
 	%    1. cData and mData with their individual NaN columns removed
 	%    2. cDataMatched and mDataMatched with NaN removed from both
-	indices = columnsWithNaN(participants, cData, mData);
-	[matchedParticipants, cDataMatched, mDataMatched] = deleteColumns(indices, participants, cData, mData);
+	indices = columnsWithNaN(allParticipants, cData, mData);
+	[participants, cDataMatched, mDataMatched] = deleteColumns(indices, allParticipants, cData, mData);
 
-	indices = columnsWithNaN(participants, cData);
-	[cParticipants, cData] = deleteColumns(indices, participants, cData);
+	indices = columnsWithNaN(allParticipants, cData);
+	[cParticipants, cData] = deleteColumns(indices, allParticipants, cData);
 
-	indices = columnsWithNaN(participants, mData);
-	[mParticipants, mData] = deleteColumns(indices, participants, mData);
-	clear indices participants;
+	indices = columnsWithNaN(allParticipants, mData);
+	[mParticipants, mData] = deleteColumns(indices, allParticipants, mData);
+	clear indices allParticipants;
 
 	% Print all measures correlated between the datasets.
 	correlations(measures, cDataMatched, mDataMatched)
