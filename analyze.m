@@ -35,6 +35,13 @@ function [measures, matchedParticipants, cDataMatched, mDataMatched] = analyze()
 
 	% Print all measures correlated between the datasets.
 	correlations(measures, cDataMatched, mDataMatched);
+
+	% Delete all of the variables we created, but don't actually care to use
+	clear cParticipants, cData; % We don't actually look at CP independently
+	clear mParticipants, mData; % We don't actually look at median independently
+
+	% Delete remaining variables (simply to keep track of what's still active)
+	clear participants, measures, cDataMatched, mDataMatched;
 end
 
 % stats confirms the MEF stats match what Matlab calculates
