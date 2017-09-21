@@ -1,23 +1,6 @@
 % analyze runs an analysis on the data
 function [measures, participants, cDataMatched, mDataMatched] = analyze()
-	% Import the data from MEF
-	[cData, cMeasureNames, cParticipantNames, cStats] = mefimport('data/CPrepeatedmeasures.xlsx');
-	[mData, mMeasureNames, mParticipantNames, mStats] = mefimport('data/MedianRepeatedmeasures.xlsx');
-
-	% Print warnings if something is odd
-	stats(mData, mStats, mMeasureNames);
-	stats(cData, cStats, cMeasureNames);
-	clear mStats cStats; % We don't need them anymore
-
-	% Verify participant names are the same; then only save one list
-	indices = verifyNames(cParticipantNames, mParticipantNames);
-	[allParticipants, cData, mData] = deleteColumns(indices, cParticipantNames, cData, mData);
-	clear cParticipantNames mParticipantNames indices;
-
-	% Verify measure names are the same; then only save one list
-	indices = verifyNames(cMeasureNames, mMeasureNames);
-	[measures, cData, mData] = deleteRows(indices, cMeasureNames, cData, mData);
-	clear cMeasureNames mMeasureNames indices;
+	[measures, allParticipants, cData, mData] = import();
 
 	% Handle missing data by deleting NaN columns
 	% Create 2 versions of the data:
@@ -39,6 +22,27 @@ function [measures, participants, cDataMatched, mDataMatched] = analyze()
 	% Delete all of the variables we created, but don't actually care to use
 	clear cParticipants, cData; % We don't actually look at CP independently
 	clear mParticipants, mData; % We don't actually look at median independently
+end
+
+function [measures, participants, cData, mData] = import()
+	% Import the data from MEF
+	[cData, cMeasureNames, cParticipantNames, cStats] = mefimport('data/CPrepeatedmeasures.xlsx');
+	[mData, mMeasureNames, mParticipantNames, mStats] = mefimport('data/MedianRepeatedmeasures.xlsx');
+
+	% Print warnings if something is odd
+	stats(mData, mStats, mMeasureNames);
+	stats(cData, cStats, cMeasureNames);
+	clear mStats cStats; % We don't need them anymore
+
+	% Verify participant names are the same; then only save one list
+	indices = verifyNames(cParticipantNames, mParticipantNames);
+	[participants, cData, mData] = deleteColumns(indices, cParticipantNames, cData, mData);
+	clear cParticipantNames mParticipantNames indices;
+
+	% Verify measure names are the same; then only save one list
+	indices = verifyNames(cMeasureNames, mMeasureNames);
+	[measures, cData, mData] = deleteRows(indices, cMeasureNames, cData, mData);
+	clear cMeasureNames mMeasureNames indices;
 end
 
 % stats confirms the MEF stats match what Matlab calculates
