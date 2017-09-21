@@ -1,5 +1,5 @@
 % analyze runs an analysis on the data
-function [measures, matchedParticipants, cDataMatched, mDataMatched] = analyze()
+function [measures, participants, cDataMatched, mDataMatched] = analyze()
 	% Import the data from MEF
 	[cData, cMeasureNames, cParticipantNames, cStats] = mefimport('data/CPrepeatedmeasures.xlsx');
 	[mData, mMeasureNames, mParticipantNames, mStats] = mefimport('data/MedianRepeatedmeasures.xlsx');
