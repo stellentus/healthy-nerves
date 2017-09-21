@@ -1,6 +1,6 @@
 % analyze runs an analysis on the data
 function [measures, participants, cDataMatched, mDataMatched] = analyze()
-	[measures, allParticipants, cData, mData] = importExcel();
+	[measures, allParticipants, cData, mData] = importExcel('data/CPrepeatedmeasures.xlsx', 'data/MedianRepeatedmeasures.xlsx');
 
 	% Handle missing data by deleting NaN rows
 	% Create 2 versions of the data:

@@ -1,8 +1,8 @@
 % importExcel imports data from the files
-function [measures, participants, cData, mData] = importExcel()
+function [measures, participants, cData, mData] = importExcel(cPath, mPath)
 	% Import the data from MEF
-	[cData, cMeasureNames, cParticipantNames, cStats] = mefimport('data/CPrepeatedmeasures.xlsx');
-	[mData, mMeasureNames, mParticipantNames, mStats] = mefimport('data/MedianRepeatedmeasures.xlsx');
+	[cData, cMeasureNames, cParticipantNames, cStats] = mefimport(cPath);
+	[mData, mMeasureNames, mParticipantNames, mStats] = mefimport(mPath);
 
 	% Print warnings if something is odd
 	stats(cData, cStats, cMeasureNames);
