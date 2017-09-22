@@ -1,5 +1,5 @@
 % analyze runs an analysis on the data
-function [measures, participants, values] = analyze()
+function [measures, participants, values, shortNames] = analyze()
 	[measures, allParticipants, cData, mData] = importExcel('data/CPrepeatedmeasures.xlsx', 'data/MedianRepeatedmeasures.xlsx');
 
 	% Handle missing data by deleting NaN rows
@@ -24,7 +24,7 @@ function [measures, participants, values] = analyze()
 	clear mParticipants, mData; % We don't actually look at median independently
 
 	% Combine the arm and leg data into one dataset
-	[measures, values] = combineDatasets(measures, cDataMatched, 'CP', mDataMatched, 'Median');
+	[measures, values, shortNames] = combineDatasets(measures, cDataMatched, 'CP', mDataMatched, 'Median');
 	clear cDataMatched, mDataMatched;
 end
 
