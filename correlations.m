@@ -1,6 +1,6 @@
 % correlations prints the list of measurements that are correlated between arm and leg.
 function correlations(measures, cDataMatched, mDataMatched)
-	[matchCorr, matchP] = corr(cDataMatched,mDataMatched);
+	[matchCorr, matchP] = corr(cDataMatched, mDataMatched);
 	isCorr = diag(matchP<.05);
 
 	corMeas = [];
