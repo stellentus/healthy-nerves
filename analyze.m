@@ -31,6 +31,16 @@ function [measures, participants, values, shortNames] = analyze()
 	values = extractFactors(values);
 end
 
+function biplotWithALS(measures, cData, mData, uniqueMeasures)
+	[~, values, shortNames] = combineDatasets(measures, cData, 'CP', mData, 'Median', uniqueMeasures);
+
+	[coeff,score] = pca(values, 'VariableWeights', 'variance', 'algorithm', 'als');
+	biplot(coeff(:,1:3), 'scores', score(:,1:3), 'varlabels', cellstr(shortNames));
+
+	% Print the short and long names of measures.
+	disp([measures' shortNames(1:35)']);
+end
+
 function [participants, data1, data2] = deleteRows(indices, participants, data1, data2)
 	data1 = data1(indices, :);
 	if nargin == 4
