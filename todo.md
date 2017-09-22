@@ -58,3 +58,18 @@ We need a simple measure of the health of a nerve.
 ### Compare the Data to Another Group
 
 Compare the nerve health measure to data from a clinically relevant population, e.g. the SCI group
+
+## Notes
+
+### PCA
+
+1. The first output, `coeff`, contains the coefficients of the principal components. They can be transformed to be orthonormal with `coefforth = inv(diag(std(inputData)))*coeff`.
+2. The second output, `score`, contains the coordinates of the original data in the new coordinate system defined by the principal components. It is identical to `score = zscore(inputData)*coefforth`, where `zscore(X)` returns a centered, scaled version of X, the same size as X.
+3. The third output, `latent`, is a vector containing the variance explained by the corresponding principal component. Each column of `score` has a sample variance equal to the corresponding row of `latent`.
+4. The fourth output, `explained`, is a vector containing the percent variance explained by the corresponding principal component.
+5. The last output from `pca` is `tsquared`, which is Hotelling's T^2, a statistical measure of the multivariate distance of each observation from the center of the data set. This is an analytical way to find the most extreme points in the data.
+
+ 		% Print the name of the most extreme data point
+		[st2,index] = sort(tsquared, 'descend');
+		extreme = index(1);
+		names(extreme,:)
