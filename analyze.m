@@ -1,8 +1,23 @@
 % analyze runs an analysis on the data
-function [measures, participants, values, shortNames] = analyze()
-	[measures, allParticipants, cData, mData, uniqueMeasures] = importExcel('data/CPrepeatedmeasures.xlsx', 'data/MedianRepeatedmeasures.xlsx');
+function [measures, participants, values, shortNames] = analyze(analysisType)
+	[measures, participants, cData, mData, uniqueMeasures] = importExcel('data/CPrepeatedmeasures.xlsx', 'data/MedianRepeatedmeasures.xlsx');
 
-	[measures, participants, values, shortNames] = biplotWithoutNaN(measures, allParticipants, cData, mData, uniqueMeasures);
+	if nargin == 0
+		analysisType = 'delete';
+	end
+
+	switch analysisType
+		case 'delete'
+			[measures, participants, values, shortNames] = biplotWithoutNaN(measures, participants, cData, mData, uniqueMeasures);
+		case 'Cdelete'
+			[measures, participants, values, shortNames] = biplotCDataWithoutNaN(measures, participants, cData);
+		case 'Mdelete'
+			[measures, participants, values, shortNames] = biplotMDataWithoutNaN(measures, participants, mData);
+		case 'ALS'
+			[measures, values, shortNames] = biplotWithALS(measures, cData, mData, uniqueMeasures);
+		otherwise % 'delete' is the default
+			disp('ERROR: anaysis type must be one of ''delete'', ''Cdelete'', ''Mdelete'', or ''ALS''');
+	end
 end
 
 function [measures, participants, values, shortNames] = biplotCDataWithoutNaN(measures, participants, cData)
