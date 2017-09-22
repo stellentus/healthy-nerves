@@ -26,6 +26,9 @@ function [measures, participants, values, shortNames] = analyze()
 	% Combine the arm and leg data into one dataset
 	[measures, values, shortNames] = combineDatasets(measures, cDataMatched, 'CP', mDataMatched, 'Median');
 	clear cDataMatched, mDataMatched;
+
+	% Extract factors
+	values = extractFactors(values);
 end
 
 function [participants, data1, data2] = deleteRows(indices, participants, data1, data2)
