@@ -1,5 +1,5 @@
 % importExcel imports data from the files
-function [measures, participants, cData, mData, identical] = importExcel(cPath, mPath)
+function [measures, participants, cData, mData, unique] = importExcel(cPath, mPath)
 	% Import the data from MEF
 	[cData, cMeasureNames, cParticipantNames, cStats] = mefimport(cPath);
 	[mData, mMeasureNames, mParticipantNames, mStats] = mefimport(mPath);
@@ -27,14 +27,16 @@ function [measures, participants, cData, mData, identical] = importExcel(cPath, 
 	[measures, cData, mData] = deleteColumns(indices, cMeasureNames, cData, mData);
 	clear cMeasureNames mMeasureNames indices;
 
-	% Calculate identical columns (e.g. age and sex)
-	identical = [];
+	% Calculate unique columns (e.g. not age and sex)
+	unique = [];
 	for i = 1:length(measures)
-		if isequal(cData(:,i), mData(:,i))
-			identical = [identical, i];
+		if i == 14
+			continue; % Temporary fix because age is unique due to some odd data
+		end
+		if ~isequal(cData(:,i), mData(:,i))
+			unique = [unique, i];
 		end
 	end
-	identical = [identical, 14]; % Temporary fix because age isn't actually identical
 end
 
 % stats confirms the MEF stats match what Matlab calculates
