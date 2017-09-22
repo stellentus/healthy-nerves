@@ -59,6 +59,12 @@ We need a simple measure of the health of a nerve.
 
 Compare the nerve health measure to data from a clinically relevant population, e.g. the SCI group
 
+Try throwing the SCI group into the overall dataset, and see if it shows up in a separate cluster. To do that, learn how to make a boxplot categorize some points with different colors.
+
+Or try plotting the healthy CP vs healthy median to see if they form two clusters.
+
+Try projecting CP data onto median PCA vectors. And then... learn something interesting from it?
+
 ## Notes
 
 ### PCA
