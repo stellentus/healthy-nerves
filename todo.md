@@ -17,6 +17,7 @@ Possible Approaches:
 1. Delete missing rows. But this drops outliers (e.g. needed 100mA but only had 50mA).
 2. Assume missing at random (MAR). But that's not true (as noted in point 1 above).
 3. A technique that doesn't assume MAR.
+4. Alternating Least Squares method with PCA.
 
 Option 1 is easy, but option 3 is best. Perhaps I can start with a script that does option 1, and replace that code if I come up with a better option.
 
