@@ -34,6 +34,7 @@ function [measures, participants, cData, mData, identical] = importExcel(cPath, 
 			identical = [identical, i];
 		end
 	end
+	identical = [identical, 14]; % Temporary fix because age isn't actually identical
 end
 
 % stats confirms the MEF stats match what Matlab calculates
