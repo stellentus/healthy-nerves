@@ -2,10 +2,10 @@
 function [measures, values, shortNames] = combineDatasets(measures, values1, name1, values2, name2)
 	% Create short names
 	shortNames = [];
-	startLabel = 'A';
+	startLabel = 'a';
 	for i = 1:length(measures)
-		if startLabel > 'Z'
-			startLabel = 'a';
+		if startLabel > 'z'
+			startLabel = 'A';
 		end
 		shortNames = [shortNames; cellstr(startLabel)];
 		startLabel = char(startLabel + 1);
