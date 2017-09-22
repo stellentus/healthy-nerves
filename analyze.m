@@ -3,10 +3,12 @@ function [measures, participants, values, shortNames] = analyze(analysisType)
 	[measures, participants, cData, mData, uniqueMeasures] = importExcel('data/CPrepeatedmeasures.xlsx', 'data/MedianRepeatedmeasures.xlsx');
 
 	if nargin == 0
-		analysisType = 'delete';
+		analysisType = 'data';
 	end
 
 	switch analysisType
+		case 'data'
+			[measures, participants, values, shortNames] = dataWithoutNaN(measures, participants, cData, mData, uniqueMeasures);
 		case 'delete'
 			[measures, participants, values, shortNames] = biplotWithoutNaN(measures, participants, cData, mData, uniqueMeasures);
 		case 'Cdelete'
@@ -16,7 +18,7 @@ function [measures, participants, values, shortNames] = analyze(analysisType)
 		case 'ALS'
 			[measures, values, shortNames] = biplotWithALS(measures, cData, mData, uniqueMeasures);
 		otherwise % 'delete' is the default
-			disp('ERROR: anaysis type must be one of ''delete'', ''Cdelete'', ''Mdelete'', or ''ALS''');
+			disp('ERROR: anaysis type must be one of ''data'', ''delete'', ''Cdelete'', ''Mdelete'', or ''ALS''');
 	end
 end
 
@@ -43,7 +45,7 @@ function [measures, participants, values, shortNames] = biplotIndividualWithoutN
 	disp([measures' shortNames']);
 end
 
-function [measures, participants, values, shortNames] = biplotWithoutNaN(measures, allParticipants, cData, mData, uniqueMeasures)
+function [measures, participants, values, shortNames] = dataWithoutNaN(measures, allParticipants, cData, mData, uniqueMeasures)
 	% Handle missing data by deleting NaN rows
 	indices = rowsWithNaN(allParticipants, cData, mData);
 	[participants, cDataMatched, mDataMatched] = deleteRows(indices, allParticipants, cData, mData);
@@ -53,7 +55,10 @@ function [measures, participants, values, shortNames] = biplotWithoutNaN(measure
 
 	% Combine the arm and leg data into one dataset
 	[measures, values, shortNames] = combineDatasets(measures, cDataMatched, 'CP', mDataMatched, 'Median', uniqueMeasures);
-	clear cDataMatched, mDataMatched;
+end
+
+function [measures, participants, values, shortNames] = biplotWithoutNaN(measures, allParticipants, cData, mData, uniqueMeasures)
+	[measures, participants, values, shortNames] = dataWithoutNaN(measures, allParticipants, cData, mData, uniqueMeasures);
 
 	[coeff,score] = pca(values, 'VariableWeights', 'variance');
 	biplot(coeff(:,1:3), 'scores', score(:,1:3), 'varlabels', cellstr(shortNames));
