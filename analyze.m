@@ -26,9 +26,6 @@ function [measures, participants, values, shortNames] = analyze()
 	% Combine the arm and leg data into one dataset
 	[measures, values, shortNames] = combineDatasets(measures, cDataMatched, 'CP', mDataMatched, 'Median', uniqueMeasures);
 	clear cDataMatched, mDataMatched;
-
-	% Extract factors
-	values = extractFactors(values);
 end
 
 function biplotWithALS(measures, cData, mData, uniqueMeasures)
