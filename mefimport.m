@@ -22,5 +22,8 @@ function [data, measureNames, participantNames, stats] = mefimport(filepath)
 	% Import the data
 	data = cell2mat(stripped([2:end], [6:end]));
 
+	% Clean up the measure names
+	measureNames = replace(measureNames, '\', ' ');
+
 	clear stripped;
 end
