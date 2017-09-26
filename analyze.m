@@ -1,6 +1,6 @@
 % analyze runs an analysis on the data
-function [measures, participants, values, shortNames] = analyze(analysisType)
-	[measures, participants, cData, mData, uniqueMeasures] = importExcel('data/CPrepeatedmeasures.xlsx', 'data/MedianRepeatedmeasures.xlsx');
+function [values, participants, measures, shortNames] = analyze(analysisType)
+	[cData, mData, participants, measures, uniqueMeasures] = importExcel('data/CPrepeatedmeasures.xlsx', 'data/MedianRepeatedmeasures.xlsx');
 
 	if nargin == 0
 		analysisType = 'data';
@@ -8,31 +8,31 @@ function [measures, participants, values, shortNames] = analyze(analysisType)
 
 	switch analysisType
 		case 'data'
-			[measures, participants, values, shortNames] = dataWithoutNaN(measures, participants, cData, mData, uniqueMeasures);
+			[values, participants, measures, shortNames] = dataWithoutNaN(cData, mData, participants, measures, uniqueMeasures);
 		case 'delete'
-			[measures, participants, values, shortNames] = biplotWithoutNaN(measures, participants, cData, mData, uniqueMeasures);
+			[values, participants, measures, shortNames] = biplotWithoutNaN(cData, mData, participants, measures, uniqueMeasures);
 		case 'Cdelete'
-			[measures, participants, values, shortNames] = biplotCDataWithoutNaN(measures, participants, cData);
+			[values, participants, measures, shortNames] = biplotCDataWithoutNaN(cData, participants, measures);
 		case 'Mdelete'
-			[measures, participants, values, shortNames] = biplotMDataWithoutNaN(measures, participants, mData);
+			[values, participants, measures, shortNames] = biplotMDataWithoutNaN(mData, participants, measures);
 		case 'ALS'
-			[measures, values, shortNames] = biplotWithALS(measures, cData, mData, uniqueMeasures);
+			[values, measures, shortNames] = biplotWithALS(cData, mData, measures, uniqueMeasures);
         otherwise
 			disp('ERROR: anaysis type must be one of ''data'', ''delete'', ''Cdelete'', ''Mdelete'', or ''ALS''');
 	end
 end
 
-function [measures, participants, values, shortNames] = biplotCDataWithoutNaN(measures, participants, cData)
-	[measures, participants, values, shortNames] = dataIndividualWithoutNaN(measures, participants, cData)
+function [values, participants, measures, shortNames] = biplotCDataWithoutNaN(cData, participants, measures)
+	[values, participants, measures, shortNames] = dataIndividualWithoutNaN(cData, participants, measures)
 	biplotIndividualWithoutNaN(values, measures, shortNames);
 end
 
-function [measures, participants, values, shortNames] = biplotMDataWithoutNaN(measures, participants, mData)
-	[measures, participants, values, shortNames] = dataIndividualWithoutNaN(measures, participants, mData)
+function [values, participants, measures, shortNames] = biplotMDataWithoutNaN(mData, participants, measures)
+	[values, participants, measures, shortNames] = dataIndividualWithoutNaN(mData, participants, measures)
 	biplotIndividualWithoutNaN(values, measures, shortNames);
 end
 
-function [measures, participants, values, shortNames] = dataIndividualWithoutNaN(measures, participants, values)
+function [values, participants, measures, shortNames] = dataIndividualWithoutNaN(values, particpants, measures)
 	% Handle missing values by deleting NaN rows
 	indices = rowsWithNaN(participants, values);
 	[participants, values] = deleteRows(indices, participants, values);
@@ -42,14 +42,14 @@ function [measures, participants, values, shortNames] = dataIndividualWithoutNaN
 end
 
 function biplotIndividualWithoutNaN(values, measures, shortNames)
-	[coeff,score] = pca(values, 'VariableWeights', 'variance');
+	[coeff, score] = pca(values, 'VariableWeights', 'variance');
 	biplot(coeff(:,1:3), 'scores', score(:,1:3), 'varlabels', cellstr(shortNames));
 
 	% Print the short and long names of measures.
 	disp([measures' shortNames']);
 end
 
-function [measures, participants, values, shortNames] = dataWithoutNaN(measures, allParticipants, cData, mData, uniqueMeasures)
+function [values, participants, measures, shortNames] = dataWithoutNaN(cData, mData, allParticipants, measures, uniqueMeasures)
 	% Handle missing data by deleting NaN rows
 	indices = rowsWithNaN(allParticipants, cData, mData);
 	[participants, cDataMatched, mDataMatched] = deleteRows(indices, allParticipants, cData, mData);
@@ -58,23 +58,23 @@ function [measures, participants, values, shortNames] = dataWithoutNaN(measures,
 	correlations(measures, cDataMatched, mDataMatched);
 
 	% Combine the arm and leg data into one dataset
-	[measures, values, shortNames] = combineDatasets(measures, cDataMatched, 'CP', mDataMatched, 'Median', uniqueMeasures);
+	[values, measures, shortNames] = combineDatasets(measures, cDataMatched, 'CP', mDataMatched, 'Median', uniqueMeasures);
 end
 
-function [measures, participants, values, shortNames] = biplotWithoutNaN(measures, allParticipants, cData, mData, uniqueMeasures)
-	[measures, participants, values, shortNames] = dataWithoutNaN(measures, allParticipants, cData, mData, uniqueMeasures);
+function [values, participants, measures, shortNames] = biplotWithoutNaN(cData, mData, allParticipants, measures, uniqueMeasures)
+	[values, participants, measures, shortNames] = dataWithoutNaN(cData, mData, allParticipants, measures, uniqueMeasures);
 
-	[coeff,score] = pca(values, 'VariableWeights', 'variance');
+	[coeff, score] = pca(values, 'VariableWeights', 'variance');
 	biplot(coeff(:,1:3), 'scores', score(:,1:3), 'varlabels', cellstr(shortNames));
 
 	% Print the short and long names of measures.
 	disp([measures(1:35)' shortNames(1:35)']);
 end
 
-function [measures, values, shortNames] = biplotWithALS(measures, cData, mData, uniqueMeasures)
-	[measures, values, shortNames] = combineDatasets(measures, cData, 'CP', mData, 'Median', uniqueMeasures);
+function [values, measures, shortNames] = biplotWithALS(cData, mData, measures, uniqueMeasures)
+	[values, measures, shortNames] = combineDatasets(measures, cData, 'CP', mData, 'Median', uniqueMeasures);
 
-	[coeff,score] = pca(values, 'VariableWeights', 'variance', 'algorithm', 'als');
+	[coeff, score] = pca(values, 'VariableWeights', 'variance', 'algorithm', 'als');
 	biplot(coeff(:,1:3), 'scores', score(:,1:3), 'varlabels', cellstr(shortNames));
 
 	% Print the short and long names of measures.

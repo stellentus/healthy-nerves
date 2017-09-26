@@ -1,5 +1,5 @@
 % importExcel imports data from the files
-function [measures, participants, cData, mData, unique] = importExcel(cPath, mPath)
+function [cData, mData, participants, measures, unique] = importExcel(cPath, mPath)
 	% Import the data from MEF
 	[cData, cMeasureNames, cParticipantNames, cStats] = mefimport(cPath);
 	[mData, mMeasureNames, mParticipantNames, mStats] = mefimport(mPath);

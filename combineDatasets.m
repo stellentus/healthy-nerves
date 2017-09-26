@@ -1,5 +1,5 @@
 % combineDatasets combines two datasets, renaming the list of measures
-function [measures, values, shortNames] = combineDatasets(measures, values1, name1, values2, name2, uniqueMeasures)
+function [values, measures, shortNames] = combineDatasets(measures, values1, name1, values2, name2, uniqueMeasures)
 	% Create short names
 	shortNames = shortenNames(measures);
 	shortNames = [strcat(name1(1), shortNames) strcat(name2(1), shortNames(uniqueMeasures))];
