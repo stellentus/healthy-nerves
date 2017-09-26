@@ -24,12 +24,12 @@ end
 
 function [values, participants, measures, shortNames] = biplotCDataWithoutNaN(cData, participants, measures)
 	[values, participants, measures, shortNames] = dataIndividualWithoutNaN(cData, participants, measures)
-	biplotIndividualWithoutNaN(values, measures, shortNames);
+	biplotBasic(values, measures, shortNames);
 end
 
 function [values, participants, measures, shortNames] = biplotMDataWithoutNaN(mData, participants, measures)
 	[values, participants, measures, shortNames] = dataIndividualWithoutNaN(mData, participants, measures)
-	biplotIndividualWithoutNaN(values, measures, shortNames);
+	biplotBasic(values, measures, shortNames);
 end
 
 function [values, participants, measures, shortNames] = dataIndividualWithoutNaN(values, particpants, measures)
@@ -41,12 +41,9 @@ function [values, participants, measures, shortNames] = dataIndividualWithoutNaN
 	shortNames = shortenNames(measures);
 end
 
-function biplotIndividualWithoutNaN(values, measures, shortNames)
+function biplotBasic(values, measures, shortNames)
 	[coeff, score] = pca(values, 'VariableWeights', 'variance');
 	biplot(coeff(:,1:3), 'scores', score(:,1:3), 'varlabels', cellstr(shortNames));
-
-	% Print the short and long names of measures.
-	disp([measures' shortNames']);
 end
 
 function [values, participants, measures, shortNames] = dataWithoutNaN(cData, mData, allParticipants, measures, uniqueMeasures)
@@ -63,12 +60,7 @@ end
 
 function [values, participants, measures, shortNames] = biplotWithoutNaN(cData, mData, allParticipants, measures, uniqueMeasures)
 	[values, participants, measures, shortNames] = dataWithoutNaN(cData, mData, allParticipants, measures, uniqueMeasures);
-
-	[coeff, score] = pca(values, 'VariableWeights', 'variance');
-	biplot(coeff(:,1:3), 'scores', score(:,1:3), 'varlabels', cellstr(shortNames));
-
-	% Print the short and long names of measures.
-	disp([measures(1:35)' shortNames(1:35)']);
+	biplotBasic(values, measures, shortNames)
 end
 
 function [values, measures, shortNames] = biplotWithALS(cData, mData, measures, uniqueMeasures)
