@@ -1,5 +1,15 @@
 % importExcel imports data from the files
-function [cData, mData, participants, measures, unique] = importExcel(cPath, mPath)
+function [participants, measures, data1, data2, uniqueColumns] = importExcel(path1, path2)
+	if nargin == 2
+		[data1, data2, participants, measures, uniqueColumns] = importTwo(path1, path2);
+	else
+		[data1, measures, participants] = mefimport(path1);
+		uniqueColumns = [];
+		data2 = [];
+	end
+end
+
+function [cData, mData, participants, measures, unique] = importTwo(cPath, mPath)
 	% Import the data from MEF
 	[cData, cMeasureNames, cParticipantNames, cStats] = mefimport(cPath);
 	[mData, mMeasureNames, mParticipantNames, mStats] = mefimport(mPath);

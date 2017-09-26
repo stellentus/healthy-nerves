@@ -1,6 +1,6 @@
 % analyze runs an analysis on the data
 function [values, participants, measures, shortNames] = analyze(analysisType)
-	[cData, mData, participants, measures, uniqueMeasures] = importExcel('data/CPrepeatedmeasures.xlsx', 'data/MedianRepeatedmeasures.xlsx');
+	[participants, measures, cData, mData, uniqueMeasures] = importExcel('data/CPrepeatedmeasures.xlsx', 'data/MedianRepeatedmeasures.xlsx');
 
 	if nargin == 0
 		analysisType = 'data';
