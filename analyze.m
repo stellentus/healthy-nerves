@@ -23,11 +23,13 @@ function [measures, participants, values, shortNames] = analyze(analysisType)
 end
 
 function [measures, participants, values, shortNames] = biplotCDataWithoutNaN(measures, participants, cData)
-	[measures, participants, values, shortNames] = biplotIndividualWithoutNaN(measures, participants, cData);
+	[measures, participants, values, shortNames] = dataIndividualWithoutNaN(measures, participants, cData)
+	biplotIndividualWithoutNaN(values, measures, shortNames);
 end
 
 function [measures, participants, values, shortNames] = biplotMDataWithoutNaN(measures, participants, mData)
-	[measures, participants, values, shortNames] = biplotIndividualWithoutNaN(measures, participants, mData);
+	[measures, participants, values, shortNames] = dataIndividualWithoutNaN(measures, participants, mData)
+	biplotIndividualWithoutNaN(values, measures, shortNames);
 end
 
 function [measures, participants, values, shortNames] = dataIndividualWithoutNaN(measures, participants, values)
@@ -39,9 +41,7 @@ function [measures, participants, values, shortNames] = dataIndividualWithoutNaN
 	shortNames = shortenNames(measures);
 end
 
-function [measures, participants, values, shortNames] = biplotIndividualWithoutNaN(measures, participants, values)
-	[measures, participants, values, shortNames] = dataIndividualWithoutNaN(measures, participants, values)
-
+function biplotIndividualWithoutNaN(values, measures, shortNames)
 	[coeff,score] = pca(values, 'VariableWeights', 'variance');
 	biplot(coeff(:,1:3), 'scores', score(:,1:3), 'varlabels', cellstr(shortNames));
 
