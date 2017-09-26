@@ -17,7 +17,7 @@ function [measures, participants, values, shortNames] = analyze(analysisType)
 			[measures, participants, values, shortNames] = biplotMDataWithoutNaN(measures, participants, mData);
 		case 'ALS'
 			[measures, values, shortNames] = biplotWithALS(measures, cData, mData, uniqueMeasures);
-		otherwise % 'delete' is the default
+        otherwise
 			disp('ERROR: anaysis type must be one of ''data'', ''delete'', ''Cdelete'', ''Mdelete'', or ''ALS''');
 	end
 end
