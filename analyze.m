@@ -30,13 +30,17 @@ function [measures, participants, values, shortNames] = biplotMDataWithoutNaN(me
 	[measures, participants, values, shortNames] = biplotIndividualWithoutNaN(measures, participants, mData);
 end
 
-function [measures, participants, values, shortNames] = biplotIndividualWithoutNaN(measures, participants, values)
+function [measures, participants, values, shortNames] = dataIndividualWithoutNaN(measures, participants, values)
 	% Handle missing values by deleting NaN rows
 	indices = rowsWithNaN(participants, values);
 	[participants, values] = deleteRows(indices, participants, values);
 	clear indices;
 
 	shortNames = shortenNames(measures);
+end
+
+function [measures, participants, values, shortNames] = biplotIndividualWithoutNaN(measures, participants, values)
+	[measures, participants, values, shortNames] = dataIndividualWithoutNaN(measures, participants, values)
 
 	[coeff,score] = pca(values, 'VariableWeights', 'variance');
 	biplot(coeff(:,1:3), 'scores', score(:,1:3), 'varlabels', cellstr(shortNames));
