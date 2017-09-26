@@ -10,26 +10,20 @@ function [values, participants, measures, shortNames] = analyze(analysisType)
 		case 'data'
 			[values, participants, measures, shortNames] = dataWithoutNaN(cData, mData, participants, measures, uniqueMeasures);
 		case 'delete'
-			[values, participants, measures, shortNames] = biplotWithoutNaN(cData, mData, participants, measures, uniqueMeasures);
+			[values, participants, measures, shortNames] = dataWithoutNaN(cData, mData, participants, measures, uniqueMeasures);
+			bp(values, measures, shortNames)
 		case 'Cdelete'
-			[values, participants, measures, shortNames] = biplotCDataWithoutNaN(cData, participants, measures);
+			[values, participants, measures, shortNames] = dataIndividualWithoutNaN(cData, participants, measures)
+			bp(values, measures, shortNames);
 		case 'Mdelete'
-			[values, participants, measures, shortNames] = biplotMDataWithoutNaN(mData, participants, measures);
+			[values, participants, measures, shortNames] = dataIndividualWithoutNaN(mData, participants, measures)
+			bp(values, measures, shortNames);
 		case 'ALS'
-			[values, measures, shortNames] = biplotWithALS(cData, mData, measures, uniqueMeasures);
+			[values, measures, shortNames] = combineDatasets(measures, cData, 'CP', mData, 'Median', uniqueMeasures);
+			bp(values, measures, shortNames, alg, 'als')
         otherwise
 			disp('ERROR: anaysis type must be one of ''data'', ''delete'', ''Cdelete'', ''Mdelete'', or ''ALS''');
 	end
-end
-
-function [values, participants, measures, shortNames] = biplotCDataWithoutNaN(cData, participants, measures)
-	[values, participants, measures, shortNames] = dataIndividualWithoutNaN(cData, participants, measures)
-	bp(values, measures, shortNames);
-end
-
-function [values, participants, measures, shortNames] = biplotMDataWithoutNaN(mData, participants, measures)
-	[values, participants, measures, shortNames] = dataIndividualWithoutNaN(mData, participants, measures)
-	bp(values, measures, shortNames);
 end
 
 function [values, participants, measures, shortNames] = dataIndividualWithoutNaN(values, particpants, measures)
@@ -51,17 +45,6 @@ function [values, participants, measures, shortNames] = dataWithoutNaN(cData, mD
 
 	% Combine the arm and leg data into one dataset
 	[values, measures, shortNames] = combineDatasets(measures, cDataMatched, 'CP', mDataMatched, 'Median', uniqueMeasures);
-end
-
-function [values, participants, measures, shortNames] = biplotWithoutNaN(cData, mData, allParticipants, measures, uniqueMeasures)
-	[values, participants, measures, shortNames] = dataWithoutNaN(cData, mData, allParticipants, measures, uniqueMeasures);
-	bp(values, measures, shortNames)
-end
-
-function [values, measures, shortNames] = biplotWithALS(cData, mData, measures, uniqueMeasures)
-	[values, measures, shortNames] = combineDatasets(measures, cData, 'CP', mData, 'Median', uniqueMeasures);
-
-	bp(values, measures, shortNames, alg, 'als')
 end
 
 function [participants, data1, data2] = deleteRows(indices, participants, data1, data2)
