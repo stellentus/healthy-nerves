@@ -11,7 +11,7 @@ function [values, participants, measures, shortNames] = analyze(dataType, delete
 	[values, participants, measures, shortNames] = loadData(dataType, deleteNaN);
 
 	% Only plot if a type was provided
-	if nargin == 3
+	if nargin == 3 && ~strcmp(plotType, 'none')
 		bp(values, measures, shortNames, plotType);
 	end
 end
