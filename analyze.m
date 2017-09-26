@@ -8,15 +8,15 @@ function [values, participants, measures, shortNames] = analyze(analysisType)
 
 	switch analysisType
 		case 'data'
-			[values, participants, measures, shortNames] = dataWithoutNaN(cData, mData, participants, measures, uniqueMeasures);
+			[values, participants, measures, shortNames] = dataWithoutNaN(participants, measures, cData, mData, uniqueMeasures);
 		case 'delete'
-			[values, participants, measures, shortNames] = dataWithoutNaN(cData, mData, participants, measures, uniqueMeasures);
+			[values, participants, measures, shortNames] = dataWithoutNaN(participants, measures, cData, mData, uniqueMeasures);
 			bp(values, measures, shortNames)
 		case 'Cdelete'
-			[values, participants, measures, shortNames] = dataIndividualWithoutNaN(cData, participants, measures)
+			[values, participants, measures, shortNames] = dataIndividualWithoutNaN(participants, measures, cData)
 			bp(values, measures, shortNames);
 		case 'Mdelete'
-			[values, participants, measures, shortNames] = dataIndividualWithoutNaN(mData, participants, measures)
+			[values, participants, measures, shortNames] = dataIndividualWithoutNaN(participants, measures, mData)
 			bp(values, measures, shortNames);
 		case 'ALS'
 			[values, measures, shortNames] = combineDatasets(measures, cData, 'CP', mData, 'Median', uniqueMeasures);
@@ -26,25 +26,25 @@ function [values, participants, measures, shortNames] = analyze(analysisType)
 	end
 end
 
-function [values, participants, measures, shortNames] = dataIndividualWithoutNaN(values, particpants, measures)
-	% Handle missing values by deleting NaN rows
-	indices = rowsWithNaN(participants, values);
-	[participants, values] = deleteRows(indices, participants, values);
+function [values, participants, measures, shortNames] = dataIndividualWithoutNaN(particpants, measures, data)
+	% Handle missing data by deleting NaN rows
+	indices = rowsWithNaN(participants, data);
+	[participants, data] = deleteRows(indices, participants, data);
 	clear indices;
 
 	shortNames = shortenNames(measures);
 end
 
-function [values, participants, measures, shortNames] = dataWithoutNaN(cData, mData, allParticipants, measures, uniqueMeasures)
+function [values, participants, measures, shortNames] = dataWithoutNaN(participants, measures, data1, data2, uniqueMeasures)
 	% Handle missing data by deleting NaN rows
-	indices = rowsWithNaN(allParticipants, cData, mData);
-	[participants, cDataMatched, mDataMatched] = deleteRows(indices, allParticipants, cData, mData);
+	indices = rowsWithNaN(participants, data1, data2);
+	[participants, data1Matched, data2Matched] = deleteRows(indices, participants, data1, data2);
 
 	% Print all measures correlated between the datasets.
-	correlations(measures, cDataMatched, mDataMatched);
+	correlations(measures, data1Matched, data2Matched);
 
 	% Combine the arm and leg data into one dataset
-	[values, measures, shortNames] = combineDatasets(measures, cDataMatched, 'CP', mDataMatched, 'Median', uniqueMeasures);
+	[values, measures, shortNames] = combineDatasets(measures, data1Matched, 'CP', data2Matched, 'Median', uniqueMeasures);
 end
 
 function [participants, data1, data2] = deleteRows(indices, participants, data1, data2)
