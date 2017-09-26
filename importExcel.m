@@ -4,19 +4,6 @@ function [cData, mData, participants, measures, unique] = importExcel(cPath, mPa
 	[cData, cMeasureNames, cParticipantNames, cStats] = mefimport(cPath);
 	[mData, mMeasureNames, mParticipantNames, mStats] = mefimport(mPath);
 
-	% Print warnings if something is odd
-	stats(cData, cStats, cMeasureNames);
-	stats(mData, mStats, mMeasureNames);
-	clear mStats cStats; % We don't need them anymore
-
-	% Transpose everything
-	cData = cData.';
-	mData = mData.';
-	cMeasureNames = cMeasureNames.';
-	mMeasureNames = mMeasureNames.';
-	cParticipantNames = cParticipantNames.';
-	mParticipantNames = mParticipantNames.';
-
 	% Verify participant names are the same; then only save one list
 	indices = verifyNames(cParticipantNames, mParticipantNames);
 	[participants, cData, mData] = deleteRows(indices, cParticipantNames, cData, mData);
@@ -35,21 +22,6 @@ function [cData, mData, participants, measures, unique] = importExcel(cPath, mPa
 		end
 		if ~isequal(cData(:,i), mData(:,i))
 			unique = [unique, i];
-		end
-	end
-end
-
-% stats confirms the MEF stats match what Matlab calculates
-function stats(data, stats, names)
-	compare(names, stats.average, mean(data, 2, 'omitnan'), 'an average');
-	compare(names, stats.SD, std(data, 0, 2, 'omitnan'), 'a standard deviation');
-	compare(names, stats.SE, std(data, 0, 2, 'omitnan')./sqrt(stats.count), 'a standard error');
-end
-
-function compare(names, expected, actual, statName)
-	for i = 1:length(actual)
-		if abs(actual(i)-expected(i)) > 1e4*eps(min(abs(actual(i)),abs(expected(i))))
-			disp('"' + names(i) + '" has ' + statName + ' of ' + actual(i) + ' instead of ' + expected(i) + '.');
 		end
 	end
 end
