@@ -24,12 +24,12 @@ end
 
 function [values, participants, measures, shortNames] = biplotCDataWithoutNaN(cData, participants, measures)
 	[values, participants, measures, shortNames] = dataIndividualWithoutNaN(cData, participants, measures)
-	biplotBasic(values, measures, shortNames);
+	bp(values, measures, shortNames);
 end
 
 function [values, participants, measures, shortNames] = biplotMDataWithoutNaN(mData, participants, measures)
 	[values, participants, measures, shortNames] = dataIndividualWithoutNaN(mData, participants, measures)
-	biplotBasic(values, measures, shortNames);
+	bp(values, measures, shortNames);
 end
 
 function [values, participants, measures, shortNames] = dataIndividualWithoutNaN(values, particpants, measures)
@@ -41,8 +41,11 @@ function [values, participants, measures, shortNames] = dataIndividualWithoutNaN
 	shortNames = shortenNames(measures);
 end
 
-function biplotBasic(values, measures, shortNames)
-	[coeff, score] = pca(values, 'VariableWeights', 'variance');
+function bp(values, measures, shortNames, alg)
+	if nargin < 4
+		alg = 'svd';
+	end
+	[coeff, score] = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
 	biplot(coeff(:,1:3), 'scores', score(:,1:3), 'varlabels', cellstr(shortNames));
 end
 
@@ -60,17 +63,13 @@ end
 
 function [values, participants, measures, shortNames] = biplotWithoutNaN(cData, mData, allParticipants, measures, uniqueMeasures)
 	[values, participants, measures, shortNames] = dataWithoutNaN(cData, mData, allParticipants, measures, uniqueMeasures);
-	biplotBasic(values, measures, shortNames)
+	bp(values, measures, shortNames)
 end
 
 function [values, measures, shortNames] = biplotWithALS(cData, mData, measures, uniqueMeasures)
 	[values, measures, shortNames] = combineDatasets(measures, cData, 'CP', mData, 'Median', uniqueMeasures);
 
-	[coeff, score] = pca(values, 'VariableWeights', 'variance', 'algorithm', 'als');
-	biplot(coeff(:,1:3), 'scores', score(:,1:3), 'varlabels', cellstr(shortNames));
-
-	% Print the short and long names of measures.
-	disp([measures(1:35)' shortNames(1:35)']);
+	bp(values, measures, shortNames, alg, 'als')
 end
 
 function [participants, data1, data2] = deleteRows(indices, participants, data1, data2)
