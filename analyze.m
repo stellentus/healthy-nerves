@@ -13,10 +13,10 @@ function [values, participants, measures, shortNames] = analyze(analysisType)
 			[values, participants, measures, shortNames] = dataWithoutNaN(participants, measures, cData, mData, uniqueMeasures);
 			bp(values, measures, shortNames)
 		case 'Cdelete'
-			[values, participants, measures, shortNames] = dataIndividualWithoutNaN(participants, measures, cData)
+			[values, participants, measures, shortNames] = dataWithoutNaN(participants, measures, cData);
 			bp(values, measures, shortNames);
 		case 'Mdelete'
-			[values, participants, measures, shortNames] = dataIndividualWithoutNaN(participants, measures, mData)
+			[values, participants, measures, shortNames] = dataWithoutNaN(participants, measures, mData);
 			bp(values, measures, shortNames);
 		case 'ALS'
 			[values, measures, shortNames] = combineDatasets(measures, cData, 'CP', mData, 'Median', uniqueMeasures);
@@ -26,25 +26,26 @@ function [values, participants, measures, shortNames] = analyze(analysisType)
 	end
 end
 
-function [values, participants, measures, shortNames] = dataIndividualWithoutNaN(particpants, measures, data)
-	% Handle missing data by deleting NaN rows
-	indices = rowsWithNaN(participants, data);
-	[participants, data] = deleteRows(indices, participants, data);
-	clear indices;
-
-	shortNames = shortenNames(measures);
-end
-
 function [values, participants, measures, shortNames] = dataWithoutNaN(participants, measures, data1, data2, uniqueMeasures)
-	% Handle missing data by deleting NaN rows
-	indices = rowsWithNaN(participants, data1, data2);
-	[participants, data1Matched, data2Matched] = deleteRows(indices, participants, data1, data2);
+	if nargin == 3
+		% Handle missing data by deleting NaN rows
+		indices = rowsWithNaN(participants, data1);
+		[participants, data1] = deleteRows(indices, participants, data1);
+		clear indices;
 
-	% Print all measures correlated between the datasets.
-	correlations(measures, data1Matched, data2Matched);
+		shortNames = shortenNames(measures);
+		values = data1;
+	else
+		% Handle missing data by deleting NaN rows
+		indices = rowsWithNaN(participants, data1, data2);
+		[participants, data1Matched, data2Matched] = deleteRows(indices, participants, data1, data2);
 
-	% Combine the arm and leg data into one dataset
-	[values, measures, shortNames] = combineDatasets(measures, data1Matched, 'CP', data2Matched, 'Median', uniqueMeasures);
+		% Print all measures correlated between the datasets.
+		correlations(measures, data1Matched, data2Matched);
+
+		% Combine the arm and leg data into one dataset
+		[values, measures, shortNames] = combineDatasets(measures, data1Matched, 'CP', data2Matched, 'Median', uniqueMeasures);
+	end
 end
 
 function [participants, data1, data2] = deleteRows(indices, participants, data1, data2)
