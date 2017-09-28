@@ -5,6 +5,7 @@ function bp(values, measures, shortNames, alg)
 	end
 
 	plotDim = 1:3;
+	measuresToDisplay = 1:8;
 
 	[coeff, score] = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
 
@@ -12,5 +13,5 @@ function bp(values, measures, shortNames, alg)
 	weight = sqrt(dot(coeff(:,plotDim), coeff(:,plotDim), 2));
 	[~, eigOrder] = sort(weight, 'descend');
 
-	biplot(coeff(eigOrder, plotDim), 'scores', score(:, plotDim), 'varlabels', cellstr(shortNames(eigOrder)));
+	biplot(coeff(eigOrder(measuresToDisplay), plotDim), 'scores', score(:, plotDim), 'varlabels', cellstr(shortNames(eigOrder(measuresToDisplay))));
 end
