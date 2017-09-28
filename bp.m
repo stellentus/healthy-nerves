@@ -4,7 +4,7 @@ function bp(values, measures, alg)
 		alg = 'svd';
 	end
 
-	plotDim = 1:3;
+	plotStart = 1; plotDim = plotStart:(plotStart+2);
 	measuresToDisplay = 1:8;
 
 	[coeff, score] = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
