@@ -13,5 +13,5 @@ function bp(values, measures, shortNames, alg)
 	weight = sqrt(dot(coeff(:,plotDim), coeff(:,plotDim), 2));
 	[~, eigOrder] = sort(weight, 'descend');
 
-	biplot(coeff(eigOrder(measuresToDisplay), plotDim), 'scores', score(:, plotDim), 'varlabels', cellstr(shortNames(eigOrder(measuresToDisplay))));
+	biplot(coeff(eigOrder(measuresToDisplay), plotDim), 'scores', score(:, plotDim), 'varlabels', cellstr(measures(eigOrder(measuresToDisplay))));
 end
