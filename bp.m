@@ -7,5 +7,10 @@ function bp(values, measures, shortNames, alg)
 	plotDim = 1:3;
 
 	[coeff, score] = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
-	biplot(coeff(:, plotDim), 'scores', score(:, plotDim), 'varlabels', cellstr(shortNames));
+
+	% Sort the coefficents by the longest
+	weight = sqrt(dot(coeff(:,plotDim), coeff(:,plotDim), 2));
+	[~, eigOrder] = sort(weight, 'descend');
+
+	biplot(coeff(eigOrder, plotDim), 'scores', score(:, plotDim), 'varlabels', cellstr(shortNames(eigOrder)));
 end
