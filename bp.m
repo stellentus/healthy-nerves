@@ -11,7 +11,8 @@ function bp(values, measures, shortNames, alg)
 
 	% Sort the coefficents by the longest
 	weight = sqrt(dot(coeff(:,plotDim), coeff(:,plotDim), 2));
-	[~, eigOrder] = sort(weight, 'descend');
+	[~, corder] = sort(weight, 'descend'); % Order the indices to display
+	cdisp = corder(measuresToDisplay); % Get the indices to display, in order
 
-	biplot(coeff(eigOrder(measuresToDisplay), plotDim), 'scores', score(:, plotDim), 'varlabels', cellstr(measures(eigOrder(measuresToDisplay))));
+	biplot(coeff(cdisp, plotDim), 'scores', score(:, plotDim), 'varlabels', cellstr(measures(cdisp)));
 end
