@@ -1,5 +1,5 @@
 % analyze runs an analysis on the data
-function [values, participants, measures, shortNames] = analyze(dataType, deleteNaN, plotType)
+function [values, participants, measures] = analyze(dataType, deleteNaN, plotType)
 	if nargin < 1
 		dataType = 'all';
 	end
@@ -8,35 +8,35 @@ function [values, participants, measures, shortNames] = analyze(dataType, delete
 		deleteNaN = true;
 	end
 
-	[values, participants, measures, shortNames] = loadData(dataType, deleteNaN);
+	[values, participants, measures] = loadData(dataType, deleteNaN);
 
 	% Only plot if a type was provided
 	if nargin == 3 && ~strcmp(plotType, 'none')
-		bp(values, measures, shortNames, plotType);
+		bp(values, measures, plotType);
 	end
 end
 
 % loadData loads the CP data, median data, or both
-function [values, participants, measures, shortNames] = loadData(dataType, shouldDeleteNaN)
+function [values, participants, measures] = loadData(dataType, shouldDeleteNaN)
 	switch dataType
 		case 'all'
 			[participants, measures, cData, mData, uniqueMeasures] = importExcel('data/CPrepeatedmeasures.xlsx', 'data/MedianRepeatedmeasures.xlsx');
 			if shouldDeleteNaN
-				[values, participants, measures, shortNames] = deleteNaN(participants, measures, cData, mData, uniqueMeasures);
+				[values, participants, measures] = deleteNaN(participants, measures, cData, mData, uniqueMeasures);
 			else
-				[values, measures, shortNames] = combineDatasets(measures, cData, 'CP', mData, 'Median', uniqueMeasures);
+				[values, measures] = combineDatasets(measures, cData, 'CP', mData, 'Median', uniqueMeasures);
 			end
 
 		case 'cp'
 			[participants, measures, values] = importExcel('data/CPrepeatedmeasures.xlsx');
 			if shouldDeleteNaN
-				[values, participants, measures, shortNames] = deleteNaN(participants, measures, values);
+				[values, participants, measures] = deleteNaN(participants, measures, values);
 			end
 
 		case 'median'
 			[participants, measures, values] = importExcel('data/MedianRepeatedmeasures.xlsx');
 			if shouldDeleteNaN
-				[values, participants, measures, shortNames] = deleteNaN(participants, measures, values);
+				[values, participants, measures] = deleteNaN(participants, measures, values);
 			end
 
         otherwise

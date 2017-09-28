@@ -1,12 +1,11 @@
 % deleteNaN deletes all NaN rows
-function [values, participants, measures, shortNames] = deleteNaN(participants, measures, data1, data2, uniqueMeasures)
+function [values, participants, measures] = deleteNaN(participants, measures, data1, data2, uniqueMeasures)
 	if nargin == 3
 		% Handle missing data by deleting NaN rows
 		indices = rowsWithNaN(participants, data1);
 		[participants, data1] = deleteRows(indices, participants, data1);
 		clear indices;
 
-		shortNames = shortenNames(measures);
 		values = data1;
 	else
 		% Handle missing data by deleting NaN rows
@@ -17,7 +16,7 @@ function [values, participants, measures, shortNames] = deleteNaN(participants, 
 		correlations(measures, data1Matched, data2Matched);
 
 		% Combine the arm and leg data into one dataset
-		[values, measures, shortNames] = combineDatasets(measures, data1Matched, 'CP', data2Matched, 'Median', uniqueMeasures);
+		[values, measures] = combineDatasets(measures, data1Matched, 'CP', data2Matched, 'Median', uniqueMeasures);
 	end
 end
 

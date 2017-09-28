@@ -1,5 +1,5 @@
 % bp creates biplots
-function bp(values, measures, shortNames, alg)
+function bp(values, measures, alg)
 	if nargin < 4
 		alg = 'svd';
 	end
