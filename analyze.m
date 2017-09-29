@@ -17,13 +17,10 @@ function [values, participants, measures] = analyze(dataType, deleteNaN, plotTyp
 	% Only plot if a type was provided
 	if nargin >= 3
 	    switch plotType
-			case 'none'
-				% Do nothing
 			case 'dist'
 				% Print number of STD from mean
 				stdDist(values, participants, alg);
-			otherwise
-				% Assume a valid bp algorithm was given
+			case 'biplot'
 				bp(values, measures, alg);
 	    end
 	end
