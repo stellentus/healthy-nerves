@@ -19,6 +19,9 @@ function [values, participants, measures] = analyze(dataType, deleteNaN, plotTyp
 	    switch plotType
 			case 'none'
 				% Do nothing
+			case 'dist'
+				% Print number of STD from mean
+				stdDist(values, participants, alg);
 			otherwise
 				% Assume a valid bp algorithm was given
 				bp(values, measures, alg);
