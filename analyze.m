@@ -1,5 +1,5 @@
 % analyze runs an analysis on the data
-function [values, participants, measures] = analyze(dataType, deleteNaN, plotType)
+function [values, participants, measures] = analyze(dataType, deleteNaN, plotType, alg)
 	if nargin < 1
 		dataType = 'all';
 	end
@@ -10,9 +10,19 @@ function [values, participants, measures] = analyze(dataType, deleteNaN, plotTyp
 
 	[values, participants, measures] = loadData(dataType, deleteNaN);
 
+	if nargin < 4
+		alg = 'svd';
+	end
+
 	% Only plot if a type was provided
-	if nargin == 3 && ~strcmp(plotType, 'none')
-		bp(values, measures, plotType);
+	if nargin >= 3
+	    switch plotType
+			case 'none'
+				% Do nothing
+			otherwise
+				% Assume a valid bp algorithm was given
+				bp(values, measures, alg);
+	    end
 	end
 end
 
