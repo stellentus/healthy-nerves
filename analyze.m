@@ -39,7 +39,7 @@ function [values, participants, measures] = loadData(dataType, shouldDeleteNaN)
 				[values, participants, measures] = deleteNaN(participants, measures, values);
 			end
 
-        otherwise
+		otherwise
 			disp('ERROR: data type must be one of ''all'', ''cp'', or ''median''.');
 	end
 end
