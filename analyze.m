@@ -16,6 +16,7 @@ function [values, participants, measures] = analyze(dataType, deleteNaN, plotTyp
 
 	% Only plot if a type was provided
 	if nargin >= 3
+		figure;
 		[coeff, score] = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
 
 	    switch plotType
