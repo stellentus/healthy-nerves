@@ -15,6 +15,12 @@ function [values, participants, measures] = loadData(dataType, shouldDeleteNaN)
 		case 'median'
 			[values, participants, measures] = loadSingle('data/MedianRepeatedmeasures.xlsx', shouldDeleteNaN);
 
+		case 'cpSCI'
+			[values, participants, measures] = loadSingle('data/SCI_CP.xlsx', shouldDeleteNaN);
+
+		case 'medianSCI'
+			[values, participants, measures] = loadSingle('data/All_MN_SCI.xlsx', shouldDeleteNaN);
+
 		otherwise
 			disp('ERROR: data type must be one of ''all'', ''cp'', or ''median''.');
 	end
