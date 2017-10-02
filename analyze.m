@@ -25,6 +25,18 @@ function [values, participants, measures] = analyze(dataType, deleteNaN, plotTyp
 				stdDist(length(measures), score, participants, true);
 			case 'biplot'
 				bp(coeff, score, measures);
+			case 'cross'
+				dataRef = '';
+				switch dataType
+					case 'cp'
+						dataRef = 'median';
+					case 'median'
+						dataRef = 'cp';
+					otherwise
+						disp('ERROR: data type must be ''cp'' or ''median''.');
+				end
+				[valuesRef, participantsRef] = loadData(dataRef, deleteNaN);
+				crosswiseBP(valuesRef, values, measures, participantsRef, participants, alg);
 	    end
 	end
 end
