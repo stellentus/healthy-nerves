@@ -1,6 +1,6 @@
 % stdDist determines how far a point is from the mean
 % dim is the number of measures
-function stdDist(dim, score, participants)
+function stdDist(dim, score, participants, printData)
 	len = dot(score, score, 2); % a column vector holding the length of each point
 	probability = chi2cdf(len, dim);
 
@@ -15,7 +15,9 @@ function stdDist(dim, score, participants)
 		end
 	end
 
-	disp([participants sForP len probability]);
+	if nargin > 3 && printData
+		disp([participants sForP len probability]);
+	end
 	histogram(sForP);
 end
 
