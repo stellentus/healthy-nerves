@@ -16,12 +16,14 @@ function [values, participants, measures] = analyze(dataType, deleteNaN, plotTyp
 
 	% Only plot if a type was provided
 	if nargin >= 3
+		[coeff, score] = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
+
 	    switch plotType
 			case 'dist'
 				% Print number of STD from mean
-				stdDist(values, participants, alg);
+				stdDist(coeff, score, participants);
 			case 'biplot'
-				bp(values, measures, alg);
+				bp(coeff, score, measures);
 	    end
 	end
 end

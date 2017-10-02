@@ -1,11 +1,5 @@
 % stdDist determines how far a point is from the mean
-function stdDist(values, participants, alg)
-	if nargin < 3
-		alg = 'svd';
-	end
-
-	[coeff, score] = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
-
+function stdDist(coeff, score, participants)
 	len = dot(score, score, 2); % a column vector holding the length of each point
 	probability = chi2cdf(len, length(coeff));
 

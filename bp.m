@@ -1,13 +1,7 @@
 % bp creates biplots
-function bp(values, measures, alg)
-	if nargin < 4
-		alg = 'svd';
-	end
-
+function bp(coeff, score, measures)
 	plotStart = 1; plotDim = plotStart:(plotStart+2);
 	measuresToDisplay = 1:8;
-
-	[coeff, score] = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
 
 	% Sort the coefficents by the longest
 	weight = sqrt(dot(coeff(:,plotDim), coeff(:,plotDim), 2));
