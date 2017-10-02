@@ -37,6 +37,18 @@ function [values, participants, measures] = analyze(dataType, deleteNaN, plotTyp
 				end
 				[valuesProj, participantsProj] = loadData(dataProj, deleteNaN);
 				crosswiseBP(values, valuesProj, measures, participants, participantsProj, alg);
+			case 'line'
+				dataProj = '';
+				switch dataType
+					case 'cp'
+						dataProj = 'median';
+					case 'median'
+						dataProj = 'cp';
+					otherwise
+						disp('ERROR: data type must be ''cp'' or ''median''.');
+				end
+				[valuesProj, participantsProj] = loadData(dataProj, deleteNaN);
+				lineCross(values, valuesProj, participants, participantsProj, alg);
 	    end
 	end
 end
