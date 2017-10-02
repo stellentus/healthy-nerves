@@ -10,18 +10,19 @@ function [values, participants, measures] = loadData(dataType, shouldDeleteNaN)
 			end
 
 		case 'cp'
-			[participants, measures, values] = importExcel('data/CPrepeatedmeasures.xlsx');
-			if shouldDeleteNaN
-				[values, participants, measures] = deleteNaN(participants, measures, values);
-			end
+			[values, participants, measures] = loadSingle('data/CPrepeatedmeasures.xlsx', shouldDeleteNaN);
 
 		case 'median'
-			[participants, measures, values] = importExcel('data/MedianRepeatedmeasures.xlsx');
-			if shouldDeleteNaN
-				[values, participants, measures] = deleteNaN(participants, measures, values);
-			end
+			[values, participants, measures] = loadSingle('data/MedianRepeatedmeasures.xlsx', shouldDeleteNaN);
 
 		otherwise
 			disp('ERROR: data type must be one of ''all'', ''cp'', or ''median''.');
+	end
+end
+
+function [values, participants, measures] = loadSingle(filename, shouldDeleteNaN)
+	[participants, measures, values] = importExcel(filename);
+	if shouldDeleteNaN
+		[values, participants, measures] = deleteNaN(participants, measures, values);
 	end
 end
