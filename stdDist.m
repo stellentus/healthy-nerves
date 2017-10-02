@@ -1,7 +1,8 @@
 % stdDist determines how far a point is from the mean
-function stdDist(coeff, score, participants)
+% dim is the number of measures
+function stdDist(dim, score, participants)
 	len = dot(score, score, 2); % a column vector holding the length of each point
-	probability = chi2cdf(len, length(coeff));
+	probability = chi2cdf(len, dim);
 
 	stds = getSTD();
 	sForP(1:length(participants), :) =  NaN;

@@ -21,7 +21,7 @@ function [values, participants, measures] = analyze(dataType, deleteNaN, plotTyp
 	    switch plotType
 			case 'dist'
 				% Print number of STD from mean
-				stdDist(coeff, score, participants);
+				stdDist(length(measures), score, participants);
 			case 'biplot'
 				bp(coeff, score, measures);
 	    end
