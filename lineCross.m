@@ -23,15 +23,7 @@ function coefforthRef = lineCross(valuesRef, valuesProj, participantsRef, partic
 
 		% Make sure a match was actually found before plotting
 		if strcmp(participantsRef(r), participantsProj(p))
-			Make a short vector with some test data to figure out what's plotting wrong in 3D
-			x = [scoreRef(r,1), scoreProj(p,1)];
-			y = [scoreRef(r,2), scoreProj(p,2)];
-			z = [scoreRef(r,3), scoreProj(p,3)];
-			plot3(x, y, z, '-*');
+			plot(scoreRef(r,1:2), scoreProj(p,1:2), '-*');
 		end
 	end
-
-	xlabel('Component 1');
-	ylabel('Component 2');
-	zlabel('Component 3');
 end
