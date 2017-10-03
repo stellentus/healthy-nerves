@@ -69,6 +69,7 @@ Or try plotting the healthy CP vs healthy median to see if they form two cluster
 * Use the first 5 or 15 PCs to get a measure that captures 85% of the variance. Use it to construct a score. How? Linear combination? Figure out something better? How?
 * Create a "nerve health" form. We could requisition tests for median and CP, but are all of these measurements necessary, or are some highly correlated? Show many are correlated. What about cross-limb correlation (i.e. correlate A in median to A in CP)? And cross-limb correlation correlation (i.e. if A and B are correlated in median but not in CP)?
 * Combine PCs into a single number? Perhaps find the 5-dimensional hyper-ellipsoid that encompasses the data with various confidence intervals. Is the data spherical? I think it is because I'm using correlations instead of covariances.
+* Look at which specific weights are different in PC1 between median and CP.
 
 ## Notes
 
