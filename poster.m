@@ -26,7 +26,8 @@ function poster(dataType)
 	primaryWeights(nameArm, valuesArm, measuresArm);
 	graphVariance(nameLeg, valuesLeg, nameArm, valuesArm);
 	ladderPlot(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm);
-	sciClustering(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm, valuesLegSCI);
+	sciClustering(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm, valuesLegSCI, 1);
+	sciClustering(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm, valuesLegSCI, 21);
 
 	rmpath poster;
 end

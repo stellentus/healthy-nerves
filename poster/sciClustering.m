@@ -1,6 +1,7 @@
 % sciClustering attempts to print clustered SCI results
-function sciClustering(name1, values1, participants1, name2, values2, participants2, valuesSCI)
+function sciClustering(name1, values1, participants1, name2, values2, participants2, valuesSCI, component)
 	alg = 'svd';
+	components = component:component+1;
 
 	[coeff1, score1] = pca(values1, 'VariableWeights', 'variance', 'algorithm', alg);
 
@@ -13,9 +14,9 @@ function sciClustering(name1, values1, participants1, name2, values2, participan
 	hold on;
 
 	for i = 1:length(ind1)
-		plot(score1(i,1:2), score2(i,1:2), '-*');
+		plot(score1(i,components), score2(i,components), '-*');
 	end
 
 	scoreSCI = zscore(valuesSCI)*coefforth1;
-	plot(scoreSCI(:,1:2), 'xk');
+	plot(scoreSCI(:,components), 'xk');
 end
