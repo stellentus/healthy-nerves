@@ -13,9 +13,32 @@ function graphVariance(dataType)
 		explained(i) = explained(i-1) + explained(i);
 	end
 
-	plot([0:length(explained)], [0; explained]); % Plot with (0,0)
+	figure;
+	hold on;
+
+	% Plot data with (0,0)
+	plot([0:length(explained)], [0; explained]);
+
+	% Add labels and set axis
 	xlabel('Number of Factors');
 	ylabel('Variance Accounted For (%)');
 	title('Variance Accounted for By Factors (Leg)');
 	axis([0 length(explained) 0 100]);
+
+	% Add lines at 70 and 85
+	plotLines(explained, 69.5);
+	plotLines(explained, 84.5);
 end
+
+function plotLines(explained, val)
+	fct = factorAboveValue(explained, val);
+	plot([fct, fct], [0 explained(fct)]);
+	h = plot([0, fct], [explained(fct) explained(fct)]);
+	label(h, sprintf('%d factors: %.0f%%', fct, explained(fct)));
+end
+
+function factor = factorAboveValue(explained, val)
+	indices = find(explained > val);
+	factor = indices(1);
+end
+
