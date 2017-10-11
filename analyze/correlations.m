@@ -13,6 +13,6 @@ function correlations(measures, cDataMatched, mDataMatched)
 	if isempty(corMeas)
 		disp('No measures are correlated between the datasets.')
 	else
-		disp('The following measures are correlated between the datasets: ' + strjoin(corMeas, ', ') + '.');
+		disp(sprintf('The following %d measures are correlated between the datasets: ', length(corMeas)) + strjoin(corMeas, ', ') + '.');
 	end
 end
