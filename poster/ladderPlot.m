@@ -13,16 +13,7 @@ function ladderPlot(name1, values1, participants1, name2, values2, participants2
 	score2 = score2(ind2, component);
 
 	figure;
-	hold on;
-
-	plot(ones(length(score1)), score1, '.r');
-	plot(2*ones(length(score2)), score2, '.b');
-
-	for i = 1:length(score1)
-		plot([1 2], [score1(i) score2(i)], 'k');
-	end
-
-	axis([0 3 -9 11]);
+	plotLadder(score1, score2);
 end
 
 function [ind1, ind2] = commonIndices(participants1, participants2)
@@ -45,4 +36,17 @@ function [ind1, ind2] = commonIndices(participants1, participants2)
 			ind2 = [ind2 i2];
 		end
 	end
+end
+
+function plotLadder(data1, data2)
+	hold on;
+
+	plot(ones(length(data1)), data1, '.r');
+	plot(2*ones(length(data2)), data2, '.b');
+
+	for i = 1:length(data1)
+		plot([1 2], [data1(i) data2(i)], 'k');
+	end
+
+	axis([0 3 -9 11]);
 end
