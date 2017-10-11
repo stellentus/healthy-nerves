@@ -8,7 +8,7 @@ function primaryWeights(name, values, measures)
 	measuresToDisplay = 6;
 
 	% Sort the coefficents by the longest
-	weight = sqrt(dot(coeff, coeff, 2));
+	weight = sqrt(dot(coeff(:,1), coeff(:,1), 2));
 	[~, corder] = sort(weight, 'descend'); % Order the indices to display
 	cdisp = corder(1:measuresToDisplay); % Get the indices to display, in order
 	mdisp = measures(cdisp); % Get the measures to display, in order
