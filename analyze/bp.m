@@ -4,7 +4,7 @@ function bp(coeff, score, measures)
 	measuresToDisplay = 1:8;
 
 	% Sort the coefficents by the longest
-	weight = sqrt(dot(coeff, coeff, 2));
+	weight = sqrt(dot(coeff(:,plotDim), coeff(:,plotDim), 2));
 	[~, corder] = sort(weight, 'descend'); % Order the indices to display
 	cdisp = corder(measuresToDisplay); % Get the indices to display, in order
 
