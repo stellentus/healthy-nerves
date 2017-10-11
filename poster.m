@@ -23,7 +23,7 @@ function poster(dataType)
 	primaryWeights(name1, values1, measures1);
 	primaryWeights(name2, values2, measures2);
 	graphVariance(name1, values1, name2, values2);
-	ladderPlot(name1, values1, participants1, name2, values2, participants2, 1);
+	ladderPlot(name1, values1, participants1, name2, values2, participants2);
 
 	rmpath poster;
 end

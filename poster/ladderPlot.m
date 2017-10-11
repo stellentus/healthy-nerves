@@ -1,19 +1,27 @@
-% ladderPlot plots a ladder for the given component
-function ladderPlot(name1, values1, participants1, name2, values2, participants2, component)
+% ladderPlot plots a ladder for 6 components
+function ladderPlot(name1, values1, participants1, name2, values2, participants2)
 	alg = 'svd';
 
-	[coeff1, score1] = pca(values1, 'VariableWeights', 'variance', 'algorithm', alg);
+	[coeff1, scores1] = pca(values1, 'VariableWeights', 'variance', 'algorithm', alg);
 
 	coefforth1 = inv(diag(std(values1)))*coeff1;
-	score2 = zscore(values2)*coefforth1;
+	scores2 = zscore(values2)*coefforth1;
 
 	[ind1, ind2] = commonIndices(participants1, participants2);
 
-	score1 = score1(ind1, component);
-	score2 = score2(ind2, component);
+	scores1 = scores1(ind1, :);
+	scores2 = scores2(ind2, :);
 
 	figure;
-	plotLadder(score1, name1, score2, name2);
+
+	for i = 1:6
+		subplot(3, 2, i);
+		plotLadder(scores1(:, i), name1, scores2(:, i), name2);
+	end
+
+	ax=axes('Units', 'Normal', 'Position', [.075 .075 .85 .85], 'Visible', 'off', 'FontSize', 18);
+	set(get(ax, 'Title'), 'Visible', 'on');
+	title('Arm/Leg Correlations in the First 6 Factors');
 end
 
 function [ind1, ind2] = commonIndices(participants1, participants2)
