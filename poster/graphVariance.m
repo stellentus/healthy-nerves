@@ -6,8 +6,11 @@ function graphVariance()
 	figure;
 	hold on;
 
-	lenArm = graphOneVariance('arm', '-', deleteNaN, alg);
-	lenLeg = graphOneVariance('leg', '--', deleteNaN, alg);
+	[values, ~, ~] = loadData('arm', deleteNaN);
+	lenArm = graphOneVariance(values, 'Arm', '-', deleteNaN, alg);
+
+	[values, ~, ~] = loadData('leg', deleteNaN);
+	lenLeg = graphOneVariance(values, 'Leg', '--', deleteNaN, alg);
 
 	% Add labels and set axis
 	fontSize = 16;
@@ -19,9 +22,7 @@ function graphVariance()
 	legend;
 end
 
-function len = graphOneVariance(dataType, lineType, deleteNaN, alg)
-	[values, ~, ~] = loadData(dataType, deleteNaN);
-
+function len = graphOneVariance(values, name, lineType, deleteNaN, alg)
 	% figure;
 	[~, ~, ~, ~, explained] = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
 	len = length(explained);
@@ -32,8 +33,7 @@ function len = graphOneVariance(dataType, lineType, deleteNaN, alg)
 	end
 
 	% Plot data with (0,0)
-	dataType(1) = upper(dataType(1));
-	plot([0:len], [0; explained], [lineType 'b'], 'DisplayName', dataType);
+	plot([0:len], [0; explained], [lineType 'b'], 'DisplayName', name);
 
 	% Add lines at 70 and 85
 	plotLines(explained, 70, [lineType 'r']);
