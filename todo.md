@@ -85,3 +85,9 @@ Or try plotting the healthy CP vs healthy median to see if they form two cluster
 		[st2,index] = sort(tsquared, 'descend');
 		extreme = index(1);
 		names(extreme,:)
+
+## Steps for Poster
+
+* Go through each portion of the poster and make a first-draft image to get real results into the entire poster
+* Make the requisition form image
+* Improve all of the images
