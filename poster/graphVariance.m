@@ -1,13 +1,12 @@
 % graphVariance plots the variance accounted for by PCA
 function graphVariance(name1, values1, name2, values2)
-	deleteNaN = true;
 	alg = 'svd';
 
 	figure;
 	hold on;
 
-	lenArm = graphOneVariance(values1, name1, '-', deleteNaN, alg);
-	lenLeg = graphOneVariance(values2, name2, '--', deleteNaN, alg);
+	lenArm = graphOneVariance(values1, name1, '-', alg);
+	lenLeg = graphOneVariance(values2, name2, '--', alg);
 
 	% Add labels and set axis
 	fontSize = 16;
@@ -19,7 +18,7 @@ function graphVariance(name1, values1, name2, values2)
 	legend;
 end
 
-function len = graphOneVariance(values, name, lineType, deleteNaN, alg)
+function len = graphOneVariance(values, name, lineType, alg)
 	% figure;
 	[~, ~, ~, ~, explained] = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
 	len = length(explained);
