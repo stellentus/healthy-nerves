@@ -4,26 +4,29 @@ function poster(dataType)
 
 	addpath import;
 
-	name1 = 'Leg';
-	[values1, participants1, measures1] = loadData('leg', deleteNaN);
+	nameLeg = 'Leg';
+	[valuesLeg, participantsLeg, measuresLeg] = loadData('leg', deleteNaN);
 
-	name2 = 'Arm';
-	[values2, participants2, measures2] = loadData('arm', deleteNaN);
+	nameArm = 'Arm';
+	[valuesArm, participantsArm, measuresArm] = loadData('arm', deleteNaN);
 
-	% These variables aren't used; calling loadData('all') prints correlations.
-	name3 = 'All';
-	[values3, participants3, measures3] = loadData('all', deleteNaN);
+	% Load SCI data
+	valuesLegSCI = loadData('armSCI', deleteNaN);
+
+	% Return values aren't used; calling loadData('all') prints correlations.
+	loadData('all', deleteNaN);
 
 	rmpath import;
 
 	addpath poster;
 
-	count(name1, participants1, measures1);
-	count(name2, participants2, measures2);
-	primaryWeights(name1, values1, measures1);
-	primaryWeights(name2, values2, measures2);
-	graphVariance(name1, values1, name2, values2);
-	ladderPlot(name1, values1, participants1, name2, values2, participants2);
+	count(nameLeg, participantsLeg, measuresLeg);
+	count(nameArm, participantsArm, measuresArm);
+	primaryWeights(nameLeg, valuesLeg, measuresLeg);
+	primaryWeights(nameArm, valuesArm, measuresArm);
+	graphVariance(nameLeg, valuesLeg, nameArm, valuesArm);
+	ladderPlot(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm);
+	sciClustering(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm, valuesLegSCI);
 
 	rmpath poster;
 end
