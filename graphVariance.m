@@ -21,9 +21,10 @@ function graphVariance(dataType)
 
 	% Add labels and set axis
 	fontSize = 18;
+	dataType(1) = upper(dataType(1));
 	xlabel('Number of Factors', 'FontSize', fontSize);
 	ylabel('Variance Accounted For (%)', 'FontSize', fontSize);
-	title('Variance Accounted for By Factors (Leg)', 'FontSize', fontSize);
+	title(sprintf('Variance Accounted for By Factors (%s)', dataType), 'FontSize', fontSize);
 	axis([0 length(explained) 0 100]);
 
 	% Add lines at 70 and 85
