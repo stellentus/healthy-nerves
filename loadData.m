@@ -6,23 +6,23 @@ function [values, participants, measures] = loadData(dataType, shouldDeleteNaN)
 			if shouldDeleteNaN
 				[values, participants, measures] = deleteNaN(participants, measures, cData, mData, uniqueMeasures);
 			else
-				[values, measures] = combineDatasets(measures, cData, 'CP', mData, 'Median', uniqueMeasures);
+				[values, measures] = combineDatasets(measures, cData, 'Leg', mData, 'Arm', uniqueMeasures);
 			end
 
-		case 'cp'
+		case 'leg'
 			[values, participants, measures] = loadSingle('data/CPrepeatedmeasures.xlsx', shouldDeleteNaN);
 
-		case 'median'
+		case 'arm'
 			[values, participants, measures] = loadSingle('data/MedianRepeatedmeasures.xlsx', shouldDeleteNaN);
 
-		case 'cpSCI'
+		case 'legSCI'
 			[values, participants, measures] = loadSingle('data/SCI_CP.xlsx', shouldDeleteNaN);
 
-		case 'medianSCI'
+		case 'armSCI'
 			[values, participants, measures] = loadSingle('data/All_MN_SCI.xlsx', shouldDeleteNaN);
 
 		otherwise
-			disp('ERROR: data type must be one of ''all'', ''cp'', or ''median''.');
+			disp('ERROR: data type must be one of ''all'', ''leg'', or ''arm''.');
 	end
 end
 

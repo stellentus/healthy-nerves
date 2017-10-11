@@ -28,24 +28,24 @@ function [values, participants, measures] = analyze(dataType, deleteNaN, plotTyp
 			case 'cross'
 				dataProj = '';
 				switch dataType
-					case 'cp'
-						dataProj = 'median';
-					case 'median'
-						dataProj = 'cp';
+					case 'leg'
+						dataProj = 'arm';
+					case 'arm'
+						dataProj = 'leg';
 					otherwise
-						disp('ERROR: data type must be ''cp'' or ''median''.');
+						disp('ERROR: data type must be ''leg'' or ''arm''.');
 				end
 				[valuesProj, participantsProj] = loadData(dataProj, deleteNaN);
 				crosswiseBP(values, valuesProj, measures, participants, participantsProj, alg);
 			case 'line'
 				dataProj = '';
 				switch dataType
-					case 'cp'
-						dataProj = 'median';
-					case 'median'
-						dataProj = 'cp';
+					case 'leg'
+						dataProj = 'arm';
+					case 'arm'
+						dataProj = 'leg';
 					otherwise
-						disp('ERROR: data type must be ''cp'' or ''median''.');
+						disp('ERROR: data type must be ''leg'' or ''arm''.');
 				end
 				[valuesProj, participantsProj] = loadData(dataProj, deleteNaN);
 				lineCross(values, valuesProj, participants, participantsProj, alg);

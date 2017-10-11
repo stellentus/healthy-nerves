@@ -16,7 +16,7 @@ function [values, participants, measures] = deleteNaN(participants, measures, da
 		correlations(measures, data1Matched, data2Matched);
 
 		% Combine the arm and leg data into one dataset
-		[values, measures] = combineDatasets(measures, data1Matched, 'CP', data2Matched, 'Median', uniqueMeasures);
+		[values, measures] = combineDatasets(measures, data1Matched, 'Leg', data2Matched, 'Arm', uniqueMeasures);
 	end
 end
 

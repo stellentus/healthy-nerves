@@ -1,9 +1,9 @@
 %displaySCI displays a 2D plot with SCI results
 figure;
 
-files = struct('ref', 'median', 'proj', 'cp', 'sci', 'medianSCI');
-if evalin( 'base', 'exist(''nerve'',''var'') == 1' ) && strcmp(nerve, 'cp')
-	files = struct('ref', 'cp', 'proj', 'median', 'sci', 'cpSCI');
+files = struct('ref', 'arm', 'proj', 'leg', 'sci', 'armSCI');
+if evalin( 'base', 'exist(''nerve'',''var'') == 1' ) && strcmp(nerve, 'leg')
+	files = struct('ref', 'leg', 'proj', 'arm', 'sci', 'legSCI');
 end
 
 [valuesRef, participantsRef, measures] = loadData(files.ref, true);

@@ -1,6 +1,6 @@
 % graphVariance plots the variance accounted for by PCA
 function graphVariance()
-	dataType = 'cp';
+	dataType = 'leg';
 	deleteNaN = true;
 	alg = 'svd';
 
