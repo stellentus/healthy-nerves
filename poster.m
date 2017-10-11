@@ -12,7 +12,7 @@ function poster(dataType)
 
 	% These variables aren't used; calling loadData('all') prints correlations.
 	name3 = 'All';
-	[values2, participants2, measures2] = loadData('all', deleteNaN);
+	[values3, participants3, measures3] = loadData('all', deleteNaN);
 
 	rmpath import;
 
