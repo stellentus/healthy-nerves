@@ -15,6 +15,8 @@ function graphVariance()
 	ylabel('Variance Accounted For (%)', 'FontSize', fontSize);
 	title('Variance Accounted for By Factors', 'FontSize', fontSize);
 	axis([0 max([lenArm lenLeg]) 0 100]);
+
+	legend;
 end
 
 function len = graphOneVariance(dataType, lineType, deleteNaN, alg)
@@ -30,7 +32,8 @@ function len = graphOneVariance(dataType, lineType, deleteNaN, alg)
 	end
 
 	% Plot data with (0,0)
-	plot([0:len], [0; explained], [lineType 'b']);
+	dataType(1) = upper(dataType(1));
+	plot([0:len], [0; explained], [lineType 'b'], 'DisplayName', dataType);
 
 	% Add lines at 70 and 85
 	plotLines(explained, 70, [lineType 'r']);
@@ -39,8 +42,12 @@ end
 
 function plotLines(explained, val, linespec)
 	fct = factorAboveValue(explained, val);
-	plot([fct, fct], [0 explained(fct)], linespec);
+
+	h = plot([fct, fct], [0 explained(fct)], linespec);
+	set(get(get(h, 'Annotation'), 'LegendInformation'), 'IconDisplayStyle', 'off');
+
 	h = plot([0, fct], [explained(fct) explained(fct)], linespec);
+	set(get(get(h, 'Annotation'), 'LegendInformation'), 'IconDisplayStyle', 'off');
 	label(h, sprintf('%d factors: %.0f%%', fct, explained(fct)));
 end
 
