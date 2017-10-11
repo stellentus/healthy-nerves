@@ -10,6 +10,10 @@ function poster(dataType)
 	name2 = 'Leg';
 	[values2, participants2, measures2] = loadData('leg', deleteNaN);
 
+	% These variables aren't used; calling loadData('all') prints correlations.
+	name3 = 'All';
+	[values2, participants2, measures2] = loadData('all', deleteNaN);
+
 	rmpath import;
 
 	addpath poster;
