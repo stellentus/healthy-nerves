@@ -17,7 +17,7 @@ function graphVariance(dataType)
 	hold on;
 
 	% Plot data with (0,0)
-	plot([0:length(explained)], [0; explained]);
+	plot([0:length(explained)], [0; explained], 'b');
 
 	% Add labels and set axis
 	fontSize = 18;
@@ -27,14 +27,14 @@ function graphVariance(dataType)
 	axis([0 length(explained) 0 100]);
 
 	% Add lines at 70 and 85
-	plotLines(explained, 69.5);
-	plotLines(explained, 84.5);
+	plotLines(explained, 69.5, 'r');
+	plotLines(explained, 84.5, 'm');
 end
 
-function plotLines(explained, val)
+function plotLines(explained, val, linespec)
 	fct = factorAboveValue(explained, val);
-	plot([fct, fct], [0 explained(fct)]);
-	h = plot([0, fct], [explained(fct) explained(fct)]);
+	plot([fct, fct], [0 explained(fct)], linespec);
+	h = plot([0, fct], [explained(fct) explained(fct)], linespec);
 	label(h, sprintf('%d factors: %.0f%%', fct, explained(fct)));
 end
 
