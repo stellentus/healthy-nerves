@@ -20,9 +20,9 @@ function graphVariance(dataType)
 	plot([0:length(explained)], [0; explained], 'b');
 
 	% Add labels and set axis
-	fontSize = 18;
+	fontSize = 16;
 	dataType(1) = upper(dataType(1));
-	xlabel('Number of Factors', 'FontSize', fontSize);
+	xlabel('Number of Factors', 'FontSize', fontSize+2);
 	ylabel('Variance Accounted For (%)', 'FontSize', fontSize);
 	title(sprintf('Variance Accounted for By Factors (%s)', dataType), 'FontSize', fontSize);
 	axis([0 length(explained) 0 100]);
