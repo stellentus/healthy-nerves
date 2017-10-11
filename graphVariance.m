@@ -6,8 +6,8 @@ function graphVariance()
 	figure;
 	hold on;
 
-	lenArm = graphOneVariance('arm', deleteNaN, alg);
-	lenLeg = graphOneVariance('leg', deleteNaN, alg);
+	lenArm = graphOneVariance('arm', '-', deleteNaN, alg);
+	lenLeg = graphOneVariance('leg', '--', deleteNaN, alg);
 
 	% Add labels and set axis
 	fontSize = 16;
@@ -17,7 +17,7 @@ function graphVariance()
 	axis([0 max([lenArm lenLeg]) 0 100]);
 end
 
-function len = graphOneVariance(dataType, deleteNaN, alg)
+function len = graphOneVariance(dataType, lineType, deleteNaN, alg)
 	[values, participants, measures] = loadData(dataType, deleteNaN);
 
 	% figure;
@@ -30,11 +30,11 @@ function len = graphOneVariance(dataType, deleteNaN, alg)
 	end
 
 	% Plot data with (0,0)
-	plot([0:len], [0; explained], 'b');
+	plot([0:len], [0; explained], [lineType 'b']);
 
 	% Add lines at 70 and 85
-	plotLines(explained, 69.5, 'r');
-	plotLines(explained, 84.5, 'm');
+	plotLines(explained, 70, [lineType 'r']);
+	plotLines(explained, 85, [lineType 'm']);
 end
 
 function plotLines(explained, val, linespec)
