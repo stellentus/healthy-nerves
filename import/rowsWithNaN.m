@@ -18,8 +18,4 @@ function [indices] = rowsWithNaN(participant, data1, data2)
 			deletions = [deletions; participant(i)];
 		end
 	end
-
-	if ~isempty(deletions)
-		disp('Deleting participants "' + strjoin(deletions, ', ') + '" because one of the data points is missing.');
-	end
 end
