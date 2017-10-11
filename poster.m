@@ -4,11 +4,11 @@ function poster(dataType)
 
 	addpath import;
 
-	name1 = 'Arm';
-	[values1, participants1, measures1] = loadData('arm', deleteNaN);
+	name1 = 'Leg';
+	[values1, participants1, measures1] = loadData('leg', deleteNaN);
 
-	name2 = 'Leg';
-	[values2, participants2, measures2] = loadData('leg', deleteNaN);
+	name2 = 'Arm';
+	[values2, participants2, measures2] = loadData('arm', deleteNaN);
 
 	% These variables aren't used; calling loadData('all') prints correlations.
 	name3 = 'All';
