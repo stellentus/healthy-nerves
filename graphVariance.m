@@ -1,0 +1,25 @@
+% graphVariance plots the variance accounted for by PCA
+function graphVariance()
+	dataType = 'cp';
+	deleteNaN = true;
+	alg = 'svd';
+
+	[values, participants, measures] = loadData(dataType, deleteNaN);
+
+	% figure;
+	[~, ~, ~, ~, explained] = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
+
+	% 0% is accounted for by 0 factors
+	explained = [0; explained];
+
+	% Turn it into a cumulative graph
+	for i = 2:length(explained)
+		explained(i) = explained(i-1) + explained(i);
+	end
+
+	plot([0:length(explained)-1], explained);
+	xlabel('Number of Factors');
+	ylabel('Variance Accounted For (%)');
+	title('Variance Accounted for By Factors (Arm)');
+	axis([0 length(explained) 0 100]);
+end
