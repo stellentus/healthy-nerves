@@ -17,6 +17,6 @@ function graphVariance()
 	plot([0:length(explained)], [0; explained]); % Plot with (0,0)
 	xlabel('Number of Factors');
 	ylabel('Variance Accounted For (%)');
-	title('Variance Accounted for By Factors (Arm)');
+	title('Variance Accounted for By Factors (Leg)');
 	axis([0 length(explained) 0 100]);
 end
