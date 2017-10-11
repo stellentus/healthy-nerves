@@ -6,7 +6,7 @@ if evalin( 'base', 'exist(''nerve'',''var'') == 1' ) && strcmp(nerve, 'leg')
 	files = struct('ref', 'leg', 'proj', 'arm', 'sci', 'legSCI');
 end
 
-[valuesRef, participantsRef, measures] = loadData(files.ref, true);
+[valuesRef, participantsRef] = loadData(files.ref, true);
 [valuesProj, participantsProj] = loadData(files.proj, true);
 
 coefforthRef = lineCross(valuesRef, valuesProj, participantsRef, participantsProj);
