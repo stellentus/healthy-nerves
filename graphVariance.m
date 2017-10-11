@@ -9,15 +9,12 @@ function graphVariance()
 	% figure;
 	[~, ~, ~, ~, explained] = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
 
-	% 0% is accounted for by 0 factors
-	explained = [0; explained];
-
 	% Turn it into a cumulative graph
 	for i = 2:length(explained)
 		explained(i) = explained(i-1) + explained(i);
 	end
 
-	plot([0:length(explained)-1], explained);
+	plot([0:length(explained)], [0; explained]); % Plot with (0,0)
 	xlabel('Number of Factors');
 	ylabel('Variance Accounted For (%)');
 	title('Variance Accounted for By Factors (Arm)');
