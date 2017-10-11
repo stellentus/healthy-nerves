@@ -7,14 +7,27 @@ function ladderPlot(name1, values1, participants1, name2, values2, participants2
 	coefforth1 = inv(diag(std(values1)))*coeff1;
 	score2 = zscore(values2)*coefforth1;
 
-	score1 = score1(:, component);
-	score2 = score2(:, component);
+	[ind1, ind2] = commonIndices(participants1, participants2);
+
+	score1 = score1(ind1, component);
+	score2 = score2(ind2, component);
 
 	figure;
 	hold on;
 
 	plot(ones(length(score1)), score1, '.r');
 	plot(2*ones(length(score2)), score2, '.b');
+
+	for i = 1:length(score1)
+		plot([1 2], [score1(i) score2(i)], 'k');
+	end
+
+	axis([0 3 -9 11]);
+end
+
+function [ind1, ind2] = commonIndices(participants1, participants2)
+	ind1 = [];
+	ind2 = [];
 
 	p = 1;
 	for i1 = 1:length(participants1)
@@ -28,9 +41,8 @@ function ladderPlot(name1, values1, participants1, name2, values2, participants2
 
 		% Make sure a match was actually found before plotting
 		if strcmp(participants1(i1), participants2(p))
-			plot([1 2], [score1(i1) score2(i2)], 'k');
+			ind1 = [ind1 i1];
+			ind2 = [ind2 i2];
 		end
 	end
-
-	axis([0 3 -9 11]);
 end
