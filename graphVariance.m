@@ -1,31 +1,36 @@
 % graphVariance plots the variance accounted for by PCA
-function graphVariance(dataType)
+function graphVariance()
 	deleteNaN = true;
 	alg = 'svd';
-
-	[values, participants, measures] = loadData(dataType, deleteNaN);
-
-	% figure;
-	[~, ~, ~, ~, explained] = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
-
-	% Turn it into a cumulative graph
-	for i = 2:length(explained)
-		explained(i) = explained(i-1) + explained(i);
-	end
 
 	figure;
 	hold on;
 
-	% Plot data with (0,0)
-	plot([0:length(explained)], [0; explained], 'b');
+	lenArm = graphOneVariance('arm', deleteNaN, alg);
+	lenLeg = graphOneVariance('leg', deleteNaN, alg);
 
 	% Add labels and set axis
 	fontSize = 16;
-	dataType(1) = upper(dataType(1));
 	xlabel('Number of Factors', 'FontSize', fontSize+2);
 	ylabel('Variance Accounted For (%)', 'FontSize', fontSize);
-	title(sprintf('Variance Accounted for By Factors (%s)', dataType), 'FontSize', fontSize);
-	axis([0 length(explained) 0 100]);
+	title('Variance Accounted for By Factors', 'FontSize', fontSize);
+	axis([0 max([lenArm lenLeg]) 0 100]);
+end
+
+function len = graphOneVariance(dataType, deleteNaN, alg)
+	[values, participants, measures] = loadData(dataType, deleteNaN);
+
+	% figure;
+	[~, ~, ~, ~, explained] = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
+	len = length(explained);
+
+	% Turn it into a cumulative graph
+	for i = 2:len
+		explained(i) = explained(i-1) + explained(i);
+	end
+
+	% Plot data with (0,0)
+	plot([0:len], [0; explained], 'b');
 
 	% Add lines at 70 and 85
 	plotLines(explained, 69.5, 'r');
