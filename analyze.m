@@ -8,6 +8,7 @@ function [values, participants, measures] = analyze(dataType, deleteNaN, plotTyp
 		deleteNaN = true;
 	end
 
+	addpath import;
 	[values, participants, measures] = loadData(dataType, deleteNaN);
 
 	if nargin < 4
@@ -18,6 +19,8 @@ function [values, participants, measures] = analyze(dataType, deleteNaN, plotTyp
 	if nargin >= 3
 		figure;
 		[coeff, score] = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
+
+		addpath analyze;
 
 	    switch plotType
 			case 'dist'
@@ -50,5 +53,9 @@ function [values, participants, measures] = analyze(dataType, deleteNaN, plotTyp
 				[valuesProj, participantsProj] = loadData(dataProj, deleteNaN);
 				lineCross(values, valuesProj, participants, participantsProj, alg);
 	    end
+
+		rmpath analyze;
 	end
+
+	rmpath import;
 end
