@@ -20,7 +20,7 @@ function graphVariance()
 end
 
 function len = graphOneVariance(dataType, lineType, deleteNaN, alg)
-	[values, participants, measures] = loadData(dataType, deleteNaN);
+	[values, ~, ~] = loadData(dataType, deleteNaN);
 
 	% figure;
 	[~, ~, ~, ~, explained] = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
