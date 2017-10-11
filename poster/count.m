@@ -1,12 +1,7 @@
 % count prints the number of remaining participants.
-function count(dataType)
-	deleteNaN = true;
-
-	[~, participants, measures] = loadData('arm', deleteNaN);
-	countOne('Arm', participants, measures);
-
-	[~, participants, measures] = loadData('leg', deleteNaN);
-	countOne('Leg', participants, measures);
+function count(name1, participants1, measures1, name2, participants2, measures2)
+	countOne(name1, participants1, measures1);
+	countOne(name2, participants2, measures2);
 end
 
 function countOne(displayName, participants, measures)
