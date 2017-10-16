@@ -51,7 +51,7 @@ function [values, participants, measures] = analyze(dataType, deleteNaN, plotTyp
 						disp('ERROR: data type must be ''leg'' or ''arm''.');
 				end
 				[valuesProj, participantsProj] = loadData(dataProj, deleteNaN);
-				lineCross(values, valuesProj, participants, participantsProj, alg);
+				lineCross(values, valuesProj, participants, participantsProj, 1, alg);
 	    end
 
 		rmpath analyze;
