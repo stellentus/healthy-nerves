@@ -1,7 +1,7 @@
 % lineCross creates a plot with a second dataset projected onto the
 % first's principal components, with lines between datasets.
-function coefforthRef = lineCross(valuesRef, valuesProj, participantsRef, participantsProj, alg)
-	if nargin < 5
+function coefforthRef = lineCross(valuesRef, valuesProj, participantsRef, participantsProj, component, alg)
+	if nargin < 6
 		alg = 'svd';
 	end
 
@@ -9,6 +9,9 @@ function coefforthRef = lineCross(valuesRef, valuesProj, participantsRef, partic
 
 	coefforthRef = inv(diag(std(valuesRef)))*coeffRef;
 	scoreProj = zscore(valuesProj)*coefforthRef;
+
+	colors = get(gca,'colororder');
+	colorMod = length(colors);
 
 	hold on;
 	p = 1;
@@ -23,7 +26,10 @@ function coefforthRef = lineCross(valuesRef, valuesProj, participantsRef, partic
 
 		% Make sure a match was actually found before plotting
 		if strcmp(participantsRef(r), participantsProj(p))
-			plot(scoreRef(r,1:2), scoreProj(p,1:2), '-*');
+			color = colors(mod(r, colorMod)+1, :);
+			plot([scoreRef(r,component) scoreProj(p,component)], [scoreRef(r,component+1) scoreProj(p,component+1)], '-', 'Color', color);
+			plot(scoreRef(r,component), scoreRef(r,component+1), '+', 'Color', color);
+			plot(scoreProj(p,component), scoreProj(p,component+1), '*', 'Color', color);
 		end
 	end
 end
