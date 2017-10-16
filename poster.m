@@ -11,7 +11,7 @@ function poster(dataType)
 	[valuesArm, participantsArm, measuresArm] = loadData('arm', deleteNaN);
 
 	% Load SCI data
-	valuesLegSCI = loadData('armSCI', deleteNaN);
+	valuesLegSCI = loadData('legSCI', deleteNaN);
 
 	% Return values aren't used; calling loadData('all') prints correlations.
 	loadData('all', deleteNaN);
