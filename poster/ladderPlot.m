@@ -16,15 +16,15 @@ function ladderPlot(name1, values1, participants1, name2, values2, participants2
 
 	for i = 1:6
 		subplot(3, 2, i);
-		plotLadder(scores1(:, i), name1, scores2(:, i), name2);
+		plotLadder(scores1(:, i), name1, scores2(:, i), name2, i);
 	end
 
-	ax=axes('Units', 'Normal', 'Position', [.075 .075 .85 .85], 'Visible', 'off', 'FontSize', 18);
+	ax=axes('Units', 'Normal', 'Position', [.075 .095 .85 .85], 'Visible', 'off', 'FontSize', 18);
 	set(get(ax, 'Title'), 'Visible', 'on');
 	title('Arm/Leg Correlations in the First 6 Factors');
 end
 
-function plotLadder(data1, name1, data2, name2)
+function plotLadder(data1, name1, data2, name2, component)
 	hold on;
 
 	plot(ones(length(data1)), data1, '.r');
@@ -37,4 +37,6 @@ function plotLadder(data1, name1, data2, name2)
 	axis([0.5 2.5 -inf inf]);
 	xticks([1 2]);
 	xticklabels({name1, name2});
+
+	title(sprintf('Component %d', component));
 end
