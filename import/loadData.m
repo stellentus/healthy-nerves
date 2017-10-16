@@ -4,7 +4,9 @@ function [values, participants, measures] = loadData(dataType, shouldDeleteNaN)
 		case 'all'
 			[participants, measures, cData, mData, uniqueMeasures] = importExcel('data/CPrepeatedmeasures.xlsx', 'data/MedianRepeatedmeasures.xlsx');
 			if shouldDeleteNaN
-				[values, participants, measures] = deleteNaN(participants, measures, cData, mData, uniqueMeasures);
+				[participants, data1Matched, data2Matched] = deleteNaN(participants, cData, mData);
+				correlations(measures, data1Matched, data2Matched);
+				[values, measures] = combineDatasets(measures, data1Matched, 'Leg', data2Matched, 'Arm', uniqueMeasures);
 			else
 				[values, measures] = combineDatasets(measures, cData, 'Leg', mData, 'Arm', uniqueMeasures);
 			end
@@ -29,6 +31,6 @@ end
 function [values, participants, measures] = loadSingle(filename, shouldDeleteNaN)
 	[participants, measures, values] = importExcel(filename);
 	if shouldDeleteNaN
-		[values, participants, measures] = deleteNaN(participants, measures, values);
+		[participants, values] = deleteNaN(participants, values);
 	end
 end
