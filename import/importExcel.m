@@ -27,9 +27,6 @@ function [cData, mData, participants, measures, unique] = importTwo(cPath, mPath
 	% Calculate unique columns (e.g. not age and sex)
 	unique = [];
 	for i = 1:length(measures)
-		if i == 14
-			continue; % Temporary fix because age is unique due to some odd data
-		end
 		if ~isequal(cData(:,i), mData(:,i))
 			unique = [unique, i];
 		end

@@ -4,7 +4,7 @@ function [data, measureNames, participantNames, stats] = mefimport(filepath)
 	[~, ~, raw] = xlsread(filepath, 'Variables');
 
 	% Get rid of rows and columns that don't help.
-	stripped = raw([1,3,5:16,19:37,39:end], [2,4:7,9:end]);
+	stripped = raw([1,3,5:10,12:16,21:37,39:end], [2,4:7,9:end]);
 	clear raw;
 
 	% Import the columns we care about
