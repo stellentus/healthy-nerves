@@ -27,4 +27,8 @@ function sciClustering(name1, values1, participants1, name2, values2, participan
 	for i = 1:size(scoreSCI, 1)
 		plot(scoreSCI(i,component), scoreSCI(i,component+1), 'xk');
 	end
+
+	xlabel(sprintf('Component %d', component));
+	ylabel(sprintf('Component %d', component+1));
+	title(sprintf('Arm/Leg vs Leg SCI (Components %d and %d)', component, component+1));
 end
