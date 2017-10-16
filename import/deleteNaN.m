@@ -22,3 +22,8 @@ function [values, participants, measures] = deleteNaN(participants, measures, da
 		[values, measures] = combineDatasets(measures, data1Matched, 'Leg', data2Matched, 'Arm', uniqueMeasures);
 	end
 end
+
+% rowsWithNaN returns any row with NaN.
+function [indices] = rowsWithNaN(participant, data1)
+	indices = sum(isnan(data1), 2) > 0;
+end
