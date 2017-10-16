@@ -13,10 +13,18 @@ function sciClustering(name1, values1, participants1, name2, values2, participan
 	figure;
 	hold on;
 
+	colors = get(gca,'colororder');
+	colorMod = length(colors);
+
 	for i = 1:length(ind1)
-		plot(score1(i,components), score2(i,components), '-*');
+		color = colors(mod(i, colorMod)+1, :);
+		plot([score1(i,component) score2(i,component)], [score1(i,component+1) score2(i,component+1)], '-', 'Color', color);
+		plot(score1(i,component), score1(i,component+1), '+', 'Color', color);
+		plot(score2(i,component), score2(i,component+1), '*', 'Color', color);
 	end
 
 	scoreSCI = zscore(valuesSCI)*coefforth1;
-	plot(scoreSCI(:,components), 'xk');
+	for i = 1:size(scoreSCI, 1)
+		plot(scoreSCI(i,component), scoreSCI(i,component+1), 'xk');
+	end
 end
