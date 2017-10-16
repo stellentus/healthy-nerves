@@ -1,15 +1,15 @@
 % analyze runs an analysis on the data
-function [values, participants, measures] = analyze(dataType, deleteNaN, plotType, alg)
+function [values, participants, measures] = analyze(dataType, shouldDeleteNaN, plotType, alg)
 	if nargin < 1
 		dataType = 'all';
 	end
 
 	if nargin < 2
-		deleteNaN = true;
+		shouldDeleteNaN = true;
 	end
 
 	addpath import;
-	[values, participants, measures] = loadData(dataType, deleteNaN);
+	[values, participants, measures] = loadData(dataType, shouldDeleteNaN);
 
 	if nargin < 4
 		alg = 'svd';
@@ -38,7 +38,7 @@ function [values, participants, measures] = analyze(dataType, deleteNaN, plotTyp
 					otherwise
 						disp('ERROR: data type must be ''leg'' or ''arm''.');
 				end
-				[valuesProj, participantsProj] = loadData(dataProj, deleteNaN);
+				[valuesProj, participantsProj] = loadData(dataProj, shouldDeleteNaN);
 				crosswiseBP(values, valuesProj, measures, participants, participantsProj, alg);
 			case 'line'
 				dataProj = '';
@@ -50,7 +50,7 @@ function [values, participants, measures] = analyze(dataType, deleteNaN, plotTyp
 					otherwise
 						disp('ERROR: data type must be ''leg'' or ''arm''.');
 				end
-				[valuesProj, participantsProj] = loadData(dataProj, deleteNaN);
+				[valuesProj, participantsProj] = loadData(dataProj, shouldDeleteNaN);
 				lineCross(values, valuesProj, participants, participantsProj, 1, alg);
 	    end
 

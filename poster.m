@@ -1,20 +1,20 @@
 % poster prints and displays everything for the poster
 function poster(dataType)
-	deleteNaN = true;
+	shouldDeleteNaN = true;
 
 	addpath import;
 
 	nameLeg = 'Leg';
-	[valuesLeg, participantsLeg, measuresLeg] = loadData('leg', deleteNaN);
+	[valuesLeg, participantsLeg, measuresLeg] = loadData('leg', shouldDeleteNaN);
 
 	nameArm = 'Arm';
-	[valuesArm, participantsArm, measuresArm] = loadData('arm', deleteNaN);
+	[valuesArm, participantsArm, measuresArm] = loadData('arm', shouldDeleteNaN);
 
 	% Load SCI data
-	valuesLegSCI = loadData('legSCI', deleteNaN);
+	valuesLegSCI = loadData('legSCI', shouldDeleteNaN);
 
 	% Return values aren't used; calling loadData('all') prints correlations.
-	loadData('all', deleteNaN);
+	loadData('all', shouldDeleteNaN);
 
 	rmpath import;
 
