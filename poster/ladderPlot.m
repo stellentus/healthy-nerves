@@ -38,5 +38,7 @@ function plotLadder(data1, name1, data2, name2, component)
 	xticks([1 2]);
 	xticklabels({name1, name2});
 
-	title(sprintf('Component %d', component));
+	r = corrcoef(data1, data2);
+	r = r(1, 2);
+	title(sprintf('Component %d: r^2=%.2f', component, r*r));
 end
