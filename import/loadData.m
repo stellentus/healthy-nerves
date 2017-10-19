@@ -18,7 +18,8 @@ function [values, participants, measures] = loadData(dataType, shouldDeleteNaN)
 			[values, participants, measures] = loadSingle('data/MedianRepeatedmeasures.xlsx', shouldDeleteNaN);
 
 		case 'legSCI'
-			[values, participants, measures] = loadSingle('data/SCI_CP.xlsx', shouldDeleteNaN);
+			% Previously we used SCI_CP.xlsx
+			[values, participants, measures] = loadSingle('data/JamesCP.xlsx', shouldDeleteNaN);
 
 		case 'armSCI'
 			[values, participants, measures] = loadSingle('data/All_MN_SCI.xlsx', shouldDeleteNaN);
