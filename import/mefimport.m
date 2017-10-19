@@ -58,6 +58,6 @@ function [inc] = includedMeasures()
 	inc = inc(inc~=19); % Remove Age (years)
 	inc = inc(inc~=20); % Remove Sex (M=1, F=2)
 	% inc = inc(inc~=30); % Remove Hyperpol. I/V slope (missing from SCI)
-	% inc = inc(inc~=34); % Remove Refractoriness at 2 ms (%) (missing from SCI)
+	inc = inc(inc~=34); % Remove Refractoriness at 2 ms (%) (missing from most SCI)
 	inc = inc(inc~=38); % Remove empty row
 end
