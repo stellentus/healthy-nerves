@@ -4,9 +4,7 @@ function [data, measureNames, participantNames, stats] = mefimport(filepath)
 	[~, ~, raw] = xlsread(filepath, 'Variables');
 
 	% Get rid of rows and columns that don't help.
-	includedMeasures = [1,3,5:10,12:16,21:37,39:41]; % Everything except age, sex, temperature
-	% includedMeasures = [1,3,5:10,12:16,21:29,31:33,35:37,39:41]; % Not including SCI missing data
-	stripped = raw(includedMeasures, [2,4:7,9:end]);
+	stripped = raw(includedMeasures(), [2,4:7,9:end]);
 	clear raw;
 
 	% Import the columns we care about
@@ -48,4 +46,9 @@ function compare(names, expected, actual, statName)
 			disp('"' + names(i) + '" has ' + statName + ' of ' + actual(i) + ' instead of ' + expected(i) + '.');
 		end
 	end
+end
+
+function [inc] = includedMeasures()
+	inc = [1,3,5:10,12:16,21:37,39:41]; % Everything except age, sex, temperature
+	% inc = [1,3,5:10,12:16,21:29,31:33,35:37,39:41]; % Not including SCI missing data
 end
