@@ -38,7 +38,10 @@ function plotLadder(data1, name1, data2, name2, component)
 	xticks([1 2]);
 	xticklabels({name1, name2});
 
-	r = corrcoef(data1, data2);
-	r = r(1, 2);
-	title(sprintf('Component %d: r^2=%.2f', component, r*r));
+	[r, p] = corrcoef(data1, data2);
+	if p(1, 2) < 0.005
+		title(sprintf('Component %d: r^2=%.3f', component, r(1, 2)^2));
+	else
+		title(sprintf('Component %d: Not correlated', component));
+	end
 end
