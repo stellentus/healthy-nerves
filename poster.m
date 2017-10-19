@@ -11,7 +11,7 @@ function poster(dataType)
 	[valuesArm, participantsArm, measuresArm] = loadData('arm', shouldDeleteNaN);
 
 	% Load SCI data
-	valuesLegSCI = loadData('legSCI', shouldDeleteNaN);
+	[valuesLegSCI, participantsSCI] = loadData('legSCI', shouldDeleteNaN);
 
 	% Return values aren't used; calling loadData('all') prints correlations.
 	loadData('all', shouldDeleteNaN);
@@ -26,8 +26,8 @@ function poster(dataType)
 	primaryWeights(nameArm, valuesArm, measuresArm);
 	graphVariance(nameLeg, valuesLeg, nameArm, valuesArm);
 	ladderPlot(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm);
-	sciClustering(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm, valuesLegSCI, 1);
-	sciClustering(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm, valuesLegSCI, 30);
+	sciClustering(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm, valuesLegSCI, participantsSCI, 1);
+	sciClustering(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm, valuesLegSCI, participantsSCI, 30);
 
 	rmpath poster;
 end
