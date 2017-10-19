@@ -49,6 +49,15 @@ function compare(names, expected, actual, statName)
 end
 
 function [inc] = includedMeasures()
-	inc = [1,3,5:10,12:16,21:37,39:41]; % Everything except age, sex, temperature
-	% inc = [1,3,5:10,12:16,21:29,31:33,35:37,39:41]; % Not including SCI missing data
+	inc = [1:41]; % All rows in the spreadsheet
+	inc = inc(inc~=2); % Remove empty row
+	inc = inc(inc~=4); % Remove SNAP (µV)
+	inc = inc(inc~=11); % Remove Temperature (C)
+	inc = inc(inc~=17); % Remove Polarizing current (% threshold)
+	inc = inc(inc~=18); % Remove Polarizing current (mA)
+	inc = inc(inc~=19); % Remove Age (years)
+	inc = inc(inc~=20); % Remove Sex (M=1, F=2)
+	% inc = inc(inc~=30); % Remove Hyperpol. I/V slope (missing from SCI)
+	% inc = inc(inc~=34); % Remove Refractoriness at 2 ms (%) (missing from SCI)
+	inc = inc(inc~=38); % Remove empty row
 end
