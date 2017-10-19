@@ -1,9 +1,6 @@
 % sciClustering attempts to print clustered SCI results
 function sciClustering(name1, values1, participants1, name2, values2, participants2, valuesSCI, participantsSCI, component)
-	alg = 'svd';
-	components = component:component+1;
-
-	[coeff1, score1] = pca(values1, 'VariableWeights', 'variance', 'algorithm', alg);
+	[coeff1, score1] = pca(values1, 'VariableWeights', 'variance');
 
 	coefforth1 = inv(diag(std(values1)))*coeff1;
 	score2 = zscore(values2)*coefforth1;
