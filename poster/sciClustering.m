@@ -1,9 +1,7 @@
 % sciClustering attempts to print clustered SCI results
 function sciClustering(name1, values1, participants1, name2, values2, participants2, valuesSCI, participantsSCI, component)
-	coeff = pca(values1, 'VariableWeights', 'variance');
-	coefforth = inv(diag(std(values1)))*coeff./std(values1)';
+	[coefforth, meanorth] = transform(values1);
 
-	meanorth = mean(values1)*coefforth;
 	score1 = values1*coefforth-meanorth;
 	score2 = values2*coefforth-meanorth;
 
