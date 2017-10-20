@@ -1,13 +1,11 @@
 % sciClustering attempts to print clustered SCI results
 function sciClustering(name1, values1, participants1, name2, values2, participants2, valuesSCI, participantsSCI, component)
 	coeff = pca(values1, 'VariableWeights', 'variance');
-	coefforth = inv(diag(std(values1)))*coeff;
+	coefforth = inv(diag(std(values1)))*coeff./std(values1)';
 
-	meanorth = mean(values1);
-	stdorth = std(values1);
-	coefforth = coefforth./stdorth';
-	score1 = (values1-meanorth)*coefforth;
-	score2 = (values2-meanorth)*coefforth;
+	meanorth = mean(values1)*coefforth;
+	score1 = values1*coefforth-meanorth;
+	score2 = values2*coefforth-meanorth;
 
 	[ind1, ind2] = commonIndices(participants1, participants2);
 
@@ -22,7 +20,7 @@ function sciClustering(name1, values1, participants1, name2, values2, participan
 		plot(score1(i,component), score1(i,component+1), '.', 'Color', color);
 	end
 
-	scoreSCI = (valuesSCI-meanorth)*coefforth;
+	scoreSCI = valuesSCI*coefforth-meanorth;
 	for i = 1:size(scoreSCI, 1)
 		h = plot(scoreSCI(i,component), scoreSCI(i,component+1), '*k');
 		label(h, participantsSCI(i));
