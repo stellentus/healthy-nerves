@@ -1,6 +1,9 @@
 function correlations(measures, values1, values2, participants1, participants2)
 	[ind1, ind2] = commonIndices(participants1, participants2);
-	printCorr(measures, values1(ind1, :), values2(ind2, :));
+	values1 = values1(ind1, :);
+	values2 = values2(ind2, :);
+
+	printCorr(measures, values1, values2);
 end
 
 % correlations prints the list of measurements that are correlated between two measures
