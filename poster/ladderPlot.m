@@ -1,11 +1,8 @@
 % ladderPlot plots a ladder for 6 components
 function ladderPlot(name1, values1, participants1, name2, values2, participants2)
-	alg = 'svd';
-
-	[coeff1, scores1] = pca(values1, 'VariableWeights', 'variance', 'algorithm', alg);
-
-	coefforth1 = inv(diag(std(values1)))*coeff1;
-	scores2 = zscore(values2)*coefforth1;
+	[coeff, m] = transform(values1);
+	scores1 = values1*coeff-m;
+	scores2 = values2*coeff-m;
 
 	[ind1, ind2] = commonIndices(participants1, participants2);
 
