@@ -20,7 +20,7 @@ function poster(dataType)
 
 	addpath poster;
 
-	correlations(measuresLeg, valuesLeg, valuesArm, participantsLeg, participantsArm);
+	correlations(valuesLeg, valuesArm, participantsLeg, participantsArm);
 
 	count(nameLeg, participantsLeg, measuresLeg);
 	count(nameArm, participantsArm, measuresArm);
