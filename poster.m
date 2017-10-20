@@ -13,9 +13,6 @@ function poster(dataType)
 	% Load SCI data
 	[valuesLegSCI, participantsSCI] = loadData('legSCI', shouldDeleteNaN);
 
-	% Return values aren't used; calling loadData('all') prints correlations.
-	loadData('all', shouldDeleteNaN);
-
 	rmpath import;
 
 	addpath poster;
