@@ -14,11 +14,11 @@ addpath import;
 [valuesProj, participantsProj] = loadData(files.proj, true);
 
 addpath analyze;
-coefforthRef = lineCross(valuesRef, valuesProj, participantsRef, participantsProj, component);
+[coeff, m] = lineCross(valuesRef, valuesProj, participantsRef, participantsProj, component);
 rmpath analyze;
 
 [valuesSCI] = loadData(files.sci, true);
-scoreSCI = zscore(valuesSCI)*coefforthRef;
+scoreSCI = valuesSCI*coeff-m;
 
 for i = 1:size(scoreSCI, 1)
 	plot(scoreSCI(i,component), scoreSCI(i,component+1), 'xk');
