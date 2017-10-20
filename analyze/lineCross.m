@@ -1,14 +1,16 @@
 % lineCross creates a plot with a second dataset projected onto the
 % first's principal components, with lines between datasets.
-function coefforthRef = lineCross(valuesRef, valuesProj, participantsRef, participantsProj, component, alg)
+function [coeff, m] = lineCross(valuesRef, valuesProj, participantsRef, participantsProj, component, alg)
 	if nargin < 6
 		alg = 'svd';
 	end
 
-	[coeffRef, scoreRef] = pca(valuesRef, 'VariableWeights', 'variance', 'algorithm', alg);
+	addpath ./poster
+	[coeff, m] = transform(valuesRef, alg);
+	rmpath ./poster
 
-	coefforthRef = inv(diag(std(valuesRef)))*coeffRef;
-	scoreProj = zscore(valuesProj)*coefforthRef;
+	scoreRef = valuesRef*coeff-m;
+	scoreProj = valuesProj*coeff-m;
 
 	colors = get(gca,'colororder');
 	colorMod = length(colors);
