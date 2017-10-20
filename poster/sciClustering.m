@@ -5,8 +5,9 @@ function sciClustering(name1, values1, participants1, name2, values2, participan
 
 	meanorth = mean(values1);
 	stdorth = std(values1);
-	score1 = ((values1-meanorth)./stdorth)*coefforth;
-	score2 = ((values2-meanorth)./stdorth)*coefforth;
+	coefforth = coefforth./stdorth';
+	score1 = (values1-meanorth)*coefforth;
+	score2 = (values2-meanorth)*coefforth;
 
 	[ind1, ind2] = commonIndices(participants1, participants2);
 
@@ -21,7 +22,7 @@ function sciClustering(name1, values1, participants1, name2, values2, participan
 		plot(score1(i,component), score1(i,component+1), '.', 'Color', color);
 	end
 
-	scoreSCI = ((valuesSCI-meanorth)./stdorth)*coefforth;
+	scoreSCI = (valuesSCI-meanorth)*coefforth;
 	for i = 1:size(scoreSCI, 1)
 		h = plot(scoreSCI(i,component), scoreSCI(i,component+1), '*k');
 		label(h, participantsSCI(i));
