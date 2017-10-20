@@ -1,4 +1,4 @@
-% ladderPlot plots a ladder for 6 components
+% ladderPlot plots a ladder for 5 components
 function ladderPlot(name1, values1, participants1, name2, values2, participants2)
 	[coeff, m] = transform(values1);
 	scores1 = values1*coeff-m;
@@ -11,14 +11,14 @@ function ladderPlot(name1, values1, participants1, name2, values2, participants2
 
 	figure;
 
-	for i = 1:6
+	for i = 1:5
 		subplot(3, 2, i);
 		plotLadder(scores1(:, i), name1, scores2(:, i), name2, i);
 	end
 
 	ax=axes('Units', 'Normal', 'Position', [.075 .095 .85 .85], 'Visible', 'off', 'FontSize', 18);
 	set(get(ax, 'Title'), 'Visible', 'on');
-	title('Arm/Leg Correlations in the First 6 Factors');
+	title('Arm/Leg Correlations in the First 5 Factors');
 end
 
 function plotLadder(data1, name1, data2, name2, component)
