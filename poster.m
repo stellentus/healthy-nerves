@@ -20,8 +20,7 @@ function poster(dataType)
 
 	addpath poster;
 
-	[indLeg, indArm] = commonIndices(participantsLeg, participantsArm);
-	correlations(measuresLeg, valuesLeg(indLeg, :), valuesArm(indArm, :));
+	correlations(measuresLeg, valuesLeg, valuesArm, participantsLeg, participantsArm);
 
 	count(nameLeg, participantsLeg, measuresLeg);
 	count(nameArm, participantsArm, measuresArm);
