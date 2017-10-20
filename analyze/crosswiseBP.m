@@ -5,17 +5,19 @@ function crosswiseBP(valuesRef, valuesProj, measures, participantsRef, participa
 		alg = 'svd';
 	end
 
-	[coeffRef, scoreRef] = pca(valuesRef, 'VariableWeights', 'variance', 'algorithm', alg);
+	addpath ./poster
+	[coeff, m] = transform(valuesRef, alg);
+	rmpath ./poster
 
-	coefforthRef = inv(diag(std(valuesRef)))*coeffRef;
-	scoreProj = zscore(valuesProj)*coefforthRef;
+	scoreRef = valuesRef*coeff-m;
+	scoreProj = valuesProj*coeff-m;
 
 	subplot(2,2,1);
-	bp(coeffRef, scoreRef, measures);
+	bp(coeff, scoreRef, measures);
 	title('Reference Data');
 
 	subplot(2,2,2);
-	bp(coeffRef, scoreProj, measures);
+	bp(coeff, scoreProj, measures);
 	title('Projected Data');
 
 	subplot(2,2,3);
