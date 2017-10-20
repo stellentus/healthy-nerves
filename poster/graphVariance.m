@@ -5,8 +5,8 @@ function graphVariance(name1, values1, name2, values2)
 	figure;
 	hold on;
 
-	lenArm = graphOneVariance(values1, name1, '-', alg);
-	lenLeg = graphOneVariance(values2, name2, '--', alg);
+	lenArm = graphOneVariance(values1, name1, '-', 'top', alg);
+	lenLeg = graphOneVariance(values2, name2, '--', 'bottom', alg);
 
 	% Add labels and set axis
 	fontSize = 16;
@@ -18,7 +18,7 @@ function graphVariance(name1, values1, name2, values2)
 	legend;
 end
 
-function len = graphOneVariance(values, name, lineType, alg)
+function len = graphOneVariance(values, name, lineType, location, alg)
 	% figure;
 	[~, ~, ~, ~, explained] = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
 	len = length(explained);
@@ -32,11 +32,11 @@ function len = graphOneVariance(values, name, lineType, alg)
 	plot([0:len], [0; explained], [lineType 'b'], 'DisplayName', name);
 
 	% Add lines at 70 and 85
-	plotLines(explained, 70, [lineType 'r']);
-	plotLines(explained, 85, [lineType 'm']);
+	plotLines(explained, 70, [lineType 'r'], location);
+	plotLines(explained, 85, [lineType 'm'], location);
 end
 
-function plotLines(explained, val, linespec)
+function plotLines(explained, val, linespec, location)
 	fct = factorAboveValue(explained, val);
 
 	h = plot([fct, fct], [0 explained(fct)], linespec);
@@ -44,7 +44,7 @@ function plotLines(explained, val, linespec)
 
 	h = plot([0, fct], [explained(fct) explained(fct)], linespec);
 	set(get(get(h, 'Annotation'), 'LegendInformation'), 'IconDisplayStyle', 'off');
-	label(h, sprintf('%d factors: %.0f%%', fct, explained(fct)));
+	label(h, sprintf('%d factors: %.0f%%', fct, explained(fct)), 'location', location);
 end
 
 function factor = factorAboveValue(explained, val)
