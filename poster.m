@@ -20,12 +20,19 @@ function poster(dataType)
 
 	addpath poster;
 
+	[indLeg, indArm] = commonIndices(participantsLeg, participantsArm);
+	correlations(measuresLeg, valuesLeg(indLeg, :), valuesArm(indArm, :));
+
 	count(nameLeg, participantsLeg, measuresLeg);
 	count(nameArm, participantsArm, measuresArm);
+
 	primaryWeights(nameLeg, valuesLeg, measuresLeg);
 	primaryWeights(nameArm, valuesArm, measuresArm);
+
 	graphVariance(nameLeg, valuesLeg, nameArm, valuesArm);
+
 	ladderPlot(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm);
+
 	sciClustering(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm, valuesLegSCI, participantsSCI, 1);
 	sciClustering(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm, valuesLegSCI, participantsSCI, 30);
 
