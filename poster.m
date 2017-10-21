@@ -32,5 +32,7 @@ function poster(dataType)
 	sciClustering(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm, valuesLegSCI, participantsSCI, 1);
 	sciClustering(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm, valuesLegSCI, participantsSCI, 3);
 
+	distancePrint(valuesLeg, participantsLeg, valuesLegSCI, participantsSCI, 5);
+
 	rmpath poster;
 end
