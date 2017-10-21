@@ -5,6 +5,6 @@ function [coeff, m] = transform(values, alg)
 	end
 
 	coeff = pca(values, 'VariableWeights', 'variance', 'algorithm', alg);
-	coeff = inv(diag(std(values)))*coeff./std(values)';
+	coeff = inv(diag(std(values).^2))*coeff;
 	m = mean(values)*coeff;
 end
