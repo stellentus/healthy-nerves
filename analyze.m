@@ -9,7 +9,11 @@ function [values, participants, measures] = analyze(dataType, shouldDeleteNaN, p
 	end
 
 	addpath import;
-	[values, participants, measures] = loadData(dataType, shouldDeleteNaN);
+	if strcmp(dataType, 'all')
+		[values, participants, measures] = importTwo(pathFor('leg'), pathFor('arm'), shouldDeleteNaN);
+	else
+		[values, participants, measures] = mefimport(pathFor(dataType), shouldDeleteNaN);
+	end
 
 	if nargin < 4
 		alg = 'svd';
@@ -38,7 +42,7 @@ function [values, participants, measures] = analyze(dataType, shouldDeleteNaN, p
 					otherwise
 						disp('ERROR: data type must be ''leg'' or ''arm''.');
 				end
-				[valuesProj, participantsProj] = loadData(dataProj, shouldDeleteNaN);
+				[valuesProj, participantsProj] = mefimport(pathFor(dataProj), shouldDeleteNaN);
 				crosswiseBP(values, valuesProj, measures, participants, participantsProj, alg);
 			case 'line'
 				dataProj = '';
@@ -50,7 +54,7 @@ function [values, participants, measures] = analyze(dataType, shouldDeleteNaN, p
 					otherwise
 						disp('ERROR: data type must be ''leg'' or ''arm''.');
 				end
-				[valuesProj, participantsProj] = loadData(dataProj, shouldDeleteNaN);
+				[valuesProj, participantsProj] = mefimport(pathFor(dataProj), shouldDeleteNaN);
 				lineCross(values, valuesProj, participants, participantsProj, 1, alg);
 	    end
 

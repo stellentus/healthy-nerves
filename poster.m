@@ -5,13 +5,13 @@ function poster(dataType)
 	addpath import;
 
 	nameLeg = 'Leg';
-	[valuesLeg, participantsLeg, measuresLeg] = loadData('leg', shouldDeleteNaN);
+	[valuesLeg, participantsLeg, measuresLeg] = mefimport(pathFor('leg'), shouldDeleteNaN);
 
 	nameArm = 'Arm';
-	[valuesArm, participantsArm, measuresArm] = loadData('arm', shouldDeleteNaN);
+	[valuesArm, participantsArm, measuresArm] = mefimport(pathFor('arm'), shouldDeleteNaN);
 
 	% Load SCI data
-	[valuesLegSCI, participantsSCI] = loadData('legSCI', shouldDeleteNaN);
+	[valuesLegSCI, participantsSCI] = mefimport(pathFor('legSCI'), shouldDeleteNaN);
 
 	rmpath import;
 

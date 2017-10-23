@@ -10,14 +10,14 @@ component = 1;
 
 addpath import;
 
-[valuesRef, participantsRef] = loadData(files.ref, true);
-[valuesProj, participantsProj] = loadData(files.proj, true);
+[valuesRef, participantsRef] = mefimport(pathFor(files.ref), true);
+[valuesProj, participantsProj] = mefimport(pathFor(files.proj), true);
 
 addpath analyze;
 [coeff, m] = lineCross(valuesRef, valuesProj, participantsRef, participantsProj, component);
 rmpath analyze;
 
-[valuesSCI] = loadData(files.sci, true);
+[valuesSCI] = mefimport(pathFor(files.sci), true);
 scoreSCI = valuesSCI*coeff-m;
 
 for i = 1:size(scoreSCI, 1)
