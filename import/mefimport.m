@@ -1,5 +1,9 @@
 % mefimport imports the provided MEF file
-function [data, measureNames, participantNames, stats] = mefimport(filepath)
+function [data, measureNames, participantNames, stats] = mefimport(filepath, shouldDeleteNaN)
+	if nargin == 1
+		shouldDeleteNaN = false;
+	end
+
 	% Import the raw data
 	[~, ~, raw] = xlsread(filepath, 'Variables');
 
@@ -31,6 +35,10 @@ function [data, measureNames, participantNames, stats] = mefimport(filepath)
 	data = data.';
 	measureNames = measureNames.';
 	participantNames = participantNames.';
+
+	if shouldDeleteNaN
+		[participants, data] = deleteNaN(participants, data);
+	end
 end
 
 % verifyStats confirms the MEF stats match what Matlab calculates

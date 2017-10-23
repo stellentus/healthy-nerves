@@ -1,5 +1,9 @@
 % importExcel imports data from the files
-function [participants, measures, cData, mData, unique] = importTwo(cPath, mPath)
+function [participants, measures, cData, mData, unique] = importTwo(cPath, mPath, shouldDeleteNaN)
+	if nargin == 2
+		shouldDeleteNaN = false;
+	end
+
 	% Import the data from MEF
 	[cData, cMeasureNames, cParticipantNames, cStats] = mefimport(cPath);
 	[mData, mMeasureNames, mParticipantNames, mStats] = mefimport(mPath);
@@ -20,6 +24,10 @@ function [participants, measures, cData, mData, unique] = importTwo(cPath, mPath
 		if ~isequal(cData(:,i), mData(:,i))
 			unique = [unique, i];
 		end
+	end
+
+	if shouldDeleteNaN
+		[participants, cData, mData] = deleteNaN(participants, cData, mData);
 	end
 end
 
