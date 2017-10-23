@@ -2,7 +2,7 @@
 function [values, participants, measures] = loadData(dataType, shouldDeleteNaN)
 	switch dataType
 		case 'all'
-			[participants, measures, cData, mData, uniqueMeasures] = importExcel('data/CPrepeatedmeasures.xlsx', 'data/MedianRepeatedmeasures.xlsx');
+			[participants, measures, cData, mData, uniqueMeasures] = importTwo('data/CPrepeatedmeasures.xlsx', 'data/MedianRepeatedmeasures.xlsx');
 			if shouldDeleteNaN
 				[participants, data1Matched, data2Matched] = deleteNaN(participants, cData, mData);
 				[values, measures] = combineDatasets(measures, data1Matched, 'Leg', data2Matched, 'Arm', uniqueMeasures);
@@ -29,7 +29,7 @@ function [values, participants, measures] = loadData(dataType, shouldDeleteNaN)
 end
 
 function [values, participants, measures] = loadSingle(filename, shouldDeleteNaN)
-	[participants, measures, values] = importExcel(filename);
+	[values, measures, participants] = mefimport(filename);
 	if shouldDeleteNaN
 		[participants, values] = deleteNaN(participants, values);
 	end
