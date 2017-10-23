@@ -26,8 +26,8 @@ function [data, participantNames, measureNames, stats, age, sex] = mefimport(fil
 	data = cell2mat(stripped([2:end], [6:end]));
 
 	% Now grab age and sex
-	age = raw(19, [2,4:7,9:end]);
-	sex = raw(20, [2,4:7,9:end]);
+	age = cell2mat(raw(19, [9:end]));
+	sex = cell2mat(raw(20, [9:end]));
 	clear raw;
 
 	% Clean up the measure names
