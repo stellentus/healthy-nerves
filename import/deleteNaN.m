@@ -1,5 +1,5 @@
 % deleteNaN deletes all NaN rows
-function [participants, data1Reduced, data2Reduced] = deleteNaN(participants, data1, data2)
+function [participants, data1Reduced, data2Reduced, indices] = deleteNaN(participants, data1, data2)
 	if nargin == 2
 		data2Reduced = [];
 
@@ -7,7 +7,6 @@ function [participants, data1Reduced, data2Reduced] = deleteNaN(participants, da
 		indices = rowsWithNaN(participants, data1);
 		data1Reduced = data1(indices, :);
 		participants = participants(indices);
-		clear indices;
 	else
 		% Handle missing data by deleting NaN rows
 		indices = rowsWithNaN(participants, data1) & rowsWithNaN(participants, data2);
