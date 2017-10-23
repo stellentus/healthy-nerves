@@ -1,5 +1,5 @@
 % importExcel imports data from the files
-function [participants, measures, cData, mData, unique] = importTwo(cPath, mPath, shouldDeleteNaN)
+function [values, participants, measures] = importTwo(cPath, mPath, shouldDeleteNaN)
 	if nargin == 2
 		shouldDeleteNaN = false;
 	end
@@ -29,6 +29,8 @@ function [participants, measures, cData, mData, unique] = importTwo(cPath, mPath
 	if shouldDeleteNaN
 		[participants, cData, mData] = deleteNaN(participants, cData, mData);
 	end
+
+	[values, measures] = combineDatasets(measures, cData, 'Leg', mData, 'Arm', unique);
 end
 
 function [indices, list1] = verifyNames(list1, list2)

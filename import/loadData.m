@@ -2,8 +2,7 @@
 function [values, participants, measures] = loadData(dataType, shouldDeleteNaN)
 	switch dataType
 		case 'all'
-			[participants, measures, cData, mData, uniqueMeasures] = importTwo('data/CPrepeatedmeasures.xlsx', 'data/MedianRepeatedmeasures.xlsx', shouldDeleteNaN);
-			[values, measures] = combineDatasets(measures, cData, 'Leg', mData, 'Arm', uniqueMeasures);
+			[values, participants, measures] = importTwo('data/CPrepeatedmeasures.xlsx', 'data/MedianRepeatedmeasures.xlsx', shouldDeleteNaN);
 
 		case 'leg'
 			[values, measures, participants] = mefimport('data/CPrepeatedmeasures.xlsx', shouldDeleteNaN);
