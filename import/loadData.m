@@ -5,10 +5,8 @@ function [values, participants, measures] = loadData(dataType, shouldDeleteNaN)
 			[participants, measures, cData, mData, uniqueMeasures] = importTwo('data/CPrepeatedmeasures.xlsx', 'data/MedianRepeatedmeasures.xlsx');
 			if shouldDeleteNaN
 				[participants, cData, mData] = deleteNaN(participants, cData, mData);
-				[values, measures] = combineDatasets(measures, cData, 'Leg', mData, 'Arm', uniqueMeasures);
-			else
-				[values, measures] = combineDatasets(measures, cData, 'Leg', mData, 'Arm', uniqueMeasures);
 			end
+			[values, measures] = combineDatasets(measures, cData, 'Leg', mData, 'Arm', uniqueMeasures);
 
 		case 'leg'
 			[values, participants, measures] = loadSingle('data/CPrepeatedmeasures.xlsx', shouldDeleteNaN);
