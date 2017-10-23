@@ -5,7 +5,8 @@ function poster(dataType)
 	addpath import;
 
 	nameLeg = 'Leg';
-	[valuesLeg, participantsLeg, measuresLeg] = mefimport(pathFor('leg'), shouldDeleteNaN);
+	[valuesLeg, participantsLeg, measuresLeg, ~, age, sex] = mefimport(pathFor('leg'), shouldDeleteNaN);
+	[~, ~, ~, ~, ageTotal, sexTotal] = mefimport(pathFor('leg'), false);
 
 	nameArm = 'Arm';
 	[valuesArm, participantsArm, measuresArm] = mefimport(pathFor('arm'), shouldDeleteNaN);
@@ -33,6 +34,8 @@ function poster(dataType)
 	sciClustering(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm, valuesLegSCI, participantsSCI, 3);
 
 	distancePrint(valuesLeg, participantsLeg, valuesLegSCI, participantsSCI, 5);
+
+	% ageDistribution(age, sex, ageTotal, sexTotal);
 
 	rmpath poster;
 end
