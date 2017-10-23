@@ -41,7 +41,7 @@ function [data, participantNames, measureNames, stats, age, sex] = mefimport(fil
 	participantNames = participantNames.';
 
 	if shouldDeleteNaN
-		[participants, data] = deleteNaN(participants, data);
+		[participantNames, data] = deleteNaN(participantNames, data);
 	end
 end
 
