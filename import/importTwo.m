@@ -5,8 +5,8 @@ function [values, participants, measures] = importTwo(cPath, mPath, shouldDelete
 	end
 
 	% Import the data from MEF
-	[cData, cMeasureNames, cParticipantNames, cStats] = mefimport(cPath);
-	[mData, mMeasureNames, mParticipantNames, mStats] = mefimport(mPath);
+	[cData, cParticipantNames, cMeasureNames, cStats] = mefimport(cPath);
+	[mData, mParticipantNames, mMeasureNames, mStats] = mefimport(mPath);
 
 	% Verify participant names are the same; then only save one list
 	indices = verifyNames(cParticipantNames, mParticipantNames);

@@ -5,6 +5,6 @@ function [values, participants, measures] = loadData(dataType, shouldDeleteNaN)
 			[values, participants, measures] = importTwo(pathFor('leg'), pathFor('arm'), shouldDeleteNaN);
 
 		otherwise
-			[values, measures, participants] = mefimport(pathFor(dataType), shouldDeleteNaN);
+			[values, participants, measures] = mefimport(pathFor(dataType), shouldDeleteNaN);
 	end
 end

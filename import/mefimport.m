@@ -1,5 +1,5 @@
 % mefimport imports the provided MEF file
-function [data, measureNames, participantNames, stats, age, sex] = mefimport(filepath, shouldDeleteNaN)
+function [data, participantNames, measureNames, stats, age, sex] = mefimport(filepath, shouldDeleteNaN)
 	if nargin == 1
 		shouldDeleteNaN = false;
 	end
