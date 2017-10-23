@@ -1,5 +1,5 @@
 % mefimport imports the provided MEF file
-function [data, measureNames, participantNames, stats] = mefimport(filepath, shouldDeleteNaN)
+function [data, measureNames, participantNames, stats, age, sex] = mefimport(filepath, shouldDeleteNaN)
 	if nargin == 1
 		shouldDeleteNaN = false;
 	end
@@ -25,6 +25,10 @@ function [data, measureNames, participantNames, stats] = mefimport(filepath, sho
 
 	% Import the data
 	data = cell2mat(stripped([2:end], [6:end]));
+
+	% Now grab age and sex
+	age = raw(19, [2,4:7,9:end]);
+	sex = raw(20, [2,4:7,9:end]);
 
 	% Clean up the measure names
 	measureNames = replace(measureNames, '\', ' ');
