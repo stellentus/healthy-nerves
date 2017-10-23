@@ -9,7 +9,6 @@ function [data, participantNames, measureNames, stats, age, sex] = mefimport(fil
 
 	% Get rid of rows and columns that don't help.
 	stripped = raw(includedMeasures(), [2,4:7,9:end]);
-	clear raw;
 
 	% Import the columns we care about
 	measureNames = string(stripped([2:end], 1));
@@ -29,6 +28,7 @@ function [data, participantNames, measureNames, stats, age, sex] = mefimport(fil
 	% Now grab age and sex
 	age = raw(19, [2,4:7,9:end]);
 	sex = raw(20, [2,4:7,9:end]);
+	clear raw;
 
 	% Clean up the measure names
 	measureNames = replace(measureNames, '\', ' ');
