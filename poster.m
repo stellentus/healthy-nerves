@@ -30,8 +30,8 @@ function poster(dataType)
 
 	ladderPlot(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm);
 
-	sciClustering(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm, valuesLegSCI, participantsSCI, 1);
-	sciClustering(nameLeg, valuesLeg, participantsLeg, nameArm, valuesArm, participantsArm, valuesLegSCI, participantsSCI, 3);
+	sciClustering(nameLeg, valuesLeg, participantsLeg, valuesLegSCI, participantsSCI, 1);
+	sciClustering(nameLeg, valuesLeg, participantsLeg, valuesLegSCI, participantsSCI, 3);
 
 	distancePrint(valuesLeg, participantsLeg, valuesLegSCI, participantsSCI, 5);
 
