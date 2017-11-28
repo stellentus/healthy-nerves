@@ -2,6 +2,17 @@
 
 We were working toward EFA where the extraction of the components (or factors) was done using Principal Components Analysis (PCA). This is the short range goal as PCA may not be the best solution for our data. One alternative is Independent Components Analysis (or ICA).
 
+1. ~~Import into Matlab~~
+2. ~~Split into test/training.~~
+3. ~~Delete missing data in first 10 rows.~~
+4. ~~Run PCA.~~
+5. ~~Plot each of the error calculations vs k.~~
+6. ~~Write a basic discussion.~~
+7. ~~Move discussion of evaluation metrics to results, except for the one used for training. Uh, which one is used for training?~~
+8. ~~Mention comparison according to k prior to Results?~~
+9. ~~Create a terminology table?~~
+10. 
+
 ## Approach
 
 ### Export Data from MEF Files to Matlab <!-- DONE -->

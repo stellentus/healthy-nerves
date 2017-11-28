@@ -9,7 +9,7 @@ function [pth] = pathFor(dataType)
 
 		case 'legSCI'
 			% Previously we used SCI_CP.xlsx
-			pth = 'data/JamesCP.xlsx';
+			pth = 'data/SCI_CP.xlsx';
 
 		case 'armSCI'
 			pth = 'data/All_MN_SCI.xlsx';
