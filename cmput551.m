@@ -11,7 +11,7 @@ function cmput551()
 	clear armValues legValues;
 
 	addpath missing
-	[Xtrain, Xtest, Xtest_orig, X, Xall] = loadMissing(X);
+	[Xtrain, Xtest, Xtest_orig, X, Xall] = loadMissing551(X);
 	plot551(Xtrain, Xtest, Xtest_orig, X, Xall);
 	rmpath missing
 end

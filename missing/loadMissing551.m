@@ -1,5 +1,5 @@
-% loadMissing loads the arm and leg data to do missingness analysis
-function [Xtrain, Xtest, Xtest_orig, X, Xall] = loadMissing(X)
+% loadMissing551 loads the arm and leg data to do missingness analysis
+function [Xtrain, Xtest, Xtest_orig, X, Xall] = loadMissing551(X)
 	X = X(randperm(size(X,1)),:); % Shuffle
 
 	% Sort X into train and test sets
