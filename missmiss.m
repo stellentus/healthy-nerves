@@ -15,17 +15,19 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss()
 	[missingX, completeX, mask, originalMissingX, missingMask] = deleteProportional(X, 25);
 	originalCov = cov([completeX; originalMissingX]);
 
-	[filledXMean, covrMean] = fillWithMean(missingX, completeX, mask, originalMissingX, missingMask);
-	err = valueError(missingX, originalMissingX, missingMask, filledXMean);
-	fprintf('The value error for mean filling is %f\n', err);
-	err = covError(originalCov, covrMean);
-	fprintf('The covariance error for mean filling is %f\n', err);
+	funcs = {
+		@fillWithMean,
+		@fillCCA,
+	};
 
-	[filledXCCA, covrCCA] = fillCCA(missingX, completeX, mask, originalMissingX, missingMask);
-	err = valueError(missingX, originalMissingX, missingMask, filledXCCA);
-	fprintf('The value error for CCA is %f\n', err);
-	err = covError(originalCov, covrCCA);
-	fprintf('The covariance error for CCA is %f\n', err);
+	for i = 1:length(funcs)
+		func = funcs{i};
+		[filledX, covr] = func(missingX, completeX, mask, originalMissingX, missingMask);
+		err = valueError(missingX, originalMissingX, missingMask, filledX);
+		fprintf('The value error for %s is %f\n', func2str(func), err);
+		err = covError(originalCov, covr);
+		fprintf('The covariance error for %s is %f\n', func2str(func), err);
+	end
 
 	rmpath missing
 end
