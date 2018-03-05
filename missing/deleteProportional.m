@@ -1,5 +1,16 @@
 % deleteProportional deletes proportional amounts of missing data
-function [X_missing, X_full, mask] = deleteProportional(X)
+function [X_missing, X_full, mask, count] = deleteProportional(X, target)
+	numMissing = 0;
+	count = 0;
+	while (numMissing == 0) || (nargin == 2 && numMissing ~= target) % At least once, but keep going if not on target
+		[X_missing, X_full, mask] = delete(X);
+		numMissing = size(X_missing, 1);
+		count = count + 1;
+	end
+	% Could print the number of iterations here
+end
+
+function [X_missing, X_full, mask] = delete(X)
 	TOTAL_COUNT = size(X, 1);
 
 	% Get indices of values to delete
@@ -22,3 +33,4 @@ function [X_missing, X_full, mask] = deleteProportional(X)
 	X_missing = Xdel(missingIndices, :);
 	X_full = X(fullIndices, :);
 end
+
