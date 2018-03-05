@@ -16,7 +16,7 @@ function [missingX, completeX, mask, sortedAllX, sortedMask] = delete(X)
 	% Get indices of values to delete
 	delHyper = randi(TOTAL_COUNT, round(.056*TOTAL_COUNT), 1);
 	delRef2 = randi(TOTAL_COUNT, round(.096*TOTAL_COUNT), 1);
-	delRef25 = delRef2(randi(length(delRef2), round(.02/.096*TOTAL_COUNT), 1));
+	delRef25 = delRef2(randi(length(delRef2), round(.02*TOTAL_COUNT), 1));
 	delTEh = randi(TOTAL_COUNT, round(.015*TOTAL_COUNT), 1);
 
 	% Create mask
