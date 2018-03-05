@@ -1,5 +1,5 @@
 % missmiss loads missing data and does stuff with it
-function [X_missing, X_full, X, mask] = missmiss()
+function [missingX, completeX, mask, sortedAllX, sortedMask] = missmiss()
 	% Load data
 	addpath import;
 	armValues = mefimport(pathFor('arm'), true);
@@ -11,6 +11,6 @@ function [X_missing, X_full, X, mask] = missmiss()
 	clear armValues legValues;
 
 	addpath missing
-	[X_missing, X_full, mask] = deleteProportional(X, 25);
+	[missingX, completeX, mask, sortedAllX, sortedMask] = deleteProportional(X, 25);
 	rmpath missing
 end
