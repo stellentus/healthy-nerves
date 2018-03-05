@@ -26,10 +26,14 @@ function [X_missing, X_full, mask] = delete(X)
 	mask(delRef25, 26) = 0;
 	mask(delTEh, 21) = 0;
 
+	% Create NaN mask
+	maskNaN = mask;
+	maskNaN(mask == 0) = NaN;
+
 	missingIndices = union(delHyper, union(delRef2, delTEh));
 	fullIndices = setxor(missingIndices, [1:TOTAL_COUNT]);
 
-	Xdel = X .* mask;
+	Xdel = X .* maskNaN;
 	X_missing = Xdel(missingIndices, :);
 	X_full = X(fullIndices, :);
 end
