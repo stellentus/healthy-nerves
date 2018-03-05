@@ -11,6 +11,13 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss()
 	clear armValues legValues;
 
 	addpath missing
+
 	[missingX, completeX, mask, originalMissingX, missingMask] = deleteProportional(X, 25);
+
+	valueMean = fillWithMean(missingX, completeX, mask, originalMissingX, missingMask);
+
+	err = valueError(missingX, originalMissingX, missingMask, valueMean);
+	disp(err);
+
 	rmpath missing
 end
