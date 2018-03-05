@@ -13,10 +13,15 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss()
 	addpath missing
 
 	[missingX, completeX, mask, originalMissingX, missingMask] = deleteProportional(X, 25);
+	originalCov = cov([completeX; originalMissingX]);
 
-	valueMean = fillWithMean(missingX, completeX, mask, originalMissingX, missingMask);
+	filledXMean = fillWithMean(missingX, completeX, mask, originalMissingX, missingMask);
+	covrMean = calcCov(completeX, filledXMean);
 
-	err = valueError(missingX, originalMissingX, missingMask, valueMean);
+	err = valueError(missingX, originalMissingX, missingMask, filledXMean);
+	disp(err);
+
+	err = covError(originalCov, covrMean);
 	disp(err);
 
 	rmpath missing
