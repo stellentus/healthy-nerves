@@ -13,7 +13,6 @@ function [data, participantNames, measureNames, stats, age, sex] = mefimport(fil
 	% Import the columns we care about
 	measureNames = string(stripped([2:end], 1));
 	averages = cell2mat(stripped([2:end], 2));
-	% print(stripped([2:end], 3))
 	counts = cell2mat(stripped([2:end], 3));
 	SDs = cell2mat(stripped([2:end], 4));
 	SEs = cell2mat(stripped([2:end], 5));
