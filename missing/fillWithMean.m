@@ -1,5 +1,5 @@
 % fillWithMean fills the missing values with the mean for that feature
-function [filledX] = fillWithMean(missingX, completeX, mask, originalMissingX, missingMask)
+function [filledX, covr] = fillWithMean(missingX, completeX, mask, originalMissingX, missingMask)
 	mn = nanmean([missingX; completeX]);
 
 	filledX = missingX;
@@ -16,4 +16,6 @@ function [filledX] = fillWithMean(missingX, completeX, mask, originalMissingX, m
 			end
 		end
 	end
+
+	covr = calcCov(completeX, filledX);
 end
