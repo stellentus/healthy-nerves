@@ -23,8 +23,7 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss(i
 
 	for i = 1:iters
 		fprintf('Running iteration %d of %d...\n', i, iters);
-		[missingX, completeX, mask, originalMissingX, missingMask] = deleteProportional(X);
-		[verr, cerr] = testFuncs(funcs, missingX, completeX, mask, originalMissingX, missingMask, originalCov);
+		[verr, cerr] = testFuncs(funcs, X, originalCov);
 		verrs = [verrs; verr];
 		cerrs = [cerrs; cerr];
 	end
@@ -53,7 +52,9 @@ function [X] = loadMEF()
 	TEd40 = [armTEd40'; legTEd40']; % Currently unused
 end
 
-function [verr, cerr] = testFuncs(funcs, missingX, completeX, mask, originalMissingX, missingMask, originalCov)
+function [verr, cerr] = testFuncs(funcs, X, originalCov)
+	[missingX, completeX, mask, originalMissingX, missingMask] = deleteProportional(X);
+
 	verr = [];
 	cerr = [];
 
