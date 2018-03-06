@@ -36,16 +36,10 @@ function [X] = loadMEF()
 
 	[armDelayTEd40, armDelayTEh40, ~, ~, armTEd40, armTEh40, ~, ~] = mefTEimport(pathFor('arm'), armParticipants);
 	[legDelayTEd40, legDelayTEh40, ~, ~, legTEd40, legTEh40, ~, ~] = mefTEimport(pathFor('leg'), legParticipants);
-	clear armParticipants legParticipants;
 	rmpath import;
 
-	% Store all samples as X
-	X = [armValues; legValues];
-	clear armValues legValues;
-
-	delayTEd40 = armDelayTEd40';
-	clear armDelayTEd40 legDelayTEd40;
-	TEd40 = [armTEd40'; legTEd40'];
-	clear armTEd40 legTEd40;
+	X = [armValues; legValues]; % Store all samples as X
+	delayTEd40 = armDelayTEd40'; % Currently unused
+	TEd40 = [armTEd40'; legTEd40']; % Currently unused
 end
 
