@@ -42,6 +42,8 @@ function [X, covr, verrs, cerrs] = missmiss(iters)
 		fprintf('%10s | %11s (%5s)   | %11s (%5s)\n', names{i}, num2str(mean(verrs(:, i)), '%.2f'), num2str(std(verrs(:, i)), '%.2f'), num2str(mean(cerrs(:, i)), '%.2f'), num2str(std(cerrs(:, i)), '%.2f'));
 	end
 
+	plotBoxes(verrs, cerrs, names);
+
 	rmpath missing
 end
 
@@ -70,4 +72,18 @@ function [verr, cerr] = testFuncs(funcs, X, originalCov)
 		verr = [verr valueError(missingX, originalMissingX, missingMask, filledX)];
 		cerr = [cerr covError(originalCov, covr)];
 	end
+end
+
+function plotBoxes(verrs, cerrs, names)
+	subplot(1, 2, 1);
+	boxplot(verrs, names);
+	title('Error in Filled Data');
+	xlabel('Method');
+	ylabel('Error');
+
+	subplot(1, 2, 2);
+	boxplot(cerrs, names);
+	title('Error in Covariance');
+	xlabel('Method');
+	ylabel('Error');
 end
