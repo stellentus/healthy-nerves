@@ -12,7 +12,7 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss()
 
 	addpath missing
 
-	[missingX, completeX, mask, originalMissingX, missingMask] = deleteProportional(X, 25);
+	[missingX, completeX, mask, originalMissingX, missingMask] = deleteProportional(X);
 	originalCov = cov([completeX; originalMissingX]);
 
 	funcs = {
