@@ -24,6 +24,7 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss()
 
 	fprintf('Algorithm | Value Error | Covariance Error\n');
 	fprintf('----------+-------------+-----------------\n');
+
 	for i = 1:length(funcs)
 		func = funcs{i};
 		[filledX, covr] = func(missingX, completeX, mask, originalMissingX, missingMask);
