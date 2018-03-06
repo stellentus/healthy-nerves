@@ -1,5 +1,5 @@
 % missmiss loads missing data and does stuff with it
-function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss(iters)
+function [X, covr, verrs, cerrs] = missmiss(iters)
 	if nargin == 0
 		iters = 1;
 	end
@@ -8,7 +8,7 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss(i
 
 	addpath missing
 
-	originalCov = cov(X);
+	covr = cov(X);
 
 	funcs = {
 		@fillPCA,
@@ -23,7 +23,7 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss(i
 
 	for i = 1:iters
 		fprintf('Running iteration %d of %d...\n', i, iters);
-		[verr, cerr] = testFuncs(funcs, X, originalCov);
+		[verr, cerr] = testFuncs(funcs, X, covr);
 		verrs = [verrs; verr];
 		cerrs = [cerrs; cerr];
 	end
