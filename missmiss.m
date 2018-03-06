@@ -19,6 +19,7 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss()
 		@fillWithMean,
 		@fillCCA,
 		@fillPCA,
+		@fillRegression,
 	};
 
 	for i = 1:length(funcs)
