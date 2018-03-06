@@ -22,13 +22,14 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss()
 		@fillRegr,
 	};
 
+	fprintf('Algorithm | Value Error | Covariance Error\n');
+	fprintf('----------+-------------+-----------------\n');
 	for i = 1:length(funcs)
 		func = funcs{i};
 		[filledX, covr] = func(missingX, completeX, mask, originalMissingX, missingMask);
-		err = valueError(missingX, originalMissingX, missingMask, filledX);
-		fprintf('The value error for %8s is %f\n', func2str(func), err);
-		err = covError(originalCov, covr);
-		fprintf('The covar error for %8s is %f\n', func2str(func), err);
+		verr = valueError(missingX, originalMissingX, missingMask, filledX);
+		cerr = covError(originalCov, covr);
+		fprintf('%9s | %9s   | %9s\n', func2str(func), num2str(verr, '%.2f'), num2str(cerr, '%.2f'));
 	end
 
 	rmpath missing
