@@ -16,19 +16,19 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss()
 	originalCov = cov([completeX; originalMissingX]);
 
 	funcs = {
-		@fillWithMean,
+		@fillMean,
 		@fillCCA,
 		@fillPCA,
-		@fillRegression,
+		@fillRegr,
 	};
 
 	for i = 1:length(funcs)
 		func = funcs{i};
 		[filledX, covr] = func(missingX, completeX, mask, originalMissingX, missingMask);
 		err = valueError(missingX, originalMissingX, missingMask, filledX);
-		fprintf('The value error for %s is %f\n', func2str(func), err);
+		fprintf('The value error for %8s is %f\n', func2str(func), err);
 		err = covError(originalCov, covr);
-		fprintf('The covariance error for %s is %f\n', func2str(func), err);
+		fprintf('The covar error for %8s is %f\n', func2str(func), err);
 	end
 
 	rmpath missing
