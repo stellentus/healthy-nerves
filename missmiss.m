@@ -16,14 +16,7 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss()
 
 	[missingX, completeX, mask, originalMissingX, missingMask] = deleteProportional(X);
 
-	verr = [];
-	cerr = [];
-
-	for i = 1:length(funcs)
-		[filledX, covr] = funcs{i}(missingX, completeX, mask, originalMissingX, missingMask);
-		verr = [verr valueError(missingX, originalMissingX, missingMask, filledX)];
-		cerr = [cerr covError(originalCov, covr)];
-	end
+	[verr, cerr] = testFuncs(funcs, missingX, completeX, mask, originalMissingX, missingMask, originalCov);
 
 	fprintf(' Algorithm | Value Error | Covariance Error\n');
 	fprintf('-----------+-------------+------------------\n');
@@ -48,3 +41,13 @@ function [X] = loadMEF()
 	TEd40 = [armTEd40'; legTEd40']; % Currently unused
 end
 
+function [verr, cerr] = testFuncs(funcs, missingX, completeX, mask, originalMissingX, missingMask, originalCov)
+	verr = [];
+	cerr = [];
+
+	for i = 1:length(funcs)
+		[filledX, covr] = funcs{i}(missingX, completeX, mask, originalMissingX, missingMask);
+		verr = [verr valueError(missingX, originalMissingX, missingMask, filledX)];
+		cerr = [cerr covError(originalCov, covr)];
+	end
+end
