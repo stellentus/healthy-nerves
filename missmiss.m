@@ -32,7 +32,7 @@ function [X, covr, verrs, cerrs] = missmiss(iters)
 	fprintf(' Algorithm | Value Error (std dev) | Covariance Error (std dev)\n');
 	fprintf('-----------+-----------------------+----------------------------\n');
 	for i = 1:length(funcs)
-		fprintf('%10s | %11s (%5s)   | %11s (%5s)\n', func2str(funcs{i}), num2str(mean(verr(:, i)), '%.2f'), num2str(std(verr(:, i)), '%.2f'), num2str(mean(cerr(:, i)), '%.2f'), num2str(std(cerr(:, i)), '%.2f'));
+		fprintf('%10s | %11s (%5s)   | %11s (%5s)\n', func2str(funcs{i}), num2str(mean(verrs(:, i)), '%.2f'), num2str(std(verrs(:, i)), '%.2f'), num2str(mean(cerrs(:, i)), '%.2f'), num2str(std(cerrs(:, i)), '%.2f'));
 	end
 
 	rmpath missing
