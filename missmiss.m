@@ -16,9 +16,9 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss()
 	originalCov = cov([completeX; originalMissingX]);
 
 	funcs = {
-		@fillMean,
-		@fillCCA,
 		@fillPCA,
+		@fillCCA,
+		@fillMean,
 		@fillRegr,
 	};
 
