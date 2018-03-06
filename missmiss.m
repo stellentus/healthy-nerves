@@ -16,15 +16,19 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss()
 
 	[missingX, completeX, mask, originalMissingX, missingMask] = deleteProportional(X);
 
-	fprintf(' Algorithm | Value Error | Covariance Error\n');
-	fprintf('-----------+-------------+------------------\n');
+	verr = [];
+	cerr = [];
 
 	for i = 1:length(funcs)
-		func = funcs{i};
-		[filledX, covr] = func(missingX, completeX, mask, originalMissingX, missingMask);
-		verr = valueError(missingX, originalMissingX, missingMask, filledX);
-		cerr = covError(originalCov, covr);
-		fprintf('%10s | %9s   | %9s\n', func2str(func), num2str(verr, '%.2f'), num2str(cerr, '%.2f'));
+		[filledX, covr] = funcs{i}(missingX, completeX, mask, originalMissingX, missingMask);
+		verr = [verr valueError(missingX, originalMissingX, missingMask, filledX)];
+		cerr = [cerr covError(originalCov, covr)];
+	end
+
+	fprintf(' Algorithm | Value Error | Covariance Error\n');
+	fprintf('-----------+-------------+------------------\n');
+	for i = 1:length(funcs)
+		fprintf('%10s | %9s   | %9s\n', func2str(funcs{i}), num2str(verr(i), '%.2f'), num2str(cerr(i), '%.2f'));
 	end
 
 	rmpath missing
