@@ -5,7 +5,6 @@ function [missingX, completeX, mask, originalMissingX, missingMask, delayTEd40, 
 	addpath missing
 
 	originalCov = cov(X);
-	[missingX, completeX, mask, originalMissingX, missingMask] = deleteProportional(X);
 
 	funcs = {
 		@fillPCA,
@@ -14,6 +13,8 @@ function [missingX, completeX, mask, originalMissingX, missingMask, delayTEd40, 
 		@fillRegr,
 		@fillMI,
 	};
+
+	[missingX, completeX, mask, originalMissingX, missingMask] = deleteProportional(X);
 
 	fprintf(' Algorithm | Value Error | Covariance Error\n');
 	fprintf('-----------+-------------+------------------\n');
