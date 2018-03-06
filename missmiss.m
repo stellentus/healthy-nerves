@@ -20,6 +20,7 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss()
 		@fillCCA,
 		@fillMean,
 		@fillRegr,
+		@fillMultI,
 	};
 
 	fprintf('Algorithm | Value Error | Covariance Error\n');
