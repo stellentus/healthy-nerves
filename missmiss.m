@@ -4,8 +4,8 @@ function [missingX, completeX, mask, originalMissingX, missingMask, delayTEd40, 
 
 	addpath missing
 
+	originalCov = cov(X);
 	[missingX, completeX, mask, originalMissingX, missingMask] = deleteProportional(X);
-	originalCov = cov([completeX; originalMissingX]);
 
 	funcs = {
 		@fillPCA,
