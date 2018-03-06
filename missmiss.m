@@ -23,15 +23,15 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss()
 		@fillMI,
 	};
 
-	fprintf('Algorithm | Value Error | Covariance Error\n');
-	fprintf('----------+-------------+-----------------\n');
+	fprintf(' Algorithm | Value Error | Covariance Error\n');
+	fprintf('-----------+-------------+------------------\n');
 
 	for i = 1:length(funcs)
 		func = funcs{i};
 		[filledX, covr] = func(missingX, completeX, mask, originalMissingX, missingMask);
 		verr = valueError(missingX, originalMissingX, missingMask, filledX);
 		cerr = covError(originalCov, covr);
-		fprintf('%9s | %9s   | %9s\n', func2str(func), num2str(verr, '%.2f'), num2str(cerr, '%.2f'));
+		fprintf('%10s | %9s   | %9s\n', func2str(func), num2str(verr, '%.2f'), num2str(cerr, '%.2f'));
 	end
 
 	rmpath missing
