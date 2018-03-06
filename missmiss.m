@@ -1,5 +1,5 @@
 % missmiss loads missing data and does stuff with it
-function [missingX, completeX, mask, originalMissingX, missingMask, delayTEd40, TEd40] = missmiss()
+function [missingX, completeX, mask, originalMissingX, missingMask] = missmiss()
 	X = loadMEF();
 
 	addpath missing
