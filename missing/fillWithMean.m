@@ -11,7 +11,7 @@ function [filledX, covr] = fillWithMean(missingX, completeX, mask, originalMissi
 
 		for i = 1:size(missingX, 1)
 			if isnan(missingX(i, j))
-				% fprintf('Filling (%d, %d) with %f\n', i, j, mn(j))
+				% fprintf('Filling (%d, %d) with %f (true: %f)\n', i, j, mn(j), originalMissingX(i, j))
 				filledX(i, j) = mn(j);
 			end
 		end

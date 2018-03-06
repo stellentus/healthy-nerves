@@ -13,7 +13,7 @@ function [filledX, covr] = fillPCA(missingX, completeX, mask, originalMissingX, 
 
 		for i = 1:size(missingX, 1)
 			if isnan(missingX(i, j))
-				% fprintf('Filling (%d, %d) with %f\n', i, j, reconstructedX(i, j))
+				% fprintf('Filling (%d, %d) with %f (true: %f)\n', i, j, reconstructedX(i, j), originalMissingX(i, j))
 				filledX(i, j) = reconstructedX(i, j);
 			end
 		end
