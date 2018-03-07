@@ -32,7 +32,7 @@ function [X, covr, verrs, cerrs] = missmiss(iters)
 		'PCA (k=8)',
 		'PCA (k=9)',
 		'Listwise',
-		'Mean-Filling',
+		'Mean-Fill',
 		'Regression',
 		'MI',
 	};
