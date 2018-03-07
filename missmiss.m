@@ -91,7 +91,7 @@ end
 function calcStats(data, name)
 	% First, does ANOVA say the difference is significant?
 	[p, table, stats] = anova1(data, [], 'off');
-	fprintf('%s ANOVA ($F(%d, %d) = %.2f, p = %.3f$)\n', name, table{2, 3}, table{3, 3}, table{2, 5}, table{2, 6});
+	fprintf('\n%s ANOVA ($F(%d, %d) = %.2f, p = %.3f$)\n', name, table{2, 3}, table{3, 3}, table{2, 5}, table{2, 6});
 
 	% Next check for significance.
 	% [c, m, h, nms] = multcompare(stats, 'ctype', 'hsd');
