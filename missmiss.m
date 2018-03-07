@@ -66,6 +66,10 @@ function [X, covr, verrs, cerrs] = missmiss(iters)
 	% Plot values
 	plotBoxes(verrs, cerrs, names);
 
+	% Calculate statistical significance
+	calcStats(verrs, 2, length(funcs)) % Skip first value because it's CCA with NaN.
+	calcStats(cerrs, 1, length(funcs))
+
 	rmpath missing
 end
 
@@ -94,6 +98,17 @@ function [verr, cerr] = testFuncs(funcs, X, originalCov, args)
 		verr = [verr valueError(missingX, originalMissingX, missingMask, filledX)];
 		cerr = [cerr covError(originalCov, covr)];
 	end
+end
+
+function calcStats(data, startIdx, endIdx)
+	[p, table, stats] = anova1(data);
+	% [c, m, h, nms] = multcompare(stats, 'ctype', 'hsd');
+	errs = [];
+	for i = startIdx:endIdx
+		errs = [errs; data(:, i) ones(size(data, 1), 1) + i - startIdx];
+	end
+	disp(errs)
+	GHtest(errs);
 end
 
 function plotBoxes(verrs, cerrs, names)
