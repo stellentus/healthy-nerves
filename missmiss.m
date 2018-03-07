@@ -112,10 +112,8 @@ function calcStats(data, startIdx, endIdx)
 end
 
 function plotBoxes(verrs, cerrs, names)
-	% Avoid plotting last one because it's CCA
 	subplot(1, 2, 1);
-	lengthWithoutLast = size(verrs, 2) - 1;
-	boxplot(verrs(:, lengthWithoutLast), names(:, lengthWithoutLast));
+	boxplot(verrs, names);
 	title('Error in Filled Data');
 	xlabel('Method');
 	ylabel('Error');
