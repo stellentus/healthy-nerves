@@ -97,8 +97,10 @@ function [verr, cerr] = testFuncs(funcs, X, originalCov, args)
 end
 
 function plotBoxes(verrs, cerrs, names)
+	% Avoid plotting last one because it's CCA
 	subplot(1, 2, 1);
-	boxplot(verrs, names);
+	lengthWithoutLast = size(verrs, 2) - 1;
+	boxplot(verrs(:, lengthWithoutLast), names(:, lengthWithoutLast));
 	title('Error in Filled Data');
 	xlabel('Method');
 	ylabel('Error');
