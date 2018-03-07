@@ -18,14 +18,26 @@ function [X, covr, verrs, cerrs] = missmiss(iters)
 		@fillMI,
 	};
 	names = {
-		'PCA',
+		'PCA (k=3)',
+		'PCA (k=4)',
+		'PCA (k=5)',
+		'PCA (k=6)',
+		'PCA (k=7)',
+		'PCA (k=8)',
+		'PCA (k=9)',
 		'Listwise',
 		'Mean-Filling',
 		'Regression',
 		'MI',
 	};
 	arg = {
+		3,
+		4,
 		5,
+		6,
+		7,
+		8,
+		9,
 		{},
 		{},
 		{},
