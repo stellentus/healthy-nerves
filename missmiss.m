@@ -12,6 +12,12 @@ function [X, covr, verrs, cerrs] = missmiss(iters)
 
 	funcs = {
 		@fillPCA,
+		@fillPCA,
+		@fillPCA,
+		@fillPCA,
+		@fillPCA,
+		@fillPCA,
+		@fillPCA,
 		@fillCCA,
 		@fillMean,
 		@fillRegr,
