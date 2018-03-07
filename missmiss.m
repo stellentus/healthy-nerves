@@ -55,8 +55,8 @@ function [X, covr, verrs, cerrs] = missmiss(iters)
 	plotBoxes(verrs, cerrs, names);
 
 	% Calculate statistical significance
-	calcStats(verrs, 2, length(funcs)) % Skip first value because it's CCA with NaN.
-	calcStats(cerrs, 1, length(funcs))
+	calcStats(verrs(:, 2:length(funcs)), 'Values') % Skip first value because it's CCA with NaN.
+	calcStats(cerrs, 'Covariances')
 
 	rmpath missing
 end
@@ -88,14 +88,19 @@ function [verr, cerr] = testFuncs(funcs, X, originalCov, args)
 	end
 end
 
-function calcStats(data, startIdx, endIdx)
-	[p, table, stats] = anova1(data);
+function calcStats(data, name)
+	% First, does ANOVA say the difference is significant?
+	[p, table, stats] = anova1(data, [], 'off');
+	fprintf('%s ANOVA ($F(%d, %d) = %.2f, p = %.3f$)\n', name, table{2, 3}, table{3, 3}, table{2, 5}, table{2, 6});
+
+	% Next check for significance.
 	% [c, m, h, nms] = multcompare(stats, 'ctype', 'hsd');
+
+	% Or use GH test for significance.
 	errs = [];
-	for i = startIdx:endIdx
-		errs = [errs; data(:, i) ones(size(data, 1), 1) + i - startIdx];
+	for i = 1:size(data, 2)
+		errs = [errs; data(:, i) ones(size(data, 1), 1) + i - 1];
 	end
-	disp(errs)
 	GHtest(errs);
 end
 
