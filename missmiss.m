@@ -24,13 +24,20 @@ function [X, covr, verrs, cerrs] = missmiss(iters)
 		'Regression',
 		'MI',
 	};
+	arg = {
+		5,
+		{},
+		{},
+		{},
+		{},
+	};
 
 	verrs = [[]];
 	cerrs = [[]];
 
 	for i = 1:iters
 		fprintf('Running iteration %d of %d...\n', i, iters);
-		[verr, cerr] = testFuncs(funcs, X, covr);
+		[verr, cerr] = testFuncs(funcs, X, covr, arg);
 		verrs = [verrs; verr];
 		cerrs = [cerrs; cerr];
 	end
@@ -61,14 +68,14 @@ function [X] = loadMEF()
 	TEd40 = [armTEd40'; legTEd40']; % Currently unused
 end
 
-function [verr, cerr] = testFuncs(funcs, X, originalCov)
+function [verr, cerr] = testFuncs(funcs, X, originalCov, arg)
 	[missingX, completeX, mask, originalMissingX, missingMask] = deleteProportional(X);
 
 	verr = [];
 	cerr = [];
 
 	for i = 1:length(funcs)
-		[filledX, covr] = funcs{i}(missingX, completeX, mask, originalMissingX, missingMask);
+		[filledX, covr] = funcs{i}(missingX, completeX, mask, originalMissingX, missingMask, arg);
 		verr = [verr valueError(missingX, originalMissingX, missingMask, filledX)];
 		cerr = [cerr covError(originalCov, covr)];
 	end

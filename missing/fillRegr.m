@@ -1,6 +1,6 @@
 % fillRegr uses linear regression on each column with missing data.
 % It's using the Matlab default linear regression, which "ignores" NaN values. (I'm not sure what that means.)
-function [filledX, covr] = fillRegr(missingX, completeX, mask, originalMissingX, missingMask)
+function [filledX, covr] = fillRegr(missingX, completeX, mask, originalMissingX, missingMask, arg)
 	X = [missingX; completeX];
 
 	filledX = missingX;

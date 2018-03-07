@@ -1,6 +1,6 @@
 % fillMI uses multiple imputation.
 % It's using some MI code I got online. I don't understand the code. :/
-function [filledX, covr] = fillMI(missingX, completeX, mask, originalMissingX, missingMask)
+function [filledX, covr] = fillMI(missingX, completeX, mask, originalMissingX, missingMask, arg)
 	[~, ~, ~, covr, Y] = mi([missingX; completeX], 10, 100);
 
 	filledX = missingX;

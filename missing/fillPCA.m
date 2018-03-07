@@ -1,9 +1,9 @@
 % fillPCA uses PCA with ALS to fill the values.
-function [filledX, covr] = fillPCA(missingX, completeX, mask, originalMissingX, missingMask)
+function [filledX, covr] = fillPCA(missingX, completeX, mask, originalMissingX, missingMask, k)
 	X = [missingX; completeX];
 	[coeff, score, ~, ~, ~, mu] = pca(X, 'VariableWeights', 'variance', 'algorithm', 'als');
 	coeff = coeff';
-	reconstructedX = score(:, 1:5) * coeff(1:5, :) + repmat(mu, size(X, 1), 1);
+	reconstructedX = score(:, 1:k) * coeff(1:k, :) + repmat(mu, size(X, 1), 1);
 
 	filledX = missingX;
 	for j = 1:size(missingX, 2)
