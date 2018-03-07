@@ -2,7 +2,8 @@
 function [filledX, covr] = fillPCA(missingX, completeX, mask, originalMissingX, missingMask)
 	X = [missingX; completeX];
 	[coeff, score, ~, ~, ~, mu] = pca(X, 'VariableWeights', 'variance', 'algorithm', 'als');
-	reconstructedX = score * coeff' + repmat(mu, size(X, 1), 1);
+	coeff = coeff';
+	reconstructedX = score(:, 1:5) * coeff(1:5, :) + repmat(mu, size(X, 1), 1);
 
 	filledX = missingX;
 	for j = 1:size(missingX, 2)
