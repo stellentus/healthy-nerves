@@ -19,8 +19,8 @@ function [X, covr, verrs, cerrs] = missmiss(iters)
 	};
 	names = {
 		'PCA',
-		'CCA',
-		'Mean',
+		'Listwise',
+		'Mean-Filling',
 		'Regression',
 		'MI',
 	};
