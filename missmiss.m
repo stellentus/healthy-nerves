@@ -12,34 +12,34 @@ function [X, covr, verrs, cerrs] = missmiss(iters)
 
 	% Set up functions to iterate through
 	funcs = {
-		@fillPCA,
-		@fillPCA,
-		@fillPCA,
-		@fillPCA,
-		@fillPCA,
 		@fillCCA,
+		@fillPCA,
+		@fillPCA,
+		@fillPCA,
+		@fillPCA,
+		@fillPCA,
 		@fillMean,
 		@fillRegr,
 		@fillMI,
 	};
 	names = {
+		'Listwise',
 		'PCA (k=1)',
 		'PCA (k=2)',
 		'PCA (k=3)',
 		'PCA (k=4)',
 		'PCA (k=5)',
-		'Listwise',
 		'Mean-Fill',
 		'Regression',
 		'MI',
 	};
 	args = {
+		{},
 		1,
 		2,
 		3,
 		4,
 		5,
-		{},
 		{},
 		{},
 		{},
