@@ -10,6 +10,7 @@ function [X, covr, verrs, cerrs] = missmiss(iters)
 
 	covr = cov(X);
 
+	% Set up functions to iterate through
 	funcs = {
 		@fillPCA,
 		@fillPCA,
@@ -44,9 +45,9 @@ function [X, covr, verrs, cerrs] = missmiss(iters)
 		{},
 	};
 
+	% Calculate errors
 	verrs = [[]];
 	cerrs = [[]];
-
 	for i = 1:iters
 		fprintf('Running iteration %d of %d...\n', i, iters);
 		[verr, cerr] = testFuncs(funcs, X, covr, args);
@@ -55,12 +56,14 @@ function [X, covr, verrs, cerrs] = missmiss(iters)
 	end
 	fprintf('\n');
 
+	% Print table of values
 	fprintf(' Algorithm | Value Error (std dev) | Covariance Error (std dev)\n');
 	fprintf('-----------+-----------------------+----------------------------\n');
 	for i = 1:length(funcs)
 		fprintf('%10s | %11s (%5s)   | %11s (%5s)\n', names{i}, num2str(mean(verrs(:, i)), '%.2f'), num2str(std(verrs(:, i)), '%.2f'), num2str(mean(cerrs(:, i)), '%.2f'), num2str(std(cerrs(:, i)), '%.2f'));
 	end
 
+	% Plot values
 	plotBoxes(verrs, cerrs, names);
 
 	rmpath missing
