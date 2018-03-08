@@ -44,6 +44,8 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 	end
 	fprintf('\n');
 
+	save('bin/vars.mat', 'X', 'covr', 'verrs', 'cerrs', 'names');
+
 	% Print table of values
 	fprintf(' Algorithm | Value Error (std dev) | Covariance Error (std dev)\n');
 	fprintf('-----------+-----------------------+----------------------------\n');
