@@ -57,8 +57,8 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 	plotBoxes(verrs, cerrs, names);
 
 	% Calculate statistical significance
-	calcStats(verrs, 'Values')
-	calcStats(cerrs, 'Covariances')
+	calcStats(verrs, 'Values', names)
+	calcStats(cerrs, 'Covariances', names)
 
 	rmpath missing
 end
