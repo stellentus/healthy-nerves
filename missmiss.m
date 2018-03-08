@@ -1,5 +1,5 @@
 % missmiss loads missing data and does stuff with it
-function [X, covr, verrs, cerrs] = missmiss(iters)
+function [X, covr, verrs, cerrs, names] = missmiss(iters)
 	if nargin == 0
 		iters = 1;
 	end
