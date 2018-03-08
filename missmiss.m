@@ -55,7 +55,7 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 	plotBoxes(verrs, cerrs, names);
 
 	% Calculate statistical significance
-	calcStats(verrs(:, 2:length(funcs)), 'Values') % Skip first value because it's CCA with NaN.
+	calcStats(verrs, 'Values')
 	calcStats(cerrs, 'Covariances')
 
 	rmpath missing
