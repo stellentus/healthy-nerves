@@ -103,11 +103,13 @@ function calcStats(data, name)
 	% [c, m, h, nms] = multcompare(stats, 'ctype', 'hsd');
 
 	% Or use GH test for significance.
+	addpath ghtest;
 	errs = [];
 	for i = 1:size(data, 2)
 		errs = [errs; data(:, i) ones(size(data, 1), 1) + i - 1];
 	end
 	GHtest(errs);
+	rmpath ghtest;
 end
 
 function plotBoxes(verrs, cerrs, names)
