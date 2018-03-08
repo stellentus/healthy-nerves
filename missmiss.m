@@ -90,26 +90,21 @@ function [verr, cerr] = testFuncs(funcs, X, originalCov, args)
 	end
 end
 
-function calcStats(data, name)
-	% First, does ANOVA say the difference is significant?
-	[p, table, stats] = anova1(data, [], 'off');
-	if p < 0.001
-		fprintf('\n%s ANOVA ($F(%d, %d) = %.2f, p < 0.001$)\n', name, table{2, 3}, table{3, 3}, table{2, 5});
-	else
-		fprintf('\n%s ANOVA ($F(%d, %d) = %.2f, p = %.3f$)\n', name, table{2, 3}, table{3, 3}, table{2, 5}, table{2, 6});
-	end
-
-	% Next check for significance.
-	% [c, m, h, nms] = multcompare(stats, 'ctype', 'hsd');
-
-	% Or use GH test for significance.
-	addpath ghtest;
-	errs = [];
+function calcStats(data, name, names)
 	for i = 1:size(data, 2)
-		errs = [errs; data(:, i) ones(size(data, 1), 1) + i - 1];
+		for j = i+1:size(data, 2)
+			[h, p] = ttest(data(:, i), data(:, j));
+			if h == 1
+				if p < 0.001
+					fprintf('** %10s vs %10s is significant (p=%f)\n', names{i}, names{j}, p);
+				else
+					fprintf('*  %10s vs %10s is significant (p=%.3f)\n', names{i}, names{j}, p);
+				end
+			else
+				fprintf('   %10s vs %10s is not significant (p=%.3f)\n', names{i}, names{j}, p);
+			end
+		end
 	end
-	GHtest(errs);
-	rmpath ghtest;
 end
 
 function plotBoxes(verrs, cerrs, names)
