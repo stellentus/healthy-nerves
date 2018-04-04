@@ -108,15 +108,23 @@ function calcStats(data, name, names)
 end
 
 function plotBoxes(verrs, cerrs, names)
+	addpath util/CategoricalScatterplot
+
+	figure('DefaultAxesFontSize', 18);
+
 	subplot(1, 2, 1);
-	boxplot(verrs, names);
-	title('Error in Filled Data');
+	CategoricalScatterplot(verrs(:, 2:5), names(2:5));
+	ylim([0 80]);
+	title('A) Error in Filled Data');
 	xlabel('Method');
 	ylabel('Error');
 
 	subplot(1, 2, 2);
-	boxplot(cerrs, names);
-	title('Error in Covariance');
+	CategoricalScatterplot(cerrs, names);
+	ylim([0 70]);
+	title('B) Error in Covariance');
 	xlabel('Method');
 	ylabel('Error');
+
+	rmpath util/CategoricalScatterplot
 end
