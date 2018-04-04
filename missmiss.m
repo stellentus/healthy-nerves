@@ -17,6 +17,7 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 		@fillMean,
 		@fillRegr,
 		@fillMI,
+		@fillNeural,
 	};
 	names = {
 		'Listwise',
@@ -24,10 +25,12 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 		'Mean-Fill',
 		'Regression',
 		'MI',
+		'Neural',
 	};
 	args = {
 		{},
 		4,
+		{},
 		{},
 		{},
 		{},
