@@ -15,7 +15,7 @@ function [filledX, covr] = fillNeural(missingX, completeX, mask, originalMissing
 
 		addpath ./algorithm
 
-		model.name = 'neuralnetwork';
+		model.params = arg;
 		model = neuralnetwork(model);
 		model = neuralnetwork(model, thisX, completeX(:, j));
 
