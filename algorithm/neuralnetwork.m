@@ -22,9 +22,6 @@ function [self] = reset(self)
 	if ~isfield(self.params, 'stepsize')
 		self.params.stepsize = 0.01;
 	end
-	if ~isfield(self.params, 'transfer')
-		self.params.transfer = @linear; % Could be @sigmoid instead
-	end
 	if ~isfield(self.params, 'epochs')
 		self.params.epochs = 100;
 	end
@@ -41,7 +38,7 @@ function [a_hidden, a_output] = feedforward(self, inputs)
 	a_hidden = sigmoid(self.w_input * inputs.');
 
 	% output activations
-	a_output = self.params.transfer(self.w_output * a_hidden);
+	a_output = self.w_output * a_hidden;
 end
 
 % Return a tuple ``(nabla_input, nabla_output)`` representing the gradients for the cost function with respect to self.w_input and self.w_output.
@@ -115,8 +112,4 @@ function [vecsig] = sigmoid(xvec)
 	% Undeflow is okay, since it get set to zero
 	xvec(xvec < -100) = -100;
 	vecsig = 1.0 ./ (1.0 + exp(-xvec));
-end
-
-% Return no change
-function [xvec] = linear(xvec)
 end
