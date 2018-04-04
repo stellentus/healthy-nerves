@@ -4,9 +4,10 @@ function [filledX, covr] = fillRegr(missingX, completeX, mask, originalMissingX,
 	X = [missingX; completeX];
 
 	filledX = missingX;
-	for j = 1:size(missingX, 2)
+	[numSamplesMissing, numFeatures] = size(missingX);
+	for j = 1:numFeatures
 		% Skip this column if it has no missing values
-		if sum(missingMask(:, j)) == 0
+		if sum(missingMask(:, j)) == numSamplesMissing
 			continue
 		end
 
@@ -20,7 +21,7 @@ function [filledX, covr] = fillRegr(missingX, completeX, mask, originalMissingX,
 		% After prediction, set NaN to zero so that we can multiply some rows to predict missing values.
 		thisX(isnan(thisX)) = 0;
 
-		for i = 1:size(missingX, 1)
+		for i = 1:numSamplesMissing
 			if isnan(missingX(i, j))
 				% fprintf('Filling (%d, %d) with %f (true: %f)\n', i, j, thisX(i, :) * b, originalMissingX(i, j))
 				filledX(i, j) = thisX(i, :) * b; % Predict the missing value.
