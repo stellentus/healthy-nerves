@@ -16,6 +16,9 @@ function [self] = neuralnetwork(self, X, ytrain)
 end
 
 function [self] = reset(self)
+	if ~isfield(self, 'params')
+		self.params = struct();
+	end
 	if ~isfield(self.params, 'nh')
 		self.params.nh = 10;
 	end
