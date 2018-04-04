@@ -13,9 +13,6 @@ function [filledX, covr] = fillNeural(missingX, completeX, mask, originalMissing
 		thisX = completeX;
 		thisX(:, j) = ones(size(completeX, 1), 1);
 
-		% Calculate weights.
-		b = regress(completeX(:, j), thisX);
-
 		addpath ./algorithm
 
 		model.name = 'neuralnetwork';
@@ -34,7 +31,7 @@ function [filledX, covr] = fillNeural(missingX, completeX, mask, originalMissing
 
 		for i = 1:numSamplesMissing
 			if isnan(missingX(i, j))
-				% fprintf('Filling (%d, %d) with %f (true: %f)\n', i, j, thisX(i, :) * b, originalMissingX(i, j))
+				% fprintf('Filling (%d, %d) with %f (true: %f)\n', i, j, missY(i), originalMissingX(i, j))
 				filledX(i, j) = missY(i); % Predict the missing value.
 			end
 		end
