@@ -5,7 +5,6 @@
 function [self] = neuralnetwork(self, X, ytrain)
 	switch nargin
 		case 1
-			self = init(self);
 			self = reset(self);
 		case 3 % Xtrain, ytrain
 			self = learn(self, X, ytrain);
@@ -16,23 +15,22 @@ function [self] = neuralnetwork(self, X, ytrain)
 	end
 end
 
-function [self] = init(self)
-	self.params = struct( ...
-		'nh', 10, ...
-		'stepsize', 0.01, ...
-		'transfer', @linear, ... % Could be @sigmoid instead
-		'epochs', 100 ...
-	);
-	reset(self);
-end
-
 function [self] = reset(self)
-	% TODO if the parameter doesn't exist, set it to the default value.
+	if ~isfield(self.params, 'nh')
+		self.params.nh = 10;
+	end
+	if ~isfield(self.params, 'stepsize')
+		self.params.stepsize = 0.01;
+	end
+	if ~isfield(self.params, 'transfer')
+		self.params.transfer = @linear; % Could be @sigmoid instead
+	end
+	if ~isfield(self.params, 'epochs')
+		self.params.epochs = 100;
+	end
 
 	self.w_input = 0;
 	self.w_output = 0;
-	rmfield(self, 'w_input');
-	rmfield(self, 'w_output');
 end
 
 % Returns the output of the current neural network for the given input
