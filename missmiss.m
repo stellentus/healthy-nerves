@@ -113,7 +113,7 @@ function plotBoxes(verrs, cerrs, names)
 	figure('DefaultAxesFontSize', 18);
 
 	subplot(1, 2, 1);
-	CategoricalScatterplot(verrs(:, 2:5), names(2:5));
+	CategoricalScatterplot(verrs(:, 2:size(verrs, 2)), names(2:size(verrs, 2)));
 	ylim([0 80]);
 	title('A) Error in Filled Data');
 	xlabel('Method');
