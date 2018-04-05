@@ -55,7 +55,7 @@ function [nabla_input, nabla_output] = backprop(self, x, y)
 	nabla_input = zeros(numhidden, numfeatures);
 	for i = [1:numfeatures] % TODO Optimize by making it not a loop?
 		for j = [1:numhidden]
-			nabla_input(j, i) = self.w_output(:, j) * dshare * h(j) * (1 - h(j)) * x(i);
+			nabla_input(j, i) = self.w_output(:, j).' * dshare * h(j) * (1 - h(j)) * x(i);
 		end
 	end
 
