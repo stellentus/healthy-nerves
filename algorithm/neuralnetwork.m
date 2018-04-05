@@ -34,7 +34,7 @@ function [self] = reset(self)
 end
 
 % Returns the output of the current neural network for the given input
-function [a_hidden, a_output] = feedforward(self, inputs)
+function [a_output, a_hidden] = feedforward(self, inputs)
 	inputs(isnan(inputs)) = 0; % Zero NaN
 
 	% hidden activations
@@ -46,7 +46,7 @@ end
 
 % Return a tuple ``(nabla_input, nabla_output)`` representing the gradients for the cost function with respect to self.w_input and self.w_output.
 function [nabla_input, nabla_output] = backprop(self, x, y)
-	[h, yhat] = feedforward(self, x);
+	[yhat, h] = feedforward(self, x);
 	dshare = yhat - y;
 	nabla_output = dshare * h.';
 
@@ -87,10 +87,9 @@ end
 
 % Use the parameters computed in self.learn to give predictions on new observations.
 function [ytest] = predict(self, Xtest)
-	[~, yhat] = feedforward(self, Xtest);
-	ytest = yhat.';
+	ytest = feedforward(self, Xtest).';
 	% disp(ytest);
-	assert(size(ytest, 1) == size(Xtest, 1));
+	% assert(size(ytest, 1) == size(Xtest, 1));
 end
 
 function [self] = learnStochastic(self, Xtrain, ytrain)
@@ -104,8 +103,7 @@ function [self] = learnStochastic(self, Xtrain, ytrain)
 			self = stochasticUpdate(self, Xtrain(j, :), ytrain(j), n);
 		end
 
-		% [~, yhat] = feedforward(self, Xtrain);
-		% fprintf('%03i: Cost is %f\n', i, norm(yhat.' - ytrain));
+		% fprintf('%03i: Cost is %f\n', i, norm(feedforward(self, Xtrain).' - ytrain));
 	end
 end
 
