@@ -9,18 +9,30 @@ function [filledX, covr] = fillNeural(missingX, completeX, mask, originalMissing
 			continue
 		end
 
+		if ~isfield(arg, 'ones')
+			arg.ones = false;
+		end
+		model.params = arg;
+
 		% Create a version of X for this iteration. It needs a column of 1s and should not have the feature we're predicting, so covert that column to ones.
 		thisX = completeX;
-		thisX(:, j) = ones(size(completeX, 1), 1);
+		if model.params.ones == true
+			thisX(:, j) = ones(size(completeX, 1), 1);
+		else
+			thisX(:, j) = zeros(size(completeX, 1), 1);
+		end
 
 		addpath ./algorithm
 
-		model.params = arg;
 		model = neuralnetwork(model);
 		model = neuralnetwork(model, thisX, completeX(:, j));
 
 		missX = missingX;
-		missX(:, j) = ones(numSamplesMissing, 1);
+		if model.params.ones == true
+			missX(:, j) = ones(numSamplesMissing, 1);
+		else
+			missX(:, j) = zeros(numSamplesMissing, 1);
+		end
 		model = neuralnetwork(model, missX);
 		missY = model.ytest;
 
