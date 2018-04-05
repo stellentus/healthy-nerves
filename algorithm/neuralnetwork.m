@@ -75,7 +75,7 @@ end
 function [self] = learn(self, Xtrain, ytrain)
 	% Do not generate random weights because we want to compare cost/epoch
 	numfeatures = size(Xtrain, 2);
-	numoutputs = 1; %size(ytrain, 2);
+	numoutputs = size(ytrain, 2);
 	numhidden = self.params.nh;
 	perturbation = 1;
 
