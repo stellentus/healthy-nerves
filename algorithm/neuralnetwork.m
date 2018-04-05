@@ -53,7 +53,7 @@ function [nabla_input, nabla_output] = backprop(self, x, y)
 	numfeatures = size(x, 2);
 	numhidden = self.params.nh;
 	nabla_input = zeros(numhidden, numfeatures);
-	for i = [1:numfeatures]
+	for i = [1:numfeatures] % TODO Optimize by making it not a loop?
 		for j = [1:numhidden]
 			nabla_input(j, i) = self.w_output(:, j) * dshare * h(j) * (1 - h(j)) * x(i);
 		end
@@ -73,7 +73,6 @@ end
 
 % Learns using the traindata with batch gradient descent.
 function [self] = learn(self, Xtrain, ytrain)
-	% Do not generate random weights because we want to compare cost/epoch
 	numfeatures = size(Xtrain, 2);
 	numoutputs = size(ytrain, 2);
 	numhidden = self.params.nh;
