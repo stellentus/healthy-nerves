@@ -38,9 +38,6 @@ function [filledX, covr] = fillNeural(missingX, completeX, mask, originalMissing
 
 		rmpath ./algorithm
 
-		% After prediction, set NaN to zero so that we can multiply some rows to predict missing values.
-		missX(isnan(missX)) = 0;
-
 		for i = 1:numSamplesMissing
 			if isnan(missingX(i, j))
 				% fprintf('Filling (%d, %d) with %f (true: %f)\n', i, j, missY(i), originalMissingX(i, j))
