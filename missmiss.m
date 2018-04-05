@@ -43,8 +43,8 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 	verrs = [[]];
 	cerrs = [[]];
 	for i = 1:iters
-		fprintf('Running iteration %d of %d...\n', i, iters);
-		[verr, cerr] = testFuncs(funcs, X, covr, args);
+		fprintf('Iter %d of %d...', i, iters);
+		[verr, cerr] = testFuncs(funcs, names, X, covr, args);
 		verrs = [verrs; verr];
 		cerrs = [cerrs; cerr];
 	end
@@ -85,17 +85,21 @@ function [X] = loadMEF()
 	TEd40 = [armTEd40'; legTEd40']; % Currently unused
 end
 
-function [verr, cerr] = testFuncs(funcs, X, originalCov, args)
+function [verr, cerr] = testFuncs(funcs, names, X, originalCov, args)
+	fprintf('Load...');
 	[missingX, completeX, mask, originalMissingX, missingMask] = deleteProportional(X);
 
 	verr = [];
 	cerr = [];
 
+	fprintf('Run ');
 	for i = 1:length(funcs)
+		fprintf('%s...', names{i});
 		[filledX, covr] = funcs{i}(missingX, completeX, mask, originalMissingX, missingMask, args{i});
 		verr = [verr valueError(missingX, originalMissingX, missingMask, filledX)];
 		cerr = [cerr covError(originalCov, covr)];
 	end
+	fprintf('\n');
 end
 
 function calcStats(data, name, names)
