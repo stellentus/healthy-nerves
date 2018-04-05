@@ -34,7 +34,7 @@ function [filledX, covr] = fillNeural(missingX, completeX, mask, originalMissing
 			missX(:, j) = zeros(numSamplesMissing, 1);
 		end
 		model = neuralnetwork(model, missX);
-		missY = model.ytest;
+		missY = model.Y;
 
 		rmpath ./algorithm
 

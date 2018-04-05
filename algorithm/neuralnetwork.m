@@ -9,7 +9,7 @@ function [self] = neuralnetwork(self, X, ytrain)
 		case 3 % Xtrain, ytrain
 			self = learn(self, X, ytrain);
 		case 2 % Xtest
-			self.ytest = predict(self, X);
+			self.Y = predict(self, X);
 		otherwise
 			disp('Error in number of arguments to Neural Network.')
 	end
