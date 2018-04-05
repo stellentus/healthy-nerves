@@ -33,7 +33,7 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 		{},
 		{},
 		% {},
-		{},
+		struct(),
 	};
 
 	% Calculate errors

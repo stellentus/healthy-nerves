@@ -59,10 +59,10 @@ function [nabla_input, nabla_output] = backprop(self, x, y)
 		end
 	end
 
-	assert(size(nabla_input, 1) == size(self.w_input, 1));
-	assert(size(nabla_input, 2) == size(self.w_input, 2));
-	assert(size(nabla_output, 1) == size(self.w_output, 1));
-	assert(size(nabla_output, 2) == size(self.w_output, 2));
+	% assert(size(nabla_input, 1) == size(self.w_input, 1));
+	% assert(size(nabla_input, 2) == size(self.w_input, 2));
+	% assert(size(nabla_output, 1) == size(self.w_output, 1));
+	% assert(size(nabla_output, 2) == size(self.w_output, 2));
 end
 
 function [self] = stochasticUpdate(self, x, y, n)
@@ -104,7 +104,7 @@ function [self] = learnStochastic(self, Xtrain, ytrain)
 			self = stochasticUpdate(self, Xtrain(j, :), ytrain(j), n);
 		end
 
-		[~, yhat] = feedforward(self, Xtrain);
+		% [~, yhat] = feedforward(self, Xtrain);
 		% fprintf('%03i: Cost is %f\n', i, norm(yhat.' - ytrain));
 	end
 end
