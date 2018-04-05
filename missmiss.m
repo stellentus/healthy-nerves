@@ -18,6 +18,7 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 		@fillRegr,
 		@fillMI,
 		@fillNeural,
+		@fillMultiNeural,
 	};
 	names = {
 		'Listwise',
@@ -26,6 +27,7 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 		'Regression',
 		'MI',
 		'Neural',
+		'MultiNeural',
 	};
 	args = {
 		{},
@@ -33,6 +35,7 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 		{},
 		{},
 		{},
+		struct(),
 		struct(),
 	};
 
