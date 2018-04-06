@@ -97,7 +97,8 @@ function [self] = learnStochastic(self, Xtrain, ytrain)
 		% Shuffle indexes
 		ind = randperm(numsamples);
 
-		for j = [1:ind]
+		for j_ind = [1:numsamples]
+			j = ind(j_ind);
 			n = self.params.stepsize / (i + 1);
 			self = stochasticUpdate(self, Xtrain(j, :), ytrain(j), n);
 		end
