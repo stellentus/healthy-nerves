@@ -25,7 +25,7 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 		'Mean-Fill',
 		'Regression',
 		'Neural',
-		'MultiNeural',
+		'MultNeural',
 	};
 	args = {
 		{},
