@@ -16,7 +16,6 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 		@fillPCA,
 		@fillMean,
 		@fillRegr,
-		@fillMI,
 		@fillNeural,
 		@fillMultiNeural,
 	};
@@ -25,14 +24,12 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 		'PCA (k=4)',
 		'Mean-Fill',
 		'Regression',
-		'MI',
 		'Neural',
 		'MultiNeural',
 	};
 	args = {
 		{},
 		4,
-		{},
 		{},
 		{},
 		struct(),
