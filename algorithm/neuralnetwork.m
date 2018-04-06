@@ -47,7 +47,7 @@ function [a_output, a_hidden] = feedforward(self, inputs)
 	inputs(isnan(inputs)) = 0; % Zero NaN
 
 	% hidden activations
-	a_hidden = self.transfer(self.w_input * inputs.');
+	a_hidden = self.transfer(self.w_input * inputs');
 
 	% output activations
 	a_output = self.transfer(self.w_output * a_hidden);
@@ -57,14 +57,14 @@ end
 function [nabla_input, nabla_output] = backprop(self, x, y)
 	[yhat, h] = feedforward(self, x);
 	dshare = yhat - y;
-	nabla_output = dshare * h.';
+	nabla_output = dshare * h';
 
 	numfeatures = size(x, 2);
 	numhidden = self.params.nh;
 	nabla_input = zeros(numhidden, numfeatures);
 	for i = [1:numfeatures] % TODO Optimize by making it not a loop?
 		for j = [1:numhidden]
-			nabla_input(j, i) = self.w_output(:, j).' * dshare;
+			nabla_input(j, i) = self.w_output(:, j)' * dshare;
 			if self.params.sigmoid
 				nabla_input(j, i) = nabla_input(j, i) * h(j) * (1 - h(j));
 			end
@@ -99,7 +99,7 @@ end
 
 % Use the parameters computed in self.learn to give predictions on new observations.
 function [ytest] = predict(self, Xtest)
-	ytest = feedforward(self, Xtest).';
+	ytest = feedforward(self, Xtest)';
 	% disp(ytest);
 	% assert(size(ytest, 1) == size(Xtest, 1));
 end
@@ -116,7 +116,7 @@ function [self] = learnStochastic(self, Xtrain, ytrain)
 			self = stochasticUpdate(self, Xtrain(j, :), ytrain(j), n);
 		end
 
-		% fprintf('%03i: Cost is %f\n', i, norm(feedforward(self, Xtrain).' - ytrain));
+		% fprintf('%03i: Cost is %f\n', i, norm(feedforward(self, Xtrain)' - ytrain));
 	end
 end
 
