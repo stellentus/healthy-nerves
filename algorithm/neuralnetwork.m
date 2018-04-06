@@ -20,10 +20,10 @@ function [self] = reset(self)
 		self.params = struct();
 	end
 	if ~isfield(self.params, 'nh')
-		self.params.nh = 10;
+		self.params.nh = 5;
 	end
 	if ~isfield(self.params, 'stepsize')
-		self.params.stepsize = 0.01;
+		self.params.stepsize = 1e-5;
 	end
 	if ~isfield(self.params, 'epochs')
 		self.params.epochs = 100;
