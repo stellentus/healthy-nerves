@@ -28,6 +28,15 @@ function [self] = reset(self)
 	if ~isfield(self.params, 'epochs')
 		self.params.epochs = 100;
 	end
+	if ~isfield(self.params, 'sigmoid')
+		self.params.sigmoid = false;
+	end
+
+	if self.params.sigmoid
+		self.transfer = @sigmoid;
+	else
+		self.transfer = @linearTrans;
+	end
 
 	self.w_input = 0;
 	self.w_output = 0;
@@ -38,10 +47,10 @@ function [a_output, a_hidden] = feedforward(self, inputs)
 	inputs(isnan(inputs)) = 0; % Zero NaN
 
 	% hidden activations
-	a_hidden = sigmoid(self.w_input * inputs.');
+	a_hidden = self.transfer(self.w_input * inputs.');
 
 	% output activations
-	a_output = self.w_output * a_hidden;
+	a_output = self.transfer(self.w_output * a_hidden);
 end
 
 % Return a tuple ``(nabla_input, nabla_output)`` representing the gradients for the cost function with respect to self.w_input and self.w_output.
@@ -55,7 +64,11 @@ function [nabla_input, nabla_output] = backprop(self, x, y)
 	nabla_input = zeros(numhidden, numfeatures);
 	for i = [1:numfeatures] % TODO Optimize by making it not a loop?
 		for j = [1:numhidden]
-			nabla_input(j, i) = self.w_output(:, j).' * dshare * h(j) * (1 - h(j)) * x(i);
+			nabla_input(j, i) = self.w_output(:, j).' * dshare;
+			if self.params.sigmoid
+				nabla_input(j, i) = nabla_input(j, i) * h(j) * (1 - h(j));
+			end
+			nabla_input(j, i) = nabla_input(j, i) * x(i);
 		end
 	end
 
@@ -113,4 +126,8 @@ function [vecsig] = sigmoid(xvec)
 	% Undeflow is okay, since it get set to zero
 	xvec(xvec < -100) = -100;
 	vecsig = 1.0 ./ (1.0 + exp(-xvec));
+end
+
+% Compute the linear function
+function [xvec] = linearTrans(xvec)
 end
