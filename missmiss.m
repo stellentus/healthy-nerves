@@ -19,6 +19,7 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 		@fillNeural,
 		@fillMultiNeural,
 		@fillAutoencoder,
+		@fillAutoencoder,
 	};
 	names = {
 		'Listwise',
@@ -28,14 +29,16 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 		'Neural',
 		'MultNeural',
 		'Autoencode',
+		'AutoencodeSGD',
 	};
 	args = {
 		{},
 		{},
 		4,
 		{},
-		struct(),
-		struct(),
+		struct('adadelta', true),
+		struct('adadelta', true),
+		struct('adadelta', true),
 		struct(),
 	};
 
