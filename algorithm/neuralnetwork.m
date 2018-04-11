@@ -31,11 +31,23 @@ function [self] = reset(self)
 	if ~isfield(self.params, 'sigmoid')
 		self.params.sigmoid = false;
 	end
+	if ~isfield(self.params, 'rho')
+		self.params.rho = 0.95;
+	end
+	if ~isfield(self.params, 'adadelta')
+		self.params.adadelta = false;
+	end
 
 	if self.params.sigmoid
 		self.transfer = @sigmoid;
 	else
 		self.transfer = @linearTrans;
+	end
+
+	if self.params.adadelta
+		self.learnAlg = @learnAdadelta;
+	else
+		self.learnAlg = @learnStochastic;
 	end
 
 	self.w_input = 0;
@@ -87,7 +99,7 @@ function [self] = learn(self, Xtrain, ytrain)
 	self.w_input = normrnd(0.0, perturbation, [self.params.nh, self.numfeatures]);
 
 	% fprintf('\n000: Cost is %f\n', norm(feedforward(self, Xtrain)' - ytrain));
-	self = learnStochastic(self, Xtrain, ytrain);
+	self = self.learnAlg(self, Xtrain, ytrain);
 end
 
 % Use the parameters computed in self.learn to give predictions on new observations.
@@ -108,6 +120,44 @@ function [self] = learnStochastic(self, Xtrain, ytrain)
 
 			self.w_input = self.w_input - n * nabla_input;
 			self.w_output = self.w_output - n * nabla_output;
+		end
+
+		% fprintf('%03i: Cost is %f\n', i, norm(feedforward(self, Xtrain)' - ytrain));
+	end
+end
+
+function [self] = learnAdadelta(self, Xtrain, ytrain)
+	for i = [1:self.params.epochs]
+		% Shuffle indexes
+		ind = randperm(self.numsamples);
+		n = self.params.epsilon / (i + 1);
+
+		exp_nab_out = zeros(self.numoutputs, self.params.nh);
+		exp_nab_in = zeros(self.params.nh, self.numfeatures);
+		exp_w_out = zeros(self.numoutputs, self.params.nh);
+		exp_w_in = zeros(self.params.nh, self.numfeatures);
+
+		for j_ind = [1:self.numsamples]
+			j = ind(j_ind);
+
+			% Compute gradient
+			[nabla_input, nabla_output] = backprop(self, Xtrain(j, :), ytrain(j));
+
+			% Accumulate gradient
+			exp_nab_in = self.params.rho * exp_nab_in + (1 - self.params.rho) * nabla_input.^2;
+			exp_nab_out = self.params.rho * exp_nab_out + (1 - self.params.rho) * nabla_output.^2;
+
+			% Compute update
+			delta_w_input = - sqrt(exp_w_in + self.params.epsilon)./sqrt(exp_nab_in + self.params.epsilon) .* nabla_input;
+			delta_w_output = - sqrt(exp_w_out + self.params.epsilon)./sqrt(exp_nab_out + self.params.epsilon) .* nabla_output;
+
+			% Accumulate updates
+			exp_w_in = self.params.rho * exp_w_in + (1 - self.params.rho) * delta_w_input.^2;
+			exp_w_out = self.params.rho * exp_w_out + (1 - self.params.rho) * delta_w_output.^2;
+
+			% Apply update
+			self.w_input = self.w_input + delta_w_input;
+			self.w_output = self.w_output + delta_w_output;
 		end
 
 		% fprintf('%03i: Cost is %f\n', i, norm(feedforward(self, Xtrain)' - ytrain));
