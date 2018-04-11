@@ -13,8 +13,8 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 	% Set up functions to iterate through
 	funcs = {
 		@fillCCA,
-		@fillPCA,
 		@fillMean,
+		@fillPCA,
 		@fillRegr,
 		@fillNeural,
 		@fillMultiNeural,
@@ -22,8 +22,8 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 	};
 	names = {
 		'Listwise',
-		'PCA (k=4)',
 		'Mean-Fill',
+		'PCA (k=4)',
 		'Regression',
 		'Neural',
 		'MultNeural',
@@ -31,8 +31,8 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 	};
 	args = {
 		{},
-		4,
 		{},
+		4,
 		{},
 		struct(),
 		struct(),
