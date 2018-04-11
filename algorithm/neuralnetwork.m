@@ -78,12 +78,6 @@ function [nabla_input, nabla_output] = backprop(self, x, y)
 	% assert(size(nabla_output, 2) == size(self.w_output, 2));
 end
 
-function [self] = stochasticUpdate(self, x, y, n)
-	[nabla_input, nabla_output] = backprop(self, x, y);
-	self.w_input = self.w_input - n * nabla_input;
-	self.w_output = self.w_output - n * nabla_output;
-end
-
 % Learns using the traindata with batch gradient descent.
 function [self] = learn(self, Xtrain, ytrain)
 	numfeatures = size(Xtrain, 2);
@@ -111,7 +105,11 @@ function [self] = learnStochastic(self, Xtrain, ytrain)
 		for j_ind = [1:numsamples]
 			j = ind(j_ind);
 			n = self.params.stepsize / (i + 1);
-			self = stochasticUpdate(self, Xtrain(j, :), ytrain(j), n);
+
+			[nabla_input, nabla_output] = backprop(self, Xtrain(j, :), ytrain(j));
+
+			self.w_input = self.w_input - n * nabla_input;
+			self.w_output = self.w_output - n * nabla_output;
 		end
 
 		% fprintf('%03i: Cost is %f\n', i, norm(feedforward(self, Xtrain)' - ytrain));
