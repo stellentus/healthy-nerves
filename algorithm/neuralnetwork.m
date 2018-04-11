@@ -101,10 +101,10 @@ function [self] = learnStochastic(self, Xtrain, ytrain)
 	for i = [1:self.params.epochs]
 		% Shuffle indexes
 		ind = randperm(numsamples);
+		n = self.params.stepsize / (i + 1);
 
 		for j_ind = [1:numsamples]
 			j = ind(j_ind);
-			n = self.params.stepsize / (i + 1);
 
 			[nabla_input, nabla_output] = backprop(self, Xtrain(j, :), ytrain(j));
 
