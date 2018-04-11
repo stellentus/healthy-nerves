@@ -86,6 +86,7 @@ function [self] = learn(self, Xtrain, ytrain)
 	self.w_output = normrnd(0.0, perturbation, [self.numoutputs, self.params.nh]);
 	self.w_input = normrnd(0.0, perturbation, [self.params.nh, self.numfeatures]);
 
+	% fprintf('\n000: Cost is %f\n', norm(feedforward(self, Xtrain)' - ytrain));
 	self = learnStochastic(self, Xtrain, ytrain);
 end
 
