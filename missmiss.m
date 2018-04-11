@@ -62,14 +62,14 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 		fprintf('%10s | %11s (%5s)   | %11s (%5s)\n', names{i}, num2str(mean(verrs(:, i)), '%.2f'), num2str(std(verrs(:, i)), '%.2f'), num2str(mean(cerrs(:, i)), '%.2f'), num2str(std(cerrs(:, i)), '%.2f'));
 	end
 
-	% Plot values
-	plotBoxes(verrs, cerrs, names);
-
 	if iters ~= 1
 		% Calculate statistical significance
 		calcStats(verrs, 'Values', names)
 		calcStats(cerrs, 'Covariances', names)
 	end
+
+	% Plot values
+	plotBoxes(verrs, cerrs, names);
 
 	rmpath missing
 end
@@ -126,12 +126,16 @@ function calcStats(data, name, names)
 end
 
 function plotBoxes(verrs, cerrs, names)
+	% Replace NaN with a really big number. This prevents errors in plotting.
+	verrs(isnan(verrs)) = realmax;
+	cerrs(isnan(cerrs)) = realmax;
+
 	addpath util/CategoricalScatterplot
 
 	figure('DefaultAxesFontSize', 18);
 
 	subplot(1, 2, 1);
-	CategoricalScatterplot(verrs(:, 2:size(verrs, 2)), names(2:size(verrs, 2)));
+	CategoricalScatterplot(verrs, names);
 	ylim([0 80]);
 	title('A) Error in Filled Data');
 	xlabel('Method');
