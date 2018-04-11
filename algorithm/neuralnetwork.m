@@ -59,11 +59,9 @@ function [nabla_input, nabla_output] = backprop(self, x, y)
 	dshare = yhat - y;
 	nabla_output = dshare * h';
 
-	numfeatures = size(x, 2);
-	numhidden = self.params.nh;
-	nabla_input = zeros(numhidden, numfeatures);
-	for i = [1:numfeatures] % TODO Optimize by making it not a loop?
-		for j = [1:numhidden]
+	nabla_input = zeros(self.params.nh, self.numfeatures);
+	for i = [1:self.numfeatures] % TODO Optimize by making it not a loop?
+		for j = [1:self.params.nh]
 			nabla_input(j, i) = self.w_output(:, j)' * dshare;
 			if self.params.sigmoid
 				nabla_input(j, i) = nabla_input(j, i) * h(j) * (1 - h(j));
@@ -80,13 +78,13 @@ end
 
 % Learns using the traindata with batch gradient descent.
 function [self] = learn(self, Xtrain, ytrain)
-	numfeatures = size(Xtrain, 2);
-	numoutputs = size(ytrain, 2);
-	numhidden = self.params.nh;
+	self.numfeatures = size(Xtrain, 2);
+	self.numoutputs = size(ytrain, 2);
+	self.numsamples = size(Xtrain, 1);
 	perturbation = 1;
 
-	self.w_output = normrnd(0.0, perturbation, [numoutputs, numhidden]);
-	self.w_input = normrnd(0.0, perturbation, [numhidden, numfeatures]);
+	self.w_output = normrnd(0.0, perturbation, [self.numoutputs, self.params.nh]);
+	self.w_input = normrnd(0.0, perturbation, [self.params.nh, self.numfeatures]);
 
 	self = learnStochastic(self, Xtrain, ytrain);
 end
@@ -97,10 +95,9 @@ function [ytest] = predict(self, Xtest)
 end
 
 function [self] = learnStochastic(self, Xtrain, ytrain)
-	numsamples = size(Xtrain, 1);
 	for i = [1:self.params.epochs]
 		% Shuffle indexes
-		ind = randperm(numsamples);
+		ind = randperm(self.numsamples);
 		n = self.params.stepsize / (i + 1);
 
 		for j_ind = [1:numsamples]
