@@ -100,7 +100,7 @@ function [self] = learnStochastic(self, Xtrain, ytrain)
 		ind = randperm(self.numsamples);
 		n = self.params.epsilon / (i + 1);
 
-		for j_ind = [1:numsamples]
+		for j_ind = [1:self.numsamples]
 			j = ind(j_ind);
 
 			[nabla_input, nabla_output] = backprop(self, Xtrain(j, :), ytrain(j));
