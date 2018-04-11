@@ -22,8 +22,8 @@ function [self] = reset(self)
 	if ~isfield(self.params, 'nh')
 		self.params.nh = 5;
 	end
-	if ~isfield(self.params, 'stepsize')
-		self.params.stepsize = 1e-5;
+	if ~isfield(self.params, 'epsilon')
+		self.params.epsilon = 1e-7;
 	end
 	if ~isfield(self.params, 'epochs')
 		self.params.epochs = 100;
@@ -98,7 +98,7 @@ function [self] = learnStochastic(self, Xtrain, ytrain)
 	for i = [1:self.params.epochs]
 		% Shuffle indexes
 		ind = randperm(self.numsamples);
-		n = self.params.stepsize / (i + 1);
+		n = self.params.epsilon / (i + 1);
 
 		for j_ind = [1:numsamples]
 			j = ind(j_ind);
