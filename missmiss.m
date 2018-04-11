@@ -92,9 +92,12 @@ function [verr, cerr] = testFuncs(funcs, names, X, originalCov, args)
 	verr = [];
 	cerr = [];
 
+	seed = randi(2^32-1); % Generate a new seed randomly, but save it
+
 	fprintf('Run ');
 	for i = 1:length(funcs)
 		fprintf('%s...', names{i});
+		rng(seed); % Seed each algorithm with the exact same random numbers
 		[filledX, covr] = funcs{i}(missingX, completeX, mask, originalMissingX, missingMask, args{i});
 		verr = [verr valueError(missingX, originalMissingX, missingMask, filledX)];
 		cerr = [cerr covError(originalCov, covr)];
