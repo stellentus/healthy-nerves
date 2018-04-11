@@ -100,8 +100,6 @@ end
 % Use the parameters computed in self.learn to give predictions on new observations.
 function [ytest] = predict(self, Xtest)
 	ytest = feedforward(self, Xtest)';
-	% disp(ytest);
-	% assert(size(ytest, 1) == size(Xtest, 1));
 end
 
 function [self] = learnStochastic(self, Xtrain, ytrain)
