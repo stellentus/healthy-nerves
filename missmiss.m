@@ -29,7 +29,7 @@ function [X, covr, verrs, cerrs, names] = missmiss(iters)
 		'Neural',
 		'MultNeural',
 		'Autoencode',
-		'AutoencodeSGD',
+		'AutoSGD',
 	};
 	args = {
 		{},
@@ -136,14 +136,14 @@ function plotBoxes(verrs, cerrs, names)
 
 	subplot(1, 2, 1);
 	CategoricalScatterplot(verrs, names);
-	ylim([0 80]);
+	ylim([0 200]);
 	title('A) Error in Filled Data');
 	xlabel('Method');
 	ylabel('Error');
 
 	subplot(1, 2, 2);
 	CategoricalScatterplot(cerrs, names);
-	ylim([0 70]);
+	ylim([0 200]);
 	title('B) Error in Covariance');
 	xlabel('Method');
 	ylabel('Error');

@@ -26,7 +26,7 @@ function [self] = reset(self)
 		self.params.epsilon = 1e-7;
 	end
 	if ~isfield(self.params, 'epochs')
-		self.params.epochs = 100;
+		self.params.epochs = 50;
 	end
 	if ~isfield(self.params, 'sigmoid')
 		self.params.sigmoid = false;
