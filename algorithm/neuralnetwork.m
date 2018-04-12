@@ -77,8 +77,7 @@ function [nabla_input, nabla_output] = backprop(self, x, y)
 		sigmoidTerm = h .* (1 - h);
 	end
 
-	deldub = dshare * self.w_output .* sigmoidTerm;
-	nabla_input = deldub' * x;
+	nabla_input = (dshare * self.w_output .* sigmoidTerm)' * x;
 
 	% assert(size(nabla_input, 1) == size(self.w_input, 1));
 	% assert(size(nabla_input, 2) == size(self.w_input, 2));
