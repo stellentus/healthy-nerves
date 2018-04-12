@@ -3,6 +3,9 @@ function [filledX, covr] = fillAutoencoder(missingX, completeX, mask, originalMi
 	filledX = missingX;
 	[numSamplesMissing, numFeatures] = size(missingX);
 
+	if ~isfield(arg, 'useAll')
+		arg.useAll = false;
+	end
 	model.params = arg;
 
 	missIndices = [];
@@ -16,7 +19,11 @@ function [filledX, covr] = fillAutoencoder(missingX, completeX, mask, originalMi
 		end
 	end
 
-	trainData = completeX;
+	if arg.useAll
+		trainData = [completeX; missingX]; % all data
+	else
+		trainData = completeX;             % complete data
+	end
 
 	addpath ./algorithm
 
