@@ -3,9 +3,6 @@ function [filledX, covr] = fillAutoBlanker(missingX, completeX, mask, originalMi
 	filledX = missingX;
 	[numSamplesMissing, numFeatures] = size(missingX);
 
-	if ~isfield(arg, 'ones')
-		arg.ones = false;
-	end
 	model.params = arg;
 
 	allX = [completeX; missingX];

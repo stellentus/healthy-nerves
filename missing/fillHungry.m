@@ -3,9 +3,6 @@ function [filledX, covr] = fillHungry(missingX, completeX, mask, originalMissing
 	filledX = missingX;
 	[numSamplesMissing, numFeatures] = size(missingX);
 
-	if ~isfield(arg, 'ones')
-		arg.ones = false;
-	end
 	model.params = arg;
 
 	missIndices = [];
