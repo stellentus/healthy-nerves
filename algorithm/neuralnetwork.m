@@ -78,11 +78,7 @@ function [nabla_input, nabla_output] = backprop(self, x, y)
 	end
 
 	deldub = dshare * self.w_output .* sigmoidTerm;
-	for i = [1:self.numfeatures] % TODO Optimize by making it not a loop?
-		for j = [1:self.params.nh]
-			nabla_input(j, i) = deldub(j) * x(i);
-		end
-	end
+	nabla_input = deldub' * x;
 
 	% assert(size(nabla_input, 1) == size(self.w_input, 1));
 	% assert(size(nabla_input, 2) == size(self.w_input, 2));
