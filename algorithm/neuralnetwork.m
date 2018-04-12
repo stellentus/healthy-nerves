@@ -144,25 +144,26 @@ function [self] = learnAdadelta(self, Xtrain, ytrain)
 			% Compute gradient
 			[nabla_input, nabla_output] = backprop(self, Xtrain(j, :), ytrain(j, :));
 
-			% Accumulate gradient
-			exp_nab_in = self.params.rho * exp_nab_in + (1 - self.params.rho) * nabla_input.^2;
-			exp_nab_out = self.params.rho * exp_nab_out + (1 - self.params.rho) * nabla_output.^2;
-
-			% Compute update
-			delta_w_input = - sqrt(exp_w_in + self.params.epsilon)./sqrt(exp_nab_in + self.params.epsilon) .* nabla_input;
-			delta_w_output = - sqrt(exp_w_out + self.params.epsilon)./sqrt(exp_nab_out + self.params.epsilon) .* nabla_output;
-
-			% Accumulate updates
-			exp_w_in = self.params.rho * exp_w_in + (1 - self.params.rho) * delta_w_input.^2;
-			exp_w_out = self.params.rho * exp_w_out + (1 - self.params.rho) * delta_w_output.^2;
-
-			% Apply update
+			[exp_nab_in, exp_w_in, delta_w_input] = AdadeltaUpdate(self, exp_nab_in, exp_w_in, nabla_input);
 			self.w_input = self.w_input + delta_w_input;
+
+			[exp_nab_out, exp_w_out, delta_w_output] = AdadeltaUpdate(self, exp_nab_out, exp_w_out, nabla_output);
 			self.w_output = self.w_output + delta_w_output;
 		end
 
 		% fprintf('%03i: Cost is %f\n', i, norm(feedforward(self, Xtrain)' - ytrain));
 	end
+end
+
+function [exp_nab, exp_w, delta_w] = AdadeltaUpdate(self, exp_nab, exp_w, nabla)
+	% Accumulate gradient
+	exp_nab = self.params.rho * exp_nab + (1 - self.params.rho) * nabla.^2;
+
+	% Compute update
+	delta_w = - sqrt(exp_w + self.params.epsilon)./sqrt(exp_nab + self.params.epsilon) .* nabla;
+
+	% Accumulate updates
+	exp_w = self.params.rho * exp_w + (1 - self.params.rho) * delta_w.^2;
 end
 
 % Compute the sigmoid function
