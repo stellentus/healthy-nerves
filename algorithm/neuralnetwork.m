@@ -23,16 +23,16 @@ function [self] = reset(self)
 		self.params.nh = 5;
 	end
 	if ~isfield(self.params, 'epsilon')
-		self.params.epsilon = 1e-7;
+		self.params.epsilon = 1e-7; % Optimal is somewhere around 1e-6 or 1e-7 at 100 epochs and 0.99 rho
 	end
 	if ~isfield(self.params, 'epochs')
-		self.params.epochs = 50;
+		self.params.epochs = 200;
 	end
 	if ~isfield(self.params, 'sigmoid')
 		self.params.sigmoid = false;
 	end
 	if ~isfield(self.params, 'rho')
-		self.params.rho = 0.95;
+		self.params.rho = 0.99; % .997 performs slightly better, but .999 is much worse
 	end
 	if ~isfield(self.params, 'useSGD')
 		self.params.useSGD = false;
