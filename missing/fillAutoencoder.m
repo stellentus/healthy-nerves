@@ -16,13 +16,11 @@ function [filledX, covr] = fillAutoencoder(missingX, completeX, mask, originalMi
 		end
 	end
 
-	inputs = completeX(:, completeIndices);
-
 	addpath ./algorithm
 
 	% Train
 	model = neuralnetwork(model);
-	model = neuralnetwork(model, inputs, completeX);
+	model = neuralnetwork(model, completeX(:, completeIndices), completeX);
 
 	% Predict
 	model = neuralnetwork(model, missingX(:, completeIndices));
@@ -39,7 +37,6 @@ function [filledX, covr] = fillAutoencoder(missingX, completeX, mask, originalMi
 			end
 		end
 	end
-
 
 	covr = calcCov(completeX, filledX);
 end

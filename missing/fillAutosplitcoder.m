@@ -30,12 +30,8 @@ function [filledX, covr] = fillAutosplitcoder(missingX, completeX, mask, origina
 
 	rmpath ./algorithm
 
-	for j = 1:numFeatures
-		% Skip this column if it has no missing values
-		if sum(missingMask(:, j)) == 0
-			continue
-		end
-
+	for j_ind = 1:length(missIndices)
+		j = missIndices(j_ind);
 		for i = 1:numSamplesMissing
 			if isnan(filledX(i, j))
 				% fprintf('Filling (%d, %d) with %f (true: %f)\n', i, j, missY(i, j), originalMissingX(i, j))
