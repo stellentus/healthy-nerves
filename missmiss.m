@@ -22,8 +22,8 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed)
 	algs = [algs; struct('func', @fillPCA, 'name', 'PCA (k=4)', 'args', 4)];
 	algs = [algs; struct('func', @fillRegr, 'name', 'Regression', 'args', [])];
 	algs = [algs; struct('func', @fillMI, 'name', 'MI', 'args', [])];
-	algs = [algs; struct('func', @fillMultiNeural, 'name', 'MultiNeural', 'args', struct('nh', 2))];
-	algs = [algs; struct('func', @fillAutoencoder, 'name', 'Autoencoder', 'args', struct('nh', 6))];
+	algs = [algs; struct('func', @fillMultiNeural, 'name', 'MultiNeur', 'args', struct('nh', 2))];
+	algs = [algs; struct('func', @fillAutoencoder, 'name', 'Autoencode', 'args', struct('nh', 6))];
 	algs = [algs; struct('func', @fillHungry, 'name', 'Hungry', 'args', struct('nh', 6))];
 	algs = [algs; struct('func', @fillAutosplitcoder, 'name', 'Autosplit', 'args', struct('nh', 6))];
 
