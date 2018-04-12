@@ -68,8 +68,8 @@ end
 % Return a tuple ``(nabla_input, nabla_output)`` representing the gradients for the cost function with respect to self.w_input and self.w_output.
 function [nabla_input, nabla_output] = backprop(self, x, y)
 	[yhat, h] = feedforward(self, x);
-	dshare = yhat - y;
-	nabla_output = dshare * h';
+	dshare = yhat' - y;
+	nabla_output = dshare' * h';
 
 	nabla_input = zeros(self.params.nh, self.numfeatures);
 	sigmoidTerm = ones(self.params.nh);
@@ -79,7 +79,7 @@ function [nabla_input, nabla_output] = backprop(self, x, y)
 
 	for i = [1:self.numfeatures] % TODO Optimize by making it not a loop?
 		for j = [1:self.params.nh]
-			nabla_input(j, i) = self.w_output(:, j)' * dshare;
+			nabla_input(j, i) = self.w_output(:, j)' * dshare';
 			nabla_input(j, i) = nabla_input(j, i) * sigmoidTerm(j);
 			nabla_input(j, i) = nabla_input(j, i) * x(i);
 		end
@@ -119,7 +119,7 @@ function [self] = learnStochastic(self, Xtrain, ytrain)
 		for j_ind = [1:self.numsamples]
 			j = ind(j_ind);
 
-			[nabla_input, nabla_output] = backprop(self, Xtrain(j, :), ytrain(j));
+			[nabla_input, nabla_output] = backprop(self, Xtrain(j, :), ytrain(j, :));
 
 			self.w_input = self.w_input - n * nabla_input;
 			self.w_output = self.w_output - n * nabla_output;
@@ -144,7 +144,7 @@ function [self] = learnAdadelta(self, Xtrain, ytrain)
 			j = ind(j_ind);
 
 			% Compute gradient
-			[nabla_input, nabla_output] = backprop(self, Xtrain(j, :), ytrain(j));
+			[nabla_input, nabla_output] = backprop(self, Xtrain(j, :), ytrain(j, :));
 
 			% Accumulate gradient
 			exp_nab_in = self.params.rho * exp_nab_in + (1 - self.params.rho) * nabla_input.^2;
