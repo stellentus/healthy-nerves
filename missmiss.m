@@ -25,6 +25,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed)
 	algs = [algs; struct('func', @fillMultiNeural, 'name', 'MultiNeural', 'args', struct('nh', 2))];
 	algs = [algs; struct('func', @fillAutoencoder, 'name', 'Autoencoder', 'args', struct('nh', 6))];
 	algs = [algs; struct('func', @fillHungry, 'name', 'Hungry', 'args', struct('nh', 6))];
+	algs = [algs; struct('func', @fillAutosplitcoder, 'name', 'Autosplit', 'args', struct('nh', 6))];
 
 	% Calculate errors
 	verrs = [[]];

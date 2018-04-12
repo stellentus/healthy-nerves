@@ -79,6 +79,10 @@ function [nabla_input, nabla_output] = backprop(self, x, y)
 
 	nabla_input = (dshare * self.w_output .* sigmoidTerm)' * x;
 
+	% If a value was NaN, don't backpropogate it.
+	nabla_output(isnan(nabla_output)) = 0;
+	nabla_input(isnan(nabla_input)) = 0;
+
 	% assert(size(nabla_input, 1) == size(self.w_input, 1));
 	% assert(size(nabla_input, 2) == size(self.w_input, 2));
 	% assert(size(nabla_output, 1) == size(self.w_output, 1));
