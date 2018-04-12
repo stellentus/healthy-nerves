@@ -74,7 +74,7 @@ function [nabla_input, nabla_output] = backprop(self, x, y)
 	nabla_input = zeros(self.params.nh, self.numfeatures);
 	sigmoidTerm = ones(1, self.params.nh);
 	if self.params.sigmoid
-		sigmoidTerm = h .* (1 - h);
+		sigmoidTerm = (h .* (1 - h))';
 	end
 
 	nabla_input = (dshare * self.w_output .* sigmoidTerm)' * x;
