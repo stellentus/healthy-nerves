@@ -72,12 +72,15 @@ function [nabla_input, nabla_output] = backprop(self, x, y)
 	nabla_output = dshare * h';
 
 	nabla_input = zeros(self.params.nh, self.numfeatures);
+	sigmoidTerm = ones(self.params.nh);
+	if self.params.sigmoid
+		sigmoidTerm = h .* (1 - h);
+	end
+
 	for i = [1:self.numfeatures] % TODO Optimize by making it not a loop?
 		for j = [1:self.params.nh]
 			nabla_input(j, i) = self.w_output(:, j)' * dshare;
-			if self.params.sigmoid
-				nabla_input(j, i) = nabla_input(j, i) * h(j) * (1 - h(j));
-			end
+			nabla_input(j, i) = nabla_input(j, i) * sigmoidTerm(j);
 			nabla_input(j, i) = nabla_input(j, i) * x(i);
 		end
 	end
