@@ -1,5 +1,5 @@
-% fillMultiNeural uses a separate neural network on each column with missing data. (Very inefficient!)
-function [filledX, covr] = fillMultiNeural(missingX, completeX, mask, originalMissingX, missingMask, arg)
+% fillAutoencoder uses an autoencoder (but with a different number of inputs and outputs).
+function [filledX, covr] = fillAutoencoder(missingX, completeX, mask, originalMissingX, missingMask, arg)
 	filledX = missingX;
 	[numSamplesMissing, numFeatures] = size(missingX);
 
