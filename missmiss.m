@@ -1,8 +1,13 @@
 % missmiss loads missing data and does stuff with it
-function [X, covr, verrs, cerrs, algs] = missmiss(iters)
+function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed)
 	if nargin == 0
 		iters = 1;
+		fixedSeed = false;
+	elseif nargin == 1
+		fixedSeed = false;
 	end
+
+	rng('shuffle'); % Make sure it's been reset in case a previous run set it.
 
 	X = loadMEF();
 
@@ -25,6 +30,9 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters)
 	verrs = [[]];
 	cerrs = [[]];
 	for i = 1:iters
+		if fixedSeed
+			rng(i*31+11); % Make sure each run is the same
+		end
 		fprintf('Iter %d of %d...', i, iters);
 		[verr, cerr] = testFuncs(algs, X, covr);
 		verrs = [verrs; verr];
