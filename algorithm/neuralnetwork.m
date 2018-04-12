@@ -34,8 +34,8 @@ function [self] = reset(self)
 	if ~isfield(self.params, 'rho')
 		self.params.rho = 0.95;
 	end
-	if ~isfield(self.params, 'adadelta')
-		self.params.adadelta = false;
+	if ~isfield(self.params, 'useSGD')
+		self.params.useSGD = false;
 	end
 
 	if self.params.sigmoid
@@ -44,10 +44,10 @@ function [self] = reset(self)
 		self.transfer = @linearTrans;
 	end
 
-	if self.params.adadelta
-		self.learnAlg = @learnAdadelta;
+	if self.params.useSGD
+		self.learnAlg = @learnSGD;
 	else
-		self.learnAlg = @learnStochastic;
+		self.learnAlg = @learnAdadelta;
 	end
 
 	self.w_input = 0;
@@ -104,7 +104,7 @@ function [ytest] = predict(self, Xtest)
 	ytest = feedforward(self, Xtest)';
 end
 
-function [self] = learnStochastic(self, Xtrain, ytrain)
+function [self] = learnSGD(self, Xtrain, ytrain)
 	for i = [1:self.params.epochs]
 		% Shuffle indexes
 		ind = randperm(self.numsamples);
