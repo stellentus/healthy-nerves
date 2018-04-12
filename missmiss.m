@@ -24,7 +24,6 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed)
 	algs = [algs; struct('func', @fillNeural, 'name', 'Neural', 'args', struct('adadelta', true))];
 	algs = [algs; struct('func', @fillMultiNeural, 'name', 'MultNeural', 'args', struct('adadelta', true))];
 	algs = [algs; struct('func', @fillAutoencoder, 'name', 'Autoencode', 'args', struct('adadelta', true))];
-	algs = [algs; struct('func', @fillAutoencoder, 'name', 'AutoSGD', 'args', struct())];
 
 	% Calculate errors
 	verrs = [[]];
