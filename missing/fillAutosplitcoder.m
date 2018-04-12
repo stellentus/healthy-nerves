@@ -16,13 +16,13 @@ function [filledX, covr] = fillAutosplitcoder(missingX, completeX, mask, origina
 		end
 	end
 
-	allX = [completeX; missingX];
+	trainData = [completeX; missingX]; % all data
 
 	addpath ./algorithm
 
 	% Train
 	model = neuralnetwork(model);
-	model = neuralnetwork(model, allX(:, completeIndices), allX);
+	model = neuralnetwork(model, trainData(:, completeIndices), trainData);
 
 	% Predict
 	model = neuralnetwork(model, missingX(:, completeIndices));

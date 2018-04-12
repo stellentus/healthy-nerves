@@ -16,11 +16,13 @@ function [filledX, covr] = fillAutoencoder(missingX, completeX, mask, originalMi
 		end
 	end
 
+	trainData = completeX;
+
 	addpath ./algorithm
 
 	% Train
 	model = neuralnetwork(model);
-	model = neuralnetwork(model, completeX(:, completeIndices), completeX);
+	model = neuralnetwork(model, trainData(:, completeIndices), trainData);
 
 	% Predict
 	model = neuralnetwork(model, missingX(:, completeIndices));
