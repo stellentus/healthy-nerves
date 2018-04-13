@@ -129,14 +129,14 @@ function plotBoxes(verrs, cerrs, algs)
 
 	subplot(1, 2, 1);
 	CategoricalScatterplot(verrs, [char(algs.name)]);
-	ylim([0 80]);
+	ylim([0 30]);
 	title('A) Error in Filled Data');
 	xlabel('Method');
 	ylabel('Error');
 
 	subplot(1, 2, 2);
 	CategoricalScatterplot(cerrs, [char(algs.name)]);
-	ylim([0 80]);
+	ylim([0 30]);
 	title('B) Error in Covariance');
 	xlabel('Method');
 	ylabel('Error');
