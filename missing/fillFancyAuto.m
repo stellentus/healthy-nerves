@@ -93,7 +93,6 @@ function [missing, predictAll, nabla_miss] = frontBackMissing(self, yhat, h, exp
 	end
 
 	for i=[1:self.nummissing]
-		% TODO feed in the correct values when possible
 		hiddenPlus = [h; missing(:, 1:i)'];
 		predictAll = [predictAll; self.w_missing(i, 1:self.params.nh+i) * hiddenPlus];
 
@@ -107,7 +106,6 @@ function [missing, predictAll, nabla_miss] = frontBackMissing(self, yhat, h, exp
 	end
 
 	for i=[1:self.nummissing]
-		% TODO feed in the correct values when possible
 		hiddenPlus = [h' missing(:, 1:i)];
 		nabla_miss(i, 1:self.params.nh+i) = (predictAll(i+1, :)' - expectedMissing(:, i))' * hiddenPlus;
 	end
