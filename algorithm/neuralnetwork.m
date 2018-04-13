@@ -83,10 +83,8 @@ function [nabla_input, nabla_output] = backprop(self, x, y)
 	nabla_output(isnan(nabla_output)) = 0;
 	nabla_input(isnan(nabla_input)) = 0;
 
-	% assert(size(nabla_input, 1) == size(self.w_input, 1));
-	% assert(size(nabla_input, 2) == size(self.w_input, 2));
-	% assert(size(nabla_output, 1) == size(self.w_output, 1));
-	% assert(size(nabla_output, 2) == size(self.w_output, 2));
+	% assert(sum(size(nabla_input)==size(self.w_input)) == ndims(nabla_input));
+	% assert(sum(size(nabla_output)==size(self.w_output)) == ndims(nabla_output));
 end
 
 % Learns using the traindata with batch gradient descent.
