@@ -172,9 +172,9 @@ function [self] = learn(self, Xtrain, missing)
 end
 
 % Use the parameters computed in self.learn to give predictions on new observations.
-function [missing] = predict(self, Xtest, missing)
+function [missing] = predict(self, Xtest, expectedMissing)
 	[yhat, h] = feedforward(self, Xtest);
-	missing = feedforwardmissing(self, yhat, h, missing);
+	missing = feedforwardmissing(self, yhat, h, expectedMissing);
 end
 
 function [self] = learnAdadelta(self, Xtrain, missing)
