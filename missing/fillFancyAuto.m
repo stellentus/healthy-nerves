@@ -198,11 +198,11 @@ function [self] = learnAdadelta(self, Xtrain, ytrain)
 			% Compute gradient
 			[nabla_input, nabla_output] = backprop(self, Xtrain(j, :), ytrain(j, :));
 
-			[exp_nab_in, exp_w_in, delta_w_input] = AdadeltaUpdate(self, exp_nab_in, exp_w_in, nabla_input);
-			self.w_input = self.w_input + delta_w_input;
+			[exp_nab_in, exp_w_in, delta_w_in] = AdadeltaUpdate(self, exp_nab_in, exp_w_in, nabla_input);
+			self.w_input = self.w_input + delta_w_in;
 
-			[exp_nab_out, exp_w_out, delta_w_output] = AdadeltaUpdate(self, exp_nab_out, exp_w_out, nabla_output);
-			self.w_output = self.w_output + delta_w_output;
+			[exp_nab_out, exp_w_out, delta_w_out] = AdadeltaUpdate(self, exp_nab_out, exp_w_out, nabla_output);
+			self.w_output = self.w_output + delta_w_out;
 		end
 
 		% fprintf('%03i: Cost is %f\n', i, norm(feedforward(self, Xtrain)' - ytrain));
