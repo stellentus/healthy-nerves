@@ -30,8 +30,8 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot)
 	algs = [algs; struct('func', @fillAutoencoder, 'name', 'Autoencode', 'args', struct('nh', 6))];
 	algs = [algs; struct('func', @fillHungry, 'name', 'Hungry', 'args', struct('nh', 6))];
 	algs = [algs; struct('func', @fillAutoencoder, 'name', 'AutoAll', 'args', struct('nh', 6, 'useAll', true))];
-	algs = [algs; struct('func', @fillFancyAuto, 'name', 'Fancy', 'args', struct('nh', 6))];
-	algs = [algs; struct('func', @fillFancyAuto, 'name', 'FancyNOB', 'args', struct('nh', 6, 'backpropmissing', false))];
+	algs = [algs; struct('func', @fillCascadeAuto, 'name', 'Cascade', 'args', struct('nh', 6))];
+	algs = [algs; struct('func', @fillCascadeAuto, 'name', 'Casc-NoB', 'args', struct('nh', 6, 'backpropmissing', false))];
 
 	% Calculate errors
 	verrs = [[]];

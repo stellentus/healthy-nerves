@@ -1,5 +1,5 @@
-% fillFancyAuto uses an autoencoder and deals with missing data in a fancy way. Yep, that's really specific.
-function [filledX, covr] = fillFancyAuto(missingX, completeX, mask, originalMissingX, missingMask, arg)
+% fillCascadeAuto uses an autoencoder but adds cascading nodes that rely on the autoencoder's hidden layer as well as each other to fill missing data.
+function [filledX, covr] = fillCascadeAuto(missingX, completeX, mask, originalMissingX, missingMask, arg)
 	filledX = missingX;
 	[numSamplesMissing, numFeatures] = size(missingX);
 
