@@ -6,15 +6,22 @@ function [filledX, covr] = fillFancyAuto(missingX, completeX, mask, originalMiss
 	model.params = arg;
 
 	missIndices = [];
+	missCount = [];
 	completeIndices = [];
 	for j = 1:numFeatures
 		% Skip this column if it has no missing values
-		if sum(missingMask(:, j)) == numSamplesMissing
+		numColumnPresent = sum(missingMask(:, j));
+		if numColumnPresent == numSamplesMissing
 			completeIndices = [completeIndices; j];
 		else
 			missIndices = [missIndices; j];
+			missCount = [missCount; numSamplesMissing - numColumnPresent];
 		end
 	end
+
+	% Sort the missing values by frequency.
+	[~,idx] = sort(missCount);
+	missIndices = missIndices(idx);
 
 	trainData = [completeX; missingX];
 
