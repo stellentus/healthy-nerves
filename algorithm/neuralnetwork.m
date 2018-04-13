@@ -109,7 +109,6 @@ function [self] = learnSGD(self, Xtrain, ytrain)
 	for i = [1:self.params.epochs]
 		% Shuffle indexes
 		ind = randperm(self.numsamples);
-		n = self.params.epsilon / (i + 1);
 
 		for j_ind = [1:self.numsamples]
 			j = ind(j_ind);

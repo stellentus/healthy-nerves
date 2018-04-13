@@ -160,7 +160,6 @@ function [self] = learnAdadelta(self, Xtrain, missing)
 	for i = [1:self.params.epochs]
 		% Shuffle indexes
 		ind = randperm(self.numsamples);
-		n = self.params.epsilon / (i + 1);
 
 		exp_nab_out = zeros(self.size.w_output);
 		exp_nab_in = zeros(self.size.w_input);
