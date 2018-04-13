@@ -1,10 +1,14 @@
 % missmiss loads missing data and does stuff with it
-function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed)
+function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot)
 	if nargin == 0
 		iters = 1;
 		fixedSeed = false;
+		displayPlot = true;
 	elseif nargin == 1
 		fixedSeed = false;
+		displayPlot = true;
+	elseif nargin == 2
+		displayPlot = true;
 	end
 
 	rng('shuffle'); % Make sure it's been reset in case a previous run set it.
@@ -51,14 +55,16 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed)
 		fprintf('%10s | %11s (%5s)   | %11s (%5s)\n', algs(i).name, num2str(mean(verrs(:, i)), '%.2f'), num2str(std(verrs(:, i)), '%.2f'), num2str(mean(cerrs(:, i)), '%.2f'), num2str(std(cerrs(:, i)), '%.2f'));
 	end
 
-	if iters ~= 1
-		% Calculate statistical significance
-		calcStats(verrs, 'Values', algs)
-		calcStats(cerrs, 'Covariances', algs)
-	end
+	if displayPlot
+		if iters ~= 1
+			% Calculate statistical significance
+			calcStats(verrs, 'Values', algs)
+			calcStats(cerrs, 'Covariances', algs)
+		end
 
-	% Plot values
-	plotBoxes(verrs, cerrs, algs);
+		% Plot values
+		plotBoxes(verrs, cerrs, algs);
+	end
 
 	rmpath missing
 end
