@@ -25,7 +25,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot)
 	algs = [algs; struct('func', @fillMean, 'name', 'Mean-Fill', 'args', [])];
 	algs = [algs; struct('func', @fillPCA, 'name', 'PCA (k=4)', 'args', 4)];
 	algs = [algs; struct('func', @fillRegr, 'name', 'Regression', 'args', [])];
-	algs = [algs; struct('func', @fillMI, 'name', 'MI', 'args', struct('number', 10, 'length', 100))];
+	algs = [algs; struct('func', @fillMI, 'name', '    MI', 'args', struct('number', 10, 'length', 100))];
 	algs = [algs; struct('func', @fillAutoencoder, 'name', 'Autoencode', 'args', struct('nh', 6, 'useAll', true))];
 	algs = [algs; struct('func', @fillHungry, 'name', 'Hungry', 'args', struct('nh', 6))];
 	algs = [algs; struct('func', @fillCascadeAuto, 'name', 'Cascade', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500))];
@@ -126,15 +126,13 @@ function plotBoxes(verrs, cerrs, algs)
 	addpath util/CategoricalScatterplot
 
 	figure('DefaultAxesFontSize', 18);
-
-	subplot(1, 2, 1);
 	CategoricalScatterplot(verrs, [char(algs.name)]);
 	ylim([0 30]);
 	title('A) Error in Filled Data');
 	xlabel('Method');
 	ylabel('Error');
 
-	subplot(1, 2, 2);
+	figure('DefaultAxesFontSize', 18);
 	CategoricalScatterplot(cerrs, [char(algs.name)]);
 	ylim([0 30]);
 	title('B) Error in Covariance');
