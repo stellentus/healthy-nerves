@@ -86,25 +86,21 @@ function [missing, predictAll] = feedforwardmissing(self, yhat, h, expectedMissi
 
 	% First initialize our output to the known values; then fill the first column with predictions.
 	missing = expectedMissing;
-	predictAll = yhat(self.numoutputs, :);
-	for j = 1:numSamples
-		if isnan(missing(j, 1))
-			% fprintf('NaN Filling with %f\n', predictAll(1, j))
-			missing(j, 1) = predictAll(1, j);
-		end
-	end
+	predictAll = [];
+	hiddenPlus = h;
 
 	for i=[1:self.nummissing]
-		hiddenPlus = [h; missing(:, 1:i)'];
-		predictAll = [predictAll; self.w_missing(i, 1:self.params.nh+i) * hiddenPlus];
+		predictAll = [predictAll; self.w_missing(i, 1:self.params.nh+i-1) * hiddenPlus];
 
 		% Fill the current column with the best prediction if it's NaN; otherwise, use the known value.
 		for j = 1:numSamples
-			if isnan(missing(j, i+1))
-				% fprintf('NaN Filling with %f\n', predictAll(i+1, j))
-				missing(j, i+1) = predictAll(i+1, j);
+			if isnan(missing(j, i))
+				% fprintf('NaN Filling with %f\n', predictAll(i, j))
+				missing(j, i) = predictAll(i, j);
 			end
 		end
+
+		hiddenPlus = [hiddenPlus; missing(:, i)'];
 	end
 end
 
@@ -113,7 +109,7 @@ function [nabla_miss] = backpropmissing(self, h, missing, predictAll, expectedMi
 
 	hiddenPlus = [h' missing];
 	for i=[1:self.nummissing]
-		nabla_miss(i, 1:self.params.nh+i) = (predictAll(i+1, :)' - expectedMissing(:, i))' * hiddenPlus(:, 1:self.params.nh+i);
+		nabla_miss(i, 1:self.params.nh+i-1) = (predictAll(i, :)' - expectedMissing(:, i))' * hiddenPlus(:, 1:self.params.nh+i-1);
 	end
 end
 
@@ -123,12 +119,11 @@ function [nabla_input, nabla_output, nabla_miss] = backprop(self, x, missing)
 	[missingFilled, predictAll] = feedforwardmissing(self, yhat, h, missing);
 	dshare_missing = predictAll' - missing;
 
-	targetOutput = [x missing(:, 1)]; % Add a column from the missing data
-	dshare = yhat' - targetOutput;
+	dshare = yhat' - x;
 	nabla_output = dshare' * h';
 
 	if self.params.backpropmissing
-		dshare = [dshare dshare_missing(:, 2:1+self.nummissing)];
+		dshare = [dshare dshare_missing];
 		weight_all = [self.w_output; self.w_missing(:, 1:self.params.nh)];
 	else
 		weight_all = self.w_output;
@@ -150,22 +145,22 @@ end
 % Learns using the traindata with batch gradient descent.
 function [self] = learn(self, Xtrain, missing)
 	self.numfeatures = size(Xtrain, 2);
-	self.numoutputs = size(Xtrain, 2)+1; % Add the first missing column to output
+	self.numoutputs = size(Xtrain, 2);
 	self.numsamples = size(Xtrain, 1);
-	self.nummissing = size(missing, 2)-1; % Minus one because self.numoutputs contains one of them.
+	self.nummissing = size(missing, 2);
 	perturbation = 1;
 
 	self.size = struct();
 	self.size.w_output = [self.numoutputs, self.params.nh];
 	self.size.w_input = [self.params.nh, self.numfeatures];
-	self.size.w_missing = [self.nummissing, self.params.nh+self.nummissing];
+	self.size.w_missing = [self.nummissing, self.params.nh+self.nummissing-1];
 
 	self.w_output = normrnd(0.0, perturbation, self.size.w_output);
 	self.w_input = normrnd(0.0, perturbation, self.size.w_input);
 	self.w_missing = normrnd(0.0, perturbation, self.size.w_missing);
-	for i=[1:self.nummissing-1]
+	for i=[1:self.nummissing]
 		% Zero the never-used weights. This has no impact on the code.
-		self.w_missing(i, self.params.nh+1+i:self.params.nh+self.nummissing) = zeros(1, self.nummissing - i);
+		self.w_missing(i, self.params.nh+i:self.params.nh+self.nummissing-1) = zeros(1, self.nummissing - i);
 	end
 
 	self = learnAdadelta(self, Xtrain, missing);
