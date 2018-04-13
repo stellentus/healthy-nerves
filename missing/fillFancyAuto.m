@@ -27,7 +27,7 @@ function [filledX, covr] = fillFancyAuto(missingX, completeX, mask, originalMiss
 
 	% Train
 	model = fancyNeural(model);
-	model = fancyNeural(model, trainData(:, completeIndices), trainData(:, [completeIndices; missIndices]));
+	model = fancyNeural(model, trainData(:, completeIndices), trainData(:, missIndices));
 
 	% Predict
 	model = fancyNeural(model, missingX(:, completeIndices));
@@ -50,14 +50,14 @@ end
 
 % fancyNeural does a whole bunch of stuff related to a neural network.
 % If no additional arguments are provided, it initializes and resets.
-% If two additional arguments are provided, they are used as Xtrain and ytrain.
+% If two additional arguments are provided, they are used as Xtrain and missing.
 % If one additional argument is provided, it's used as Xtest.
-function [self] = fancyNeural(self, X, ytrain)
+function [self] = fancyNeural(self, X, missing)
 	switch nargin
 		case 1
 			self = reset(self);
-		case 3 % Xtrain, ytrain
-			self = learn(self, X, ytrain);
+		case 3 % Xtrain, missing
+			self = learn(self, X, missing);
 		case 2 % Xtest
 			self.Y = predict(self, X);
 		otherwise
@@ -140,7 +140,9 @@ function [nabla_input, nabla_output] = backprop(self, x, y)
 end
 
 % Learns using the traindata with batch gradient descent.
-function [self] = learn(self, Xtrain, ytrain)
+function [self] = learn(self, Xtrain, missing)
+	ytrain = [Xtrain missing];
+
 	self.numfeatures = size(Xtrain, 2);
 	self.numoutputs = size(ytrain, 2);
 	self.numsamples = size(Xtrain, 1);
