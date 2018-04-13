@@ -120,12 +120,16 @@ end
 % Return a tuple ``(nabla_input, nabla_output)`` representing the gradients for the cost function with respect to self.w_input and self.w_output.
 function [nabla_input, nabla_output, nabla_miss] = backprop(self, x, missing)
 	[yhat, h] = feedforward(self, x);
+	[~, predictAll, nabla_miss] = frontBackMissing(self, yhat, h, missing);
+	dshare_missing = predictAll' - missing;
 
 	targetOutput = [x missing(:, 1)]; % Add a column from the missing data
-	dshare = yhat' - targetOutput;
-	nabla_output = dshare' * h';
+	dshare_output = yhat' - targetOutput;
+	nabla_output = dshare_output' * h';
 
-	nabla_input = (dshare * self.w_output)' * x;
+	dshare_all = [dshare_output dshare_missing(:, 2:1+self.nummissing)];
+	weight_all = [self.w_output; self.w_missing(:, 1:self.params.nh)];
+	nabla_input = (dshare_all * weight_all)' * x;
 
 	% If a value was NaN, don't backpropogate it.
 	nabla_output(isnan(nabla_output)) = 0;
@@ -133,9 +137,6 @@ function [nabla_input, nabla_output, nabla_miss] = backprop(self, x, missing)
 
 	% assert(sum(size(nabla_input)==size(self.w_input)) == ndims(nabla_input));
 	% assert(sum(size(nabla_output)==size(self.w_output)) == ndims(nabla_output));
-
-	% Next backpropogate missing values
-	[~, nabla_miss] = frontBackMissing(self, yhat, h, missing);
 end
 
 % Learns using the traindata with batch gradient descent.
