@@ -112,10 +112,6 @@ function [nabla_miss] = backpropmissing(self, h, missing, predictAll, expectedMi
 	for i=[1:self.nummissing]
 		nabla_miss(i, 1:self.params.nh+i) = (predictAll(i+1, :)' - expectedMissing(:, i))' * hiddenPlus(:, 1:self.params.nh+i);
 	end
-
-	nabla_miss(isnan(nabla_miss)) = 0;
-
-	assert(sum(size(nabla_miss)==size(self.w_missing)) == ndims(nabla_miss));
 end
 
 % Return a tuple ``(nabla_input, nabla_output)`` representing the gradients for the cost function with respect to self.w_input and self.w_output.
@@ -137,9 +133,11 @@ function [nabla_input, nabla_output, nabla_miss] = backprop(self, x, missing)
 	% If a value was NaN, don't backpropogate it.
 	nabla_output(isnan(nabla_output)) = 0;
 	nabla_input(isnan(nabla_input)) = 0;
+	nabla_miss(isnan(nabla_miss)) = 0;
 
 	% assert(sum(size(nabla_input)==size(self.w_input)) == ndims(nabla_input));
 	% assert(sum(size(nabla_output)==size(self.w_output)) == ndims(nabla_output));
+	% assert(sum(size(nabla_miss)==size(self.w_missing)) == ndims(nabla_miss));
 end
 
 % Learns using the traindata with batch gradient descent.
