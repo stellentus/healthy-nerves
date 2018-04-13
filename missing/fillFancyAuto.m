@@ -58,10 +58,7 @@ function [self] = fancyNeural(self, X, missing)
 		case 3 % Xtrain, missing
 			self = learn(self, X, missing);
 		case 2 % Xtest
-			yhat = predict(self, X);
-			lastCompleteInd = size(X, 2);
-			lastInd = size(yhat, 2);
-			self.missing = yhat(:, [lastCompleteInd+1:lastInd]);
+			self.missing = predict(self, X);
 		otherwise
 			disp('Error in number of arguments to Neural Network.')
 	end
@@ -158,8 +155,11 @@ function [self] = learn(self, Xtrain, missing)
 end
 
 % Use the parameters computed in self.learn to give predictions on new observations.
-function [ytest] = predict(self, Xtest)
-	ytest = feedforward(self, Xtest)';
+function [yhat] = predict(self, Xtest)
+	yhat = feedforward(self, Xtest)';
+	lastCompleteInd = size(Xtest, 2);
+	lastInd = size(yhat, 2);
+	yhat = yhat(:, [lastCompleteInd+1:lastInd]);
 end
 
 function [self] = learnSGD(self, Xtrain, ytrain)
