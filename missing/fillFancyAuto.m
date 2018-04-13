@@ -146,6 +146,10 @@ function [self] = learn(self, Xtrain, missing)
 	self.w_output = normrnd(0.0, perturbation, self.size.w_output);
 	self.w_input = normrnd(0.0, perturbation, self.size.w_input);
 	self.w_missing = normrnd(0.0, perturbation, self.size.w_missing);
+	for i=[1:self.nummissing-1]
+		% Zero the never-used weights. This has no impact on the code.
+		self.w_missing(i, self.params.nh+1+i:self.params.nh+self.nummissing) = zeros(1, self.nummissing - i);
+	end
 
 	self = learnAdadelta(self, Xtrain, missing);
 end
