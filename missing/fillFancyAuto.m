@@ -61,6 +61,9 @@ function [self] = reset(self)
 	if ~isfield(self.params, 'rho')
 		self.params.rho = 0.99; % .997 performs slightly better, but .999 is much worse
 	end
+	if ~isfield(self.params, 'backpropmissing')
+		self.params.backpropmissing = true;
+	end
 
 	self.w_input = 0;
 	self.w_output = 0;
@@ -121,12 +124,16 @@ function [nabla_input, nabla_output, nabla_miss] = backprop(self, x, missing)
 	dshare_missing = predictAll' - missing;
 
 	targetOutput = [x missing(:, 1)]; % Add a column from the missing data
-	dshare_output = yhat' - targetOutput;
-	nabla_output = dshare_output' * h';
+	dshare = yhat' - targetOutput;
+	nabla_output = dshare' * h';
 
-	dshare_all = [dshare_output dshare_missing(:, 2:1+self.nummissing)];
-	weight_all = [self.w_output; self.w_missing(:, 1:self.params.nh)];
-	nabla_input = (dshare_all * weight_all)' * x;
+	if self.params.backpropmissing
+		dshare = [dshare dshare_missing(:, 2:1+self.nummissing)];
+		weight_all = [self.w_output; self.w_missing(:, 1:self.params.nh)];
+	else
+		weight_all = self.w_output;
+	end
+	nabla_input = (dshare * weight_all)' * x;
 
 	nabla_miss = backpropmissing(self, h, missingFilled, predictAll, missing);
 
