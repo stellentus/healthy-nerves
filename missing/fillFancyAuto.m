@@ -114,7 +114,9 @@ end
 % Return a tuple ``(nabla_input, nabla_output)`` representing the gradients for the cost function with respect to self.w_input and self.w_output.
 function [nabla_input, nabla_output, nabla_miss] = backprop(self, x, missing)
 	[yhat, h] = feedforward(self, x);
-	dshare = yhat' - x;
+
+	targetOutput = [x missing(:, 1)]; % Add a column from the missing data
+	dshare = yhat' - targetOutput;
 	nabla_output = dshare' * h';
 
 	nabla_input = (dshare * self.w_output)' * x;
@@ -133,7 +135,7 @@ end
 % Learns using the traindata with batch gradient descent.
 function [self] = learn(self, Xtrain, missing)
 	self.numfeatures = size(Xtrain, 2);
-	self.numoutputs = size(Xtrain+1, 2); % Add the first missing column to output
+	self.numoutputs = size(Xtrain, 2)+1; % Add the first missing column to output
 	self.numsamples = size(Xtrain, 1);
 	self.nummissing = size(missing, 2)-1; % Minus one because self.numoutputs contains one of them.
 	perturbation = 1;
