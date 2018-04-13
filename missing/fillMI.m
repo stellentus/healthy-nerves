@@ -1,7 +1,14 @@
 % fillMI uses multiple imputation.
 % It's using some MI code I got online. I don't understand the code. :/
 function [filledX, covr] = fillMI(missingX, completeX, mask, originalMissingX, missingMask, arg)
-	[~, ~, ~, covr, Y] = mi([missingX; completeX], 10, 100);
+	if ~isfield(arg, 'number')
+		arg.number = 10;
+	end
+	if ~isfield(arg, 'length')
+		arg.length = 100;
+	end
+
+	[~, ~, ~, covr, Y] = mi([missingX; completeX], arg.number, arg.length);
 
 	filledX = missingX;
 	for j = 1:size(missingX, 2)

@@ -25,7 +25,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot)
 	algs = [algs; struct('func', @fillMean, 'name', 'Mean-Fill', 'args', [])];
 	algs = [algs; struct('func', @fillPCA, 'name', 'PCA (k=4)', 'args', 4)];
 	algs = [algs; struct('func', @fillRegr, 'name', 'Regression', 'args', [])];
-	algs = [algs; struct('func', @fillMI, 'name', 'MI', 'args', [])];
+	algs = [algs; struct('func', @fillMI, 'name', 'MI', 'args', struct())];
 	algs = [algs; struct('func', @fillAutoencoder, 'name', 'Autoencode', 'args', struct('nh', 6, 'useAll', true))];
 	algs = [algs; struct('func', @fillHungry, 'name', 'Hungry', 'args', struct('nh', 6))];
 	algs = [algs; struct('func', @fillCascadeAuto, 'name', 'Cascade', 'args', struct('nh', 6))];
