@@ -96,7 +96,6 @@ function [missing, predictAll, nabla_miss] = frontBackMissing(self, yhat, h, exp
 		% TODO feed in the correct values when possible
 		hiddenPlus = [h; missing(:, 1:i)'];
 		predictAll = [predictAll; self.w_missing(i, 1:self.params.nh+i) * hiddenPlus];
-		nabla_miss(i, 1:self.params.nh+i) = (predictAll(i+1, :)' - expectedMissing(:, i))' * hiddenPlus';
 
 		% Fill the current column with the best prediction if it's NaN; otherwise, use the known value.
 		for j = 1:numSamples
@@ -105,6 +104,12 @@ function [missing, predictAll, nabla_miss] = frontBackMissing(self, yhat, h, exp
 				missing(j, i+1) = predictAll(i+1, j);
 			end
 		end
+	end
+
+	for i=[1:self.nummissing]
+		% TODO feed in the correct values when possible
+		hiddenPlus = [h; missing(:, 1:i)'];
+		nabla_miss(i, 1:self.params.nh+i) = (predictAll(i+1, :)' - expectedMissing(:, i))' * hiddenPlus';
 	end
 
 	nabla_miss(isnan(nabla_miss)) = 0;
