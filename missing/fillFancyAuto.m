@@ -20,7 +20,7 @@ function [filledX, covr] = fillFancyAuto(missingX, completeX, mask, originalMiss
 	end
 
 	% Sort the missing values by frequency.
-	[~,idx] = sort(missCount);
+	[~, idx] = sort(missCount);
 	missIndices = missIndices(idx);
 
 	trainData = [completeX; missingX];
