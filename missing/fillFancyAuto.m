@@ -80,7 +80,6 @@ end
 
 function [missing, predictAll, nabla_miss] = frontBackMissing(self, yhat, h, expectedMissing)
 	numSamples = size(expectedMissing, 1);
-	nabla_miss = zeros(self.size.w_missing);
 
 	% First initialize our output to the known values; then fill the first column with predictions.
 	missing = expectedMissing;
@@ -105,9 +104,12 @@ function [missing, predictAll, nabla_miss] = frontBackMissing(self, yhat, h, exp
 		end
 	end
 
+	% Backpropagate
+	nabla_miss = zeros(self.size.w_missing);
+
+	hiddenPlus = [h' missing];
 	for i=[1:self.nummissing]
-		hiddenPlus = [h' missing(:, 1:i)];
-		nabla_miss(i, 1:self.params.nh+i) = (predictAll(i+1, :)' - expectedMissing(:, i))' * hiddenPlus;
+		nabla_miss(i, 1:self.params.nh+i) = (predictAll(i+1, :)' - expectedMissing(:, i))' * hiddenPlus(:, 1:self.params.nh+i);
 	end
 
 	nabla_miss(isnan(nabla_miss)) = 0;
