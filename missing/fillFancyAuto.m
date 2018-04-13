@@ -78,30 +78,31 @@ function [a_output, a_hidden] = feedforward(self, inputs)
 	a_output = self.w_output * a_hidden;
 end
 
-function [missing, nabla_miss] = frontBackMissing(self, yhat, h, expectedMissing)
+function [missing, predictAll, nabla_miss] = frontBackMissing(self, yhat, h, expectedMissing)
 	numSamples = size(expectedMissing, 1);
 	nabla_miss = zeros(self.size.w_missing);
 
 	% First initialize our output to the known values; then fill the first column with predictions.
 	missing = expectedMissing;
+	predictAll = yhat(self.numoutputs, :);
 	for j = 1:numSamples
 		if isnan(missing(j, 1))
-			% fprintf('NaN Filling with %f\n', yhat(self.numoutputs, j))
-			missing(j, 1) = yhat(self.numoutputs, j);
+			% fprintf('NaN Filling with %f\n', predictAll(1, j))
+			missing(j, 1) = predictAll(1, j);
 		end
 	end
 
 	for i=[1:self.nummissing]
 		% TODO feed in the correct values when possible
 		hiddenPlus = [h; missing(:, 1:i)'];
-		thisMiss = self.w_missing(i, 1:self.params.nh+i) * hiddenPlus;
-		nabla_miss(i, 1:self.params.nh+i) = (thisMiss' - expectedMissing(:, i))' * hiddenPlus';
+		predictAll = [predictAll; self.w_missing(i, 1:self.params.nh+i) * hiddenPlus];
+		nabla_miss(i, 1:self.params.nh+i) = (predictAll(i+1, :)' - expectedMissing(:, i))' * hiddenPlus';
 
 		% Fill the current column with the best prediction if it's NaN; otherwise, use the known value.
 		for j = 1:numSamples
 			if isnan(missing(j, i+1))
-				% fprintf('NaN Filling with %f\n', thisMiss(j))
-				missing(j, i+1) = thisMiss(j);
+				% fprintf('NaN Filling with %f\n', predictAll(i+1, j))
+				missing(j, i+1) = predictAll(i+1, j);
 			end
 		end
 	end
