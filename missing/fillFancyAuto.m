@@ -31,15 +31,14 @@ function [filledX, covr] = fillFancyAuto(missingX, completeX, mask, originalMiss
 
 	% Predict
 	model = fancyNeural(model, missingX(:, completeIndices));
-	missY = model.Y;
+	missY = model.missing;
 
-	lastCompleteInd = length(completeIndices);
 	for j_ind = 1:length(missIndices)
 		j = missIndices(j_ind);
 		for i = 1:numSamplesMissing
 			if isnan(filledX(i, j))
-				% fprintf('Filling (%d, %d) with %f (true: %f)\n', i, j, missY(i, lastCompleteInd + j_ind), originalMissingX(i, j))
-				filledX(i, j) = missY(i, lastCompleteInd + j_ind); % Predict the missing value.
+				% fprintf('Filling (%d, %d) with %f (true: %f)\n', i, j, missY(i, j_ind), originalMissingX(i, j))
+				filledX(i, j) = missY(i, j_ind); % Predict the missing value.
 			end
 		end
 	end
@@ -59,7 +58,10 @@ function [self] = fancyNeural(self, X, missing)
 		case 3 % Xtrain, missing
 			self = learn(self, X, missing);
 		case 2 % Xtest
-			self.Y = predict(self, X);
+			yhat = predict(self, X);
+			lastCompleteInd = size(X, 2);
+			lastInd = size(yhat, 2);
+			self.missing = yhat(:, [lastCompleteInd+1:lastInd]);
 		otherwise
 			disp('Error in number of arguments to Neural Network.')
 	end
