@@ -78,7 +78,7 @@ function [a_output, a_hidden] = feedforward(self, inputs)
 	a_output = self.w_output * a_hidden;
 end
 
-function [missing, predictAll, nabla_miss] = frontBackMissing(self, yhat, h, expectedMissing)
+function [missing, predictAll] = feedforwardmissing(self, yhat, h, expectedMissing)
 	numSamples = size(expectedMissing, 1);
 
 	% First initialize our output to the known values; then fill the first column with predictions.
@@ -103,8 +103,9 @@ function [missing, predictAll, nabla_miss] = frontBackMissing(self, yhat, h, exp
 			end
 		end
 	end
+end
 
-	% Backpropagate
+function [nabla_miss] = backpropmissing(self, h, missing, predictAll, expectedMissing)
 	nabla_miss = zeros(self.size.w_missing);
 
 	hiddenPlus = [h' missing];
@@ -120,7 +121,7 @@ end
 % Return a tuple ``(nabla_input, nabla_output)`` representing the gradients for the cost function with respect to self.w_input and self.w_output.
 function [nabla_input, nabla_output, nabla_miss] = backprop(self, x, missing)
 	[yhat, h] = feedforward(self, x);
-	[~, predictAll, nabla_miss] = frontBackMissing(self, yhat, h, missing);
+	[missingFilled, predictAll] = feedforwardmissing(self, yhat, h, missing);
 	dshare_missing = predictAll' - missing;
 
 	targetOutput = [x missing(:, 1)]; % Add a column from the missing data
@@ -130,6 +131,8 @@ function [nabla_input, nabla_output, nabla_miss] = backprop(self, x, missing)
 	dshare_all = [dshare_output dshare_missing(:, 2:1+self.nummissing)];
 	weight_all = [self.w_output; self.w_missing(:, 1:self.params.nh)];
 	nabla_input = (dshare_all * weight_all)' * x;
+
+	nabla_miss = backpropmissing(self, h, missingFilled, predictAll, missing);
 
 	% If a value was NaN, don't backpropogate it.
 	nabla_output(isnan(nabla_output)) = 0;
@@ -166,7 +169,7 @@ end
 % Use the parameters computed in self.learn to give predictions on new observations.
 function [missing] = predict(self, Xtest, missing)
 	[yhat, h] = feedforward(self, Xtest);
-	missing = frontBackMissing(self, yhat, h, missing);
+	missing = feedforwardmissing(self, yhat, h, missing);
 end
 
 function [self] = learnAdadelta(self, Xtrain, missing)
