@@ -64,6 +64,11 @@ function [self] = reset(self)
 	if ~isfield(self.params, 'backpropmissing')
 		self.params.backpropmissing = true;
 	end
+	if ~isfield(self.params, 'useautoencoder')
+		self.params.useautoencoder = true;
+	end
+
+	assert(self.params.backpropmissing || self.params.useautoencoder, 'You must either backprop missing data or use the autoencoder. Otherwise, nothing is backpropagated.')
 
 	self.w_input = 0;
 	self.w_output = 0;
@@ -116,17 +121,25 @@ end
 % Return a tuple ``(nabla_input, nabla_output)`` representing the gradients for the cost function with respect to self.w_input and self.w_output.
 function [nabla_input, nabla_output, nabla_miss] = backprop(self, x, missing)
 	[yhat, h] = feedforward(self, x);
-	dshare = yhat' - x;
-	nabla_output = dshare' * h';
+
+	if self.params.useautoencoder
+		dshare = yhat' - x;
+		nabla_output = dshare' * h';
+	else
+		nabla_output = 0;
+	end
 
 	[missingFilled, predictAll] = feedforwardmissing(self, yhat, h, missing);
 	dshare_missing = predictAll' - missing;
 
-	if self.params.backpropmissing
+	if self.params.backpropmissing && self.params.useautoencoder
 		dshare = [dshare dshare_missing];
 		weight_all = [self.w_output; self.w_missing(:, 1:self.params.nh)];
-	else
+	elseif self.params.useautoencoder
 		weight_all = self.w_output;
+	elseif self.params.backpropmissing
+		dshare = dshare_missing;
+		weight_all = self.w_missing(:, 1:self.params.nh);
 	end
 	nabla_input = (dshare * weight_all)' * x;
 
@@ -193,8 +206,11 @@ function [self] = learnAdadelta(self, Xtrain, missing)
 			[exp_nab_in, exp_w_in, delta_w_in] = AdadeltaUpdate(self, exp_nab_in, exp_w_in, nabla_input);
 			self.w_input = self.w_input + delta_w_in;
 
-			[exp_nab_out, exp_w_out, delta_w_out] = AdadeltaUpdate(self, exp_nab_out, exp_w_out, nabla_output);
-			self.w_output = self.w_output + delta_w_out;
+			% No need to update output weights if there isn't an autoencoder; in that case they aren't used.
+			if self.params.useautoencoder
+				[exp_nab_out, exp_w_out, delta_w_out] = AdadeltaUpdate(self, exp_nab_out, exp_w_out, nabla_output);
+				self.w_output = self.w_output + delta_w_out;
+			end
 
 			[exp_nab_miss, exp_w_miss, delta_w_miss] = AdadeltaUpdate(self, exp_nab_miss, exp_w_miss, nabla_miss);
 			self.w_missing = self.w_missing + delta_w_miss;
