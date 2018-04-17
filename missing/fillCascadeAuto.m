@@ -116,11 +116,11 @@ end
 % Return a tuple ``(nabla_input, nabla_output)`` representing the gradients for the cost function with respect to self.w_input and self.w_output.
 function [nabla_input, nabla_output, nabla_miss] = backprop(self, x, missing)
 	[yhat, h] = feedforward(self, x);
-	[missingFilled, predictAll] = feedforwardmissing(self, yhat, h, missing);
-	dshare_missing = predictAll' - missing;
-
 	dshare = yhat' - x;
 	nabla_output = dshare' * h';
+
+	[missingFilled, predictAll] = feedforwardmissing(self, yhat, h, missing);
+	dshare_missing = predictAll' - missing;
 
 	if self.params.backpropmissing
 		dshare = [dshare dshare_missing];
