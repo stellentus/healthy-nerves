@@ -1,6 +1,5 @@
 % fillHungry uses two autoencoders, with the second using the first's output.
 function [filledX] = fillHungry(missingX, completeX, mask, originalMissingX, missingMask, arg)
-	filledX = missingX;
 	[numSamplesMissing, numFeatures] = size(missingX);
 
 	model.params = arg;
@@ -47,17 +46,7 @@ function [filledX] = fillHungry(missingX, completeX, mask, originalMissingX, mis
 
 	% Predict
 	model = neuralnetwork(model, interimX);
-	missY = model.Y;
+	filledX = model.Y;
 
 	rmpath ./algorithm
-
-	for j_ind = 1:length(missIndices)
-		j = missIndices(j_ind);
-		for i = 1:numSamplesMissing
-			if isnan(filledX(i, j))
-				% fprintf('Filling (%d, %d) with %f (true: %f)\n', i, j, missY(i, j), originalMissingX(i, j))
-				filledX(i, j) = missY(i, j); % Predict the missing value.
-			end
-		end
-	end
 end

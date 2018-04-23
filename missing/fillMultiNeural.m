@@ -1,6 +1,5 @@
 % fillMultiNeural uses a separate neural network on each column with missing data. (Very inefficient!)
 function [filledX] = fillMultiNeural(missingX, completeX, mask, originalMissingX, missingMask, arg)
-	filledX = missingX;
 	[numSamplesMissing, numFeatures] = size(missingX);
 
 	if ~isfield(arg, 'ones')
@@ -34,13 +33,9 @@ function [filledX] = fillMultiNeural(missingX, completeX, mask, originalMissingX
 
 	rmpath ./algorithm
 
+	filledX = missingX;
 	for j_ind = 1:length(missIndices)
 		j = missIndices(j_ind);
-		for i = 1:numSamplesMissing
-			if isnan(filledX(i, j))
-				% fprintf('Filling (%d, %d) with %f (true: %f)\n', i, j, missY(i, j_ind), originalMissingX(i, j))
-				filledX(i, j) = missY(i, j_ind); % Predict the missing value.
-			end
-		end
+		filledX(:, j) = missY(:, j_ind); % Predict the missing value.
 	end
 end

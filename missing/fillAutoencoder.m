@@ -1,6 +1,5 @@
 % fillAutoencoder uses an autoencoder (but with a different number of inputs and outputs).
 function [filledX] = fillAutoencoder(missingX, completeX, mask, originalMissingX, missingMask, arg)
-	filledX = missingX;
 	[numSamplesMissing, numFeatures] = size(missingX);
 
 	if ~isfield(arg, 'useAll')
@@ -33,17 +32,7 @@ function [filledX] = fillAutoencoder(missingX, completeX, mask, originalMissingX
 
 	% Predict
 	model = neuralnetwork(model, missingX(:, completeIndices));
-	missY = model.Y;
+	filledX = model.Y;
 
 	rmpath ./algorithm
-
-	for j_ind = 1:length(missIndices)
-		j = missIndices(j_ind);
-		for i = 1:numSamplesMissing
-			if isnan(filledX(i, j))
-				% fprintf('Filling (%d, %d) with %f (true: %f)\n', i, j, missY(i, j), originalMissingX(i, j))
-				filledX(i, j) = missY(i, j); % Predict the missing value.
-			end
-		end
-	end
 end

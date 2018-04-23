@@ -21,11 +21,6 @@ function [filledX] = fillRegr(missingX, completeX, mask, originalMissingX, missi
 		% After prediction, set NaN to zero so that we can multiply some rows to predict missing values.
 		thisX(isnan(thisX)) = 0;
 
-		for i = 1:numSamplesMissing
-			if isnan(missingX(i, j))
-				% fprintf('Filling (%d, %d) with %f (true: %f)\n', i, j, thisX(i, :) * b, originalMissingX(i, j))
-				filledX(i, j) = thisX(i, :) * b; % Predict the missing value.
-			end
-		end
+		filledX(:, j) = thisX(1:size(missingX, 1), :) * b; % Predict the missing value.
 	end
 end

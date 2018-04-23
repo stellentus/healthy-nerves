@@ -1,6 +1,5 @@
 % fillAutoBlanker uses an autoencoder (but with a different number of inputs and outputs).
 function [filledX] = fillAutoBlanker(missingX, completeX, mask, originalMissingX, missingMask, arg)
-	filledX = missingX;
 	[numSamplesMissing, numFeatures] = size(missingX);
 
 	model.params = arg;
@@ -28,21 +27,7 @@ function [filledX] = fillAutoBlanker(missingX, completeX, mask, originalMissingX
 
 	% Predict
 	model = neuralnetwork(model, missingX);
-	missY = model.Y;
+	filledX = model.Y;
 
 	rmpath ./algorithm
-
-	for j = 1:numFeatures
-		% Skip this column if it has no missing values
-		if sum(missingMask(:, j)) == 0
-			continue
-		end
-
-		for i = 1:numSamplesMissing
-			if isnan(filledX(i, j))
-				% fprintf('Filling (%d, %d) with %f (true: %f)\n', i, j, missY(i, j), originalMissingX(i, j))
-				filledX(i, j) = missY(i, j); % Predict the missing value.
-			end
-		end
-	end
 end

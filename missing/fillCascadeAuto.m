@@ -1,6 +1,5 @@
 % fillCascadeAuto uses an autoencoder but adds cascading nodes that rely on the autoencoder's hidden layer as well as each other to fill missing data.
 function [filledX] = fillCascadeAuto(missingX, completeX, mask, originalMissingX, missingMask, arg)
-	filledX = missingX;
 	[numSamplesMissing, numFeatures] = size(missingX);
 
 	model.params = arg;
@@ -32,14 +31,10 @@ function [filledX] = fillCascadeAuto(missingX, completeX, mask, originalMissingX
 	% Predict
 	missY = predict(model, missingX(:, completeIndices), missingX(:, missIndices));
 
+	filledX = missingX;
 	for j_ind = 1:length(missIndices)
 		j = missIndices(j_ind);
-		for i = 1:numSamplesMissing
-			if isnan(filledX(i, j))
-				% fprintf('Filling (%d, %d) with %f (true: %f)\n', i, j, missY(i, j_ind), originalMissingX(i, j))
-				filledX(i, j) = missY(i, j_ind); % Predict the missing value.
-			end
-		end
+		filledX(:, j) = missY(:, j_ind); % Predict the missing value.
 	end
 end
 
