@@ -100,13 +100,13 @@ function [verr, cerr] = testFuncs(algs, X, originalCov)
 			case 1
 				% If the function only has one output argument, it doesn't do anything special to calculate covariance
 				filledX = algs(i).func(missingX, completeX, mask, originalMissingX, missingMask, algs(i).args);
-				covr = calcCov(completeX, filledX);
+				covr = cov([completeX; filledX]);
 			otherwise
 				[filledX, covr] = algs(i).func(missingX, completeX, mask, originalMissingX, missingMask, algs(i).args);
 		end
 
-		verr = [verr valueError(missingX, originalMissingX, missingMask, filledX)];
-		cerr = [cerr covError(originalCov, covr)];
+		verr = [verr mean(mean(((originalMissingX - filledX) .* ~missingMask) .^ 2))];
+		cerr = [cerr mean(mean((originalCov - covr) .^ 2))];
 	end
 	fprintf('\n');
 end
