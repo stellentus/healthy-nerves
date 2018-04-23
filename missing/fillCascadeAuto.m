@@ -32,10 +32,7 @@ function [filledX] = fillCascadeAuto(missingX, completeX, mask, originalMissingX
 	missY = predict(model, missingX(:, completeIndices), missingX(:, missIndices));
 
 	filledX = missingX;
-	for j_ind = 1:length(missIndices)
-		j = missIndices(j_ind);
-		filledX(:, j) = missY(:, j_ind); % Predict the missing value.
-	end
+	filledX(:, missIndices) = missY(:, 1:length(missIndices)); % Predict the missing value.
 end
 
 function [self] = reset(self)

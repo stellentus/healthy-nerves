@@ -34,8 +34,5 @@ function [filledX] = fillMultiNeural(missingX, completeX, mask, originalMissingX
 	rmpath ./algorithm
 
 	filledX = missingX;
-	for j_ind = 1:length(missIndices)
-		j = missIndices(j_ind);
-		filledX(:, j) = missY(:, j_ind); % Predict the missing value.
-	end
+	filledX(:, missIndices) = missY(:, 1:length(missIndices)); % Predict the missing value.
 end
