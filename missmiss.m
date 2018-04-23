@@ -95,7 +95,16 @@ function [verr, cerr] = testFuncs(algs, X, originalCov)
 	for i = 1:length(algs)
 		fprintf('%s...', algs(i).name);
 		rng(seed); % Seed each algorithm with the exact same random numbers
-		[filledX, covr] = algs(i).func(missingX, completeX, mask, originalMissingX, missingMask, algs(i).args);
+
+		switch nargout(algs(i).func)
+			case 1
+				% If the function only has one output argument, it doesn't do anything special to calculate covariance
+				filledX = algs(i).func(missingX, completeX, mask, originalMissingX, missingMask, algs(i).args);
+				covr = calcCov(completeX, filledX);
+			otherwise
+				[filledX, covr] = algs(i).func(missingX, completeX, mask, originalMissingX, missingMask, algs(i).args);
+		end
+
 		verr = [verr valueError(missingX, originalMissingX, missingMask, filledX)];
 		cerr = [cerr covError(originalCov, covr)];
 	end

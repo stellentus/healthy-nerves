@@ -1,5 +1,5 @@
 % fillHungry uses two autoencoders, with the second using the first's output.
-function [filledX, covr] = fillHungry(missingX, completeX, mask, originalMissingX, missingMask, arg)
+function [filledX] = fillHungry(missingX, completeX, mask, originalMissingX, missingMask, arg)
 	filledX = missingX;
 	[numSamplesMissing, numFeatures] = size(missingX);
 
@@ -60,6 +60,4 @@ function [filledX, covr] = fillHungry(missingX, completeX, mask, originalMissing
 			end
 		end
 	end
-
-	covr = calcCov(completeX, filledX);
 end

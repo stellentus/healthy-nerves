@@ -1,5 +1,5 @@
 % fillAutoencoder uses an autoencoder (but with a different number of inputs and outputs).
-function [filledX, covr] = fillAutoencoder(missingX, completeX, mask, originalMissingX, missingMask, arg)
+function [filledX] = fillAutoencoder(missingX, completeX, mask, originalMissingX, missingMask, arg)
 	filledX = missingX;
 	[numSamplesMissing, numFeatures] = size(missingX);
 
@@ -46,6 +46,4 @@ function [filledX, covr] = fillAutoencoder(missingX, completeX, mask, originalMi
 			end
 		end
 	end
-
-	covr = calcCov(completeX, filledX);
 end

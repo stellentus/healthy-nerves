@@ -1,5 +1,5 @@
 % fillAutoBlanker uses an autoencoder (but with a different number of inputs and outputs).
-function [filledX, covr] = fillAutoBlanker(missingX, completeX, mask, originalMissingX, missingMask, arg)
+function [filledX] = fillAutoBlanker(missingX, completeX, mask, originalMissingX, missingMask, arg)
 	filledX = missingX;
 	[numSamplesMissing, numFeatures] = size(missingX);
 
@@ -45,6 +45,4 @@ function [filledX, covr] = fillAutoBlanker(missingX, completeX, mask, originalMi
 			end
 		end
 	end
-
-	covr = calcCov(completeX, filledX);
 end

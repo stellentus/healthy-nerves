@@ -1,5 +1,5 @@
 % fillCascadeAuto uses an autoencoder but adds cascading nodes that rely on the autoencoder's hidden layer as well as each other to fill missing data.
-function [filledX, covr] = fillCascadeAuto(missingX, completeX, mask, originalMissingX, missingMask, arg)
+function [filledX] = fillCascadeAuto(missingX, completeX, mask, originalMissingX, missingMask, arg)
 	filledX = missingX;
 	[numSamplesMissing, numFeatures] = size(missingX);
 
@@ -41,8 +41,6 @@ function [filledX, covr] = fillCascadeAuto(missingX, completeX, mask, originalMi
 			end
 		end
 	end
-
-	covr = calcCov(completeX, filledX);
 end
 
 function [self] = reset(self)

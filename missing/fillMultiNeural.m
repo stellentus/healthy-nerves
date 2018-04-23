@@ -1,5 +1,5 @@
 % fillMultiNeural uses a separate neural network on each column with missing data. (Very inefficient!)
-function [filledX, covr] = fillMultiNeural(missingX, completeX, mask, originalMissingX, missingMask, arg)
+function [filledX] = fillMultiNeural(missingX, completeX, mask, originalMissingX, missingMask, arg)
 	filledX = missingX;
 	[numSamplesMissing, numFeatures] = size(missingX);
 
@@ -43,7 +43,4 @@ function [filledX, covr] = fillMultiNeural(missingX, completeX, mask, originalMi
 			end
 		end
 	end
-
-
-	covr = calcCov(completeX, filledX);
 end
