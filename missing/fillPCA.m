@@ -3,9 +3,12 @@ function [filledX, covr] = fillPCA(missingX, completeX, mask, originalMissingX, 
 	if ~isfield(args, 'k')
 		args.k = 4;
 	end
+	if ~isfield(args, 'VariableWeights')
+		args.VariableWeights = ones(1, size(missingX, 2));
+	end
 
 	X = [missingX; completeX];
-	[coeff, score, ~, ~, ~, mu] = pca(X, 'VariableWeights', 'variance', 'algorithm', 'als');
+	[coeff, score, ~, ~, ~, mu] = pca(X, 'VariableWeights', args.VariableWeights, 'algorithm', 'als');
 	coeff = coeff';
 	reconstructedX = score(:, 1:args.k) * coeff(1:args.k, :) + repmat(mu, size(X, 1), 1);
 
