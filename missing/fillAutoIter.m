@@ -18,7 +18,7 @@ function [filledX] = fillAutoIter(missingX, completeX, missingMask, arg)
 		model = neuralnetwork(model, trainData, trainData); % Train
 
 		model = neuralnetwork(model, filledX); % Predict
-		filledX = model.Y;
+		filledX = updateKnownValues(model.Y, missingX, missingMask); % Repair the known values from missingX
 	end
 
 	rmpath ./algorithm
