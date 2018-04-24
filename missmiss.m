@@ -26,7 +26,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot)
 	algs = [algs; struct('func', @fillPCA, 'name', '   PCA', 'args', struct('k', 4, 'VariableWeights', 'variance', 'meanNaN',  true))];
 	algs = [algs; struct('func', @fillRegr, 'name', 'Regression', 'args', struct())];
 	algs = [algs; struct('func', @fillMI, 'name', '    MI', 'args', struct('number', 10, 'length', 100))];
-	algs = [algs; struct('func', @fillAutoencoder, 'name', 'Autoencoder', 'args', struct('nh', 6, 'useAll', true, 'meanNaN', true))];
+	algs = [algs; struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'useAll', true, 'meanNaN', true))];
 	algs = [algs; struct('func', @fillCascadeAuto, 'name', 'Cascade', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500))];
 
 	% Calculate errors
