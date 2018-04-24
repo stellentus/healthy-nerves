@@ -52,6 +52,10 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot,
 	fprintf('-----------+-----------------------+----------------------------\n');
 	for i = 1:length(algs)
 		fprintf('%10s | %11s (%5s)   | %11s (%5s)\n', algs(i).name, num2str(mean(verrs(:, i)), '%.2f'), num2str(std(verrs(:, i)), '%.2f'), num2str(mean(cerrs(:, i)), '%.2f'), num2str(std(cerrs(:, i)), '%.2f'));
+		if includeCheats
+			offset = length(algs);
+			fprintf('%10s | %11s (%5s)   | %11s (%5s)\n', strcat(algs(i).name, '_X'), num2str(mean(verrs(:, offset+i)), '%.2f'), num2str(std(verrs(:, offset+i)), '%.2f'), num2str(mean(cerrs(:, offset+i)), '%.2f'), num2str(std(cerrs(:, offset+i)), '%.2f'));
+		end
 	end
 
 	if displayPlot
