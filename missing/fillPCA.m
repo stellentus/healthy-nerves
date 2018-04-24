@@ -7,12 +7,15 @@ function [filledX] = fillPCA(missingX, completeX, missingMask, args)
 	if ~isfield(args, 'VariableWeights')
 		args.VariableWeights = ones(1, size(missingX, 2));
 	end
+	if ~isfield(args, 'algorithm')
+		args.algorithm = 'als';
+	end
 
 	% If the appropriate flag is set, this function will fill NaN with some naive value before doing PCA. Otherwise, it does nothing.
 	missingX = fillNaive(missingX, completeX, missingMask, args);
 
 	X = [missingX; completeX];
-	[coeff, score, ~, ~, ~, mu] = pca(X, 'VariableWeights', args.VariableWeights, 'algorithm', 'als');
+	[coeff, score, ~, ~, ~, mu] = pca(X, 'VariableWeights', args.VariableWeights, 'algorithm', args.algorithm);
 	coeff = coeff';
 	filledX = score(:, 1:args.k) * coeff(1:args.k, :) + repmat(mu, size(X, 1), 1);
 end
