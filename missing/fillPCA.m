@@ -14,7 +14,7 @@ function [filledX] = fillPCA(missingX, completeX, mask, originalMissingX, missin
 		missingX(isnan(missingX)) = 0;
 	end
 	if isfield(args, 'meanNaN') && args.meanNaN
-		meanX = ones(size(missingX, 2), 1)*nanmean([missingX; completeX]);
+		meanX = ones(size(missingX, 1), 1)*nanmean([missingX; completeX]);
 		missingX(isnan(missingX)) = meanX(isnan(missingX));
 	end
 	if isfield(args, 'randomNaN') && args.randomNaN
