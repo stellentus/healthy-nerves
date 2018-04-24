@@ -1,14 +1,13 @@
 % missmiss loads missing data and does stuff with it
 function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot)
-	if nargin == 0
+	if nargin < 3
+		displayPlot = true;
+	end
+	if nargin < 2
+		fixedSeed = false;
+	end
+	if nargin < 1
 		iters = 1;
-		fixedSeed = false;
-		displayPlot = true;
-	elseif nargin == 1
-		fixedSeed = false;
-		displayPlot = true;
-	elseif nargin == 2
-		displayPlot = true;
 	end
 
 	rng('shuffle'); % Make sure it's been reset in case a previous run set it.
