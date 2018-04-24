@@ -118,17 +118,20 @@ function [ve, ce] = testFunc(alg, originalCov, missingX, completeX, originalMiss
 end
 
 function calcStats(data, name, algs)
+	names = {algs.name};
 	for i = 1:size(data, 2)
 		for j = i+1:size(data, 2)
 			[h, p] = ttest(data(:, i), data(:, j));
+			iName = names{i};
+			jName = names{j};
 			if h == 1
 				if p < 0.001
-					fprintf('** %10s vs %10s is significant (p=%f)\n', algs(i).name, algs(j).name, p);
+					fprintf('** %10s vs %10s is significant (p=%f)\n', iName, jName, p);
 				else
-					fprintf('*  %10s vs %10s is significant (p=%.3f)\n', algs(i).name, algs(j).name, p);
+					fprintf('*  %10s vs %10s is significant (p=%.3f)\n', iName, jName, p);
 				end
 			else
-				fprintf('   %10s vs %10s is not significant (p=%.3f)\n', algs(i).name, algs(j).name, p);
+				fprintf('   %10s vs %10s is not significant (p=%.3f)\n', iName, jName, p);
 			end
 		end
 	end
