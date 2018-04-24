@@ -25,6 +25,7 @@ function [filledX] = fillPCAIter(missingX, completeX, missingMask, args)
 
 		% Predict
 		dim = size(filledX, 1);
-		filledX = score(1:dim, 1:args.k) * coeff(1:args.k, :) + repmat(mu, dim, 1);
+		filledX = score(1:dim, 1:args.k) * coeff(1:args.k, :) + repmat(mu, dim, 1); % Get PCA for entire matrix
+		filledX = updateKnownValues(filledX, missingX, missingMask); % Repair the known values from missingX
 	end
 end
