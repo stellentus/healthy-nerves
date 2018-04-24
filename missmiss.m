@@ -1,5 +1,8 @@
 % missmiss loads missing data and does stuff with it
-function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot)
+function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot, includeCheats)
+	if nargin < 4
+		includeCheats = false;
+	end
 	if nargin < 3
 		displayPlot = true;
 	end
@@ -36,7 +39,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot)
 			rng(i*31+11); % Make sure each run is the same
 		end
 		fprintf('Iter %d of %d...', i, iters);
-		[verr, cerr] = testFuncs(algs, X, covr);
+		[verr, cerr] = testFuncs(algs, X, covr, includeCheats);
 		verrs = [verrs; verr];
 		cerrs = [cerrs; cerr];
 	end
@@ -52,14 +55,20 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot)
 	end
 
 	if displayPlot
+		if includeCheats
+			algNames = [{algs.name}, strcat({algs.name}, '_X')];
+		else
+			algNames = {algs.name};
+		end
+
 		if iters ~= 1
 			% Calculate statistical significance
-			calcStats(verrs, 'Values', algs)
-			calcStats(cerrs, 'Covariances', algs)
+			calcStats(verrs, 'value', algNames)
+			calcStats(cerrs, 'covariance', algNames)
 		end
 
 		% Plot values
-		plotBoxes(verrs, cerrs, algs);
+		plotBoxes(verrs, cerrs, algNames);
 	end
 
 	rmpath missing
@@ -79,7 +88,7 @@ function [X] = loadMEF()
 	TEd40 = [armTEd40'; legTEd40']; % Currently unused
 end
 
-function [verr, cerr] = testFuncs(algs, X, originalCov)
+function [verr, cerr] = testFuncs(algs, X, originalCov, includeCheats)
 	fprintf('Load...');
 	[missingX, completeX, ~, originalMissingX, missingMask] = deleteProportional(X);
 
@@ -96,6 +105,17 @@ function [verr, cerr] = testFuncs(algs, X, originalCov)
 		cerr = [cerr ce];
 	end
 	fprintf('\n');
+
+	if includeCheats
+		fprintf('\tCheat with ');
+		for i = 1:length(algs)
+			[ve, ce] = testFunc(algs(i), seed, originalCov, originalMissingX, completeX, originalMissingX, missingMask);
+
+			verr = [verr ve];
+			cerr = [cerr ce];
+		end
+		fprintf('\n');
+	end
 end
 
 function [ve, ce] = testFunc(alg, seed, originalCov, missingX, completeX, originalMissingX, missingMask)
@@ -117,13 +137,12 @@ function [ve, ce] = testFunc(alg, seed, originalCov, missingX, completeX, origin
 	ce = mean(mean((originalCov - covr) .^ 2));
 end
 
-function calcStats(data, name, algs)
-	names = {algs.name};
+function calcStats(data, name, algNames)
 	for i = 1:size(data, 2)
 		for j = i+1:size(data, 2)
 			[h, p] = ttest(data(:, i), data(:, j));
-			iName = names{i};
-			jName = names{j};
+			iName = algNames{i};
+			jName = algNames{j};
 			if h == 1
 				if p < 0.001
 					fprintf('** %10s vs %10s is significant (p=%f)\n', iName, jName, p);
@@ -137,7 +156,7 @@ function calcStats(data, name, algs)
 	end
 end
 
-function plotBoxes(verrs, cerrs, algs)
+function plotBoxes(verrs, cerrs, algNames)
 	% Replace NaN with a really big number. This prevents errors in plotting.
 	verrs(isnan(verrs)) = realmax;
 	cerrs(isnan(cerrs)) = realmax;
@@ -145,14 +164,14 @@ function plotBoxes(verrs, cerrs, algs)
 	addpath util/CategoricalScatterplot
 
 	figure('DefaultAxesFontSize', 18);
-	CategoricalScatterplot(verrs, {algs.name});
+	CategoricalScatterplot(verrs, algNames);
 	ylim([0 30]);
 	title('A) Error in Filled Data');
 	xlabel('Method');
 	ylabel('Error');
 
 	figure('DefaultAxesFontSize', 18);
-	CategoricalScatterplot(cerrs, {algs.name});
+	CategoricalScatterplot(cerrs, algNames);
 	ylim([0 30]);
 	title('B) Error in Covariance');
 	xlabel('Method');
