@@ -82,7 +82,7 @@ end
 
 function [verr, cerr] = testFuncs(algs, X, originalCov)
 	fprintf('Load...');
-	[missingX, completeX, mask, originalMissingX, missingMask] = deleteProportional(X);
+	[missingX, completeX, ~, originalMissingX, missingMask] = deleteProportional(X);
 
 	verr = [];
 	cerr = [];
@@ -94,21 +94,28 @@ function [verr, cerr] = testFuncs(algs, X, originalCov)
 		fprintf('%s...', algs(i).name);
 		rng(seed); % Seed each algorithm with the exact same random numbers
 
-		switch nargout(algs(i).func)
-			case 1
-				% If the function only has one output argument, it doesn't do anything special to calculate covariance
-				filledX = algs(i).func(missingX, completeX, missingMask, algs(i).args);
-				filledX = predictOnlyMissingValues(filledX, missingX, missingMask, originalMissingX);
-				covr = cov([completeX; filledX]);
-			otherwise
-				[filledX, covr] = algs(i).func(missingX, completeX, missingMask, algs(i).args);
-				filledX = predictOnlyMissingValues(filledX, missingX, missingMask, originalMissingX);
-		end
+		[ve, ce] = testFunc(algs(i), originalCov, missingX, completeX, originalMissingX, missingMask);
 
-		verr = [verr mean(mean(((originalMissingX - filledX) .* ~missingMask) .^ 2))];
-		cerr = [cerr mean(mean((originalCov - covr) .^ 2))];
+		verr = [verr ve];
+		cerr = [cerr ce];
 	end
 	fprintf('\n');
+end
+
+function [ve, ce] = testFunc(alg, originalCov, missingX, completeX, originalMissingX, missingMask)
+	switch nargout(alg.func)
+		case 1
+			% If the function only has one output argument, it doesn't do anything special to calculate covariance
+			filledX = alg.func(missingX, completeX, missingMask, alg.args);
+			filledX = predictOnlyMissingValues(filledX, missingX, missingMask, originalMissingX);
+			covr = cov([completeX; filledX]);
+		otherwise
+			[filledX, covr] = alg.func(missingX, completeX, missingMask, alg.args);
+			filledX = predictOnlyMissingValues(filledX, missingX, missingMask, originalMissingX);
+	end
+
+	ve = mean(mean(((originalMissingX - filledX) .* ~missingMask) .^ 2));
+	ce = mean(mean((originalCov - covr) .^ 2));
 end
 
 function calcStats(data, name, algs)
