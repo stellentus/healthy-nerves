@@ -22,14 +22,17 @@ function [filledX] = fillCascadeAuto(missingX, completeX, mask, originalMissingX
 	[~, idx] = sort(missCount);
 	missIndices = missIndices(idx);
 
+	% If the appropriate flag is set, this function will fill NaN with some naive value. Otherwise, it does nothing.
+	missingX = fillNaive(missingX, completeX, mask, originalMissingX, missingMask, arg);
 	trainData = [completeX; missingX];
+	trainMask = [ones(size(completeX)); missingMask];
 
 	% Train
 	model = reset(model);
-	model = learn(model, trainData(:, completeIndices), trainData(:, missIndices));
+	model = learn(model, trainData(:, completeIndices), trainData(:, missIndices), trainMask(:, missIndices));
 
 	% Predict
-	missY = predict(model, missingX(:, completeIndices), missingX(:, missIndices));
+	missY = predict(model, missingX(:, completeIndices), missingX(:, missIndices), missingMask(:, missIndices));
 
 	filledX = missingX;
 	filledX(:, missIndices) = missY(:, 1:length(missIndices)); % Predict the missing value.
@@ -76,7 +79,7 @@ function [a_output, a_hidden] = feedforward(self, inputs)
 	a_output = self.w_output * a_hidden;
 end
 
-function [missing, predictAll] = feedforwardmissing(self, yhat, h, expectedMissing)
+function [missing, predictAll] = feedforwardmissing(self, yhat, h, expectedMissing, missingMask)
 	numSamples = size(expectedMissing, 1);
 
 	% First initialize our output to the known values; then fill the first column with predictions.
@@ -89,7 +92,7 @@ function [missing, predictAll] = feedforwardmissing(self, yhat, h, expectedMissi
 
 		% Fill the current column with the best prediction if it's NaN; otherwise, use the known value.
 		for j = 1:numSamples
-			if isnan(missing(j, i))
+			if 0 == missingMask(j, i)
 				% fprintf('NaN Filling with %f\n', predictAll(i, j))
 				missing(j, i) = predictAll(i, j);
 			end
@@ -109,7 +112,7 @@ function [nabla_miss] = backpropmissing(self, h, missing, predictAll, expectedMi
 end
 
 % Return a tuple ``(nabla_input, nabla_output)`` representing the gradients for the cost function with respect to self.w_input and self.w_output.
-function [nabla_input, nabla_output, nabla_miss] = backprop(self, x, missing)
+function [nabla_input, nabla_output, nabla_miss] = backprop(self, x, missing, missingMask)
 	[yhat, h] = feedforward(self, x);
 
 	if self.params.useautoencoder
@@ -119,7 +122,7 @@ function [nabla_input, nabla_output, nabla_miss] = backprop(self, x, missing)
 		nabla_output = 0;
 	end
 
-	[missingFilled, predictAll] = feedforwardmissing(self, yhat, h, missing);
+	[missingFilled, predictAll] = feedforwardmissing(self, yhat, h, missing, missingMask);
 	dshare_missing = predictAll' - missing;
 
 	if self.params.backpropmissing && self.params.useautoencoder
@@ -146,7 +149,7 @@ function [nabla_input, nabla_output, nabla_miss] = backprop(self, x, missing)
 end
 
 % Learns using the traindata with batch gradient descent.
-function [self] = learn(self, Xtrain, missing)
+function [self] = learn(self, Xtrain, missing, missingMask)
 	self.numfeatures = size(Xtrain, 2);
 	self.numoutputs = size(Xtrain, 2);
 	self.numsamples = size(Xtrain, 1);
@@ -166,16 +169,16 @@ function [self] = learn(self, Xtrain, missing)
 		self.w_missing(i, self.params.nh+i:self.params.nh+self.nummissing-1) = zeros(1, self.nummissing - i);
 	end
 
-	self = learnAdadelta(self, Xtrain, missing);
+	self = learnAdadelta(self, Xtrain, missing, missingMask);
 end
 
 % Use the parameters computed in self.learn to give predictions on new observations.
-function [missing] = predict(self, Xtest, expectedMissing)
+function [missing] = predict(self, Xtest, expectedMissing, missingMask)
 	[yhat, h] = feedforward(self, Xtest);
-	missing = feedforwardmissing(self, yhat, h, expectedMissing);
+	missing = feedforwardmissing(self, yhat, h, expectedMissing, missingMask);
 end
 
-function [self] = learnAdadelta(self, Xtrain, missing)
+function [self] = learnAdadelta(self, Xtrain, missing, missingMask)
 	for i = [1:self.params.epochs]
 		% Shuffle indexes
 		ind = randperm(self.numsamples);
@@ -191,7 +194,7 @@ function [self] = learnAdadelta(self, Xtrain, missing)
 			j = ind(j_ind);
 
 			% Compute gradient
-			[nabla_input, nabla_output, nabla_miss] = backprop(self, Xtrain(j, :), missing(j, :));
+			[nabla_input, nabla_output, nabla_miss] = backprop(self, Xtrain(j, :), missing(j, :), missingMask(j, :));
 
 			[exp_nab_in, exp_w_in, delta_w_in] = AdadeltaUpdate(self, exp_nab_in, exp_w_in, nabla_input);
 			self.w_input = self.w_input + delta_w_in;

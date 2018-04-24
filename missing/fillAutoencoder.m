@@ -19,6 +19,8 @@ function [filledX] = fillAutoencoder(missingX, completeX, mask, originalMissingX
 	end
 
 	if arg.useAll
+		% If the appropriate flag is set, this function will fill NaN with some naive value. Otherwise, it does nothing.
+		missingX = fillNaive(missingX, completeX, mask, originalMissingX, missingMask, arg);
 		trainData = [completeX; missingX]; % all data
 	else
 		trainData = completeX;             % complete data
