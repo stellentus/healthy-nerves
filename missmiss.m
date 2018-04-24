@@ -90,10 +90,7 @@ function [verr, cerr] = testFuncs(algs, X, originalCov)
 
 	fprintf('Run ');
 	for i = 1:length(algs)
-		fprintf('%s...', algs(i).name);
-		rng(seed); % Seed each algorithm with the exact same random numbers
-
-		[ve, ce] = testFunc(algs(i), originalCov, missingX, completeX, originalMissingX, missingMask);
+		[ve, ce] = testFunc(algs(i), seed, originalCov, missingX, completeX, originalMissingX, missingMask);
 
 		verr = [verr ve];
 		cerr = [cerr ce];
@@ -101,7 +98,10 @@ function [verr, cerr] = testFuncs(algs, X, originalCov)
 	fprintf('\n');
 end
 
-function [ve, ce] = testFunc(alg, originalCov, missingX, completeX, originalMissingX, missingMask)
+function [ve, ce] = testFunc(alg, seed, originalCov, missingX, completeX, originalMissingX, missingMask)
+	fprintf('%s...', alg.name);
+	rng(seed); % Seed each algorithm with the exact same random numbers
+
 	switch nargout(alg.func)
 		case 1
 			% If the function only has one output argument, it doesn't do anything special to calculate covariance
