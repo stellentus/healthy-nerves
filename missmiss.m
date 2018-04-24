@@ -23,7 +23,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot)
 	algs = [];
 	algs = [algs; struct('func', @fillCCA, 'name', 'Listwise', 'args', struct())];
 	algs = [algs; struct('func', @fillNaive, 'name', 'Mean-Fill', 'args', struct('meanNaN', true))];
-	algs = [algs; struct('func', @fillPCA, 'name', '   PCA', 'args', struct('k', 4, 'VariableWeights', 'variance', 'meanNaN',  true))];
+	algs = [algs; struct('func', @fillPCA, 'name', 'PCA', 'args', struct('k', 4, 'VariableWeights', 'variance', 'meanNaN',  true))];
 	algs = [algs; struct('func', @fillRegr, 'name', 'Regression', 'args', struct())];
 	algs = [algs; struct('func', @fillMI, 'name', '    MI', 'args', struct('number', 10, 'length', 100))];
 	algs = [algs; struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'useAll', true, 'meanNaN', true))];
@@ -143,14 +143,14 @@ function plotBoxes(verrs, cerrs, algs)
 	addpath util/CategoricalScatterplot
 
 	figure('DefaultAxesFontSize', 18);
-	CategoricalScatterplot(verrs, [char(algs.name)]);
+	CategoricalScatterplot(verrs, {algs.name});
 	ylim([0 30]);
 	title('A) Error in Filled Data');
 	xlabel('Method');
 	ylabel('Error');
 
 	figure('DefaultAxesFontSize', 18);
-	CategoricalScatterplot(cerrs, [char(algs.name)]);
+	CategoricalScatterplot(cerrs, {algs.name});
 	ylim([0 30]);
 	title('B) Error in Covariance');
 	xlabel('Method');
