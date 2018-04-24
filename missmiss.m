@@ -99,11 +99,11 @@ function [verr, cerr] = testFuncs(algs, X, originalCov)
 		switch nargout(algs(i).func)
 			case 1
 				% If the function only has one output argument, it doesn't do anything special to calculate covariance
-				filledX = algs(i).func(missingX, completeX, mask, originalMissingX, missingMask, algs(i).args);
+				filledX = algs(i).func(missingX, completeX, missingMask, algs(i).args);
 				filledX = predictOnlyMissingValues(filledX, missingX, missingMask, originalMissingX);
 				covr = cov([completeX; filledX]);
 			otherwise
-				[filledX, covr] = algs(i).func(missingX, completeX, mask, originalMissingX, missingMask, algs(i).args);
+				[filledX, covr] = algs(i).func(missingX, completeX, missingMask, algs(i).args);
 				filledX = predictOnlyMissingValues(filledX, missingX, missingMask, originalMissingX);
 		end
 

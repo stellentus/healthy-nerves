@@ -1,5 +1,5 @@
 % fillMultiNeural uses a separate neural network on each column with missing data. (Very inefficient!)
-function [filledX] = fillMultiNeural(missingX, completeX, mask, originalMissingX, missingMask, arg)
+function [filledX] = fillMultiNeural(missingX, completeX, missingMask, arg)
 	[numSamplesMissing, numFeatures] = size(missingX);
 
 	if ~isfield(arg, 'ones')

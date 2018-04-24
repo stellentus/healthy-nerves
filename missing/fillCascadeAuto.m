@@ -1,5 +1,5 @@
 % fillCascadeAuto uses an autoencoder but adds cascading nodes that rely on the autoencoder's hidden layer as well as each other to fill missing data.
-function [filledX] = fillCascadeAuto(missingX, completeX, mask, originalMissingX, missingMask, arg)
+function [filledX] = fillCascadeAuto(missingX, completeX, missingMask, arg)
 	[numSamplesMissing, numFeatures] = size(missingX);
 
 	model.params = arg;
@@ -23,7 +23,7 @@ function [filledX] = fillCascadeAuto(missingX, completeX, mask, originalMissingX
 	missIndices = missIndices(idx);
 
 	% If the appropriate flag is set, this function will fill NaN with some naive value. Otherwise, it does nothing.
-	missingX = fillNaive(missingX, completeX, mask, originalMissingX, missingMask, arg);
+	missingX = fillNaive(missingX, completeX, missingMask, arg);
 	trainData = [completeX; missingX];
 	trainMask = [ones(size(completeX)); missingMask];
 

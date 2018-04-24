@@ -1,5 +1,5 @@
 % fillAutoencoder uses an autoencoder (but with a different number of inputs and outputs).
-function [filledX] = fillAutoencoder(missingX, completeX, mask, originalMissingX, missingMask, arg)
+function [filledX] = fillAutoencoder(missingX, completeX, missingMask, arg)
 	[numSamplesMissing, numFeatures] = size(missingX);
 
 	if ~isfield(arg, 'useAll')
@@ -20,7 +20,7 @@ function [filledX] = fillAutoencoder(missingX, completeX, mask, originalMissingX
 
 	if arg.useAll
 		% If the appropriate flag is set, this function will fill NaN with some naive value. Otherwise, it does nothing.
-		missingX = fillNaive(missingX, completeX, mask, originalMissingX, missingMask, arg);
+		missingX = fillNaive(missingX, completeX, missingMask, arg);
 		trainData = [completeX; missingX]; % all data
 	else
 		trainData = completeX;             % complete data

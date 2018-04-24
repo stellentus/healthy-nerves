@@ -1,5 +1,5 @@
 % fillAutoBlanker uses an autoencoder (but with a different number of inputs and outputs).
-function [filledX] = fillAutoBlanker(missingX, completeX, mask, originalMissingX, missingMask, arg)
+function [filledX] = fillAutoBlanker(missingX, completeX, missingMask, arg)
 	[numSamplesMissing, numFeatures] = size(missingX);
 
 	model.params = arg;

@@ -1,5 +1,5 @@
 % fillHungry uses two autoencoders, with the second using the first's output.
-function [filledX] = fillHungry(missingX, completeX, mask, originalMissingX, missingMask, arg)
+function [filledX] = fillHungry(missingX, completeX, missingMask, arg)
 	[numSamplesMissing, numFeatures] = size(missingX);
 
 	model.params = arg;
