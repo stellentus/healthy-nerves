@@ -22,7 +22,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot)
 	% Set up functions to iterate through
 	algs = [];
 	algs = [algs; struct('func', @fillCCA, 'name', 'Listwise', 'args', struct())];
-	algs = [algs; struct('func', @fillMean, 'name', 'Mean-Fill', 'args', struct())];
+	algs = [algs; struct('func', @fillNaive, 'name', 'Mean-Fill', 'args', struct('meanNaN', true))];
 	algs = [algs; struct('func', @fillPCA, 'name', '   PCA', 'args', struct('k', 4, 'VariableWeights', 'variance', 'zeroNaN',  true))];
 	algs = [algs; struct('func', @fillRegr, 'name', 'Regression', 'args', struct())];
 	algs = [algs; struct('func', @fillMI, 'name', '    MI', 'args', struct('number', 10, 'length', 100))];
