@@ -131,11 +131,11 @@ function [ve, ce] = testFunc(alg, seed, originalCov, missingX, completeX, origin
 		case 1
 			% If the function only has one output argument, it doesn't do anything special to calculate covariance
 			filledX = alg.func(missingX, completeX, missingMask, alg.args);
-			filledX = predictOnlyMissingValues(filledX, missingX, missingMask, originalMissingX);
+			filledX = updateKnownValues(filledX, missingX, missingMask); % Add originalMissingX as a fourth argument to print debug
 			covr = cov([completeX; filledX]);
 		otherwise
 			[filledX, covr] = alg.func(missingX, completeX, missingMask, alg.args);
-			filledX = predictOnlyMissingValues(filledX, missingX, missingMask, originalMissingX);
+			filledX = updateKnownValues(filledX, missingX, missingMask); % Add originalMissingX as a fourth argument to print debug
 	end
 
 	ve = mean(mean(((originalMissingX - filledX) .* ~missingMask) .^ 2));
@@ -183,21 +183,4 @@ function plotBoxes(verrs, cerrs, algNames)
 	ylabel('Error');
 
 	rmpath util/CategoricalScatterplot
-end
-
-function [missingX] = predictOnlyMissingValues(predictedX, missingX, missingMask, originalMissingX)
-	[numSamplesMissing, numFeatures] = size(missingX);
-	for j = 1:numFeatures
-		% Skip this column if it has no missing values
-		if sum(missingMask(:, j)) == numSamplesMissing
-			continue
-		end
-
-		for i = 1:numSamplesMissing
-			if 0 == missingMask(i, j)
-				% fprintf('Filling (%d, %d) with %f (true: %f)\n', i, j, predictedX(i, j), originalMissingX(i, j))
-				missingX(i, j) = predictedX(i, j);
-			end
-		end
-	end
 end
