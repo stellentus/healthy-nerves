@@ -1,7 +1,7 @@
-% fillAutoIter uses an autoencoder (but with a different number of inputs and outputs).
+% fillAutoIter uses an autoencoder and iterates.
 function [filledX] = fillAutoIter(missingX, completeX, missingMask, arg)
-	if ~isfield(arg, 'epochs')
-		arg.epochs = 10;
+	if ~isfield(arg, 'iterations')
+		arg.iterations = 10;
 	end
 
 	% If the appropriate flag is set, this function will fill NaN with some naive value. Otherwise, it does nothing.
@@ -13,7 +13,7 @@ function [filledX] = fillAutoIter(missingX, completeX, missingMask, arg)
 	end
 
 	% Iterate through predictions
-	for i=1:arg.epochs
+	for i=1:arg.iterations
 		filledX = fillAutoencoder(filledX, completeX, missingMask, arg);
 		filledX = updateKnownValues(filledX, missingX, missingMask); % Repair the known values from missingX
 	end
