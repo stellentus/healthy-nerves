@@ -1,6 +1,9 @@
 % fillRegr uses linear regression on each column with missing data.
 % It's using the Matlab default linear regression, which "ignores" NaN values. (I'm not sure what that means.)
 function [filledX] = fillRegr(missingX, completeX, missingMask, arg)
+	% If the appropriate flag is set, this function will fill NaN with some naive value before doing PCA. Otherwise, it does nothing.
+	missingX = fillNaive(missingX, completeX, missingMask, arg);
+
 	X = [missingX; completeX];
 
 	filledX = missingX;
