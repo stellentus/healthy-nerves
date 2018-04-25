@@ -1,13 +1,12 @@
 % fillAutoencoder uses an autoencoder (but with a different number of inputs and outputs).
 function [filledX] = fillAutoencoder(missingX, completeX, missingMask, arg)
-	if ~isfield(arg, 'useAll')
-		arg.useAll = false;
+	if ~isfield(arg, 'trainMissingRows')
+		arg.trainMissingRows = false;
 	end
-	model.params = arg;
 
 	completeIndices = getCompleteIndices(missingX, missingMask);
 
-	if arg.useAll
+	if arg.trainMissingRows
 		% If the appropriate flag is set, this function will fill NaN with some naive value. Otherwise, it does nothing.
 		missingX = fillNaive(missingX, completeX, missingMask, arg);
 		trainData = [completeX; missingX]; % all data
@@ -18,6 +17,7 @@ function [filledX] = fillAutoencoder(missingX, completeX, missingMask, arg)
 	addpath ./algorithm
 
 	% Train
+	model.params = arg;
 	model = neuralnetwork(model);
 	model = neuralnetwork(model, trainData(:, completeIndices), trainData);
 
