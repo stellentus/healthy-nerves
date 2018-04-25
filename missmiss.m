@@ -26,10 +26,11 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot,
 	algs = [algs; struct('func', @fillCCA, 'name', 'Listwise', 'args', struct())];
 	algs = [algs; struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true))];
 	algs = [algs; struct('func', @fillPCA, 'name', 'PCA', 'args', struct('k', 7, 'VariableWeights', 'variance', 'handleNaN', 'mean'))];
-	algs = [algs; struct('func', @fillPCAIter, 'name', 'nPCA', 'args', struct('k', 6, 'VariableWeights', 'variance', 'handleNaN', 'mean', 'epochs', 20, 'algorithm', 'eig'))];
+	algs = [algs; struct('func', @fillPCAIter, 'name', 'iPCA', 'args', struct('k', 6, 'VariableWeights', 'variance', 'handleNaN', 'mean', 'epochs', 20, 'algorithm', 'eig'))];
 	algs = [algs; struct('func', @fillRegr, 'name', 'Regress', 'args', struct())];
 	algs = [algs; struct('func', @fillMI, 'name', 'MI', 'args', struct('number', 10, 'length', 100))];
 	algs = [algs; struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'useAll', true, 'handleNaN', 'mean'))];
+	algs = [algs; struct('func', @fillAutoIter, 'name', 'iAE', 'args', struct('nh', 6, 'useAll', true, 'handleNaN', 'mean', 'epochs', 20))];
 	algs = [algs; struct('func', @fillCascadeAuto, 'name', 'Cascade', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500))];
 
 	% Calculate errors
