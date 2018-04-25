@@ -1,25 +1,13 @@
 % fillHungry uses two autoencoders, with the second using the first's output.
 function [filledX] = fillHungry(missingX, completeX, missingMask, arg)
-	[numSamplesMissing, numFeatures] = size(missingX);
-
-	model.params = arg;
-
-	missIndices = [];
-	completeIndices = [];
-	for j = 1:numFeatures
-		% Skip this column if it has no missing values
-		if sum(missingMask(:, j)) == numSamplesMissing
-			completeIndices = [completeIndices; j];
-		else
-			missIndices = [missIndices; j];
-		end
-	end
+	[completeIndices, missIndices] = getCompleteIndices(missingX, missingMask);
 
 	inputs = completeX(:, completeIndices);
 
 	addpath ./algorithm
 
 	% Train
+	model.params = arg;
 	model = neuralnetwork(model);
 	model = neuralnetwork(model, inputs, completeX);
 
@@ -27,6 +15,7 @@ function [filledX] = fillHungry(missingX, completeX, missingMask, arg)
 	model = neuralnetwork(model, missingX(:, completeIndices));
 	missY = model.Y;
 
+	numSamplesMissing = size(missingX, 1);
 	interimX = missingX;
 	for j_ind = 1:length(missIndices)
 		j = missIndices(j_ind);

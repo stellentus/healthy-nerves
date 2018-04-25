@@ -1,22 +1,6 @@
 % fillCascadeAuto uses an autoencoder but adds cascading nodes that rely on the autoencoder's hidden layer as well as each other to fill missing data.
 function [filledX] = fillCascadeAuto(missingX, completeX, missingMask, arg)
-	[numSamplesMissing, numFeatures] = size(missingX);
-
-	model.params = arg;
-
-	missIndices = [];
-	missCount = [];
-	completeIndices = [];
-	for j = 1:numFeatures
-		% Skip this column if it has no missing values
-		numColumnPresent = sum(missingMask(:, j));
-		if numColumnPresent == numSamplesMissing
-			completeIndices = [completeIndices; j];
-		else
-			missIndices = [missIndices; j];
-			missCount = [missCount; numSamplesMissing - numColumnPresent];
-		end
-	end
+	[completeIndices, missIndices, missCount] = getCompleteIndices(missingX, missingMask);
 
 	% Sort the missing values by frequency.
 	[~, idx] = sort(missCount);
@@ -28,6 +12,7 @@ function [filledX] = fillCascadeAuto(missingX, completeX, missingMask, arg)
 	trainMask = [ones(size(completeX)); missingMask];
 
 	% Train
+	model.params = arg;
 	model = reset(model);
 	model = learn(model, trainData(:, completeIndices), trainData(:, missIndices), trainMask(:, missIndices));
 

@@ -1,22 +1,10 @@
 % fillMultiNeural uses a separate neural network on each column with missing data. (Very inefficient!)
 function [filledX] = fillMultiNeural(missingX, completeX, missingMask, arg)
-	[numSamplesMissing, numFeatures] = size(missingX);
-
 	if ~isfield(arg, 'ones')
 		arg.ones = false;
 	end
-	model.params = arg;
 
-	missIndices = [];
-	completeIndices = [];
-	for j = 1:numFeatures
-		% Skip this column if it has no missing values
-		if sum(missingMask(:, j)) == numSamplesMissing
-			completeIndices = [completeIndices; j];
-		else
-			missIndices = [missIndices; j];
-		end
-	end
+	[completeIndices, missIndices] = getCompleteIndices(missingX, missingMask);
 
 	inputs = completeX(:, completeIndices);
 	outputs = completeX(:, missIndices);
@@ -24,6 +12,7 @@ function [filledX] = fillMultiNeural(missingX, completeX, missingMask, arg)
 	addpath ./algorithm
 
 	% Train
+	model.params = arg;
 	model = neuralnetwork(model);
 	model = neuralnetwork(model, inputs, outputs);
 
