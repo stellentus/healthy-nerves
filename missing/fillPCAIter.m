@@ -2,7 +2,7 @@
 %   filledX is the best-guess filling of the missing values (with known values used when possible).
 function [filledX] = fillPCAIter(missingX, completeX, missingMask, args)
 	if ~isfield(args, 'k')
-		args.k = 4;
+		args.k = 6;
 	end
 	if ~isfield(args, 'VariableWeights')
 		args.VariableWeights = ones(1, size(missingX, 2));
