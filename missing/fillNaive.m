@@ -16,6 +16,11 @@ function [missingX] = fillNaive(missingX, completeX, missingMask, args)
 			case 'random'
 				randX = rand(size(missingX));
 				missingX(mask) = randX(mask);
+			case 'realmax'
+				missingX(mask) = 0.8 * realmax('single');
+			case 'max'
+				maxX = ones(size(missingX, 1), 1)*nanmax([missingX; completeX]);
+				missingX(mask) = maxX(mask);
 		end
 	end
 end
