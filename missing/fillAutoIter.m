@@ -1,7 +1,7 @@
 % fillAutoIter uses an autoencoder (but with a different number of inputs and outputs).
 function [filledX] = fillAutoIter(missingX, completeX, missingMask, arg)
 	if ~isfield(arg, 'epochs')
-		arg.epochs = 100;
+		arg.epochs = 10;
 	end
 	model.params = arg;
 

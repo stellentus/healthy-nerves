@@ -11,7 +11,7 @@ function [filledX] = fillPCAIter(missingX, completeX, missingMask, args)
 		args.algorithm = 'als';
 	end
 	if ~isfield(args, 'epochs')
-		args.epochs = 100;
+		args.epochs = 7;
 	end
 
 	% If the appropriate flag is set, this function will fill NaN with some naive value before doing PCA. Otherwise, it does nothing.
