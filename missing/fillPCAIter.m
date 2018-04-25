@@ -13,11 +13,16 @@ function [filledX] = fillPCAIter(missingX, completeX, missingMask, args)
 	if ~isfield(args, 'iterations')
 		args.iterations = 7;
 	end
+	if ~isfield(args, 'iterEps')
+		args.iterEps = 1e-7;
+	end
 
 	% If the appropriate flag is set, this function will fill NaN with some naive value before doing PCA. Otherwise, it does nothing.
 	filledX = fillNaive(missingX, completeX, missingMask, args);
 
 	for i=1:args.iterations
+		prevX = filledX;
+
 		% Train
 		X = [filledX; completeX];
 		[coeff, score, ~, ~, ~, mu] = pca(X, 'VariableWeights', args.VariableWeights, 'algorithm', args.algorithm);
@@ -27,5 +32,12 @@ function [filledX] = fillPCAIter(missingX, completeX, missingMask, args)
 		dim = size(filledX, 1);
 		filledX = score(1:dim, 1:args.k) * coeff(1:args.k, :) + repmat(mu, dim, 1); % Get PCA for entire matrix
 		filledX = updateKnownValues(filledX, missingX, missingMask); % Repair the known values from missingX
+
+		% Stop after convergence
+		iterEps = norm(prevX-filledX);
+		if iterEps < args.iterEps
+			% fprintf(' (converged after %d) ', i);
+			break
+		end
 	end
 end
