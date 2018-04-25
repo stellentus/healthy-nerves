@@ -32,6 +32,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot,
 	algs = [algs; struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean'))];
 	algs = [algs; struct('func', @fillAutoIter, 'name', 'iAE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean', 'iterations', 5, 'iterEps', 1))];
 	algs = [algs; struct('func', @fillCascadeAuto, 'name', 'Cascade', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500))];
+	algs = [algs; struct('func', @fillCascIter, 'name', 'iCasc', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'iterations', 2, 'iterEps', 1))];
 
 	% Calculate errors
 	verrs = [[]];
