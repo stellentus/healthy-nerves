@@ -40,4 +40,3 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = delete(X)
 	originalMissingX = X(missingIndices, :);
 	missingMask = mask(missingIndices, :);
 end
-
