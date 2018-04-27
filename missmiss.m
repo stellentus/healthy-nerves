@@ -126,7 +126,7 @@ function [verr, cerr] = testFuncs(algs, X, originalCov, includeCheats)
 	end
 end
 
-function [ve, ce] = testFunc(alg, seed, originalCov, missingX, completeX, originalMissingX, missingMask)
+function [ve, ce, filledX] = testFunc(alg, seed, originalCov, missingX, completeX, originalMissingX, missingMask)
 	fprintf('%s...', alg.name);
 	rng(seed); % Seed each algorithm with the exact same random numbers
 
