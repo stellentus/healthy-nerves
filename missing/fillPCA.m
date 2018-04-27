@@ -15,7 +15,7 @@ function [filledX] = fillPCA(missingX, completeX, missingMask, args)
 	missingX = fillNaive(missingX, completeX, missingMask, args);
 
 	X = [missingX; completeX];
-	[coeff, score, ~, ~, ~, mu] = pca(X, 'VariableWeights', args.VariableWeights, 'algorithm', args.algorithm);
+	[coeff, score, ~, ~, ~, mu] = pca(X, 'VariableWeights', args.VariableWeights, 'algorithm', args.algorithm, 'NumComponents', args.k);
 	coeff = coeff';
-	filledX = score(:, 1:args.k) * coeff(1:args.k, :) + repmat(mu, size(X, 1), 1);
+	filledX = score * coeff + repmat(mu, size(X, 1), 1);
 end
