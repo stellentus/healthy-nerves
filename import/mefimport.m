@@ -9,6 +9,7 @@ function [data, participantNames, measureNames, stats, age, sex] = mefimport(fil
 
 	% Get rid of rows and columns that don't help.
 	stripped = raw(includedMeasures(), [2,4:7,9:end]);
+	stripped(strcmp(stripped, '#N/A')) = {NaN}; % Change any N/A to zero.
 
 	% Import the columns we care about
 	measureNames = string(stripped([2:end], 1));
@@ -56,8 +57,8 @@ end
 
 function compare(names, expected, actual, statName)
 	for i = 1:length(actual)
-		if abs(actual(i)-expected(i)) > 1e4*eps(min(abs(actual(i)),abs(expected(i))))
-			disp('"' + names(i) + '" has ' + statName + ' of ' + actual(i) + ' instead of ' + expected(i) + '.');
+		if abs(actual(i)-expected(i)) > 1e4*eps(min(abs(actual(i)),abs(expected(i)))) || isnan(actual(i)) || isnan(expected(i))
+			fprintf('"%s" has %s of %d instead of %d.\n', names(i), statName, actual(i), expected(i));
 		end
 	end
 end
