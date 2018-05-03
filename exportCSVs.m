@@ -1,19 +1,24 @@
 % exportCSVs loads all available MEF and exports them as CSV
-function exportCSVs()
+function exportCSVs(pathToLoad)
+	if nargin < 1
+		pathToLoad = 'data/';
+	end
+
+	mkdir([pathToLoad 'csv']);
 
 	addpath import;
 
-	files = dir('data/*.xlsx');
+	files = dir([pathToLoad '*.xlsx']);
 	for file = files'
 		disp(['Writing ' file.name '...']);
 		[~, name, ext] = fileparts(file.name);
-		[values, participants, measures] = mefimport(['data/' name ext]);
+		[values, participants, measures] = mefimport([pathToLoad name ext]);
 
 		% Get rid of any commas
 		measures = strrep(measures, ',', ';');
 		participants = strrep(participants, ',', ';');
 
-		outputpath = ['data/csv/' name '.csv'];
+		outputpath = [pathToLoad 'csv/' name '.csv'];
 		fileID = fopen(outputpath, 'w');
 
 		% Print header row
