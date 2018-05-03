@@ -1,7 +1,7 @@
 % exportCSVs loads all available MEF and exports them as CSV
 function exportCSVs(pathToLoad)
 	if nargin < 1
-		pathToLoad = 'data/';
+		pathToLoad = 'data/human/';
 	end
 
 	mkdir([pathToLoad 'csv']);
