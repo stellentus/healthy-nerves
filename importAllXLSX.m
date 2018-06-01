@@ -10,8 +10,16 @@ function [values, participants, measures] = importAllXLSX(nanMethod, folderpath)
 	addpath missing;
 	addpath import;
 
+	[values, participants, measures] = loadXLSXInDirectory(nanMethod, folderpath);
+
+	rmpath import;
+	rmpath missing;
+end
+
+function [values, participants, measures] = loadXLSXInDirectory(nanMethod, folderpath)
 	values = struct();
 	participants = struct();
+	measures = [];
 
 	files = dir([folderpath '/*.xlsx']);
 	for file = files'
@@ -19,19 +27,18 @@ function [values, participants, measures] = importAllXLSX(nanMethod, folderpath)
 
 		[thisValues, thisParticipants, thisMeasures] = mefimport([folderpath '/' file.name], false);
 
-		if ~exist('measures')
-			measures = thisMeasures;
-		elseif ~isequal(measures, thisMeasures)
-			disp('WARNING: unequal measures');
-			disp(measures);
-			disp(thisMeasures);
-		end
+		measures = warnIfMeasuresDiffer(measures, thisMeasures);
 
 		thisValues = fillWithMethod(thisValues, nanMethod);
 		values = setfield(values, name, thisValues);
 		participants = setfield(participants, name, thisParticipants);
 	end
+end
 
-	rmpath import;
-	rmpath missing;
+function [thisMeasures] = warnIfMeasuresDiffer(measures, thisMeasures)
+	if ~isequal(measures, []) && ~isequal(measures, thisMeasures)
+		disp('WARNING: unequal measures');
+		disp(measures);
+		disp(thisMeasures);
+	end
 end
