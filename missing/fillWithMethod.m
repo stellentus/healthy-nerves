@@ -14,9 +14,15 @@ function [values] = fillWithMethod(values, method, args)
 		case 'CCA'  % This doesn't actually delete those rows. It just passes them as-is.
 			func = @fillCCA;
 			args = mergeArgs(args, struct());
-		case 'Naive'
+		case 'Zero'
+			func = @fillNaive;
+			args = mergeArgs(args, struct('handleNaN', 'zero', 'useMissingMaskForNaNFill', true));
+		case 'Mean'
 			func = @fillNaive;
 			args = mergeArgs(args, struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
+		case 'Random'
+			func = @fillNaive;
+			args = mergeArgs(args, struct('handleNaN', 'random', 'useMissingMaskForNaNFill', true));
 		case 'PCA'
 			func = @fillPCA;
 			args = mergeArgs(args, struct('k', 6, 'VariableWeights', 'variance'));
@@ -54,7 +60,7 @@ function [values] = fillWithMethod(values, method, args)
 	values(missIndices, :) = func(missingX, completeX, missingMask, args);
 end
 
-function [args] = fillWithMethod(args, argDefault)
+function [args] = mergeArgs(args, argDefault)
 	fields = fieldnames(argDefault);
 	for i = 1:numel(fields)
 		if ~isfield(args, fields{i})
