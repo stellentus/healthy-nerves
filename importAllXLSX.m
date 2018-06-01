@@ -21,9 +21,12 @@ function [values, participants, measures] = loadXLSXInDirectory(nanMethod, folde
 	participants = struct();
 	measures = [];
 
-	files = dir([folderpath '/*.xlsx']);
+	files = dir(folderpath);
 	for file = files'
-		[~,name,~] = fileparts(file.name);
+		[~,name,ext] = fileparts(file.name);
+		if ~strcmp(ext, '.xlsx')
+			continue
+		end
 
 		[thisValues, thisParticipants, thisMeasures] = mefimport([folderpath '/' file.name], false);
 
