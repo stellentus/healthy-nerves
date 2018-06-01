@@ -1,7 +1,10 @@
 % mefimport imports the provided MEF file
-function [data, participantNames, measureNames, stats, age, sex] = mefimport(filepath, shouldDeleteNaN)
-	if nargin == 1
-		shouldDeleteNaN = false;
+function [data, participantNames, measureNames, stats, age, sex] = mefimport(filepath, shouldDeleteNaN, displayWarnings)
+	if nargin < 3
+		displayWarnings = true;
+		if nargin < 2
+			shouldDeleteNaN = false;
+		end
 	end
 
 	% Import the raw data
@@ -34,7 +37,9 @@ function [data, participantNames, measureNames, stats, age, sex] = mefimport(fil
 	% Clean up the measure names
 	measureNames = replace(measureNames, '\', ' ');
 
-	verifyStats(data, stats, measureNames);
+	if displayWarnings
+		verifyStats(data, stats, measureNames);
+	end
 
 	% Transpose everything
 	data = data.';
