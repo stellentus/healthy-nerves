@@ -22,26 +22,36 @@ function [values, participants, measures] = loadXLSXInDirectory(nanMethod, folde
 	measures = [];
 
 	files = dir(folderpath);
+	files = files(~ismember({files.name}, {'.','..'}));  % Remove . and ..
 	for file = files'
 		[~,name,ext] = fileparts(file.name);
-		if ~strcmp(ext, '.xlsx')
+		fullPath = [folderpath '/' file.name];
+
+		if isfolder(fullPath)
+			% Recurse
+			[thisValues, thisParticipants, thisMeasures] = loadXLSXInDirectory(nanMethod, fullPath);
+		elseif ~strcmp(ext, '.xlsx')
 			continue
+		else
+			[thisValues, thisParticipants, thisMeasures] = mefimport(fullPath, false, false);
+			try
+				thisValues = fillWithMethod(thisValues, nanMethod);
+			catch
+				% It probably failed because the filling method was too complicated, so default to 0 which should always work.
+				thisValues = fillWithMethod(thisValues, 'Zero');
+			end
 		end
 
-		[thisValues, thisParticipants, thisMeasures] = mefimport([folderpath '/' file.name], false);
-
 		measures = warnIfMeasuresDiffer(measures, thisMeasures);
-
-		thisValues = fillWithMethod(thisValues, nanMethod);
-		values = setfield(values, name, thisValues);
-		participants = setfield(participants, name, thisParticipants);
+		values = setfield(values, matlab.lang.makeValidName(name), thisValues);
+		participants = setfield(participants, matlab.lang.makeValidName(name), thisParticipants);
 	end
 end
 
 function [thisMeasures] = warnIfMeasuresDiffer(measures, thisMeasures)
 	if ~isequal(measures, []) && ~isequal(measures, thisMeasures)
-		disp('WARNING: unequal measures');
 		disp(measures);
 		disp(thisMeasures);
+		error('WARNING: unequal measures');
 	end
 end
