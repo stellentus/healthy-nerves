@@ -42,7 +42,12 @@ function [values, participants, measures] = loadXLSXInDirectory(nanMethod, folde
 			end
 		end
 
-		measures = warnIfMeasuresDiffer(measures, thisMeasures);
+		try
+			measures = warnIfMeasuresDiffer(measures, thisMeasures);
+		catch
+			warning(['Could not load ' fullPath])
+			continue
+		end
 		values = setfield(values, matlab.lang.makeValidName(name), thisValues);
 		participants = setfield(participants, matlab.lang.makeValidName(name), thisParticipants);
 	end
@@ -50,8 +55,6 @@ end
 
 function [thisMeasures] = warnIfMeasuresDiffer(measures, thisMeasures)
 	if ~isequal(measures, []) && ~isequal(measures, thisMeasures)
-		disp(measures);
-		disp(thisMeasures);
 		error('WARNING: unequal measures');
 	end
 end
