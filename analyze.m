@@ -1,12 +1,14 @@
 % analyze runs an analysis on the data
-function [values, participants, measures] = analyze(dataType, shouldDeleteNaN, plotType, alg)
+function [values, participants, measures] = analyze(dataType, nanMethod, plotType, alg)
 	if nargin < 1
 		dataType = 'all';
 	end
 
 	if nargin < 2
-		shouldDeleteNaN = true;
+		nanMethod = 'delete';
 	end
+
+	shouldDeleteNaN = strcmp(nanMethod, 'delete');
 
 	addpath import;
 	if strcmp(dataType, 'all')
@@ -14,6 +16,8 @@ function [values, participants, measures] = analyze(dataType, shouldDeleteNaN, p
 	else
 		[values, participants, measures] = mefimport(pathFor(dataType), shouldDeleteNaN);
 	end
+
+	values = fillWithMethod(values, nanMethod);
 
 	if nargin < 4
 		alg = 'svd';
@@ -43,6 +47,7 @@ function [values, participants, measures] = analyze(dataType, shouldDeleteNaN, p
 						disp('ERROR: data type must be ''leg'' or ''arm''.');
 				end
 				[valuesProj, participantsProj] = mefimport(pathFor(dataProj), shouldDeleteNaN);
+				values = fillWithMethod(valuesProj, nanMethod);
 				crosswiseBP(values, valuesProj, measures, participants, participantsProj, alg);
 			case 'line'
 				dataProj = '';
@@ -55,6 +60,7 @@ function [values, participants, measures] = analyze(dataType, shouldDeleteNaN, p
 						disp('ERROR: data type must be ''leg'' or ''arm''.');
 				end
 				[valuesProj, participantsProj] = mefimport(pathFor(dataProj), shouldDeleteNaN);
+				values = fillWithMethod(valuesProj, nanMethod);
 				lineCross(values, valuesProj, participants, participantsProj, 1, alg);
 	    end
 
