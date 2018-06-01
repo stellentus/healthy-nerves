@@ -51,8 +51,7 @@ function [values] = fillWithMethod(values, method, args)
 			return
 	end
 
-	filledX = func(missingX, completeX, missingMask, args);
-	values = [completeX; filledX];
+	values(missIndices, :) = func(missingX, completeX, missingMask, args);
 end
 
 function [args] = fillWithMethod(args, argDefault)
