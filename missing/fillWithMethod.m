@@ -8,7 +8,7 @@ function [values] = fillWithMethod(values, method, args)
 
 	completeX = values(completeIndices, :);
 	missingX = values(missIndices, :);
-	missingMask = isnan(missingX);
+	missingMask = ~isnan(missingX);
 
 	switch method
 		case 'CCA'  % This doesn't actually delete those rows. It just passes them as-is.
