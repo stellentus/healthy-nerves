@@ -30,6 +30,10 @@ function [values, participants, measures] = loadXLSXInDirectory(nanMethod, folde
 		if isfolder(fullPath)
 			% Recurse
 			[thisValues, thisParticipants, thisMeasures] = loadXLSXInDirectory(nanMethod, fullPath);
+			if isempty(fieldnames(thisValues))
+				% We found nothing in the folder, so don't add it
+				continue
+			end
 		elseif ~strcmp(ext, '.xlsx')
 			continue
 		else
