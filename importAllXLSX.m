@@ -34,7 +34,8 @@ function [values, participants, measures] = loadXLSXInDirectory(nanMethod, folde
 				% We found nothing in the folder, so don't add it
 				continue
 			end
-		elseif ~strcmp(ext, '.xlsx')
+		elseif ~strcmp(ext, '.xlsx') || startsWith(name, '~$')
+			% Ignore files that are not Excel. Also ignore Excel backup files.
 			continue
 		else
 			[thisValues, thisParticipants, thisMeasures] = mefimport(fullPath, false, false);
