@@ -1,7 +1,7 @@
 %% ddNerves loads all Excel files and filters them based on names to get 'rat' data
 %% and 'SCI' data. It marks the rest as targets, and calculates how likely each rat
 %% and SCI point is an outlier.
-function ddNerves()
+function [sciScores, ratScores, healthyScores] = ddNerves()
 	[values, ~, measures] = importAllXLSX('Mean', 'data');
 
 	sciValues = [];
@@ -18,5 +18,19 @@ function ddNerves()
 		end
 	end
 
-	% Now use dd_tools
+	% Create a labelled prtools dataset
+	sciLabel = repmat(1, size(sciValues, 1), 1);
+	ratLabel = repmat(2, size(ratValues, 1), 1);
+	healthyLabel = repmat(3, size(healthyValues, 1), 1);
+	labels = [sciLabel; ratLabel; healthyLabel];
+	prd = prdataset([sciValues; ratValues; healthyValues], labels);
+
+	% Train the model
+	inliers = target_class(prd, 3);
+	w = mog_dd(inliers, 0.1, 5);
+
+	% Calculate scores
+	sciScores = +(sciValues * w);
+	ratScores = +(ratValues * w);
+	healthyScores = +(healthyValues * w);
 end
