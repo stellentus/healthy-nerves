@@ -10,15 +10,13 @@ function [values, participants, measures] = importAllXLSX(nanMethod, folderpath)
 	addpath missing;
 	addpath import;
 
-	[values, participants, measures] = loadXLSXInDirectory(nanMethod, folderpath);
+	[values, participants, measures] = loadXLSXInDirectory(struct(), struct(), nanMethod, folderpath, '');
 
 	rmpath import;
 	rmpath missing;
 end
 
-function [values, participants, measures] = loadXLSXInDirectory(nanMethod, folderpath)
-	values = struct();
-	participants = struct();
+function [values, participants, measures] = loadXLSXInDirectory(values, participants, nanMethod, folderpath, nameprefix)
 	measures = [];
 
 	files = dir(folderpath);
@@ -29,11 +27,7 @@ function [values, participants, measures] = loadXLSXInDirectory(nanMethod, folde
 
 		if isfolder(fullPath)
 			% Recurse
-			[thisValues, thisParticipants, thisMeasures] = loadXLSXInDirectory(nanMethod, fullPath);
-			if isempty(fieldnames(thisValues))
-				% We found nothing in the folder, so don't add it
-				continue
-			end
+			[values, participants, measures] = loadXLSXInDirectory(values, participants, nanMethod, fullPath, [nameprefix name '_']);
 		elseif ~strcmp(ext, '.xlsx') || startsWith(name, '~$')
 			% Ignore files that are not Excel. Also ignore Excel backup files.
 			continue
@@ -45,14 +39,15 @@ function [values, participants, measures] = loadXLSXInDirectory(nanMethod, folde
 				% It probably failed because the filling method was too complicated, so default to 0 which should always work.
 				thisValues = fillWithMethod(thisValues, 'Zero');
 			end
-		end
 
-		if measuresDiffer(measures, thisMeasures);
-			warning(['Could not load ' fullPath])
-			continue
+			if measuresDiffer(measures, thisMeasures);
+				warning(['Could not load ' fullPath])
+				continue
+			end
+
+			values = setfield(values, matlab.lang.makeValidName([nameprefix name]), thisValues);
+			participants = setfield(participants, matlab.lang.makeValidName([nameprefix name]), thisParticipants);
 		end
-		values = setfield(values, matlab.lang.makeValidName(name), thisValues);
-		participants = setfield(participants, matlab.lang.makeValidName(name), thisParticipants);
 	end
 end
 
