@@ -47,9 +47,7 @@ function [values, participants, measures] = loadXLSXInDirectory(nanMethod, folde
 			end
 		end
 
-		try
-			measures = warnIfMeasuresDiffer(measures, thisMeasures);
-		catch
+		if measuresDiffer(measures, thisMeasures);
 			warning(['Could not load ' fullPath])
 			continue
 		end
@@ -58,8 +56,6 @@ function [values, participants, measures] = loadXLSXInDirectory(nanMethod, folde
 	end
 end
 
-function [thisMeasures] = warnIfMeasuresDiffer(measures, thisMeasures)
-	if ~isequal(measures, []) && ~isequal(measures, thisMeasures)
-		error('WARNING: unequal measures');
-	end
+function [differ] = measuresDiffer(measures, thisMeasures)
+	differ = ~isequal(measures, []) && ~isequal(measures, thisMeasures);
 end
