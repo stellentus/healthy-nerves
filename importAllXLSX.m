@@ -45,8 +45,8 @@ function [values, participants, measures] = loadXLSXInDirectory(values, particip
 				continue
 			end
 
-			values = setfield(values, matlab.lang.makeValidName([nameprefix name]), thisValues);
-			participants = setfield(participants, matlab.lang.makeValidName([nameprefix name]), thisParticipants);
+			values.(matlab.lang.makeValidName([nameprefix name])) = thisValues;
+			participants.(matlab.lang.makeValidName([nameprefix name])) = thisParticipants;
 		end
 	end
 end
