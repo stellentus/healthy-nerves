@@ -25,7 +25,7 @@ function [values, participants, measures] = loadXLSXInDirectory(values, particip
 		[~,name,ext] = fileparts(file.name);
 		fullPath = [folderpath '/' file.name];
 
-		if isfolder(fullPath)
+		if file.isdir
 			% Recurse
 			[values, participants, measures] = loadXLSXInDirectory(values, participants, nanMethod, fullPath, [nameprefix name '_']);
 		elseif ~strcmp(ext, '.xlsx') || startsWith(name, '~$')
