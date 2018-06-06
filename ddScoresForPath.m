@@ -41,6 +41,15 @@ function [data] = ddScoresForPath(threshold, alg, nanMethod, folderpath)
 	labels = [sciLabel; ratLabel; healthyLabel];
 	prd = prdataset(values, labels);
 
+	data = struct();
+	data.values = values;
+	data.isSCI = false(size(values, 1), 1);
+	data.isRat = data.isSCI;
+	data.isHealthy = data.isSCI;
+	data.isSCI(1:size(sciValues, 1)) = true;
+	data.isRat(size(sciValues, 1)+1:size(sciValues, 1)+size(ratValues, 1)) = true;
+	data.isHealthy(size(sciValues, 1)+size(ratValues, 1)+1:end) = true;
+
 	% Train the model
 	inliers = target_class(prd, 3);
 	switch alg
@@ -66,15 +75,6 @@ function [data] = ddScoresForPath(threshold, alg, nanMethod, folderpath)
 		error('Algorithm not set')
 	end
 	scores = +(values * w);
-
-	data = struct();
-	data.values = values;
 	data.scores = scores(:, 1);
 	data.thresholds = scores(:, 2);
-	data.isSCI = false(size(values, 1), 1);
-	data.isRat = data.isSCI;
-	data.isHealthy = data.isSCI;
-	data.isSCI(1:size(sciValues, 1)) = true;
-	data.isRat(size(sciValues, 1)+1:size(sciValues, 1)+size(ratValues, 1)) = true;
-	data.isHealthy(size(sciValues, 1)+size(ratValues, 1)+1:end) = true;
 end
