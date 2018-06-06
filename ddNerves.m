@@ -2,7 +2,7 @@
 %% and 'SCI' data. It marks the rest as targets, and calculates how likely each rat
 %% and SCI point is an outlier.
 function [sciScores, ratScores, healthyScores] = ddNerves()
-	[values, ~, measures] = importAllXLSX('Mean', 'data');
+	[values, ~, ~] = importAllXLSX('Mean', 'data');
 
 	sciValues = [];
 	ratValues = [];
@@ -19,8 +19,8 @@ function [sciScores, ratScores, healthyScores] = ddNerves()
 	end
 
 	% Create a labelled prtools dataset
-	sciLabel = repmat(1, size(sciValues, 1), 1);
-	ratLabel = repmat(2, size(ratValues, 1), 1);
+	sciLabel = ones(size(sciValues, 1), 1);
+	ratLabel = ones(size(ratValues, 1), 1) * 2;
 	healthyLabel = repmat(3, size(healthyValues, 1), 1);
 	labels = [sciLabel; ratLabel; healthyLabel];
 	prd = prdataset([sciValues; ratValues; healthyValues], labels);
