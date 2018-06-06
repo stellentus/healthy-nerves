@@ -1,11 +1,14 @@
 %% ddScoresForPath loads all Excel files and filters them based on names to get 'rat'
 %% data and 'SCI' data. It marks the rest as targets, and calculates how likely each
 %% rat and SCI point is an outlier.
-function [sciScores, ratScores, healthyScores] = ddScoresForPath(nanMethod, folderpath)
-	if nargin < 2
+function [sciScores, ratScores, healthyScores] = ddScoresForPath(threshold, nanMethod, folderpath)
+	if nargin < 3
 		folderpath = 'data';
-		if nargin < 1
+		if nargin < 2
 			nanMethod = 'Mean';
+			if nargin < 1
+				threshold = 0.1;
+			end
 		end
 	end
 
