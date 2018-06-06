@@ -3,17 +3,16 @@ function [values, participants, measures] = importAllXLSX(nanMethod, folderpath)
 	if nargin < 2
 		folderpath = 'data';
 		if nargin < 1
-			nanMethod = 'Mean';
+			nanMethod = 'IterateRegr';
 		end
 	end
 
-	addpath missing;
-	addpath import;
+	missingPath = fullfile(fileparts(which(mfilename)),'../missing');
+	addpath(missingPath);
 
 	[values, participants, measures] = loadXLSXInDirectory(struct(), struct(), nanMethod, folderpath, '');
 
-	rmpath import;
-	rmpath missing;
+	rmpath(missingPath);
 end
 
 function [values, participants, measures] = loadXLSXInDirectory(values, participants, nanMethod, folderpath, nameprefix)
