@@ -1,16 +1,19 @@
 %% ddNerves plots the nerve scores.
-function ddNerves(threshold, nanMethod, folderpath)
-	if nargin < 3
+function ddNerves(threshold, alg, nanMethod, folderpath)
+	if nargin < 4
 		folderpath = 'data';
-		if nargin < 2
+		if nargin < 3
 			nanMethod = 'Mean';
-			if nargin < 1
-				threshold = 0.1;
+			if nargin < 2
+				alg = 'mog';
+				if nargin < 1
+					threshold = 0.1;
+				end
 			end
 		end
 	end
 
-	data = ddScoresForPath(threshold, nanMethod, folderpath);
+	data = ddScoresForPath(threshold, alg, nanMethod, folderpath);
 
 	% Get indices to access each group
 	outSCIInd = data.isSCI & (data.scores < data.thresholds);
