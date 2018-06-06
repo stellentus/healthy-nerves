@@ -22,12 +22,13 @@ function ddNerves(threshold, nanMethod, folderpath)
 
 	x = data.values(:, 1);
 	y = data.values(:, 2);
+	z = data.values(:, 17);
 
 	hold on;
-	plot(x(inSCIInd), y(inSCIInd), '.r');
-	plot(x(outSCIInd), y(outSCIInd), '*r');
-	plot(x(inHealthyInd), y(inHealthyInd), '.k');
-	plot(x(outHealthyInd), y(outHealthyInd), '*k');
-	plot(x(inRatInd), y(inRatInd), '.b');
-	plot(x(outRatInd), y(outRatInd), '*b');
+	scatter3(x(inSCIInd), y(inSCIInd), z(inSCIInd), '.', 'MarkerEdgeColor','r');
+	scatter3(x(outSCIInd), y(outSCIInd), z(outSCIInd), '*', 'MarkerEdgeColor','r');
+	scatter3(x(inHealthyInd), y(inHealthyInd), z(inHealthyInd), '.', 'MarkerEdgeColor','k');
+	scatter3(x(outHealthyInd), y(outHealthyInd), z(outHealthyInd), '*', 'MarkerEdgeColor','k');
+	scatter3(x(inRatInd), y(inRatInd), z(inRatInd), '.', 'MarkerEdgeColor','b');
+	scatter3(x(outRatInd), y(outRatInd), z(outRatInd), '*', 'MarkerEdgeColor','b');
 end
