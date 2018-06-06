@@ -1,24 +1,5 @@
-%% ddScoresForPath loads all Excel files and filters them based on names to get 'rat'
-%% data and 'SCI' data. It marks the rest as targets, and calculates how likely each
-%% rat and SCI point is an outlier.
-function [data] = ddScoresForPath(threshold, alg, nanMethod, folderpath)
-	if nargin < 4
-		folderpath = 'data';
-		if nargin < 3
-			nanMethod = 'Mean';
-			if nargin < 2
-				alg = 'mog';
-				if nargin < 1
-					threshold = 0.1;
-				end
-			end
-		end
-	end
-
-	addpath import;
-	[inliers, data] = importPRDataset(nanMethod, folderpath);
-	rmpath import;
-
+%% ddScoresForPath calculates how likely each point is an outlier.
+function [w] = ddScoresForPath(inliers, threshold, alg)
 	% Train the model
 	switch alg
 	case 'mog'
@@ -42,7 +23,4 @@ function [data] = ddScoresForPath(threshold, alg, nanMethod, folderpath)
 	otherwise
 		error('Algorithm not set')
 	end
-	scores = +(data.values * w);
-	data.scores = scores(:, 1);
-	data.thresholds = scores(:, 2);
 end

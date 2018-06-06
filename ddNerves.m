@@ -13,7 +13,14 @@ function ddNerves(threshold, alg, nanMethod, folderpath)
 		end
 	end
 
-	data = ddScoresForPath(threshold, alg, nanMethod, folderpath);
+	addpath import;
+	[inliers, data] = importPRDataset(nanMethod, folderpath);
+	rmpath import;
+
+	% Calculate scores
+	scores = +(data.values * ddScoresForPath(inliers, threshold, alg));
+	data.scores = scores(:, 1);
+	data.thresholds = scores(:, 2);
 
 	% Get indices to access each group
 	outSCIInd = data.isSCI & (data.scores < data.thresholds);
