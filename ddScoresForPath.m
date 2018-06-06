@@ -1,7 +1,7 @@
-%% ddNerves loads all Excel files and filters them based on names to get 'rat' data
-%% and 'SCI' data. It marks the rest as targets, and calculates how likely each rat
-%% and SCI point is an outlier.
-function [sciScores, ratScores, healthyScores] = ddNerves(nanMethod, folderpath)
+%% ddScoresForPath loads all Excel files and filters them based on names to get 'rat'
+%% data and 'SCI' data. It marks the rest as targets, and calculates how likely each
+%% rat and SCI point is an outlier.
+function [sciScores, ratScores, healthyScores] = ddScoresForPath(nanMethod, folderpath)
 	if nargin < 2
 		folderpath = 'data';
 		if nargin < 1
