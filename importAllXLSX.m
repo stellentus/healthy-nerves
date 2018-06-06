@@ -51,6 +51,7 @@ function [values, participants, measures] = loadXLSXInDirectory(values, particip
 				warning(['Could not load ' fullPath])
 				continue
 			end
+			measures = thisMeasures;
 
 			values.(matlab.lang.makeValidName([nameprefix name])) = thisValues;
 			participants.(matlab.lang.makeValidName([nameprefix name])) = thisParticipants;
