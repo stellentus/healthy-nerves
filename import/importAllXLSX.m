@@ -1,12 +1,5 @@
 % importAllXLSX imports all Excel files at the given path.
 function [values, participants, measures] = importAllXLSX(nanMethod, folderpath)
-	if nargin < 2
-		folderpath = 'data';
-		if nargin < 1
-			nanMethod = 'IterateRegr';
-		end
-	end
-
 	missingPath = fullfile(fileparts(which(mfilename)),'../missing');
 	addpath(missingPath);
 
