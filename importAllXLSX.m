@@ -33,9 +33,16 @@ function [values, participants, measures] = loadXLSXInDirectory(values, particip
 			continue
 		else
 			[thisValues, thisParticipants, thisMeasures] = mefimport(fullPath, false, false);
+			filled = false;
 			try
 				thisValues = fillWithMethod(thisValues, nanMethod);
+				if sum(sum(isnan(thisValues))) == 0
+					filled = true;
+				end
 			catch
+			end
+
+			if ~filled
 				% It probably failed because the filling method was too complicated, so default to 0 which should always work.
 				thisValues = fillWithMethod(thisValues, 'Zero');
 			end
