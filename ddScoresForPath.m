@@ -16,42 +16,10 @@ function [data] = ddScoresForPath(threshold, alg, nanMethod, folderpath)
 	end
 
 	addpath import;
-	[values, ~, ~] = importAllXLSX(nanMethod, folderpath);
+	[inliers, data] = importPRDataset(nanMethod, folderpath);
 	rmpath import;
 
-	sciValues = [];
-	ratValues = [];
-	healthyValues = [];
-	fields = fieldnames(values);
-	for i = 1:numel(fields)
-		if contains(fields{i}, 'rat', 'IgnoreCase', true)
-			ratValues = [ratValues; values.(fields{i})];
-		elseif contains(fields{i}, 'SCI', 'IgnoreCase', true)
-			sciValues = [sciValues; values.(fields{i})];
-		else
-			healthyValues = [healthyValues; values.(fields{i})];
-		end
-	end
-
-	% Create a labelled prtools dataset
-	values = [sciValues; ratValues; healthyValues];
-	sciLabel = ones(size(sciValues, 1), 1);
-	ratLabel = ones(size(ratValues, 1), 1) * 2;
-	healthyLabel = repmat(3, size(healthyValues, 1), 1);
-	labels = [sciLabel; ratLabel; healthyLabel];
-	prd = prdataset(values, labels);
-
-	data = struct();
-	data.values = values;
-	data.isSCI = false(size(values, 1), 1);
-	data.isRat = data.isSCI;
-	data.isHealthy = data.isSCI;
-	data.isSCI(1:size(sciValues, 1)) = true;
-	data.isRat(size(sciValues, 1)+1:size(sciValues, 1)+size(ratValues, 1)) = true;
-	data.isHealthy(size(sciValues, 1)+size(ratValues, 1)+1:end) = true;
-
 	% Train the model
-	inliers = target_class(prd, 3);
 	switch alg
 	case 'mog'
 		w = mog_dd(inliers, threshold, 5);  % Number of gaussians
@@ -74,7 +42,7 @@ function [data] = ddScoresForPath(threshold, alg, nanMethod, folderpath)
 	otherwise
 		error('Algorithm not set')
 	end
-	scores = +(values * w);
+	scores = +(data.values * w);
 	data.scores = scores(:, 1);
 	data.thresholds = scores(:, 2);
 end
