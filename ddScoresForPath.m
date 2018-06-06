@@ -1,7 +1,7 @@
 %% ddScoresForPath loads all Excel files and filters them based on names to get 'rat'
 %% data and 'SCI' data. It marks the rest as targets, and calculates how likely each
 %% rat and SCI point is an outlier.
-function [sciScores, ratScores, healthyScores] = ddScoresForPath(threshold, nanMethod, folderpath)
+function [data] = ddScoresForPath(threshold, nanMethod, folderpath)
 	if nargin < 3
 		folderpath = 'data';
 		if nargin < 2
@@ -31,18 +31,26 @@ function [sciScores, ratScores, healthyScores] = ddScoresForPath(threshold, nanM
 	end
 
 	% Create a labelled prtools dataset
+	values = [sciValues; ratValues; healthyValues];
 	sciLabel = ones(size(sciValues, 1), 1);
 	ratLabel = ones(size(ratValues, 1), 1) * 2;
 	healthyLabel = repmat(3, size(healthyValues, 1), 1);
 	labels = [sciLabel; ratLabel; healthyLabel];
-	prd = prdataset([sciValues; ratValues; healthyValues], labels);
+	prd = prdataset(values, labels);
 
 	% Train the model
 	inliers = target_class(prd, 3);
 	w = mog_dd(inliers, 0.1, 5);
+	scores = +(values * w);
 
-	% Calculate scores
-	sciScores = +(sciValues * w);
-	ratScores = +(ratValues * w);
-	healthyScores = +(healthyValues * w);
+	data = struct();
+	data.values = values;
+	data.scores = scores(:, 1);
+	data.thresholds = scores(:, 2);
+	data.isSCI = false(size(values, 1), 1);
+	data.isRat = data.isSCI;
+	data.isHealthy = data.isSCI;
+	data.isSCI(1:size(sciValues, 1)) = true;
+	data.isRat(size(sciValues, 1)+1:size(sciValues, 1)+size(ratValues, 1)) = true;
+	data.isHealthy(size(sciValues, 1)+size(ratValues, 1)+1:end) = true;
 end
