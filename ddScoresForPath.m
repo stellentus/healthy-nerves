@@ -40,7 +40,7 @@ function [data] = ddScoresForPath(threshold, nanMethod, folderpath)
 
 	% Train the model
 	inliers = target_class(prd, 3);
-	w = mog_dd(inliers, 0.1, 5);
+	w = mog_dd(inliers, threshold, 5);
 	scores = +(values * w);
 
 	data = struct();
