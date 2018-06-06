@@ -18,7 +18,7 @@ function ddNerves(threshold, alg, nanMethod, folderpath)
 	rmpath import;
 
 	% Calculate scores
-	scores = +(data.values * ddScoresForPath(inliers, threshold, alg));
+	scores = +(data.values * ddModel(inliers, threshold, alg));
 	data.scores = scores(:, 1);
 	data.thresholds = scores(:, 2);
 

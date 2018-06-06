@@ -1,5 +1,5 @@
-%% ddScoresForPath calculates how likely each point is an outlier.
-function [w] = ddScoresForPath(inliers, threshold, alg)
+%% ddModel calculates how likely each point is an outlier.
+function [w] = ddModel(inliers, threshold, alg)
 	% Train the model
 	switch alg
 	case 'mog'
