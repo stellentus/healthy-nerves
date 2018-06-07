@@ -67,25 +67,29 @@ function ddNerves(threshold, alg, nanMethod, folderpath)
 		end
 	end
 
-	function incX(hObject, eventdata)
-		xIndex = updateIndex(xIndex);
+	function popX(hObject, eventdata)
+		xIndex = get(hObject,'Value');
 		plotData();
-		hObject.String = buttonString(xIndex, 'X');
 	end
 
-	function incY(hObject, eventdata)
-		yIndex = updateIndex(yIndex);
+	function popY(hObject, eventdata)
+		yIndex = get(hObject,'Value');
 		plotData();
-		hObject.String = buttonString(yIndex, 'Y');
 	end
 
-	function incZ(hObject, eventdata)
-		zIndex = updateIndex(zIndex);
+	function popZ(hObject, eventdata)
+		zIndex = get(hObject,'Value');
 		plotData();
-		hObject.String = buttonString(zIndex, 'Z');
 	end
 
-    ui_h = uicontrol('Position', [30, 0, 100, 30], 'Style', 'Pushbutton', 'String', buttonString(xIndex, 'X'), 'Callback', @incX);
-    ui_h = uicontrol('Position', [140, 0, 100, 30], 'Style', 'Pushbutton', 'String', buttonString(yIndex, 'Y'), 'Callback', @incY);
-    ui_h = uicontrol('Position', [250, 0, 100, 30], 'Style', 'Pushbutton', 'String', buttonString(zIndex, 'Z'), 'Callback', @incZ);
+	ih = uicontrol('Style', 'popup', 'String', genStrings(maxIndex, 'X'), 'Position', [30 0 100 50], 'background', 'green', 'Value', 1, 'Callback', @popX);
+	ih = uicontrol('Style', 'popup', 'String', genStrings(maxIndex, 'Y'), 'Position', [140 0 100 50], 'background', 'green', 'Value', 2, 'Callback', @popY);
+	ih = uicontrol('Style', 'popup', 'String', genStrings(maxIndex, 'Z'), 'Position', [250 0 100 50], 'background', 'green', 'Value', 3, 'Callback', @popZ);
+end
+
+function [strs] = genStrings(maxInt, axis)
+	strs = {};
+	for i = 1:maxInt
+		strs = [strs sprintf('%s %d', axis, i)];
+	end
 end
