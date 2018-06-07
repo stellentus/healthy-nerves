@@ -30,15 +30,62 @@ function ddNerves(threshold, alg, nanMethod, folderpath)
 	outHealthyInd = data.isHealthy & (data.scores < data.thresholds);
 	inHealthyInd = data.isHealthy & ~(data.scores < data.thresholds);
 
-	x = data.values(:, 1);
-	y = data.values(:, 2);
-	z = data.values(:, 17);
+	xIndex = 1;
+	yIndex = 2;
+	zIndex = 3;  %17
+	figure;
+	set(gcf, 'units', 'points', 'position', [0, 40, 400, 400]);
 
-	hold on;
-	scatter3(x(inSCIInd), y(inSCIInd), z(inSCIInd), '.', 'MarkerEdgeColor','r');
-	scatter3(x(outSCIInd), y(outSCIInd), z(outSCIInd), '*', 'MarkerEdgeColor','r');
-	scatter3(x(inHealthyInd), y(inHealthyInd), z(inHealthyInd), '.', 'MarkerEdgeColor','k');
-	scatter3(x(outHealthyInd), y(outHealthyInd), z(outHealthyInd), '*', 'MarkerEdgeColor','k');
-	scatter3(x(inRatInd), y(inRatInd), z(inRatInd), '.', 'MarkerEdgeColor','b');
-	scatter3(x(outRatInd), y(outRatInd), z(outRatInd), '*', 'MarkerEdgeColor','b');
+	maxIndex = size(data.values, 2);
+
+	function plotData(~, ~)
+		x = data.values(:, xIndex);
+		y = data.values(:, yIndex);
+		z = data.values(:, zIndex);
+
+		cla reset;
+		hold on;
+		scatter3(x(inSCIInd), y(inSCIInd), z(inSCIInd), '.', 'MarkerEdgeColor','r');
+		scatter3(x(outSCIInd), y(outSCIInd), z(outSCIInd), '*', 'MarkerEdgeColor','r');
+		scatter3(x(inHealthyInd), y(inHealthyInd), z(inHealthyInd), '.', 'MarkerEdgeColor','k');
+		scatter3(x(outHealthyInd), y(outHealthyInd), z(outHealthyInd), '*', 'MarkerEdgeColor','k');
+		scatter3(x(inRatInd), y(inRatInd), z(inRatInd), '.', 'MarkerEdgeColor','b');
+		scatter3(x(outRatInd), y(outRatInd), z(outRatInd), '*', 'MarkerEdgeColor','b');
+		view(3);
+	end
+
+	plotData();
+
+	function [str] = buttonString(ind, axis)
+		str = sprintf('Increment %s (%d)', axis, ind);
+	end
+
+	function [ind] = updateIndex(ind)
+		ind = ind+1;
+		if ind > maxIndex
+			ind = 1;
+		end
+	end
+
+	function incX(hObject, eventdata)
+		xIndex = updateIndex(xIndex);
+		plotData();
+		hObject.String = buttonString(xIndex, 'X');
+	end
+
+	function incY(hObject, eventdata)
+		yIndex = updateIndex(yIndex);
+		plotData();
+		hObject.String = buttonString(yIndex, 'Y');
+	end
+
+	function incZ(hObject, eventdata)
+		zIndex = updateIndex(zIndex);
+		plotData();
+		hObject.String = buttonString(zIndex, 'Z');
+	end
+
+    ui_h = uicontrol('Position', [30, 0, 100, 30], 'Style', 'Pushbutton', 'String', buttonString(xIndex, 'X'), 'Callback', @incX);
+    ui_h = uicontrol('Position', [140, 0, 100, 30], 'Style', 'Pushbutton', 'String', buttonString(yIndex, 'Y'), 'Callback', @incY);
+    ui_h = uicontrol('Position', [250, 0, 100, 30], 'Style', 'Pushbutton', 'String', buttonString(zIndex, 'Z'), 'Callback', @incZ);
 end
