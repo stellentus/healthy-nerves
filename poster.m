@@ -20,8 +20,8 @@ function poster(dataType)
 
 	correlations(valuesLeg, valuesArm, participantsLeg, participantsArm);
 
-	count(nameLeg, participantsLeg, measuresLeg);
-	count(nameArm, participantsArm, measuresArm);
+	countParticipants(nameLeg, participantsLeg, measuresLeg);
+	countParticipants(nameArm, participantsArm, measuresArm);
 
 	primaryWeights(nameLeg, valuesLeg, measuresLeg);
 	primaryWeights(nameArm, valuesArm, measuresArm);
