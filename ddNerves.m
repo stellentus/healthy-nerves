@@ -30,18 +30,40 @@ function ddNerves(threshold, alg, nanMethod, folderpath)
 	outHealthyInd = data.isHealthy & (data.scores < data.thresholds);
 	inHealthyInd = data.isHealthy & ~(data.scores < data.thresholds);
 
+	% New redo all of the above for the PCA components
+	addpath poster;
+	[coeff, m] = transform(data.values(data.isHealthy, :), 'svd');
+	rmpath poster;
+	scores = data.values*coeff-m;
+
 	xIndex = 1;
 	yIndex = 2;
-	zIndex = 3;  %17
+	zIndex = 3;
+	xAsPCA = false;
+	yAsPCA = false;
+	zAsPCA = false;
+
 	figure;
 	set(gcf, 'units', 'points', 'position', [0, 40, 400, 400]);
 
 	maxIndex = size(data.values, 2);
 
 	function plotData(~, ~)
-		x = data.values(:, xIndex);
-		y = data.values(:, yIndex);
-		z = data.values(:, zIndex);
+		if xAsPCA
+			x = scores(:, xIndex);
+		else
+			x = data.values(:, xIndex);
+		end
+		if yAsPCA
+			y = scores(:, yIndex);
+		else
+			y = data.values(:, yIndex);
+		end
+		if zAsPCA
+			z = scores(:, zIndex);
+		else
+			z = data.values(:, zIndex);
+		end
 
 		cla reset;
 		hold on;
@@ -69,17 +91,27 @@ function ddNerves(threshold, alg, nanMethod, folderpath)
 
 	function popX(hObject, eventdata)
 		xIndex = get(hObject,'Value');
+		[xIndex, xAsPCA] = indexForString(xIndex);
 		plotData();
 	end
 
 	function popY(hObject, eventdata)
 		yIndex = get(hObject,'Value');
+		[yIndex, yAsPCA] = indexForString(yIndex);
 		plotData();
 	end
 
 	function popZ(hObject, eventdata)
 		zIndex = get(hObject,'Value');
+		[zIndex, zAsPCA] = indexForString(zIndex);
 		plotData();
+	end
+
+	function [idx, isPCA] = indexForString(idx)
+		isPCA = idx > maxIndex;
+		if isPCA
+			idx = idx - maxIndex;
+		end
 	end
 
 	ih = uicontrol('Style', 'popup', 'String', genStrings(maxIndex, 'X'), 'Position', [30 0 100 50], 'background', 'green', 'Value', 1, 'Callback', @popX);
@@ -91,5 +123,8 @@ function [strs] = genStrings(maxInt, axis)
 	strs = {};
 	for i = 1:maxInt
 		strs = [strs sprintf('%s %d', axis, i)];
+	end
+	for i = 1:maxInt
+		strs = [strs sprintf('PCA %s %d', axis, i)];
 	end
 end
