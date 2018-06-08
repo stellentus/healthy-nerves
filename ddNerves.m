@@ -7,7 +7,7 @@ function ddNerves(threshold, alg, nanMethod, folderpath)
 			if nargin < 2
 				alg = 'mog';
 				if nargin < 1
-					threshold = 0.1;
+					threshold = 0.01;
 				end
 			end
 		end
