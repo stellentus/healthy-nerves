@@ -1,0 +1,65 @@
+sizea = 2000;
+mua = [4 4];
+siga = [1 .85; .8 1];
+a = gendatgauss(sizea, mua, siga);
+
+sizeb = 50;
+mub = [2 6];
+sigb = [.3 0; .35 .05];
+b = gendatgauss(sizeb, mub, sigb);
+
+f = figure;
+hold on;
+plot(a.data(:,1), a.data(:,2), '.');
+xlim([0 8]);
+ylim([0 8]);
+xlabel('Measurement 1');
+ylabel('Measurement 2');
+title('Really Important Data', 'fontsize', 18);
+saveas(f, 'lethPresent1.png');
+close(f);
+
+f = figure;
+hold on;
+plot(a.data(:,1), a.data(:,2), '.');
+plot(b.data(:,1), b.data(:,2), '.r');
+xlim([0 8]);
+ylim([0 8]);
+xlabel('Measurement 1');
+ylabel('Measurement 2');
+title('Really Important Data with Outliers', 'fontsize', 18);
+saveas(f, 'lethPresent2.png');
+close(f);
+
+f = figure;
+hold on;
+plot(a.data(:,1), a.data(:,2), '.');
+plot(b.data(:,1), b.data(:,2), '.r');
+xlim([0 8]);
+ylim([0 8]);
+xlabel('Measurement 1');
+ylabel('Measurement 2');
+title('95% Confidence Interval', 'fontsize', 18);
+x = target_class(prdataset(a, repmat(1, sizea, 1)), 1);
+w = gauss_dd(x, .05);
+plotc(w);
+saveas(f, 'lethPresent3.png');
+close(f);
+
+f = figure;
+hold on;
+plot(a.data(:,1), a.data(:,2), '.');
+plot(b.data(:,1), b.data(:,2), '.r');
+xlim([0 8]);
+ylim([0 8]);
+xlabel('Measurement 1');
+ylabel('Measurement 2');
+title('Two 95% Confidence Intervals', 'fontsize', 18);
+x = target_class(prdataset(a, repmat(1, sizea, 1)), 1);
+w = gauss_dd(x, .05);
+plotc(w);
+x = target_class(prdataset(b, repmat(1, sizeb, 1)), 1);
+w = gauss_dd(x, .05);
+plotc(w);
+saveas(f, 'lethPresent4.png');
+close(f);
