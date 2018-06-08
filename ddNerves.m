@@ -1,5 +1,5 @@
 %% ddNerves plots the nerve scores.
-function ddNerves(threshold, alg, nanMethod, folderpath)
+function [data] = ddNerves(threshold, alg, nanMethod, folderpath)
 	if nargin < 4
 		folderpath = 'data';
 		if nargin < 3
