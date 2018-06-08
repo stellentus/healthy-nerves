@@ -73,6 +73,7 @@ function ddNerves(threshold, alg, nanMethod, folderpath)
 		scatter3(x(outHealthyInd), y(outHealthyInd), z(outHealthyInd), '*', 'MarkerEdgeColor','k');
 		scatter3(x(inRatInd), y(inRatInd), z(inRatInd), '.', 'MarkerEdgeColor','b');
 		scatter3(x(outRatInd), y(outRatInd), z(outRatInd), '*', 'MarkerEdgeColor','b');
+		legend({'SCI Healthy', 'SCI Unhealthy', 'Control Healthy', 'Control Unhealthy', 'Rat Healthy', 'Rat Unhealthy'}, 'Location','northeast', 'NumColumns', 2, 'Orientation', 'horizontal', 'FontSize', 12);
 		view(3);
 	end
 
