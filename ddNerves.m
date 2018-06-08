@@ -114,9 +114,9 @@ function ddNerves(threshold, alg, nanMethod, folderpath)
 		end
 	end
 
-	ih = uicontrol('Style', 'popup', 'String', genStrings(maxIndex, 'X'), 'Position', [30 0 100 50], 'background', 'green', 'Value', 1, 'Callback', @popX);
-	ih = uicontrol('Style', 'popup', 'String', genStrings(maxIndex, 'Y'), 'Position', [140 0 100 50], 'background', 'green', 'Value', 2, 'Callback', @popY);
-	ih = uicontrol('Style', 'popup', 'String', genStrings(maxIndex, 'Z'), 'Position', [250 0 100 50], 'background', 'green', 'Value', 3, 'Callback', @popZ);
+	ih = uicontrol('Style', 'popup', 'String', genStrings(maxIndex, 'X'), 'Position', [30 0 100 50], 'Value', 1, 'Callback', @popX);
+	ih = uicontrol('Style', 'popup', 'String', genStrings(maxIndex, 'Y'), 'Position', [140 0 100 50], 'Value', 2, 'Callback', @popY);
+	ih = uicontrol('Style', 'popup', 'String', genStrings(maxIndex, 'Z'), 'Position', [250 0 100 50], 'Value', 3, 'Callback', @popZ);
 end
 
 function [strs] = genStrings(maxInt, axis)
