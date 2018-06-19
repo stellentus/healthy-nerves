@@ -3,10 +3,10 @@ function lorenz()
 	close all;
 
 	addpath import;
-	[SP_SOL, ~, measureNames] = mefimport('data/rat/RSOL all SP.xlsx');
-	[SP_TA, ~] = mefimport('data/rat/RTA all SP.xlsx');
-	[KX_SOL, ~] = mefimport('data/rat/SOL-KXpair.xlsx');
-	[KX_TA, ~] = mefimport('data/rat/TA-KXpair.xlsx');
+	[SP_SOL, ~, measureNames] = mefimport('data/rat/RSOL all SP.xlsx', false, true);
+	[SP_TA, ~] = mefimport('data/rat/RTA all SP.xlsx', false, true);
+	[KX_SOL, ~] = mefimport('data/rat/SOL-KXpair.xlsx', false, true);
+	[KX_TA, ~] = mefimport('data/rat/TA-KXpair.xlsx', false, true);
 	rmpath import;
 
 	% Set colors
