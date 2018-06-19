@@ -22,8 +22,8 @@ function lorenz()
 	for k = 1:length(thingsToPlot)
 		index = find(measureNames == thingsToPlot{k});
 
-		plotTwo(SP_SOL(:, index), KX_SOL(:, index), {'SP', 'KX'}, colors_SOL, thingsToPlot{k}, sprintf('img/lorenz/SOL-%d.png', index));
-		plotTwo(SP_TA(:, index), KX_TA(:, index), {'SP', 'KX'}, colors_TA, thingsToPlot{k}, sprintf('img/lorenz/TA-%d.png', index));
+		plotTwo(SP_SOL(:, index), KX_SOL(:, index), {'SP', 'KX'}, colors_SOL, thingsToPlot{k}, sprintf('img/lorenz/SOL-%d.png', index), false);
+		plotTwo(SP_TA(:, index), KX_TA(:, index), {'SP', 'KX'}, colors_TA, thingsToPlot{k}, sprintf('img/lorenz/TA-%d.png', index), false);
 	end
 
 	% Plot SOL vs TA, but only for SP.
@@ -35,11 +35,11 @@ function lorenz()
 			fprintf('Could not plot missing thing %s\n', thingsToPlot{k});
 			continue;
 		end
-		plotTwo(SP_TA(:, index), SP_SOL(:, index), {'TA', 'SOL'}, colors_SP, thingsToPlot{k}, sprintf('img/lorenz/SP-%d.png', index));
+		plotTwo(SP_TA(:, index), SP_SOL(:, index), {'TA', 'SOL'}, colors_SP, thingsToPlot{k}, sprintf('img/lorenz/SP-%d.png', index), true);
 	end
 end
 
-function plotTwo(data1, data2, labels, colors, titlename, filename)
+function plotTwo(data1, data2, labels, colors, titlename, filename, paired)
 	figure('rend', 'painters', 'pos', [10 10 450 600]);
 	UnivarScatter(padcat(data1, data2), 'Label', labels, 'MarkerEdgeColor', colors, 'MarkerFaceColor', colors, 'PointSize', 132, 'WhiskWidthRatio', 1.3);
 	set(gca,'box','off');
@@ -51,6 +51,19 @@ function plotTwo(data1, data2, labels, colors, titlename, filename)
 		title(titlename, 'FontSize', 32);
 	end
 	xlim([.5, 2.5]);
+
+	if paired
+		[h, p] = ttest(data1, data2);
+	else
+		[h, p] = ttest2(data1, data2);
+	end
+
+	if h
+		text(0.5, 0.9, '*', 'Units', 'normalized', 'FontSize', 64, 'HorizontalAlignment', 'center');
+	else
+		text(0.5, 0.9, 'n.s.', 'Units', 'normalized', 'FontSize', 26, 'HorizontalAlignment', 'center');
+	end
+
 	saveTightFigure(gcf, filename);
 	close;
 end
