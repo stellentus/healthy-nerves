@@ -1,9 +1,12 @@
 % mefimport imports the provided MEF file
-function [data, participantNames, measureNames, stats, age, sex] = mefimport(filepath, shouldDeleteNaN, displayWarnings)
-	if nargin < 3
-		displayWarnings = true;
-		if nargin < 2
-			shouldDeleteNaN = false;
+function [data, participantNames, measureNames, stats, age, sex] = mefimport(filepath, shouldDeleteNaN, displayWarnings, expectedNames)
+	if nargin < 4
+		expectedNames = canonicalNames();
+		if nargin < 3
+			displayWarnings = true;
+			if nargin < 2
+				shouldDeleteNaN = false;
+			end
 		end
 	end
 
@@ -12,7 +15,7 @@ function [data, participantNames, measureNames, stats, age, sex] = mefimport(fil
 
 	% Get rid of rows and columns that don't help.
 	measureNames = string(raw(:, 2));
-	[includedRows, measureNames] = includedMeasuresByName(measureNames);
+	[includedRows, measureNames] = includedMeasuresByName(measureNames, expectedNames);
 	stripped = raw(includedRows, [2,4:7,9:end]);
 	stripped(strcmp(stripped, '#N/A')) = {NaN}; % Change any N/A to zero.
 
@@ -80,8 +83,28 @@ function [inc] = includedMeasures()
 	inc = inc(inc~=38); % Remove empty row
 end
 
-function [inc, measures] = includedMeasuresByName(names)
-	canonicalNames = [
+function [inc, measures] = includedMeasuresByName(names, expectedNames)
+	names = replace(names, "\", " ");
+
+	if length(intersect(expectedNames, names)) ~= length(expectedNames)
+		warning('Not all of the canonical measures were found')
+	end
+
+	inc = [];
+	for name = expectedNames'
+		ind = find(ismember(names, name));
+		inc = [inc ind];
+	end
+
+	measures = names(inc);
+
+	if ~isequal(measures, expectedNames)
+		warning('Measures are not same as canonical.')
+	end
+end
+
+function [names] = canonicalNames()
+	names = [
 		"Stimulus (mA) for 50% max response",
 		"Strength-duration time constant (ms)",
 		"Rheobase (mA)",
@@ -118,22 +141,4 @@ function [inc, measures] = includedMeasuresByName(names)
 		"TEd20(10-20ms)",
 		"TEh20(10-20ms)",
 	];
-
-	names = replace(names, "\", " ");
-
-	if length(intersect(canonicalNames, names)) ~= length(canonicalNames)
-		warning('Not all of the canonical measures were found')
-	end
-
-	inc = [];
-	for name = canonicalNames'
-		ind = find(ismember(names, name));
-		inc = [inc ind];
-	end
-
-	measures = names(inc);
-
-	if ~isequal(measures, canonicalNames)
-		warning('Measures are not same as canonical.')
-	end
 end
