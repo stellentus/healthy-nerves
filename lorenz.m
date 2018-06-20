@@ -3,8 +3,8 @@ function lorenz()
 	close all;
 
 	addpath import;
-	[SP_SOL, ~, measureNames] = mefimport('data/rat/RSOL all SP.xlsx', false, true);
-	[SP_TA, ~] = mefimport('data/rat/RTA all SP.xlsx', false, true);
+	[SP_SOL, ~, measureNames] = mefimport('data/rat/RSOL all SP.xlsx', false, true, [canonicalNames(); "S3(-100%)"]);
+	[SP_TA, ~] = mefimport('data/rat/RTA all SP.xlsx', false, true, [canonicalNames(); "S3(-100%)"]);
 	[KX_SOL, ~] = mefimport('data/rat/SOL-KXpair.xlsx', false, true);
 	[KX_TA, ~] = mefimport('data/rat/TA-KXpair.xlsx', false, true);
 	rmpath import;
@@ -27,7 +27,7 @@ function lorenz()
 	end
 
 	% Plot SOL vs TA, but only for SP.
-	thingsToPlot = {'TEh(90-100ms)', 'Superexcitability at 5 ms (%)', 'Subexcitability (%)', 'Minimum I/V slope', '???'};
+	thingsToPlot = {'TEh(90-100ms)', 'Superexcitability at 5 ms (%)', 'Subexcitability (%)', 'Minimum I/V slope', 'S3(-100%)'};
 	colors_SP = [color_SP_TA; color_SP_SOL];
 	for k = 1:length(thingsToPlot)
 		index = find(measureNames == thingsToPlot{k});
