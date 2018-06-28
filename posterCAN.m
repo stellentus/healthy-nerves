@@ -1,5 +1,5 @@
-% poster prints and displays everything for the poster
-function poster(dataType)
+% posterCAN prints and displays everything for the poster for CAN
+function posterCAN(dataType)
 	shouldDeleteNaN = true;
 
 	addpath import;
