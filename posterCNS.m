@@ -34,9 +34,6 @@ function [participants, cData, mData, measures] = posterCNS()
 
 	x = cData(:, 29);
 	y = cData(:, 26);
-	ft = polyfit(x, y, 1);
-	predictPoint = 93;
-	fillPoint = polyval(ft, predictPoint);
 
 	plotLinearRegression();
 
@@ -44,6 +41,9 @@ function [participants, cData, mData, measures] = posterCNS()
 
 	function plotLinearRegression()
 		setPlotOptions();
+		ft = polyfit(x, y, 1);
+		predictPoint = 93;
+		fillPoint = polyval(ft, predictPoint);
 		plot(polyval(ft, [0:140]), 'Color', greenColor, 'LineWidth', 3);
 		scatter(x, y, 300, '.k');
 		line([predictPoint predictPoint], [0 fillPoint], 'Color', yellowColor, 'LineStyle', '--', 'LineWidth', 2);
