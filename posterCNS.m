@@ -38,19 +38,30 @@ function [participants, cData, mData, measures] = posterCNS()
 	predictPoint = 93;
 	fillPoint = polyval(ft, predictPoint);
 
-	ax = gca;
-	ax.YColor = greenColor;
-	ax.XColor = greenColor;
-	set(gca, 'FontSize', 18);
-	hold on;
-	ylim([0 80]);
-	xlim([20 140]);
-	plot(polyval(ft, [0:140]), 'Color', greenColor, 'LineWidth', 3);
-	scatter(x, y, 300, '.k');
-	line([predictPoint predictPoint], [0 fillPoint], 'Color', yellowColor, 'LineStyle', '--', 'LineWidth', 2);
-	line([0 predictPoint], [fillPoint fillPoint], 'Color', yellowColor, 'LineWidth', 2);
-	ylabel('Refractoriness at 2.5ms (%)', 'Color', greenColor);
-	xlabel('Refractoriness at 2ms (%)', 'Color', greenColor);
+	plotLinearRegression();
+
+	% Now define functions in this function because I'm too lazy to deal with scope.
+
+	function plotLinearRegression()
+		setPlotOptions();
+		plot(polyval(ft, [0:140]), 'Color', greenColor, 'LineWidth', 3);
+		scatter(x, y, 300, '.k');
+		line([predictPoint predictPoint], [0 fillPoint], 'Color', yellowColor, 'LineStyle', '--', 'LineWidth', 2);
+		line([0 predictPoint], [fillPoint fillPoint], 'Color', yellowColor, 'LineWidth', 2);
+	end
+
+	function setPlotOptions()
+		figure;
+		ax = gca;
+		ax.YColor = greenColor;
+		ax.XColor = greenColor;
+		set(gca, 'FontSize', 18);
+		hold on;
+		ylim([0 80]);
+		xlim([20 140]);
+		ylabel('Refractoriness at 2.5ms (%)', 'Color', greenColor);
+		xlabel('Refractoriness at 2ms (%)', 'Color', greenColor);
+	end
 end
 
 function [indices, list1] = verifyNames(list1, list2)
