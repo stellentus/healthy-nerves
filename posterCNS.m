@@ -36,6 +36,7 @@ function [participants, cData, mData, measures] = posterCNS()
 	y = cData(:, 26);
 
 	plotLinearRegression();
+	meanImputation();
 
 	% Now define functions in this function because I'm too lazy to deal with scope.
 
@@ -48,6 +49,35 @@ function [participants, cData, mData, measures] = posterCNS()
 		scatter(x, y, 300, '.k');
 		line([predictPoint predictPoint], [0 fillPoint], 'Color', yellowColor, 'LineStyle', '--', 'LineWidth', 2);
 		line([0 predictPoint], [fillPoint fillPoint], 'Color', yellowColor, 'LineWidth', 2);
+	end
+
+	function meanImputation(ind)
+		setPlotOptions();
+		startPoint = 27;
+		maxPlot = startPoint + 30;
+		numMissing = 6;
+		lastMissing = startPoint + numMissing - 1;
+
+		mVal = mean(x(lastMissing+1:maxPlot));
+
+		ft = polyfit(x(startPoint:maxPlot), y(startPoint:maxPlot), 1);
+
+		plot(polyval(ft, [0:140]), 'Color', greenColor, 'LineWidth', 3);
+		scatter(x(startPoint:maxPlot), y(startPoint:maxPlot), 300, '.', 'MarkerEdgeColor', greenColor);
+		scatter(x(startPoint:lastMissing), y(startPoint:lastMissing), 100, '.', 'MarkerEdgeColor', redColor);
+
+		mn = ones(numMissing, 1) * mVal;
+		scatter(mn, y(startPoint:lastMissing), 300, '.', 'MarkerEdgeColor', greenColor);
+		scatter(mn, y(startPoint:lastMissing), 100, '.', 'MarkerEdgeColor', yellowColor);
+		filledX = [mn; x(lastMissing+1:maxPlot)];
+		filledFt = polyfit(filledX, y(startPoint:maxPlot), 1);
+		plot(polyval(filledFt, [0:140]), 'Color', yellowColor, 'LineWidth', 3);
+
+		for i = [1:numMissing]
+			ptX = x(startPoint + i - 1);
+			ptY = y(startPoint + i - 1);
+			line([mVal ptX], [ptY ptY], 'Color', yellowColor, 'LineStyle', '--', 'LineWidth', 1);
+		end
 	end
 
 	function setPlotOptions()
