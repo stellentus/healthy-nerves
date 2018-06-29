@@ -28,21 +28,29 @@ function [participants, cData, mData, measures] = posterCNS()
 
 	rmpath import;
 
-	x = cData(:, 26);
-	y = cData(:, 29);
+	greenColor = [0.03529411764705882353, 0.38039215686274509804, 0.2];
+	redColor = [1 0.1490196078431372549 0];
+	yellowColor = [0.98039215686274509804 0.8509803921568627451 0.25882352941176470588];
+
+	x = cData(:, 29);
+	y = cData(:, 26);
 	ft = polyfit(x, y, 1);
-	fillPoint = polyval(ft, 38);
+	predictPoint = 93;
+	fillPoint = polyval(ft, predictPoint);
 
+	ax = gca;
+	ax.YColor = greenColor;
+	ax.XColor = greenColor;
+	set(gca, 'FontSize', 18);
 	hold on;
-	xlim([0 80]);
-	ylim([20 160]);
-	plot(polyval(ft, [0:70]), 'Color', [0.03529411764705882353, 0.38039215686274509804, 0.2], 'LineWidth', 3);
+	ylim([0 80]);
+	xlim([20 140]);
+	plot(polyval(ft, [0:140]), 'Color', greenColor, 'LineWidth', 3);
 	scatter(x, y, 300, '.k');
-	line([38 38], [20 fillPoint], 'Color', [1 0.1490196078431372549 0]);
-	line([0 38], [fillPoint fillPoint], 'Color', [1 0.1490196078431372549 0],'LineStyle', '--');
-	xlabel('Refractoriness at 2.5ms (%)');
-	ylabel('Refractoriness at 2ms (%)');
-
+	line([predictPoint predictPoint], [0 fillPoint], 'Color', yellowColor, 'LineStyle', '--', 'LineWidth', 2);
+	line([0 predictPoint], [fillPoint fillPoint], 'Color', yellowColor, 'LineWidth', 2);
+	ylabel('Refractoriness at 2.5ms (%)', 'Color', greenColor);
+	xlabel('Refractoriness at 2ms (%)', 'Color', greenColor);
 end
 
 function [indices, list1] = verifyNames(list1, list2)
