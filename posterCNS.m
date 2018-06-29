@@ -36,7 +36,7 @@ function [participants, cData, mData, measures] = posterCNS()
 	y = cData(:, 26);
 
 	plotLinearRegression();
-	meanImputation();
+	plotMeanImputation();
 
 	% Now define functions in this function because I'm too lazy to deal with scope.
 
@@ -51,7 +51,7 @@ function [participants, cData, mData, measures] = posterCNS()
 		line([0 predictPoint], [fillPoint fillPoint], 'Color', yellowColor, 'LineWidth', 2);
 	end
 
-	function meanImputation(ind)
+	function plotMeanImputation(ind)
 		setPlotOptions();
 		startPoint = 27;
 		maxPlot = startPoint + 30;
