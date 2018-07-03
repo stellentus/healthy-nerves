@@ -37,6 +37,7 @@ function [participants, cData, mData, measures] = posterCNS()
 
 	plotLinearRegression();
 	plotMeanImputation();
+	plotPCA();
 
 	% Now define functions in this function because I'm too lazy to deal with scope.
 
@@ -78,6 +79,26 @@ function [participants, cData, mData, measures] = posterCNS()
 			ptY = y(startPoint + i - 1);
 			line([mVal ptX], [ptY ptY], 'Color', yellowColor, 'LineStyle', '--', 'LineWidth', 1);
 		end
+	end
+
+	function plotPCA(ind)
+		setPlotOptions();
+		set(gcf, 'Position', [100, 100, 600, 400]);
+
+		scatter(x, y, 300, '.', 'MarkerEdgeColor', greenColor);
+
+		[coeff, score, latent] = pca([x y]);
+		latent = latent/6.3;
+
+		line1XStart = 20;
+		shiftFactor1 = [line1XStart 0];
+		scaleFactor1 = latent(1);
+		arrow(shiftFactor1 + [0 0], shiftFactor1 + scaleFactor1*[coeff(1, 1) coeff(2, 1)], 'Color', [0 0 0], 'LineWidth', 5);
+
+		line2XStart = 80;
+		shiftFactor2 = shiftFactor1 + [line2XStart-line1XStart (line2XStart-line1XStart)*coeff(2, 1)/coeff(1, 1)];
+		scaleFactor2 = latent(2);
+		arrow(shiftFactor2 + [0 0], shiftFactor2 + scaleFactor2*[coeff(1, 2) coeff(2, 2)], 'Color', [0 0 0], 'LineWidth', 2, 'Length', 5);
 	end
 
 	function setPlotOptions()
