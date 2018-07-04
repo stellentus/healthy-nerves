@@ -169,21 +169,31 @@ function plotBoxes(verrs, cerrs, algNames)
 	verrs(isnan(verrs)) = realmax;
 	cerrs(isnan(cerrs)) = realmax;
 
+	greenColor = [0.03529411764705882353, 0.38039215686274509804, 0.2];
+	redColor = [1 0.1490196078431372549 0];
+	yellowColor = [0.98039215686274509804 0.8509803921568627451 0.25882352941176470588];
+
 	addpath util/CategoricalScatterplot
 
 	figure('DefaultAxesFontSize', 18);
-	CategoricalScatterplot(verrs, algNames);
+	ax = gca;
+	ax.YColor = greenColor;
+	ax.XColor = greenColor;
+	CategoricalScatterplot(verrs, algNames, 'MarkerSize', 50, 'WhiskerColor', 'k', 'MedianColor', 'k', 'BoxColor', yellowColor, 'BoxAlpha', .29);
 	ylim([0 30]);
-	title('A) Error in Filled Data');
-	xlabel('Method');
-	ylabel('Error');
+	title('Error in Filled Data', 'Color', greenColor);
+	% xlabel('Method', 'Color', greenColor);
+	ylabel('Error', 'Color', greenColor);
 
 	figure('DefaultAxesFontSize', 18);
-	CategoricalScatterplot(cerrs, algNames);
+	ax = gca;
+	ax.YColor = greenColor;
+	ax.XColor = greenColor;
+	CategoricalScatterplot(cerrs, algNames, 'MarkerSize', 50, 'WhiskerColor', 'k', 'MedianColor', 'k', 'BoxColor', yellowColor, 'BoxAlpha', .29);
 	ylim([0 30]);
-	title('B) Error in Covariance');
-	xlabel('Method');
-	ylabel('Error');
+	title('Error in Covariance', 'Color', greenColor);
+	% xlabel('Method', 'Color', greenColor);
+	ylabel('Error', 'Color', greenColor);
 
 	rmpath util/CategoricalScatterplot
 end
