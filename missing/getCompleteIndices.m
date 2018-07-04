@@ -3,7 +3,7 @@
 % By default it operates on columns, but the third argument can be used to change that.
 function [completeIndices, missIndices, missCount] = getCompleteIndices(missingX, missingMask, dim)
 	if nargin < 3
-		dim = 2
+		dim = 2;
 	end
 
 	[numRows, numColumns] = size(missingX);
