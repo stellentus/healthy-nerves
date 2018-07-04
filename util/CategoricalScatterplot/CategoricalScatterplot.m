@@ -92,61 +92,61 @@ if (size(X,2) == 1) || (size(X,1) == 1)
     if isempty(Group)
         error('Group input required if X input is a vector');
     end
-    
+
     if ischar(Group)
         Group = cellstr(Group);
     end
-    
+
     % Make it into column vectors
     if (size(X,1) == 1)
-        X = X';        
+        X = X';
     end
-    
+
     % handle groups
     [group_names,~,group_ind] = unique(Group);
     groups = unique(group_ind);
     % Sort data into a cell array
     data = cell(length(groups), 2);
-    new_data = cell(length(groups), 2);    
+    new_data = cell(length(groups), 2);
     Xmax = -999;
     Xmin = 999;
-    
+
     for i = 1:length(groups)
         data{i,1} = X(group_ind == groups(i));
         data{i,2} = group_ind(group_ind == groups(i));
-       
+
         if (Xmin > floor(min(data{i,1})))
             Xmin = floor(min(data{i,1}));
         end
-        
+
         if (Xmax < ceil(max(data{i,1})))
             Xmax = ceil(max(data{i,1}));
         end
-        
-    end    
+
+    end
 else
     %% Convert the matrix into cell array (after removing nans)
     group_names = Group;
     groups = 1:size(X,2);
     % Sort data into a cell array
     data = cell(length(groups), 2);
-    new_data = cell(length(groups), 2);    
+    new_data = cell(length(groups), 2);
     Xmax = -999;
     Xmin = 999;
-    
+
     for i=1:length(groups)
         data{i,1} = X(~isnan(X(:,i)),i);
         data{i,2} = i*ones(size(data{i,1}));
-        
+
         if (Xmin > floor(min(data{i,1})))
             Xmin = floor(min(data{i,1}));
         end
-        
+
         if (Xmax < ceil(max(data{i,1})))
             Xmax = ceil(max(data{i,1}));
-        end        
+        end
     end
-    
+
 end
 
 % Get binWidth ratio is only ratio is provided
@@ -163,35 +163,35 @@ for i = 1:length(groups)
     [counts,~,bins] = histcounts(Xtemp, 'BinWidth', binWidth);
     inds = find(counts~=0);
     counts = counts(inds);
-    
+
     for j=1:length(inds)
         width = parsed.spreadWidth * (1-exp(-0.1 * (counts(j)-1)));
         xpoints = linspace(-width/2, width/2, counts(j)) + i;
         Ytemp(bins==inds(j)) = xpoints;
     end
-    
+
     new_data{i,1} = Xtemp;
     new_data{i,2} = Ytemp;
-    
+
 end
 
 %% Plot the data beautifully
 boxWidth = parsed.boxWidth;
 hold on;
 
-for i = 1:length(groups)    
+for i = 1:length(groups)
     imp_quantiles = quantile(new_data{i,1}, [0.25, 0.5, 0.75]);
     IQR = imp_quantiles(3) - imp_quantiles(1);
     whisker = [imp_quantiles(1) - 1.5 * IQR, ...
         imp_quantiles(3) + 1.5 * IQR];
-    
+
     % Draw box
     patch([i-boxWidth/2, i-boxWidth/2, i+boxWidth/2, i+boxWidth/2]',...
         [imp_quantiles(3), imp_quantiles(1), imp_quantiles(1), imp_quantiles(3)]',...
         parsed.BoxColor, 'FaceAlpha', parsed.BoxAlpha,...
         'EdgeColor', parsed.BoxEdgeColor, ...
         'LineStyle', parsed.BoxLineStyle, 'LineWidth', parsed.BoxLineWidth);
-    
+
     % Draw points
     if parsed.FillMarker
         if (ischar(parsed.Color)||size(parsed.Color,1))
@@ -210,14 +210,14 @@ for i = 1:length(groups)
                 parsed.Color(i,:));
         end
     end
-    
+
     % Draw median
     plot([i-boxWidth/2, i+boxWidth/2], ...
         [imp_quantiles(2), imp_quantiles(2)], ...
         'LineStyle', parsed.MedianLineStyle, ...
         'Color', parsed.MedianColor,...
         'LineWidth', parsed.MedianLineWidth);
-    
+
     % Draw Q + 1.5 IQR
     temp = sortrows([whisker(2) - data{i,1}, (1:length(data{i,1}))'], 1);
     closest_point = temp(find(temp(:,1) >=0, 1, 'first'),2);
@@ -226,7 +226,7 @@ for i = 1:length(groups)
         'LineStyle', '-', ...
         'Color', parsed.WhiskerColor,...
         'LineWidth', parsed.WhiskerLineWidth);
-    
+
     if parsed.WhiskerLine
     % Draw top whiskers
     plot([i, i], [new_data{i,1}(closest_point), imp_quantiles(3)],...
@@ -234,7 +234,7 @@ for i = 1:length(groups)
         'Color', parsed.WhiskerColor,...
         'LineWidth', parsed.WhiskerLineWidth);
     end
-    
+
     % Draw Q - 1.5 IQR
     temp = sortrows([data{i,1} - whisker(1), (1:length(data{i,1}))'], 1);
     closest_point = temp(find(temp(:,1) >=0, 1, 'first'),2);
@@ -243,15 +243,15 @@ for i = 1:length(groups)
         'LineStyle', '-', ...
         'Color', parsed.WhiskerColor,...
         'LineWidth', parsed.WhiskerLineWidth);
-    
+
     if parsed.WhiskerLine
     % Draw bottom whiskers
     plot([i, i], [new_data{i,1}(closest_point), imp_quantiles(1)],...
         'LineStyle', parsed.WhiskerLineStyle, ...
         'Color', parsed.WhiskerColor,...
-        'LineWidth', parsed.WhiskerLineWidth);   
+        'LineWidth', parsed.WhiskerLineWidth);
     end
-    
+
 end
 
 ax = gca;
