@@ -165,6 +165,12 @@ function calcStats(data, name, algNames)
 end
 
 function plotBoxes(verrs, cerrs, algNames)
+	vAlgNames = algNames;
+	if (all(isnan(verrs(:, 1))))
+		verrs = verrs(:, 2:end);
+		vAlgNames = algNames(2:end);
+	end
+
 	% Replace NaN with a really big number. This prevents errors in plotting.
 	verrs(isnan(verrs)) = realmax;
 	cerrs(isnan(cerrs)) = realmax;
@@ -179,7 +185,7 @@ function plotBoxes(verrs, cerrs, algNames)
 	ax = gca;
 	ax.YColor = greenColor;
 	ax.XColor = greenColor;
-	CategoricalScatterplot(verrs, algNames, 'MarkerSize', 50, 'WhiskerColor', 'k', 'MedianColor', 'k', 'BoxColor', yellowColor, 'BoxAlpha', .29);
+	CategoricalScatterplot(verrs, vAlgNames, 'MarkerSize', 50, 'WhiskerColor', 'k', 'MedianColor', 'k', 'BoxColor', yellowColor, 'BoxAlpha', .29);
 	ylim([0 30]);
 	title('Error in Filled Data', 'Color', greenColor);
 	% xlabel('Method', 'Color', greenColor);
