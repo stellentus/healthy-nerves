@@ -195,19 +195,15 @@ for i = 1:length(groups)
     % Draw points
     if parsed.FillMarker
         if (ischar(parsed.Color)||size(parsed.Color,1))
-            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, 'filled',...
-                parsed.Color);
+            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color, 'filled');
         else
-            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, 'filled',...
-                parsed.Color(i,:));
+            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color(i,:), 'filled');
         end
     else
         if (ischar(parsed.Color)||size(parsed.Color,1))
-            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, 'filled',...
-                parsed.Color);
+            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color, 'filled');
         else
-            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, 'filled',...
-                parsed.Color(i,:));
+            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color(i,:), 'filled');
         end
     end
 
