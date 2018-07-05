@@ -100,19 +100,6 @@ function [participants, cData, mData, measures] = posterCNS()
 		scaleFactor2 = latent(2);
 		arrow(shiftFactor2 + [0 0], shiftFactor2 + scaleFactor2*[coeff(1, 2) coeff(2, 2)], 'Color', [0 0 0], 'LineWidth', 2, 'Length', 5);
 	end
-
-	function setPlotOptions()
-		figure;
-		ax = gca;
-		ax.YColor = greenColor;
-		ax.XColor = greenColor;
-		set(gca, 'FontSize', 18);
-		hold on;
-		ylim([0 80]);
-		xlim([20 140]);
-		ylabel('Refractoriness at 2.5ms (%)', 'Color', greenColor);
-		xlabel('Refractoriness at 2ms (%)', 'Color', greenColor);
-	end
 end
 
 function [indices, list1] = verifyNames(list1, list2)
@@ -135,4 +122,18 @@ function [measures, data1, data2] = deleteColumns(indices, measures, data1, data
 	data1 = data1(:, indices);
 	data2 = data2(:, indices);
 	measures = measures(indices);
+end
+
+function setPlotOptions()
+	greenColor = [0.03529411764705882353, 0.38039215686274509804, 0.2];
+	figure;
+	ax = gca;
+	ax.YColor = greenColor;
+	ax.XColor = greenColor;
+	set(gca, 'FontSize', 18);
+	hold on;
+	ylim([0 80]);
+	xlim([20 140]);
+	ylabel('Refractoriness at 2.5ms (%)', 'Color', greenColor);
+	xlabel('Refractoriness at 2ms (%)', 'Color', greenColor);
 end
