@@ -24,6 +24,16 @@ function [participants, cData, mData, measures] = posterCNS()
 		end
 	end
 
+	% Calculate my missing recovery @2ms
+	addpath missing;
+	cData(99, 29); % Delete my recov @2ms because it shouldn't be there.
+	[completeIndices, missIndices] = getCompleteIndices(cData, ~isnan(cData), 1);
+	missingX = cData(missIndices, :);
+	completeX = cData(completeIndices, :);
+	filledX = fillIterate(missingX, completeX, ~isnan(missingX), struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
+	myVal = filledX(end, 29);
+
+	% Now delete missing data rows
 	[participants, cData, mData] = deleteNaN(participants, cData, mData);
 
 	rmpath import;
@@ -38,6 +48,7 @@ function [participants, cData, mData, measures] = posterCNS()
 	plotLinearRegression();
 	plotMeanImputation();
 	plotPCA();
+	plotMyRecoveryCycle(myVal);
 
 	% Now define functions in this function because I'm too lazy to deal with scope.
 
@@ -130,6 +141,40 @@ function [measures, data1, data2] = deleteColumns(indices, measures, data1, data
 	data1 = data1(:, indices);
 	data2 = data2(:, indices);
 	measures = measures(indices);
+end
+
+function plotMyRecoveryCycle(myVal)
+	greenColor = [0.03529411764705882353, 0.38039215686274509804, 0.2];
+	redColor = [1 0.1490196078431372549 0];
+	yellowColor = [0.98039215686274509804 0.8509803921568627451 0.25882352941176470588];
+
+	recovX = [2.5, 3.200000048, 4, 5, 6.300000191, 7.900000095, 10, 13, 18, 24, 32, 42, 56, 75, 100, 140, 200];
+	recovY = [27.81999969, -9.039999962, -20.84000015, -25.81999969, -24.79999924, -22.45000076, -17.72999954, -14.42000008, -0.180000007, 5.429999828, 9.789999962, 12.85999966, 14.10000038, 12.10999966, 6.75, 4.269999981, 1.460000038];
+	missX = [2.0];
+	missY = [myVal];
+
+	A = [recovX(9), recovY(9)];
+	B = [recovX(10), recovY(10)];
+	xIntercept2 = A(1)-A(2)*(A(1)-B(1))/(A(2)-B(2));
+	A = [recovX(1), recovY(1)];
+	B = [recovX(2), recovY(2)];
+	xIntercept1 = A(1)-A(2)*(A(1)-B(1))/(A(2)-B(2));
+
+	setGlobalPlotOptions();
+	set(gcf, 'Position', [100, 100, 800, 400]);
+	set(gca, 'XScale', 'log')
+	line([.5 200], [0 0], 'LineWidth', .25, 'Color', greenColor); % y==0 line
+	line([1.5 1.5], [-100 100], 'LineStyle', '--', 'LineWidth', 2, 'Color', yellowColor);
+	line([xIntercept1 xIntercept1], [-100 100], 'LineStyle', '--', 'LineWidth', 2, 'Color', yellowColor);
+	line([xIntercept2 xIntercept2], [-100 100], 'LineStyle', '--', 'LineWidth', 2, 'Color', yellowColor);
+
+	plot(recovX, recovY, '.-', 'Color', greenColor, 'MarkerSize', 30);
+	line([A(1) missX], [A(2) missY], 'LineStyle', '--', 'LineWidth', 1.5, 'Color', greenColor);
+	plot(missX, missY, 'o', 'Color', greenColor, 'MarkerSize', 10, 'MarkerFaceColor', yellowColor);
+	ylim([-30 80]);
+	xlim([.5 200]);
+	ylabel('Threshold Change (%)', 'Color', greenColor);
+	xlabel('Delay (ms)', 'Color', greenColor);
 end
 
 function setGlobalPlotOptions()
