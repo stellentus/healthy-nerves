@@ -1,5 +1,5 @@
 % retainMatchingParticipants only keeps particpants and measures matching between both inputs
-function [cData, mData, participants, measures] = retainMatchingParticipants(cData, cParticipantNames, cMeasureNames, cStats, mData, mParticipantNames, mMeasureNames, mStats)
+function [cData, mData, participants, measures] = retainMatchingParticipants(cData, cParticipantNames, cMeasureNames, mData, mParticipantNames, mMeasureNames)
 	% Verify participant names are the same; then only save one list
 	indices = verifyNames(cParticipantNames, mParticipantNames);
 	[participants, cData, mData] = deleteRows(indices, cParticipantNames, cData, mData);
