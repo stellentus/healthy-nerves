@@ -91,6 +91,13 @@ function [meas] = shortenNames(meas)
 end
 
 function plotdiagonals(sortdiagarmleg, sortdiagrandarmleg, sortedmeasures)
+	greenColor = [0.03529411764705882353, 0.38039215686274509804, 0.2];
+	yellowColor = [0.98039215686274509804 0.8509803921568627451 0.25882352941176470588];
+
+	ax = gca;
+	ax.YColor = greenColor;
+	ax.XColor = greenColor;
+
 	% plot intra-individual differences and inter-individual differences
 	x = 1:32;
 	figure1 = figure(1);
@@ -98,14 +105,13 @@ function plotdiagonals(sortdiagarmleg, sortdiagrandarmleg, sortedmeasures)
 	fontsize = 40;
 	cohenfontsize = 28;
 	linewidth = 8;
-	plot(x, sortdiagarmleg, 'b', 'LineWidth', linewidth);
-	plot(x, sortdiagrandarmleg, 'r', 'LineWidth', linewidth);
-	legend({'Arm/Leg Correlation', 'Random Arm/Leg Correlation'}, 'FontSize', 30);
+	hcor = plot(x, sortdiagarmleg, 'b', 'LineWidth', linewidth, 'Color', greenColor);
+	hcorRand = plot(x, sortdiagrandarmleg, 'r', 'LineWidth', linewidth, 'Color', yellowColor);
 	xticks(x);
 	xticklabels(sortedmeasures);
 	set(gca, 'FontSize', fontsize, 'LineWidth', linewidth);
 	xtickangle(60);
-	ylabel('R^2 value', 'FontSize', fontsize);
+	ylabel('R^2 value', 'FontSize', fontsize, 'Color', greenColor);
 	set(gca, 'FontSize', fontsize, 'LineWidth', linewidth);
 
 	% plot threshold lines
@@ -120,24 +126,8 @@ function plotdiagonals(sortdiagarmleg, sortdiagrandarmleg, sortedmeasures)
 	large_threshold(:) = 0.25;
 	plot(x, large_threshold, '--k');
 
-	% add annotations for effect sizes
-	annotation(figure1,'textbox',...
-		[0.694949036700755 0.5004160483245339 0.176198830409357 0.0348214285714286],...
-		'String','Small Correlational Difference',...
-		'LineStyle','none',...
-		'FontSize',cohenfontsize,...
-		'FontName','Helvetica Neue');
-	annotation(figure1,'textbox',...
-		[0.694949036700755 0.623360115798504 0.17894736842105 0.0348214285714286],...
-		'String','Medium Correlational Difference',...
-		'LineStyle','none',...
-		'FontSize',cohenfontsize,...
-		'FontName','Helvetica Neue');
-	annotation(figure1,'textbox',...
-		[0.694949036700755 0.746396917538431 0.176616541353383 0.0348214285714286],...
-		'String','Large Correlational Difference',...
-		'LineStyle','none',...
-		'FontSize',cohenfontsize,...
-		'FontName','Helvetica Neue');
+	legend([hcor hcorRand], {'\color[rgb]{0.03529411764705882353, 0.38039215686274509804, 0.2} Arm/Leg Correlation', '\color[rgb]{0.98039215686274509804 0.8509803921568627451 0.25882352941176470588} Random Arm/Leg Correlation'}, 'FontSize', 30);
+	legend boxoff;
+
 	hold off;
 end
