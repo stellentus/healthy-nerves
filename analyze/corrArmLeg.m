@@ -15,6 +15,9 @@ function [sortdiagarmleg, sortdiagrandarmleg, sortedmeasures] = corrArmLeg(cData
 	% remove sex, age, and temperature parameters
 	[sortdiagarmleg, sortdiagrandarmleg, sortedmeasures] = removeParams(sortdiagarmleg, sortdiagrandarmleg, sortedmeasures);
 
+	% shorten names of some measures
+	sortedmeasures = shortenNames(sortedmeasures);
+
 	% plot correlations, threshold for size of differences, and appropriate labels
 	plotdiagonals(sortdiagarmleg, sortdiagrandarmleg, sortedmeasures);
 end
@@ -50,6 +53,41 @@ function [cor, corRand, meas] = removeParams(cor, corRand, meas)
 	cor(idx) = [];
 	corRand(idx) = [];
 	meas(idx) = [];
+end
+
+function [meas] = shortenNames(meas)
+	meas(find(strcmp(meas, 'TEh(overshoot)'))) = 'TEh(overshoot)';
+	meas(find(strcmp(meas, 'TEd(90-100ms)'))) = 'TEd(90-100ms)';
+	meas(find(strcmp(meas, 'Resting I/V slope'))) = 'Resting I/V';
+	meas(find(strcmp(meas, 'TEd20(peak)'))) = 'TEd20(peak)';
+	meas(find(strcmp(meas, 'Superexcitability at 5 ms (%)'))) = 'Superexcitability, 5ms';
+	meas(find(strcmp(meas, 'TEd40(Accom)'))) = 'TEd40(Accom)';
+	meas(find(strcmp(meas, 'Superexcitability at 7 ms (%)'))) = 'Superexcitability, 7ms';
+	meas(find(strcmp(meas, 'TEh(90-100ms)'))) = 'TEh(90-100ms)';
+	meas(find(strcmp(meas, 'S2 accommodation'))) = 'S2 accom.';
+	meas(find(strcmp(meas, 'RRP (ms)'))) = 'RRP (ms)';
+	meas(find(strcmp(meas, 'Superexcitability (%)'))) = 'Superexcitability';
+	meas(find(strcmp(meas, 'Refractoriness at 2 ms (%)'))) = 'Refractoriness, 2ms';
+	meas(find(strcmp(meas, 'TEd(peak)'))) = 'TEd(peak)';
+	meas(find(strcmp(meas, 'TEd(undershoot)'))) = 'TEd(undershoot)';
+	meas(find(strcmp(meas, 'TEd(40-60ms)'))) = 'TEd(40-60ms)';
+	meas(find(strcmp(meas, 'TEd20(10-20ms)'))) = 'TEd20(10-20ms)';
+	meas(find(strcmp(meas, 'Strength-duration time constant (ms)'))) = 'SDTC';
+	meas(find(strcmp(meas, 'Peak response (mv)'))) = 'Peak response (mv)';
+	meas(find(strcmp(meas, 'TEd(10-20ms)'))) = 'TEd(10-20ms)';
+	meas(find(strcmp(meas, 'TEh(20-40ms)'))) = 'TEh(20-40ms)';
+	meas(find(strcmp(meas, 'Refractoriness at 2.5ms (%)'))) = 'Refractoriness, 2.5ms';
+	meas(find(strcmp(meas, 'TEh(slope 101-140ms)'))) = 'TEh(slope)';
+	meas(find(strcmp(meas, 'TEh(10-20ms)'))) = 'TEh(10-20ms)';
+	meas(find(strcmp(meas, 'Subexcitability (%)'))) = 'Subexcitability';
+	meas(find(strcmp(meas, 'Minimum I/V slope'))) = 'Min I/V slope';
+	meas(find(strcmp(meas, 'TEh20(10-20ms)'))) = 'TEh20(10-20ms)';
+	meas(find(strcmp(meas, 'Accommodation half-time (ms)'))) = 'Accom. 1/2 time';
+	meas(find(strcmp(meas, 'Stimulus-response slope'))) = 'Stim. slope';
+	meas(find(strcmp(meas, 'Rheobase (mA)'))) = 'Rheobase (mA)';
+	meas(find(strcmp(meas, 'Stimulus (mA) for 50% max response'))) = 'Stimulus for 50%';
+	meas(find(strcmp(meas, 'Hyperpol. I/V slope'))) = 'Hyperpol. I/V slope';
+	meas(find(strcmp(meas, 'Latency (ms)'))) = 'Latency (ms)';
 end
 
 function plotdiagonals(sortdiagarmleg, sortdiagrandarmleg, sortedmeasures)
