@@ -2,10 +2,7 @@
 function [participants, cData, mData, measures] = posterCNS()
 	addpath import;
 
-	cPath = pathFor('leg');
-	mPath = pathFor('arm');
-
-	[cData, mData, participants, measures] = importTwo(cPath, mPath);
+	[cData, mData, participants, measures] = importTwo(pathFor('leg'), pathFor('arm'));
 
 	% Calculate my missing recovery @2ms
 	addpath missing;
