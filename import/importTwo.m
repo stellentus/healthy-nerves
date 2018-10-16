@@ -18,16 +18,16 @@ function [values, participants, measures] = importTwo(cPath, mPath, shouldDelete
 	[measures, cData, mData] = deleteColumns(indices, cMeasureNames, cData, mData);
 	clear cMeasureNames mMeasureNames indices;
 
+	if shouldDeleteNaN
+		[participants, cData, mData] = deleteNaN(participants, cData, mData);
+	end
+
 	% Calculate unique columns (e.g. not age and sex)
 	unique = [];
 	for i = 1:length(measures)
 		if ~isequal(cData(:,i), mData(:,i))
 			unique = [unique, i];
 		end
-	end
-
-	if shouldDeleteNaN
-		[participants, cData, mData] = deleteNaN(participants, cData, mData);
 	end
 
 	[values, measures] = combineDatasets(measures, cData, 'Leg', mData, 'Arm', unique);
