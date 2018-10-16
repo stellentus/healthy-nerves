@@ -16,14 +16,6 @@ function [participants, cData, mData, measures] = posterCNS()
 	[measures, cData, mData] = deleteColumns(indices, cMeasureNames, cData, mData);
 	clear cMeasureNames mMeasureNames indices;
 
-	% Calculate unique columns (e.g. not age and sex)
-	unique = [];
-	for i = 1:length(measures)
-		if ~isequal(cData(:,i), mData(:,i))
-			unique = [unique, i];
-		end
-	end
-
 	% Calculate my missing recovery @2ms
 	addpath missing;
 	cData(99, 29); % Delete my recov @2ms because it shouldn't be there.
