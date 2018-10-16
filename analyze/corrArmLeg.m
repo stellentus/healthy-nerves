@@ -13,9 +13,7 @@ function [sortdiagarmleg, sortdiagrandarmleg, sortedmeasures] = corrArmLeg(cData
 	clear measures armlegcorr randarmleg;
 
 	% remove sex, age, and temperature parameters
-	sortdiagarmleg = removeParams(sortdiagarmleg);
-	sortdiagrandarmleg = removeParams(sortdiagrandarmleg);
-	sortedmeasures = removeParams(sortedmeasures);
+	[sortdiagarmleg, sortdiagrandarmleg, sortedmeasures] = removeParams(sortdiagarmleg, sortdiagrandarmleg, sortedmeasures);
 
 	% plot correlations, threshold for size of differences, and appropriate labels
 	plotdiagonals(sortdiagarmleg, sortdiagrandarmleg, sortedmeasures);
@@ -44,9 +42,14 @@ function[sortdiagarmleg, sortdiagrandarmleg, sortedmeasures] = savediagonals(arm
 	sortedmeasures = measures(indices);
 end
 
-function [vector] = removeParams(vector)
-	vector(1:2) = [];
-	vector(33) = [];
+function [cor, corRand, meas] = removeParams(cor, corRand, meas)
+	sexStr = 'Sex (M=1, F=2)';
+	ageStr = 'Age (years)';
+	tempStr = 'Temperature ( C)';
+	idx = [find(strcmp(meas, sexStr)) find(strcmp(meas, ageStr)) find(strcmp(meas, tempStr))];
+	cor(idx) = [];
+	corRand(idx) = [];
+	meas(idx) = [];
 end
 
 function plotdiagonals(sortdiagarmleg, sortdiagrandarmleg, sortedmeasures)
