@@ -12,7 +12,14 @@ function [values, participants, measures] = analyze(dataType, nanMethod, plotTyp
 
 	addpath import;
 	if strcmp(dataType, 'all')
-		[values, participants, measures] = importTwo(pathFor('leg'), pathFor('arm'), shouldDeleteNaN);
+		[cData, mData, participants, measures] = importTwo(pathFor('leg'), pathFor('arm'), shouldDeleteNaN);
+
+		if shouldDeleteNaN
+			[participants, cData, mData] = deleteNaN(participants, cData, mData);
+		end
+
+		[values, measures] = combineTwo(cData, mData, measures);
+		clear cData, mData;
 	else
 		[values, participants, measures] = mefimport(pathFor(dataType), shouldDeleteNaN);
 	end

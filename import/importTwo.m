@@ -1,9 +1,5 @@
 % importExcel imports data from the files
-function [values, participants, measures] = importTwo(cPath, mPath, shouldDeleteNaN)
-	if nargin == 2
-		shouldDeleteNaN = false;
-	end
-
+function [cData, mData, participants, measures] = importTwo(cPath, mPath)
 	% Import the data from MEF
 	[cData, cParticipantNames, cMeasureNames, cStats] = mefimport(cPath);
 	[mData, mParticipantNames, mMeasureNames, mStats] = mefimport(mPath);
@@ -17,20 +13,6 @@ function [values, participants, measures] = importTwo(cPath, mPath, shouldDelete
 	indices = verifyNames(cMeasureNames, mMeasureNames);
 	[measures, cData, mData] = deleteColumns(indices, cMeasureNames, cData, mData);
 	clear cMeasureNames mMeasureNames indices;
-
-	if shouldDeleteNaN
-		[participants, cData, mData] = deleteNaN(participants, cData, mData);
-	end
-
-	% Calculate unique columns (e.g. not age and sex)
-	unique = [];
-	for i = 1:length(measures)
-		if ~isequal(cData(:,i), mData(:,i))
-			unique = [unique, i];
-		end
-	end
-
-	[values, measures] = combineDatasets(measures, cData, 'Leg', mData, 'Arm', unique);
 end
 
 function [indices, list1] = verifyNames(list1, list2)
