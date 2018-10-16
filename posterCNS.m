@@ -2,9 +2,12 @@
 function [participants, cData, mData, measures] = posterCNS()
 	addpath import;
 
+	cPath = pathFor('leg');
+	mPath = pathFor('arm');
+
 	% Import the data from MEF
-	[cData, cParticipantNames, cMeasureNames, cStats] = mefimport(pathFor('leg'));
-	[mData, mParticipantNames, mMeasureNames, mStats] = mefimport(pathFor('arm'));
+	[cData, cParticipantNames, cMeasureNames, cStats] = mefimport(cPath);
+	[mData, mParticipantNames, mMeasureNames, mStats] = mefimport(mPath);
 
 	% Verify participant names are the same; then only save one list
 	indices = verifyNames(cParticipantNames, mParticipantNames);
