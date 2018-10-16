@@ -6,13 +6,18 @@ function posterCAN2018()
 	[cData, cParticipantNames, cMeasureNames] = mefimport(pathFor('leg'));
 	[mData, mParticipantNames, mMeasureNames] = mefimport(pathFor('arm'));
 
+	% Fill missing values
+	addpath missing;
+	X = [cData; mData];
+	X = fillIterate(X, [[]], ~isnan(X), struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
+	cData = X(1:length(cParticipantNames), :);
+	mData = X(length(cParticipantNames)+1:end, :);
+	rmpath missing;
+	clear X;
 
 	% Delete measures and participants unique to one dataset
 	[cData, mData, participants, measures] = retainMatchingParticipants(cData, cParticipantNames, cMeasureNames, mData, mParticipantNames, mMeasureNames);
-	clear cParticipantNames cMeasureNames mParticipantNames mMeasureNames;
-
-	% Delete NaN rows (i.e. participants with missing values)
-	[participants, cData, mData] = deleteNaN(participants, cData, mData);
+	clear cParticipantNames cMeasureNames mParticipantNames mMeasureNames
 	clear participants;
 
 	rmpath import;
