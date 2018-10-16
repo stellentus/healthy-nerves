@@ -87,13 +87,13 @@ function [X] = loadMEF()
 	[armValues, armParticipants] = mefimport(pathFor('arm'), true);
 	[legValues, legParticipants] = mefimport(pathFor('leg'), true);
 
-	[armDelayTEd40, armDelayTEh40, ~, ~, armTEd40, armTEh40, ~, ~] = mefTEimport(pathFor('arm'), armParticipants);
-	[legDelayTEd40, legDelayTEh40, ~, ~, legTEd40, legTEh40, ~, ~] = mefTEimport(pathFor('leg'), legParticipants);
+	% [armDelayTEd40, armDelayTEh40, ~, ~, armTEd40, armTEh40, ~, ~] = mefTEimport(pathFor('arm'), armParticipants);
+	% [legDelayTEd40, legDelayTEh40, ~, ~, legTEd40, legTEh40, ~, ~] = mefTEimport(pathFor('leg'), legParticipants);
 	rmpath import;
 
 	X = [armValues; legValues]; % Store all samples as X
-	delayTEd40 = armDelayTEd40'; % Currently unused
-	TEd40 = [armTEd40'; legTEd40']; % Currently unused
+	% delayTEd40 = armDelayTEd40'; % Currently unused
+	% TEd40 = [armTEd40'; legTEd40']; % Currently unused
 end
 
 function [verr, cerr] = testFuncs(algs, X, originalCov, includeCheats)
