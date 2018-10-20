@@ -25,4 +25,7 @@ function posterCAN2018()
 	addpath analyze;
 	corrArmLeg(cData, mData, measures);
 	rmpath analyze;
+
+	% TODO: Compare correlations with and without missing data.
+	% TODO: Add back the "Large, Medium, Small" correlation labels.
 end
