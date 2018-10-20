@@ -87,7 +87,8 @@ function [inc, measures] = includedMeasuresByName(names, expectedNames)
 	names = replace(names, "\", " ");
 
 	if length(intersect(expectedNames, names)) ~= length(expectedNames)
-		warning('Not all of the canonical measures were found')
+		missingNames = join(setdiff(expectedNames, intersect(expectedNames, names)), "', '");
+		warning("Not all of the canonical measures were found: '%s'", char(missingNames))
 	end
 
 	inc = [];
