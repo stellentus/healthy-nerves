@@ -37,11 +37,11 @@ function [data] = ddNerves(threshold, alg, nanMethod, folderpath)
 	scores = data.values*coeff-m;
 
 	xIndex = 1;
-	yIndex = 2;
-	zIndex = 3;
-	xAsPCA = false;
-	yAsPCA = false;
-	zAsPCA = false;
+	yIndex = 11;
+	zIndex = 26;
+	xAsPCA = true;
+	yAsPCA = true;
+	zAsPCA = true;
 
 	figure;
 	set(gcf, 'units', 'points', 'position', [0, 40, 400, 400]);
@@ -115,9 +115,15 @@ function [data] = ddNerves(threshold, alg, nanMethod, folderpath)
 		end
 	end
 
-	ih = uicontrol('Style', 'popup', 'String', genStrings(maxIndex, 'X'), 'Position', [30 0 100 50], 'Value', 1, 'Callback', @popX);
-	ih = uicontrol('Style', 'popup', 'String', genStrings(maxIndex, 'Y'), 'Position', [140 0 100 50], 'Value', 2, 'Callback', @popY);
-	ih = uicontrol('Style', 'popup', 'String', genStrings(maxIndex, 'Z'), 'Position', [250 0 100 50], 'Value', 3, 'Callback', @popZ);
+	function [idx] = stringIndexForIndex(idx, isPCA)
+		if isPCA
+			idx = idx + maxIndex;
+		end
+	end
+
+	ih = uicontrol('Style', 'popup', 'String', genStrings(maxIndex, 'X'), 'Position', [30 0 100 50], 'Value', stringIndexForIndex(xIndex, xAsPCA), 'Callback', @popX);
+	ih = uicontrol('Style', 'popup', 'String', genStrings(maxIndex, 'Y'), 'Position', [140 0 100 50], 'Value', stringIndexForIndex(yIndex, yAsPCA), 'Callback', @popY);
+	ih = uicontrol('Style', 'popup', 'String', genStrings(maxIndex, 'Z'), 'Position', [250 0 100 50], 'Value', stringIndexForIndex(zIndex, zAsPCA), 'Callback', @popZ);
 end
 
 function [strs] = genStrings(maxInt, axis)
@@ -126,6 +132,6 @@ function [strs] = genStrings(maxInt, axis)
 		strs = [strs sprintf('%s %d', axis, i)];
 	end
 	for i = 1:maxInt
-		strs = [strs sprintf('PCA %s %d', axis, i)];
+		strs = [strs sprintf('%s PCA %d', axis, i)];
 	end
 end
