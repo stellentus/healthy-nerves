@@ -53,7 +53,7 @@ function [values] = tryToFill(values, nanMethod)
 	catch
 	end
 
-	if ~filled
+	if ~filled && ~strcmp('none', nanMethod)
 		% It probably failed because the filling method was too complicated, so default to 0 which should always work.
 		thisValues = fillWithMethod(thisValues, 'Zero');
 	end

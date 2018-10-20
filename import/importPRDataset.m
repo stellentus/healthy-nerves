@@ -1,6 +1,6 @@
 %% importPRDataset loads all Excel files at the given path as a PR dataset.
 function [prInliers, data] = importPRDataset(nanMethod, folderpath)
-	[values, ~, ~] = importAllXLSX(nanMethod, folderpath);
+	[values, ~, ~] = importAllXLSX('none', folderpath);
 
 	sciValues = [];
 	ratValues = [];
@@ -15,6 +15,11 @@ function [prInliers, data] = importPRDataset(nanMethod, folderpath)
 			healthyValues = [healthyValues; values.(fields{i})];
 		end
 	end
+
+	% Fill with entire data type
+	sciValues = tryToFill(sciValues, nanMethod);
+	ratValues = tryToFill(ratValues, nanMethod);
+	healthyValues = tryToFill(healthyValues, nanMethod);
 
 	% Create a labelled prtools dataset
 	values = [sciValues; ratValues; healthyValues];
@@ -35,4 +40,27 @@ function [prInliers, data] = importPRDataset(nanMethod, folderpath)
 		data.isRat(size(sciValues, 1)+1:size(sciValues, 1)+size(ratValues, 1)) = true;
 		data.isHealthy(size(sciValues, 1)+size(ratValues, 1)+1:end) = true;
 	end
+end
+
+function [values] = tryToFill(values, nanMethod)
+	if strcmp('none', nanMethod)
+		return
+	end
+
+	missingPath = fullfile(fileparts(which(mfilename)),'../missing');
+	addpath(missingPath);
+
+	if size(values,1) < 3*size(values,2) && ~strcmp('Zero', nanMethod)
+		nanMethod = 'Mean';
+		warning('Data too small for requested type; using Mean instead')
+	end
+	values = fillWithMethod(values, nanMethod);
+
+	if 0~=sum(sum(isnan(values)))
+		% It probably failed because the filling method was too complicated, so default to 0 which should always work.
+		warning('Data filling failed; using Zero instead')
+		thisValues = fillWithMethod(thisValues, 'Zero');
+	end
+
+	rmpath(missingPath);
 end
