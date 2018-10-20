@@ -24,7 +24,7 @@ function [values, participants, measures] = loadXLSXInDirectory(values, particip
 			% Ignore files that are not Excel. Also ignore Excel backup files.
 			continue
 		else
-			[thisValues, thisParticipants, thisMeasures] = mefimport(fullPath, false, false);
+			[thisValues, thisParticipants, thisMeasures] = mefimport(fullPath, false, false, canonicalNamesNoTE20());
 			filled = false;
 			try
 				thisValues = fillWithMethod(thisValues, nanMethod);
