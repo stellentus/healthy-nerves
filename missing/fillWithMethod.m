@@ -53,6 +53,8 @@ function [values] = fillWithMethod(values, method, args)
 		case 'delete'
 			values = completeX;
 			return
+		case 'none'
+			return
 		otherwise
 			return
 	end
