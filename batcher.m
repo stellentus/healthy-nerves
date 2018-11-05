@@ -1,5 +1,5 @@
 %% batcher detects batch effects.
-function [canValues, canParticipants, canMeasures, legValues, legParticipants, legMeasures, japValues, japParticipants, japMeasures, porValues, porParticipants, porMeasures] = batcher()
+function [canValues, canParticipants, legValues, legParticipants, japValues, japParticipants, porValues, porParticipants, measures] = batcher()
 	nanMethod = 'none';
 
 	% Load the data
@@ -14,4 +14,11 @@ function [canValues, canParticipants, canMeasures, legValues, legParticipants, l
 	[japValues, japParticipants, japMeasures] = importAllXLSX(nanMethod, 'data/Japan');
 	[porValues, porParticipants, porMeasures] = importAllXLSX(nanMethod, 'data/Portugal');
 	rmpath import;
+
+	% Ensure all datasets have the desired measures
+	assert(isequal(canMeasures, legMeasures), 'Canadian arm and leg measures are not the same');
+	assert(isequal(canMeasures, japMeasures), 'Canadian and Japanese measures are not the same');
+	assert(isequal(canMeasures, porMeasures), 'Canadian and Portuguese measures are not the same');
+	measures = canMeasures;
+	clear legMeasures japMeasures porMeasures;
 end
