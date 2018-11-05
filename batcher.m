@@ -36,3 +36,9 @@ function [flatVals, flatParts] = flattenStructs(structVals, structParts)
 		flatParts = [flatParts; structParts.(fields{i})];
 	end
 end
+
+function [dedupVals, dedupParts] = deduplicate(vals, parts)
+	[~, indices] = unique(parts, 'first');
+	dedupParts = parts(sort(indices));
+	dedupVals = vals(sort(indices), :);
+end
