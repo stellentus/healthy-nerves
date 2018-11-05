@@ -21,4 +21,18 @@ function [canValues, canParticipants, legValues, legParticipants, japValues, jap
 	assert(isequal(canMeasures, porMeasures), 'Canadian and Portuguese measures are not the same');
 	measures = canMeasures;
 	clear legMeasures japMeasures porMeasures;
+
+	% Flatten Japanese and Porguguese data
+	[japValues, japParticipants] = flattenStructs(japValues, japParticipants);
+	[porValues, porParticipants] = flattenStructs(porValues, porParticipants);
+end
+
+function [flatVals, flatParts] = flattenStructs(structVals, structParts)
+	flatVals = [];
+	flatParts = [];
+	fields = fieldnames(structVals);
+	for i = 1:numel(fields)
+		flatVals = [flatVals; structVals.(fields{i})];
+		flatParts = [flatParts; structParts.(fields{i})];
+	end
 end
