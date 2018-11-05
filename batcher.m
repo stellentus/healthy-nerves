@@ -1,6 +1,6 @@
 %% batcher detects batch effects.
 function [canValues, canParticipants, legValues, legParticipants, japValues, japParticipants, porValues, porParticipants, measures, ri] = batcher()
-	nanMethod = 'none';
+	nanMethod = 'IterateRegr';
 
 	% Load the data
 	addpath import;
