@@ -5,9 +5,9 @@ function [canValues, canParticipants, legValues, legParticipants, japValues, jap
 	% Load the data
 	addpath import;
 	addpath missing;
-	[canValues, canParticipants, canMeasures] = mefimport('data/human/MedianRepeatedMeasures.xlsx', false, false, canonicalNamesNoTE20());
+	[canValues, canParticipants, canMeasures] = mefimport('data/human/MedianRepeatedMeasures.xlsx', false, false, canonicalNamesNoTE20()); % TODO this could use all median, not just repeated
 	canValues = fillWithMethod(canValues, nanMethod, true);
-	[legValues, legParticipants, legMeasures] = mefimport('data/human/CPrepeatedmeasures.xlsx', false, false, canonicalNamesNoTE20());
+	[legValues, legParticipants, legMeasures] = mefimport('data/human/CPrepeatedmeasures.xlsx', false, false, canonicalNamesNoTE20()); % TODO this could use all CP, not just repeated
 	legValues = fillWithMethod(legValues, nanMethod, true);
 	rmpath missing;
 
