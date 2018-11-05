@@ -25,7 +25,7 @@ function [values, participants, measures] = loadXLSXInDirectory(values, particip
 			continue
 		else
 			[thisValues, thisParticipants, thisMeasures] = mefimport(fullPath, false, false, canonicalNamesNoTE20());
-			thisValues = tryToFill(thisValues, nanMethod);
+			thisValues = fillWithMethod(thisValues, nanMethod, true);
 
 			if measuresDiffer(measures, thisMeasures);
 				warning(['Could not load ' fullPath])
@@ -41,20 +41,4 @@ end
 
 function [differ] = measuresDiffer(measures, thisMeasures)
 	differ = ~isequal(measures, []) && ~isequal(measures, thisMeasures);
-end
-
-function [values] = tryToFill(values, nanMethod)
-	filled = false;
-	try
-		values = fillWithMethod(values, nanMethod);
-		if sum(sum(isnan(values))) == 0
-			filled = true;
-		end
-	catch
-	end
-
-	if ~filled && ~strcmp('none', nanMethod)
-		% It probably failed because the filling method was too complicated, so default to 0 which should always work.
-		thisValues = fillWithMethod(thisValues, 'Zero');
-	end
 end
