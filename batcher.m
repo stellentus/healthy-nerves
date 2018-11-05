@@ -1,5 +1,5 @@
 %% batcher detects batch effects.
-function [canValues, canParticipants, legValues, legParticipants, japValues, japParticipants, porValues, porParticipants, measures, ri] = batcher()
+function [canValues, canParticipants, legValues, legParticipants, japValues, japParticipants, porValues, porParticipants, measures, cri] = batcher()
 	nanMethod = 'IterateRegr';
 
 	% Load the data
@@ -31,22 +31,8 @@ function [canValues, canParticipants, legValues, legParticipants, japValues, jap
 	values = [canValues; japValues; porValues];
 	idx = kmeans(values, 3);
 
-	sumMatch = 0;
-	num = length(labels);
-	for i = 1:num-1
-		for j = i+1:num
-			idxMatch = idx(i) == idx(j);
-			labelMatch = labels(i) == labels(j);
-
-			if (idxMatch && labelMatch)
-				sumMatch = sumMatch + 1;
-			elseif (~idxMatch && ~labelMatch)
-				sumMatch = sumMatch + 1;
-			end
-		end
-	end
-
-	ri = 2* sumMatch / (num * (num -1));
+	% Calculate corrected rand index; 0 indicates no batch effects.
+	cri = rand_index(labels, idx, 'adjusted');
 end
 
 function [flatVals, flatParts] = flattenStructs(structVals, structParts)
