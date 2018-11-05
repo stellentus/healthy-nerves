@@ -4,6 +4,10 @@ function [values] = fillWithMethod(values, method, args)
 		args = struct();
 	end
 
+	values = fillVals(values, method, args);
+end
+
+function [values] = fillVals(values, method, args)
 	[completeIndices, missIndices] = getCompleteIndices(values, ~isnan(values), 1);
 
 	completeX = values(completeIndices, :);
