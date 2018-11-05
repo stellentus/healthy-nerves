@@ -1,10 +1,17 @@
 % fillWithMethod fills NaN values, using the requested fill method.
-function [values] = fillWithMethod(values, method, args)
-	if nargin < 3
+function [values] = fillWithMethod(values, method, enforceFilling, args)
+	if nargin < 4
 		args = struct();
+		if nargin < 3
+			enforceFilling = false;
+		end
 	end
 
-	values = fillVals(values, method, args);
+	if enforceFilling
+		values = fillWithZeroAsBackup(values, method, args);
+	else
+		values = fillVals(values, method, args);
+	end
 end
 
 function [values] = fillVals(values, method, args)
@@ -72,5 +79,21 @@ function [args] = mergeArgs(args, argDefault)
 		if ~isfield(args, fields{i})
 			args.(fields{i}) = argDefault.(fields{i});
 		end
+	end
+end
+
+function [values] = fillWithZeroAsBackup(values, nanMethod, args)
+	filled = false;
+	try
+		values = fillVals(values, nanMethod, args);
+		if sum(sum(isnan(values))) == 0
+			filled = true;
+		end
+	catch
+	end
+
+	if ~filled && ~strcmp('none', nanMethod)
+		% It probably failed because the filling method was too complicated, so default to 0 which should always work.
+		thisValues = fillVals(thisValues, 'Zero');
 	end
 end
