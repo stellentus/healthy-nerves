@@ -31,8 +31,9 @@ function [canValues, canParticipants, legValues, legParticipants, japValues, jap
 	values = [canValues; japValues; porValues];
 	idx = kmeans(values, 3);
 
-	% Calculate corrected rand index; 0 indicates no batch effects.
+	% Calculate corrected rand index; 0 indicates no batch effects while 1 is perfect batches.
 	cri = rand_index(labels, idx, 'adjusted');
+	fprintf('The adjusted rand index for the data is %.3f.\n', cri);
 end
 
 function [flatVals, flatParts] = flattenStructs(structVals, structParts)
