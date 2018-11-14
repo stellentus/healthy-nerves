@@ -31,15 +31,19 @@ function [canValues, canParticipants, legValues, legParticipants, japValues, jap
 	values = [canValues; japValues; porValues];
 	idx = kmeans(values, 3);
 
+	[cri, norm_mutual] = displayBatchResults(labels, idx, 'the data');
+end
+
+function [cri, norm_mutual] = displayBatchResults(labels, idx, str)
 	% Calculate corrected rand index; 0 indicates no batch effects while 1 is perfect batches.
 	cri = rand_index(labels, idx, 'adjusted');
-	fprintf('The adjusted rand index for the data is %.3f.\n', cri);
+	fprintf('The adjusted rand index for %s is %.3f.\n', str, cri);
 
 	% Calculate the normalized mutual information; 0 indicates to batch effects while (I think) 1 is perfect batches.
 	addpath info_entropy;
 	norm_mutual = nmi(labels, idx);
 	rmpath info_entropy;
-	fprintf('The normalized mutual information for the data is %.3f.\n', norm_mutual);
+	fprintf('The normalized mutual information for %s is %.3f.\n', str, norm_mutual);
 end
 
 function [flatVals, flatParts] = flattenStructs(structVals, structParts)
