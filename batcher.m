@@ -29,9 +29,8 @@ function [canValues, canParticipants, legValues, legParticipants, japValues, jap
 	% Cluster the data
 	labels = [ones(size(canParticipants, 1), 1); ones(size(japParticipants, 1), 1) * 2; repmat(3, size(porParticipants, 1), 1)];
 	values = [canValues; japValues; porValues];
-	idx = kmeans(values, 3);
 
-	[cri, norm_mutual] = displayBatchResults(labels, idx, 'the data');
+	[cri, norm_mutual] = displayBatchResults(labels, kmeans(values, 3), 'k-means');
 end
 
 function [cri, norm_mutual] = displayBatchResults(labels, idx, str)
