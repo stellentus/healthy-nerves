@@ -38,6 +38,8 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	normMutual = [];
 	randCri = [];
 	randNormMutual = [];
+	batchCri = [];
+	batchNormMutual = [];
 	for i=1:30
 		[c, n] = calculateBatchResults(labels, kmeans(values, 3));
 		cri = [cri c];
@@ -48,10 +50,15 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 		[c, n] = calculateBatchResults(randLabels, kmeans(values, 3));
 		randCri = [randCri c];
 		randNormMutual = [randNormMutual n];
+
+		[c, n] = calculateBatchResults(randLabels, randLabels);
+		batchCri = [batchCri c];
+		batchNormMutual = [batchNormMutual n];
 	end
 
 	printBatchResults(cri, normMutual, 'k-means');
 	printBatchResults(randCri, randNormMutual, 'k-means (random)');
+	printBatchResults(batchCri, batchNormMutual, 'batched');
 end
 
 function [cri, norm_mutual] = calculateBatchResults(labels, idx)
