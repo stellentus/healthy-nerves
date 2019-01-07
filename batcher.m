@@ -33,8 +33,12 @@ function [canValues, legValues, japValues, porValues, measures, cri, norm_mutual
 	labels = [ones(size(canValues, 1), 1); ones(size(japValues, 1), 1) * 2; repmat(3, size(porValues, 1), 1)];
 	values = [canValues; japValues; porValues];
 
+	% Create labels with random assignment
+	randLabels = randi([1 3], 1, length(labels));
+
 	% Calculate and print measures of batching
 	[cri, norm_mutual] = displayBatchResults(labels, kmeans(values, 3), 'k-means');
+	[cri, norm_mutual] = displayBatchResults(randLabels, kmeans(values, 3), 'k-means (random)');
 end
 
 function [cri, norm_mutual] = displayBatchResults(labels, idx, str)
