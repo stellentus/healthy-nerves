@@ -37,19 +37,25 @@ function [canValues, legValues, japValues, porValues, measures, cri, norm_mutual
 	randLabels = randi([1 3], 1, length(labels));
 
 	% Calculate and print measures of batching
-	[cri, norm_mutual] = displayBatchResults(labels, kmeans(values, 3), 'k-means');
-	[cri, norm_mutual] = displayBatchResults(randLabels, kmeans(values, 3), 'k-means (random)');
+	[cri, norm_mutual] = calculateBatchResults(labels, kmeans(values, 3));
+	[randCri, randNorm_mutual] = calculateBatchResults(randLabels, kmeans(values, 3));
+
+	printBatchResults(cri, norm_mutual, 'k-means');
+	printBatchResults(randCri, randNorm_mutual, 'k-means (random)');
 end
 
-function [cri, norm_mutual] = displayBatchResults(labels, idx, str)
+function [cri, norm_mutual] = calculateBatchResults(labels, idx)
 	% Calculate corrected rand index; 0 indicates no batch effects while 1 is perfect batches.
 	cri = rand_index(labels, idx, 'adjusted');
-	fprintf('The adjusted rand index for %s is %.3f.\n', str, cri);
 
 	% Calculate the normalized mutual information; 0 indicates to batch effects while (I think) 1 is perfect batches.
 	addpath info_entropy;
 	norm_mutual = nmi(labels, idx);
 	rmpath info_entropy;
+end
+
+function [] = printBatchResults(cri, norm_mutual, str)
+	fprintf('The adjusted rand index for %s is %.3f.\n', str, cri);
 	fprintf('The normalized mutual information for %s is %.3f.\n', str, norm_mutual);
 end
 
