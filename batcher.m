@@ -42,7 +42,10 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 		[c, n] = calculateBatchResults(labels, kmeans(values, 3));
 		cri = [cri c];
 		normMutual = [normMutual n];
-		[c, n] = calculateBatchResults(randi([1 3], 1, length(labels)), kmeans(values, 3));
+
+		randLabels = randi([1 3], 1, length(labels));
+
+		[c, n] = calculateBatchResults(randLabels, kmeans(values, 3));
 		randCri = [randCri c];
 		randNormMutual = [randNormMutual n];
 	end
