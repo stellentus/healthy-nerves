@@ -1,5 +1,5 @@
 %% batcher detects batch effects.
-function [canValues, legValues, japValues, porValues, measures, cri, norm_mutual] = batcher()
+function [canValues, legValues, japValues, porValues, measures, cri, normMutual] = batcher()
 	nanMethod = 'IterateRegr';
 
 	% Load the data
@@ -33,15 +33,22 @@ function [canValues, legValues, japValues, porValues, measures, cri, norm_mutual
 	labels = [ones(size(canValues, 1), 1); ones(size(japValues, 1), 1) * 2; repmat(3, size(porValues, 1), 1)];
 	values = [canValues; japValues; porValues];
 
-	% Create labels with random assignment
-	randLabels = randi([1 3], 1, length(labels));
-
 	% Calculate and print measures of batching
-	[cri, norm_mutual] = calculateBatchResults(labels, kmeans(values, 3));
-	[randCri, randNorm_mutual] = calculateBatchResults(randLabels, kmeans(values, 3));
+	cri = [];
+	normMutual = [];
+	randCri = [];
+	randNormMutual = [];
+	for i=1:30
+		[c, n] = calculateBatchResults(labels, kmeans(values, 3));
+		cri = [cri c];
+		normMutual = [normMutual n];
+		[c, n] = calculateBatchResults(randi([1 3], 1, length(labels)), kmeans(values, 3));
+		randCri = [randCri c];
+		randNormMutual = [randNormMutual n];
+	end
 
-	printBatchResults(cri, norm_mutual, 'k-means');
-	printBatchResults(randCri, randNorm_mutual, 'k-means (random)');
+	printBatchResults(cri, normMutual, 'k-means');
+	printBatchResults(randCri, randNormMutual, 'k-means (random)');
 end
 
 function [cri, norm_mutual] = calculateBatchResults(labels, idx)
@@ -54,9 +61,10 @@ function [cri, norm_mutual] = calculateBatchResults(labels, idx)
 	rmpath info_entropy;
 end
 
-function [] = printBatchResults(cri, norm_mutual, str)
-	fprintf('The adjusted rand index for %s is %.3f.\n', str, cri);
-	fprintf('The normalized mutual information for %s is %.3f.\n', str, norm_mutual);
+function [] = printBatchResults(cri, normMutual, str)
+	% char(177) is the plus/minus symbol
+	fprintf('The adjusted rand index for %s is %.3f%c%.3f.\n', str, mean(cri), char(177), std(cri));
+	fprintf('The normalized mutual information for %s is %.3f%c%.3f.\n', str, mean(normMutual), char(177), std(normMutual));
 end
 
 function [flatVals] = flattenStruct(structVals)
