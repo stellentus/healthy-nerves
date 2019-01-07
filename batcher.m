@@ -29,10 +29,11 @@ function [canValues, legValues, japValues, porValues, measures, cri, norm_mutual
 	porValues = fillWithMethod(porValues, nanMethod, true);
 	rmpath missing;
 
-	% Cluster the data
+	% Create a combined vector for labels (with all datasets) and one for values
 	labels = [ones(size(canValues, 1), 1); ones(size(japValues, 1), 1) * 2; repmat(3, size(porValues, 1), 1)];
 	values = [canValues; japValues; porValues];
 
+	% Calculate and print measures of batching
 	[cri, norm_mutual] = displayBatchResults(labels, kmeans(values, 3), 'k-means');
 end
 
