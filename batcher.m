@@ -6,8 +6,8 @@ function [canValues, canParticipants, legValues, legParticipants, japValues, jap
 	addpath import;
 	[canValues, canParticipants, canMeasures] = mefimport('data/human/MedianRepeatedMeasures.xlsx', false, false, canonicalNamesNoTE20()); % TODO this could use all median, not just repeated
 	[legValues, legParticipants, legMeasures] = mefimport('data/human/CPrepeatedmeasures.xlsx', false, false, canonicalNamesNoTE20()); % TODO this could use all CP, not just repeated
-	[japValues, japParticipants, japMeasures] = importAllXLSX(nanMethod, 'data/Japan');
-	[porValues, porParticipants, porMeasures] = importAllXLSX(nanMethod, 'data/Portugal');
+	[japValues, japParticipants, japMeasures] = importAllXLSX('none', 'data/Japan');
+	[porValues, porParticipants, porMeasures] = importAllXLSX('none', 'data/Portugal');
 	rmpath import;
 
 	% Ensure all datasets have the desired measures
@@ -25,6 +25,8 @@ function [canValues, canParticipants, legValues, legParticipants, japValues, jap
 	addpath missing;
 	canValues = fillWithMethod(canValues, nanMethod, true);
 	legValues = fillWithMethod(legValues, nanMethod, true);
+	japValues = fillWithMethod(japValues, nanMethod, true);
+	porValues = fillWithMethod(porValues, nanMethod, true);
 	rmpath missing;
 
 	% Cluster the data
