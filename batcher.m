@@ -22,7 +22,7 @@ function [canValues, canParticipants, legValues, legParticipants, japValues, jap
 	measures = canMeasures;
 	clear legMeasures japMeasures porMeasures;
 
-	% Flatten Japanese and Porguguese data
+	% Flatten Japanese and Portuguese data
 	[japValues, japParticipants] = flattenStructs(japValues, japParticipants);
 	[porValues, porParticipants] = flattenStructs(porValues, porParticipants);
 
