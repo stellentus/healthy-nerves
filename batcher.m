@@ -4,13 +4,8 @@ function [canValues, canParticipants, legValues, legParticipants, japValues, jap
 
 	% Load the data
 	addpath import;
-	addpath missing;
 	[canValues, canParticipants, canMeasures] = mefimport('data/human/MedianRepeatedMeasures.xlsx', false, false, canonicalNamesNoTE20()); % TODO this could use all median, not just repeated
-	canValues = fillWithMethod(canValues, nanMethod, true);
 	[legValues, legParticipants, legMeasures] = mefimport('data/human/CPrepeatedmeasures.xlsx', false, false, canonicalNamesNoTE20()); % TODO this could use all CP, not just repeated
-	legValues = fillWithMethod(legValues, nanMethod, true);
-	rmpath missing;
-
 	[japValues, japParticipants, japMeasures] = importAllXLSX(nanMethod, 'data/Japan');
 	[porValues, porParticipants, porMeasures] = importAllXLSX(nanMethod, 'data/Portugal');
 	rmpath import;
@@ -25,6 +20,12 @@ function [canValues, canParticipants, legValues, legParticipants, japValues, jap
 	% Flatten Japanese and Portuguese data
 	[japValues, japParticipants] = flattenStructs(japValues, japParticipants);
 	[porValues, porParticipants] = flattenStructs(porValues, porParticipants);
+
+	% Fill missing data
+	addpath missing;
+	canValues = fillWithMethod(canValues, nanMethod, true);
+	legValues = fillWithMethod(legValues, nanMethod, true);
+	rmpath missing;
 
 	% Cluster the data
 	labels = [ones(size(canParticipants, 1), 1); ones(size(japParticipants, 1), 1) * 2; repmat(3, size(porParticipants, 1), 1)];
