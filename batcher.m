@@ -1,13 +1,13 @@
 %% batcher detects batch effects.
-function [canValues, canParticipants, legValues, legParticipants, japValues, japParticipants, porValues, porParticipants, measures, cri, norm_mutual] = batcher()
+function [canValues, legValues, japValues, porValues, measures, cri, norm_mutual] = batcher()
 	nanMethod = 'IterateRegr';
 
 	% Load the data
 	addpath import;
-	[canValues, canParticipants, canMeasures] = mefimport('data/human/MedianRepeatedMeasures.xlsx', false, false, canonicalNamesNoTE20()); % TODO this could use all median, not just repeated
-	[legValues, legParticipants, legMeasures] = mefimport('data/human/CPrepeatedmeasures.xlsx', false, false, canonicalNamesNoTE20()); % TODO this could use all CP, not just repeated
-	[japValues, japParticipants, japMeasures] = importAllXLSX('none', 'data/Japan');
-	[porValues, porParticipants, porMeasures] = importAllXLSX('none', 'data/Portugal');
+	[canValues, ~, canMeasures] = mefimport('data/human/MedianRepeatedMeasures.xlsx', false, false, canonicalNamesNoTE20()); % TODO this could use all median, not just repeated
+	[legValues, ~, legMeasures] = mefimport('data/human/CPrepeatedmeasures.xlsx', false, false, canonicalNamesNoTE20()); % TODO this could use all CP, not just repeated
+	[japValues, ~, japMeasures] = importAllXLSX('none', 'data/Japan');
+	[porValues, ~, porMeasures] = importAllXLSX('none', 'data/Portugal');
 	rmpath import;
 
 	% Ensure all datasets have the desired measures
@@ -18,8 +18,8 @@ function [canValues, canParticipants, legValues, legParticipants, japValues, jap
 	clear legMeasures japMeasures porMeasures;
 
 	% Flatten Japanese and Portuguese data
-	[japValues, japParticipants] = flattenStructs(japValues, japParticipants);
-	[porValues, porParticipants] = flattenStructs(porValues, porParticipants);
+	[japValues] = flattenStruct(japValues);
+	[porValues] = flattenStruct(porValues);
 
 	% Fill missing data
 	addpath missing;
@@ -48,13 +48,11 @@ function [cri, norm_mutual] = displayBatchResults(labels, idx, str)
 	fprintf('The normalized mutual information for %s is %.3f.\n', str, norm_mutual);
 end
 
-function [flatVals, flatParts] = flattenStructs(structVals, structParts)
+function [flatVals] = flattenStruct(structVals)
 	flatVals = [];
-	flatParts = [];
 	fields = fieldnames(structVals);
 	for i = 1:numel(fields)
 		flatVals = [flatVals; structVals.(fields{i})];
-		flatParts = [flatParts; structParts.(fields{i})];
 	end
 end
 
