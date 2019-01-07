@@ -30,7 +30,7 @@ function [canValues, canParticipants, legValues, legParticipants, japValues, jap
 	rmpath missing;
 
 	% Cluster the data
-	labels = [ones(size(canParticipants, 1), 1); ones(size(japParticipants, 1), 1) * 2; repmat(3, size(porParticipants, 1), 1)];
+	labels = [ones(size(canValues, 1), 1); ones(size(japValues, 1), 1) * 2; repmat(3, size(porValues, 1), 1)];
 	values = [canValues; japValues; porValues];
 
 	[cri, norm_mutual] = displayBatchResults(labels, kmeans(values, 3), 'k-means');
