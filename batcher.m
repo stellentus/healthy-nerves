@@ -21,6 +21,11 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	[japValues, japParticipants] = flattenStructs(japValues, japParticipants);
 	[porValues, porParticipants] = flattenStructs(porValues, porParticipants);
 
+	% Delete people who have no sex
+	[canValues, canParticipants] = deleteNoSex(canValues, canParticipants);
+	[japValues, japParticipants] = deleteNoSex(japValues, japParticipants);
+	[porValues, porParticipants] = deleteNoSex(porValues, porParticipants);
+
 	% Fill missing data
 	addpath missing;
 	canValues = fillWithMethod(canValues, nanMethod, true);
@@ -83,6 +88,13 @@ function [] = printBatchResults(cri, normMutual, str)
 	% char(177) is the plus/minus symbol
 	fprintf('The adjusted rand index for %s is %.3f%c%.3f.\n', str, mean(cri), char(177), std(cri));
 	fprintf('The normalized mutual information for %s is %.3f%c%.3f.\n', str, mean(normMutual), char(177), std(normMutual));
+end
+
+function [vals, parts] = deleteNoSex(vals, parts)
+	hasSex = ismember(vals(:, 15), [2.0 1.0]);
+	fprintf('Deleting sexless %s.\n', parts(~hasSex));
+	vals = vals(hasSex, :);
+	parts = parts(hasSex);
 end
 
 function [flatVals, flatParts] = flattenStructs(structVals, structParts)
