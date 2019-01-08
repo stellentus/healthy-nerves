@@ -38,6 +38,7 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	canNum = printStats(canValues, 'Canada');
 	japNum = printStats(japValues, 'Japan');
 	porNum = printStats(porValues, 'Portugal');
+	legNum = printStats(legValues, 'Legs');
 
 	% Create a combined vector for labels (with all datasets) and one for values
 	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
@@ -56,6 +57,8 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	randNormMutual = [];
 	batchCri = [];
 	batchNormMutual = [];
+	legCri = [];
+	legNormMutual = [];
 	for i=1:30
 		[c, n] = calculateBatchResults(labels, kmeans(values, 3));
 		cri = [cri c];
@@ -82,6 +85,10 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 		[c, n] = calculateBatchResults(randLabels, randLabels);
 		batchCri = [batchCri c];
 		batchNormMutual = [batchNormMutual n];
+
+		[c, n] = calculateBatchResults([ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], kmeans([legValues; japValues; porValues], 3));
+		legCri = [legCri c];
+		legNormMutual = [legNormMutual n];
 	end
 
 	printBatchResults(cri, normMutual, 'k-means');
@@ -90,6 +97,7 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	printBatchResults(criNoPor, normMutualNoPor, 'k-means (No Portugal)');
 	printBatchResults(randCri, randNormMutual, 'k-means (random)');
 	printBatchResults(batchCri, batchNormMutual, 'batched');
+	printBatchResults(legCri, legNormMutual, 'k-means (Canadian legs)');
 end
 
 function [cri, norm_mutual] = calculateBatchResults(labels, idx)
