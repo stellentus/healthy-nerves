@@ -35,18 +35,9 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	rmpath missing;
 
 	% Get and print count of each group and age range
-	canNum = size(canValues, 1);
-	japNum = size(japValues, 1);
-	porNum = size(porValues, 1);
-	canMale = countMales(canValues);
-	japMale = countMales(japValues);
-	porMale = countMales(porValues);
-	[canMin, canMax] = ageRange(canValues);
-	[japMin, japMax] = ageRange(japValues);
-	[porMin, porMax] = ageRange(porValues);
-	fprintf('There are %d participants from Canada (%d male) ages %d to %d.\n', canNum, canMale, canMin, canMax);
-	fprintf('There are %d participants from Japan (%d male) ages %d to %d.\n', japNum, japMale, japMin, japMax);
-	fprintf('There are %d participants from Portugal (%d male) ages %d to %d.\n', porNum, porMale, porMin, porMax);
+	canNum = printStats(canValues, 'Canada');
+	japNum = printStats(japValues, 'Japan');
+	porNum = printStats(porValues, 'Portugal');
 
 	% Create a combined vector for labels (with all datasets) and one for values
 	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
@@ -94,6 +85,13 @@ function [] = printBatchResults(cri, normMutual, str)
 	% char(177) is the plus/minus symbol
 	fprintf('The adjusted rand index for %s is %.3f%c%.3f.\n', str, mean(cri), char(177), std(cri));
 	fprintf('The normalized mutual information for %s is %.3f%c%.3f.\n', str, mean(normMutual), char(177), std(normMutual));
+end
+
+function [num] = printStats(vals, str)
+	num = size(vals, 1);
+	male = countMales(vals);
+	[ageMin, ageMax] = ageRange(vals);
+	fprintf('There are %d participants from %s (%d male) ages %d to %d.\n', num, str, male, ageMin, ageMax);
 end
 
 function [vals, parts] = deleteNoSex(vals, parts)
