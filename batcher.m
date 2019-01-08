@@ -4,10 +4,10 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 
 	% Load the data
 	addpath import;
-	[canValues, ~, canMeasures] = mefimport('data/human/MedianRepeatedMeasures.xlsx', false, false, canonicalNamesNoTE20()); % TODO this could use all median, not just repeated
-	[legValues, ~, legMeasures] = mefimport('data/human/CPrepeatedmeasures.xlsx', false, false, canonicalNamesNoTE20()); % TODO this could use all CP, not just repeated
-	[japValues, ~, japMeasures] = importAllXLSX('none', 'data/Japan');
-	[porValues, ~, porMeasures] = importAllXLSX('none', 'data/Portugal');
+	[canValues, canParticipants, canMeasures] = mefimport('data/human/MedianRepeatedMeasures.xlsx', false, false, canonicalNamesNoTE20()); % TODO this could use all median, not just repeated
+	[legValues, legParticipants, legMeasures] = mefimport('data/human/CPrepeatedmeasures.xlsx', false, false, canonicalNamesNoTE20()); % TODO this could use all CP, not just repeated
+	[japValues, japParticipants, japMeasures] = importAllXLSX('none', 'data/Japan');
+	[porValues, porParticipants, porMeasures] = importAllXLSX('none', 'data/Portugal');
 	rmpath import;
 
 	% Ensure all datasets have the desired measures
@@ -18,8 +18,8 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	clear legMeasures japMeasures porMeasures;
 
 	% Flatten Japanese and Portuguese data
-	[japValues] = flattenStruct(japValues);
-	[porValues] = flattenStruct(porValues);
+	[japValues, japParticipants] = flattenStructs(japValues, japParticipants);
+	[porValues, porParticipants] = flattenStructs(porValues, porParticipants);
 
 	% Fill missing data
 	addpath missing;
@@ -85,11 +85,13 @@ function [] = printBatchResults(cri, normMutual, str)
 	fprintf('The normalized mutual information for %s is %.3f%c%.3f.\n', str, mean(normMutual), char(177), std(normMutual));
 end
 
-function [flatVals] = flattenStruct(structVals)
+function [flatVals, flatParts] = flattenStructs(structVals, structParts)
 	flatVals = [];
+	flatParts = [];
 	fields = fieldnames(structVals);
 	for i = 1:numel(fields)
 		flatVals = [flatVals; structVals.(fields{i})];
+		flatParts = [flatParts; structParts.(fields{i})];
 	end
 end
 
