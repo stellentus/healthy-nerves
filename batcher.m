@@ -34,16 +34,19 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	porValues = fillWithMethod(porValues, nanMethod, true);
 	rmpath missing;
 
-	% Get and print count of each group
+	% Get and print count of each group and age range
 	canNum = size(canValues, 1);
 	japNum = size(japValues, 1);
 	porNum = size(porValues, 1);
 	canMale = countMales(canValues);
 	japMale = countMales(japValues);
 	porMale = countMales(porValues);
-	fprintf('There are %d participants from Canada (%d male).\n', canNum, canMale);
-	fprintf('There are %d participants from Japan (%d male).\n', japNum, japMale);
-	fprintf('There are %d participants from Portugal (%d male).\n', porNum, porMale);
+	[canMin, canMax] = ageRange(canValues);
+	[japMin, japMax] = ageRange(japValues);
+	[porMin, porMax] = ageRange(porValues);
+	fprintf('There are %d participants from Canada (%d male) ages %d to %d.\n', canNum, canMale, canMin, canMax);
+	fprintf('There are %d participants from Japan (%d male) ages %d to %d.\n', japNum, japMale, japMin, japMax);
+	fprintf('There are %d participants from Portugal (%d male) ages %d to %d.\n', porNum, porMale, porMin, porMax);
 
 	% Create a combined vector for labels (with all datasets) and one for values
 	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
@@ -102,6 +105,11 @@ end
 
 function [males] = countMales(vals)
 	males = sum(ismember(vals(:, 15), [1.0]));
+end
+
+function [minAge, maxAge] = ageRange(vals)
+	minAge = min(vals(:, 14));
+	maxAge = max(vals(:, 14));
 end
 
 function [flatVals, flatParts] = flattenStructs(structVals, structParts)
