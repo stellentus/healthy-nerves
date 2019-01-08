@@ -38,9 +38,12 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	canNum = size(canValues, 1);
 	japNum = size(japValues, 1);
 	porNum = size(porValues, 1);
-	fprintf('There are %d participants from Canada.\n', canNum);
-	fprintf('There are %d participants from Japan.\n', japNum);
-	fprintf('There are %d participants from Portugal.\n', porNum);
+	canMale = countMales(canValues);
+	japMale = countMales(japValues);
+	porMale = countMales(porValues);
+	fprintf('There are %d participants from Canada (%d male).\n', canNum, canMale);
+	fprintf('There are %d participants from Japan (%d male).\n', japNum, japMale);
+	fprintf('There are %d participants from Portugal (%d male).\n', porNum, porMale);
 
 	% Create a combined vector for labels (with all datasets) and one for values
 	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
@@ -95,6 +98,10 @@ function [vals, parts] = deleteNoSex(vals, parts)
 	fprintf('Deleting sexless %s.\n', parts(~hasSex));
 	vals = vals(hasSex, :);
 	parts = parts(hasSex);
+end
+
+function [males] = countMales(vals)
+	males = sum(ismember(vals(:, 15), [1.0]));
 end
 
 function [flatVals, flatParts] = flattenStructs(structVals, structParts)
