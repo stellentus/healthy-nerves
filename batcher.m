@@ -29,8 +29,16 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	porValues = fillWithMethod(porValues, nanMethod, true);
 	rmpath missing;
 
+	% Get and print count of each group
+	canNum = size(canValues, 1);
+	japNum = size(japValues, 1);
+	porNum = size(porValues, 1);
+	fprintf('There are %d participants from Canada.\n', canNum);
+	fprintf('There are %d participants from Japan.\n', japNum);
+	fprintf('There are %d participants from Portugal.\n', porNum);
+
 	% Create a combined vector for labels (with all datasets) and one for values
-	labels = [ones(size(canValues, 1), 1); ones(size(japValues, 1), 1) * 2; repmat(3, size(porValues, 1), 1)];
+	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
 	values = [canValues; japValues; porValues];
 
 	% Calculate and print measures of batching
