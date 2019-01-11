@@ -15,7 +15,7 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	assert(isequal(canMeasures, japMeasures), 'Canadian and Japanese measures are not the same');
 	assert(isequal(canMeasures, porMeasures), 'Canadian and Portuguese measures are not the same');
 	measures = canMeasures;
-	clear legMeasures japMeasures porMeasures;
+	clear legMeasures japMeasures porMeasures, canMeasures;
 
 	% Flatten Japanese and Portuguese data
 	[japValues, japParticipants] = flattenStructs(japValues, japParticipants);
@@ -33,6 +33,8 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	japValues = fillWithMethod(japValues, nanMethod, true);
 	porValues = fillWithMethod(porValues, nanMethod, true);
 	rmpath missing;
+
+	save('bin/batch-normative.mat', 'canValues', 'canParticipants', 'japValues', 'japParticipants', 'porValues', 'porParticipants', 'measures', 'nanMethod')
 
 	% Get and print count of each group and age range
 	canNum = printStats(canValues, 'Canada');
