@@ -17,17 +17,17 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	rng('shuffle');
 	scurr = rng(); % Ensure all start with the same seed
 
-	printBatchResults('k-means', iters, scurr.Seed, 3, values, labels);
-	printBatchResults('k-means (No Canada)', iters, scurr.Seed, 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2]);
-	printBatchResults('k-means (No Japan)', iters, scurr.Seed, 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2]);
-	printBatchResults('k-means (No Portugal)', iters, scurr.Seed, 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2]);
-	printBatchResults('k-means (random)', iters, scurr.Seed, 3, values);
-	printBatchResults('batched', iters, scurr.Seed, 3, length(labels)); % Instead of passing any data at all, request both arrays to be identical random indices.
-	printBatchResults('k-means (Canadian legs)', iters, scurr.Seed, 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)]);
+	printBatchResults('k-means', iters, scurr.Seed, @kmeans, 3, values, labels);
+	printBatchResults('k-means (No Canada)', iters, scurr.Seed, @kmeans, 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2]);
+	printBatchResults('k-means (No Japan)', iters, scurr.Seed, @kmeans, 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2]);
+	printBatchResults('k-means (No Portugal)', iters, scurr.Seed, @kmeans, 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2]);
+	printBatchResults('k-means (random)', iters, scurr.Seed, @kmeans, 3, values);
+	printBatchResults('batched', iters, scurr.Seed, @kmeans, 3, length(labels)); % Instead of passing any data at all, request both arrays to be identical random indices.
+	printBatchResults('k-means (Canadian legs)', iters, scurr.Seed, @kmeans, 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)]);
 end
 
 % calculateBatchResults will repeatedly calculate batch results with
-function [cri, norm_mutual] = calculateBatchResults(iters, seed, numGroups, values, labels)
+function [cri, norm_mutual] = calculateBatchResults(iters, seed, clusterFunc, numGroups, values, labels)
 	cri = [];
 	norm_mutual = [];
 	rng(seed); % Ensure all start with the same seed
@@ -40,12 +40,12 @@ function [cri, norm_mutual] = calculateBatchResults(iters, seed, numGroups, valu
 		% Create the clustered groups
 		if randomIndices
 			idx = randi([1 numGroups], 1, values);
-			if nargin < 5
+			if nargin < 6
 				labels = idx;
 			end
 		else
-			idx = kmeans(values, numGroups);
-			if nargin < 5
+			idx = clusterFunc(values, numGroups);
+			if nargin < 6
 				labels = randi([1 numGroups], 1, length(values));
 			end
 		end
