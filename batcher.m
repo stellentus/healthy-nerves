@@ -13,51 +13,18 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	values = [canValues; japValues; porValues];
 
 	% Calculate and print measures of batching
-	cri = [];
-	normMutual = [];
-	criNoCan = [];
-	normMutualNoCan = [];
-	criNoJap = [];
-	normMutualNoJap = [];
-	criNoPor = [];
-	normMutualNoPor = [];
-	randCri = [];
-	randNormMutual = [];
-	batchCri = [];
-	batchNormMutual = [];
-	legCri = [];
-	legNormMutual = [];
-	for i=1:30
-		[c, n] = calculateBatchResults(labels, kmeans(values, 3));
-		cri = [cri c];
-		normMutual = [normMutual n];
+	iters = 30;
+	rng('shuffle');
+	scurr = rng(); % Ensure all start with the same seed
 
-		[c, n] = calculateBatchResults([ones(japNum, 1); ones(porNum, 1) * 2], kmeans([japValues; porValues], 2));
-		criNoCan = [criNoCan c];
-		normMutualNoCan = [normMutualNoCan n];
+	[cri, normMutual] = calculateBatchResults(iters, scurr.Seed, 3, values, labels);
+	[criNoCan, normMutualNoCan] = calculateBatchResults(iters, scurr.Seed, 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2]);
+	[criNoJap, normMutualNoJap] = calculateBatchResults(iters, scurr.Seed, 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2]);
+	[criNoPor, normMutualNoPor] = calculateBatchResults(iters, scurr.Seed, 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2]);
 
-		[c, n] = calculateBatchResults([ones(canNum, 1); ones(porNum, 1) * 2], kmeans([canValues; porValues], 2));
-		criNoJap = [criNoJap c];
-		normMutualNoJap = [normMutualNoJap n];
-
-		[c, n] = calculateBatchResults([ones(canNum, 1); ones(japNum, 1) * 2], kmeans([canValues; japValues], 2));
-		criNoPor = [criNoPor c];
-		normMutualNoPor = [normMutualNoPor n];
-
-		randLabels = randi([1 3], 1, length(labels));
-
-		[c, n] = calculateBatchResults(randLabels, kmeans(values, 3));
-		randCri = [randCri c];
-		randNormMutual = [randNormMutual n];
-
-		[c, n] = calculateBatchResults(randLabels, randLabels);
-		batchCri = [batchCri c];
-		batchNormMutual = [batchNormMutual n];
-
-		[c, n] = calculateBatchResults([ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], kmeans([legValues; japValues; porValues], 3));
-		legCri = [legCri c];
-		legNormMutual = [legNormMutual n];
-	end
+	[randCri, randNormMutual] = calculateBatchResults(iters, scurr.Seed, 3, values);
+	[batchCri, batchNormMutual] = calculateBatchResults(iters, scurr.Seed, 3, length(labels)); % Instead of passing any data at all, request both arrays to be identical random indices.
+	[legCri, legNormMutual] = calculateBatchResults(iters, scurr.Seed, 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)]);
 
 	printBatchResults(cri, normMutual, 'k-means');
 	printBatchResults(criNoCan, normMutualNoCan, 'k-means (No Canada)');
@@ -68,13 +35,36 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	printBatchResults(legCri, legNormMutual, 'k-means (Canadian legs)');
 end
 
-function [cri, norm_mutual] = calculateBatchResults(labels, idx)
-	% Calculate corrected rand index; 0 indicates no batch effects while 1 is perfect batches.
-	cri = rand_index(labels, idx, 'adjusted');
+% calculateBatchResults will repeatedly calculate batch results with
+function [cri, norm_mutual] = calculateBatchResults(iters, seed, numGroups, values, labels)
+	cri = [];
+	norm_mutual = [];
+	rng(seed); % Ensure all start with the same seed
 
-	% Calculate the normalized mutual information; 0 indicates to batch effects while (I think) 1 is perfect batches.
+	% If there's only one value that means 'values' is instead an integer length of random indices.
+	randomIndices = (numel(values) == 1);
+
 	addpath info_entropy;
-	norm_mutual = nmi(labels, idx);
+	for i=1:iters
+		% Create the clustered groups
+		if randomIndices
+			idx = randi([1 numGroups], 1, values);
+			if nargin < 5
+				labels = idx;
+			end
+		else
+			idx = kmeans(values, numGroups);
+			if nargin < 5
+				labels = randi([1 numGroups], 1, length(values));
+			end
+		end
+
+		% Calculate and append corrected rand index; 0 indicates no batch effects while 1 is perfect batches.
+		cri = [cri rand_index(labels, idx, 'adjusted')];
+
+		% Calculate and append the normalized mutual information; 0 indicates to batch effects while (I think) 1 is perfect batches.
+		norm_mutual = [norm_mutual nmi(labels, idx)];
+	end
 	rmpath info_entropy;
 end
 
