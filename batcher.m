@@ -1,9 +1,6 @@
 %% batcher detects batch effects.
 function [canValues, legValues, japValues, porValues, measures, cri, normMutual] = batcher()
-	nanMethod = 'IterateRegr';
-	addpath import;
-	[canValues, canParticipants, japValues, japParticipants, porValues, porParticipants, measures, legValues, legParticipants] = importDatasets('data/', nanMethod);
-	rmpath import;
+	load('bin/batch-normative.mat');
 
 	% Get and print count of each group and age range
 	canNum = printStats(canValues, 'Canada');
