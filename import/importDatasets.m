@@ -1,20 +1,27 @@
 % importDatasets multiple datasets and confirms they can be concatenated.
-function [canValues, canParticipants, legValues, legParticipants, japValues, japParticipants, porValues, porParticipants, measures] = importDatasets(pathPrefix, nanMethod)
+function [canValues, canParticipants, japValues, japParticipants, porValues, porParticipants, measures, legValues, legParticipants] = importDatasets(pathPrefix, nanMethod)
 	if nargin < 2
 		nanMethod = 'IterateRegr';
+		if nargin < 1
+			pathPrefix = 'data/';
+		end
 	end
-	if nargin < 1
-		pathPrefix = 'data/';
-	end
+
+	% Don't load and calculate legs if not used
+	includeLegs = (nargout > 7);
 
 	% Load the data
 	[canValues, canParticipants, canMeasures] = mefimport(strcat(pathPrefix, 'human/MedianRepeatedMeasures.xlsx'), false, false, canonicalNamesNoTE20()); % TODO this could use all median, not just repeated
-	[legValues, legParticipants, legMeasures] = mefimport(strcat(pathPrefix, 'human/CPrepeatedmeasures.xlsx'), false, false, canonicalNamesNoTE20()); % TODO this could use all CP, not just repeated
+	if includeLegs
+		[legValues, legParticipants, legMeasures] = mefimport(strcat(pathPrefix, 'human/CPrepeatedmeasures.xlsx'), false, false, canonicalNamesNoTE20()); % TODO this could use all CP, not just repeated
+	end
 	[japValues, japParticipants, japMeasures] = importAllXLSX('none', strcat(pathPrefix, 'Japan'));
 	[porValues, porParticipants, porMeasures] = importAllXLSX('none', strcat(pathPrefix, 'Portugal'));
 
 	% Ensure all datasets have the desired measures
-	assert(isequal(canMeasures, legMeasures), 'Canadian arm and leg measures are not the same');
+	if includeLegs
+		assert(isequal(canMeasures, legMeasures), 'Canadian arm and leg measures are not the same');
+	end
 	assert(isequal(canMeasures, japMeasures), 'Canadian and Japanese measures are not the same');
 	assert(isequal(canMeasures, porMeasures), 'Canadian and Portuguese measures are not the same');
 	measures = canMeasures;
@@ -25,14 +32,18 @@ function [canValues, canParticipants, legValues, legParticipants, japValues, jap
 
 	% Delete people who have no sex
 	[canValues, canParticipants] = deleteNoSex(canValues, canParticipants);
-	[legValues, legParticipants] = deleteNoSex(legValues, legParticipants);
+	if includeLegs
+		[legValues, legParticipants] = deleteNoSex(legValues, legParticipants);
+	end
 	[japValues, japParticipants] = deleteNoSex(japValues, japParticipants);
 	[porValues, porParticipants] = deleteNoSex(porValues, porParticipants);
 
 	% Fill missing data
 	addpath missing;
 	canValues = fillWithMethod(canValues, nanMethod, true);
-	legValues = fillWithMethod(legValues, nanMethod, true);
+	if includeLegs
+		legValues = fillWithMethod(legValues, nanMethod, true);
+	end
 	japValues = fillWithMethod(japValues, nanMethod, true);
 	porValues = fillWithMethod(porValues, nanMethod, true);
 	rmpath missing;

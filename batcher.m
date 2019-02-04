@@ -2,7 +2,7 @@
 function [canValues, legValues, japValues, porValues, measures, cri, normMutual] = batcher()
 	nanMethod = 'IterateRegr';
 	addpath import;
-	[canValues, canParticipants, legValues, legParticipants, japValues, japParticipants, porValues, porParticipants, measures] = importDatasets('data/', nanMethod);
+	[canValues, canParticipants, japValues, japParticipants, porValues, porParticipants, measures, legValues, legParticipants] = importDatasets('data/', nanMethod);
 	rmpath import;
 
 	save('bin/batch-normative.mat', 'canValues', 'canParticipants', 'japValues', 'japParticipants', 'porValues', 'porParticipants', 'measures', 'nanMethod')
