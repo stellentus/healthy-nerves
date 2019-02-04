@@ -5,8 +5,6 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	[canValues, canParticipants, japValues, japParticipants, porValues, porParticipants, measures, legValues, legParticipants] = importDatasets('data/', nanMethod);
 	rmpath import;
 
-	save('bin/batch-normative.mat', 'canValues', 'canParticipants', 'japValues', 'japParticipants', 'porValues', 'porParticipants', 'measures', 'nanMethod')
-
 	% Get and print count of each group and age range
 	canNum = printStats(canValues, 'Canada');
 	japNum = printStats(japValues, 'Japan');

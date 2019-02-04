@@ -47,6 +47,8 @@ function [canValues, canParticipants, japValues, japParticipants, porValues, por
 	japValues = fillWithMethod(japValues, nanMethod, true);
 	porValues = fillWithMethod(porValues, nanMethod, true);
 	rmpath missing;
+
+	save('bin/batch-normative.mat', 'canValues', 'canParticipants', 'japValues', 'japParticipants', 'porValues', 'porParticipants', 'measures', 'nanMethod')
 end
 
 function [flatVals, flatParts] = flattenStructs(structVals, structParts)
