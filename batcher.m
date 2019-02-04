@@ -17,22 +17,13 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	rng('shuffle');
 	scurr = rng(); % Ensure all start with the same seed
 
-	[cri, normMutual] = calculateBatchResults(iters, scurr.Seed, 3, values, labels);
-	[criNoCan, normMutualNoCan] = calculateBatchResults(iters, scurr.Seed, 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2]);
-	[criNoJap, normMutualNoJap] = calculateBatchResults(iters, scurr.Seed, 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2]);
-	[criNoPor, normMutualNoPor] = calculateBatchResults(iters, scurr.Seed, 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2]);
-
-	[randCri, randNormMutual] = calculateBatchResults(iters, scurr.Seed, 3, values);
-	[batchCri, batchNormMutual] = calculateBatchResults(iters, scurr.Seed, 3, length(labels)); % Instead of passing any data at all, request both arrays to be identical random indices.
-	[legCri, legNormMutual] = calculateBatchResults(iters, scurr.Seed, 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)]);
-
-	printBatchResults(cri, normMutual, 'k-means');
-	printBatchResults(criNoCan, normMutualNoCan, 'k-means (No Canada)');
-	printBatchResults(criNoJap, normMutualNoJap, 'k-means (No Japan)');
-	printBatchResults(criNoPor, normMutualNoPor, 'k-means (No Portugal)');
-	printBatchResults(randCri, randNormMutual, 'k-means (random)');
-	printBatchResults(batchCri, batchNormMutual, 'batched');
-	printBatchResults(legCri, legNormMutual, 'k-means (Canadian legs)');
+	printBatchResults('k-means', iters, scurr.Seed, 3, values, labels);
+	printBatchResults('k-means (No Canada)', iters, scurr.Seed, 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2]);
+	printBatchResults('k-means (No Japan)', iters, scurr.Seed, 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2]);
+	printBatchResults('k-means (No Portugal)', iters, scurr.Seed, 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2]);
+	printBatchResults('k-means (random)', iters, scurr.Seed, 3, values);
+	printBatchResults('batched', iters, scurr.Seed, 3, length(labels)); % Instead of passing any data at all, request both arrays to be identical random indices.
+	printBatchResults('k-means (Canadian legs)', iters, scurr.Seed, 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)]);
 end
 
 % calculateBatchResults will repeatedly calculate batch results with
@@ -68,7 +59,9 @@ function [cri, norm_mutual] = calculateBatchResults(iters, seed, numGroups, valu
 	rmpath info_entropy;
 end
 
-function [] = printBatchResults(cri, normMutual, str)
+function [] = printBatchResults(str, varargin)
+	[cri, normMutual] = calculateBatchResults(varargin{:});
+
 	% char(177) is the plus/minus symbol
 	fprintf('The adjusted rand index for %s is %.4f%c%.4f.\n', str, mean(cri), char(177), std(cri));
 	fprintf('The normalized mutual information for %s is %.4f%c%.4f.\n', str, mean(normMutual), char(177), std(normMutual));
