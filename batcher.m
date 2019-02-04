@@ -18,19 +18,19 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	scurr = rng(); % Ensure all start with the same seed
 
 	% Test the normative data
-	printBatchResults('k-means', iters, scurr.Seed, @kmeans, 3, values, labels);
+	printBatchResults('the normative data', iters, scurr.Seed, @kmeans, 3, values, labels);
 
 	% Remove each type to see how things change
-	printBatchResults('k-means (No Canada)', iters, scurr.Seed, @kmeans, 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2]);
-	printBatchResults('k-means (No Japan)', iters, scurr.Seed, @kmeans, 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2]);
-	printBatchResults('k-means (No Portugal)', iters, scurr.Seed, @kmeans, 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2]);
+	printBatchResults('no Canada', iters, scurr.Seed, @kmeans, 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2]);
+	printBatchResults('no Japan', iters, scurr.Seed, @kmeans, 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2]);
+	printBatchResults('no Portugal', iters, scurr.Seed, @kmeans, 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2]);
 
 	% Confirm that random and perfectly batched data work as expected
-	printBatchResults('k-means (random)', iters, scurr.Seed, @kmeans, 3, values);
-	printBatchResults('batched', iters, scurr.Seed, @kmeans, 3, length(labels)); % Instead of passing any data at all, request both arrays to be identical random indices.
+	printBatchResults('random labels', iters, scurr.Seed, @kmeans, 3, values);
+	printBatchResults('batched data', iters, scurr.Seed, @kmeans, 3, length(labels)); % Instead of passing any data at all, request both arrays to be identical random indices.
 
 	% Show larger batches with CP instead of median
-	printBatchResults('k-means (Canadian legs)', iters, scurr.Seed, @kmeans, 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)]);
+	printBatchResults('Canadian legs', iters, scurr.Seed, @kmeans, 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)]);
 end
 
 % calculateBatchResults will repeatedly calculate batch results with
