@@ -5,7 +5,7 @@ function [pth] = pathFor(dataType)
 			pth = 'data/human/CPrepeatedmeasures.xlsx';
 
 		case 'arm'
-			pth = 'data/human/MedianRepeatedmeasures.xlsx';
+			pth = 'data/human/MedianRepeatedMeasures.xlsx';
 
 		case 'legSCI'
 			% Previously we used SCI_CP.xlsx
