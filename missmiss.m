@@ -181,7 +181,9 @@ function plotBoxes(verrs, cerrs, algNames)
 
 	addpath lib/CategoricalScatterplot
 
-	figure('DefaultAxesFontSize', 18);
+	pathstr = sprintf('img/%d-%d-%d-%d%d%2.0f', clock);
+
+	valfig = figure('DefaultAxesFontSize', 18);
 	ax = gca;
 	ax.YColor = greenColor;
 	ax.XColor = greenColor;
@@ -190,8 +192,10 @@ function plotBoxes(verrs, cerrs, algNames)
 	title('Error in Filled Data', 'Color', greenColor);
 	% xlabel('Method', 'Color', greenColor);
 	ylabel('Error', 'Color', greenColor);
+	savefig(valfig, strcat(pathstr, ' Value.fig', 'compact'));
+	saveas(valfig, strcat(pathstr, ' Value.png'));
 
-	figure('DefaultAxesFontSize', 18);
+	covfig = figure('DefaultAxesFontSize', 18);
 	ax = gca;
 	ax.YColor = greenColor;
 	ax.XColor = greenColor;
@@ -200,6 +204,8 @@ function plotBoxes(verrs, cerrs, algNames)
 	title('Error in Covariance', 'Color', greenColor);
 	% xlabel('Method', 'Color', greenColor);
 	ylabel('Error', 'Color', greenColor);
+	savefig(covfig, strcat(pathstr, ' Covariance.fig', 'compact'));
+	saveas(covfig, strcat(pathstr, ' Covariance.png'));
 
 	rmpath lib/CategoricalScatterplot
 end
