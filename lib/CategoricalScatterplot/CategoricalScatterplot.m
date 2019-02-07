@@ -48,8 +48,8 @@ function [] = CategoricalScatterplot(X, varargin)
 p = inputParser;
 % Main arguments
 addRequired(p, 'X', @(X) ismatrix(X));
-% addOptional(p, 'Group', [], @(X) ismatrix(X) || iscellstr(X) || ischar(X));
-Group = [];
+addOptional(p, 'Group', [], @(X) ismatrix(X) || iscellstr(X) || ischar(X));
+% Group = [];
 Color = [0.03529411764705882353, 0.38039215686274509804, 0.2];
 addOptional(p, 'Labels', false, @(X) iscellstr(X));
 
@@ -84,7 +84,7 @@ addParameter(p, 'WhiskerLineWidth', 1.0, @(x) isnumeric(x));
 % Parse inputs and unpack structure
 parse(p, X, varargin{:});
 parsed = p.Results;
-% Group = parsed.Group;
+Group = parsed.Group;
 parsed.Color = Color;
 
 if (size(X,2) == 1) || (size(X,1) == 1)
