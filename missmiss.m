@@ -10,7 +10,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 		fixedSeed = false;
 	end
 	if nargin < 2
-		parallelize = false;
+		parallelize = true;
 	end
 	if nargin < 1
 		iters = 1;
