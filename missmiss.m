@@ -1,13 +1,16 @@
 % missmiss loads missing data and does stuff with it
-function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot, includeCheats)
-	if nargin < 4
+function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed, displayPlot, includeCheats)
+	if nargin < 5
 		includeCheats = false;
 	end
-	if nargin < 3
+	if nargin < 4
 		displayPlot = true;
 	end
-	if nargin < 2
+	if nargin < 3
 		fixedSeed = false;
+	end
+	if nargin < 2
+		parallelize = false;
 	end
 	if nargin < 1
 		iters = 1;
@@ -45,10 +48,18 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot,
 	cerrs = [[]];
 	verrs = zeros(iters, length(algs));
 	cerrs = zeros(iters, length(algs));
-	for i = 1:iters
-		rng(seed+i*31);
-		fprintf('Iter %d of %d...', i, iters);
-		[verrs(i, :), cerrs(i, :)] = testFuncs(algs, X, covr, includeCheats);
+	if parallelize
+		disp('Running parallel iterations...')
+		parfor i = 1:iters
+			rng(seed+i*31);
+			[verrs(i, :), cerrs(i, :)] = testFuncs(algs, X, covr, includeCheats, parallelize);
+		end
+	else
+		for i = 1:iters
+			rng(seed+i*31);
+			fprintf('Iter %d of %d...', i, iters);
+			[verrs(i, :), cerrs(i, :)] = testFuncs(algs, X, covr, includeCheats, parallelize);
+		end
 	end
 	fprintf('\n');
 
@@ -99,8 +110,8 @@ function [X] = loadMEF()
 	% TEd40 = [armTEd40'; legTEd40']; % Currently unused
 end
 
-function [verr, cerr] = testFuncs(algs, X, originalCov, includeCheats)
-	fprintf('Load...');
+function [verr, cerr] = testFuncs(algs, X, originalCov, includeCheats, parallelize)
+	parallelPrint('Load...', parallelize);
 	[missingX, completeX, ~, originalMissingX, missingMask] = deleteProportional(X);
 
 	verr = [];
@@ -108,29 +119,29 @@ function [verr, cerr] = testFuncs(algs, X, originalCov, includeCheats)
 
 	seed = randi(2^32-1); % Generate a new seed randomly, but save it
 
-	fprintf('Run ');
+	parallelPrint('Run ', parallelize);
 	for i = 1:length(algs)
-		[ve, ce] = testFunc(algs(i), seed, originalCov, missingX, completeX, originalMissingX, missingMask);
+		[ve, ce] = testFunc(algs(i), seed, originalCov, missingX, completeX, originalMissingX, missingMask, parallelize);
 
 		verr = [verr ve];
 		cerr = [cerr ce];
 	end
-	fprintf('\n');
+	parallelPrint('\n', parallelize);
 
 	if includeCheats
-		fprintf('\tCheat with ');
+		parallelPrint('\tCheat with ', parallelize);
 		for i = 1:length(algs)
-			[ve, ce] = testFunc(algs(i), seed, originalCov, originalMissingX, completeX, originalMissingX, missingMask);
+			[ve, ce] = testFunc(algs(i), seed, originalCov, originalMissingX, completeX, originalMissingX, missingMask, parallelize);
 
 			verr = [verr ve];
 			cerr = [cerr ce];
 		end
-		fprintf('\n');
+		parallelPrint('\n', parallelize);
 	end
 end
 
-function [ve, ce, filledX] = testFunc(alg, seed, originalCov, missingX, completeX, originalMissingX, missingMask)
-	fprintf('%s...', alg.name);
+function [ve, ce, filledX] = testFunc(alg, seed, originalCov, missingX, completeX, originalMissingX, missingMask, parallelize)
+	parallelPrint(strcat(alg.name, '...'), parallelize);
 	rng(seed); % Seed each algorithm with the exact same random numbers
 
 	switch nargout(alg.func)
@@ -211,4 +222,12 @@ function plotBoxes(verrs, cerrs, algNames)
 	saveas(covfig, strcat(pathstr, ' Covariance.png'));
 
 	rmpath lib/CategoricalScatterplot
+end
+
+function parallelPrint(str, parallelize)
+	if ~parallelize
+		fprintf(str);
+	else
+		fprintf('.')
+	end
 end
