@@ -13,7 +13,12 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot,
 		iters = 1;
 	end
 
-	rng('shuffle'); % Make sure it's been reset in case a previous run set it.
+	if fixedSeed
+		seed = 7738;
+	else
+		s = rng('shuffle');
+		seed = s.Seed;
+	end
 
 	X = loadMEF();
 
@@ -38,14 +43,12 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, fixedSeed, displayPlot,
 	% Calculate errors
 	verrs = [[]];
 	cerrs = [[]];
+	verrs = zeros(iters, length(algs));
+	cerrs = zeros(iters, length(algs));
 	for i = 1:iters
-		if fixedSeed
-			rng(i*31+11); % Make sure each run is the same
-		end
+		rng(seed+i*31);
 		fprintf('Iter %d of %d...', i, iters);
-		[verr, cerr] = testFuncs(algs, X, covr, includeCheats);
-		verrs = [verrs; verr];
-		cerrs = [cerrs; cerr];
+		[verrs(i, :), cerrs(i, :)] = testFuncs(algs, X, covr, includeCheats);
 	end
 	fprintf('\n');
 
