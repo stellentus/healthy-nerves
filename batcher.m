@@ -46,7 +46,8 @@ function [cri, norm_mutual] = calculateBatchResults(iters, seed, clusterFunc, nu
 	% If there's only one value that means 'values' is instead an integer length of random indices.
 	randomIndices = (numel(values) == 1);
 
-	addpath info_entropy;
+	addpath lib/rand_index;
+	addpath lib/info_entropy;
 	for i=1:iters
 		% Create the clustered groups
 		if randomIndices
@@ -67,7 +68,8 @@ function [cri, norm_mutual] = calculateBatchResults(iters, seed, clusterFunc, nu
 		% Calculate and append the normalized mutual information; 0 indicates to batch effects while (I think) 1 is perfect batches.
 		norm_mutual = [norm_mutual nmi(labels, idx)];
 	end
-	rmpath info_entropy;
+	rmpath lib/rand_index;
+	rmpath lib/info_entropy;
 end
 
 function [] = printBatchResults(str, varargin)

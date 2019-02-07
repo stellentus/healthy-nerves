@@ -179,7 +179,7 @@ function plotBoxes(verrs, cerrs, algNames)
 	redColor = [1 0.1490196078431372549 0];
 	yellowColor = [0.98039215686274509804 0.8509803921568627451 0.25882352941176470588];
 
-	addpath util/CategoricalScatterplot
+	addpath lib/CategoricalScatterplot
 
 	figure('DefaultAxesFontSize', 18);
 	ax = gca;
@@ -201,5 +201,5 @@ function plotBoxes(verrs, cerrs, algNames)
 	% xlabel('Method', 'Color', greenColor);
 	ylabel('Error', 'Color', greenColor);
 
-	rmpath util/CategoricalScatterplot
+	rmpath lib/CategoricalScatterplot
 end
