@@ -7,6 +7,7 @@ function [brs] = batcher()
 	japNum = printStats(japValues, 'Japan');
 	porNum = printStats(porValues, 'Portugal');
 	legNum = printStats(legValues, 'Legs');
+	disp(" "); % Newline
 
 	% Create a combined vector for labels (with all datasets) and one for values
 	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
