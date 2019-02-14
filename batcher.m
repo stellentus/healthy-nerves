@@ -35,9 +35,13 @@ function [brs] = batcher()
 	% Show larger batches with CP instead of median
 	brs = getBatchResults(brs, "Canadian legs", iters, scurr.Seed, @kmeans, 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)]);
 
-	% Look at batches when RC is shifted logarithmically in time
-	brs = getBatchResults(brs, "All shifted RC", iters, scurr.Seed, @kmeans, 3, shiftRC(values), labels);
-	brs = getBatchResults(brs, "Canada shifted RC", iters, scurr.Seed, @kmeans, 3, [shiftRC(canValues); japValues; porValues], labels);
+	% Look at batches when RC is shifted logarithmically in time.
+	% Conclusion: Shifting everything right causes an increase in both measures, while shifting left causes a decrease. This may be due to the increase in magnitudes. (Perhaps this means RC is actually different between groups, but it only becomes dominant as RC values get larger relative to others. If so, I should scale all measures to have unit variance.)
+	% However, even though shifting everything causes an unexpected change, it's not significant, while the increase when only shifting Canada is significant.
+	brs = getBatchResults(brs, "All shifted right RC", iters, scurr.Seed, @kmeans, 3, shiftRightRC(values), labels);
+	brs = getBatchResults(brs, "Canada shifted right RC", iters, scurr.Seed, @kmeans, 3, [shiftRightRC(canValues); japValues; porValues], labels);
+	brs = getBatchResults(brs, "All shifted left RC", iters, scurr.Seed, @kmeans, 3, shiftLeftRC(values), labels);
+	brs = getBatchResults(brs, "Canada shifted left RC", iters, scurr.Seed, @kmeans, 3, [shiftLeftRC(canValues); japValues; porValues], labels);
 
 	printBatchResults(brs);
 end
@@ -117,7 +121,7 @@ function [dedupVals, dedupParts] = deduplicate(vals, parts)
 	dedupVals = vals(sort(indices), :);
 end
 
-function [shiftedValues] = shiftRC(vals)
+function [shiftedValues] = shiftRightRC(vals)
 	shiftedValues = vals;
 	shiftedValues(:, 9) = shiftedValues(:, 9) * 1.2;  % Shift RRP right by 20%
 	shiftedValues(:, 26) = shiftedValues(:, 26) * 1.3;  % Shift Ref@2.5 right by increasing value by 30%.
@@ -125,4 +129,14 @@ function [shiftedValues] = shiftRC(vals)
 	shiftedValues(:, 29) = shiftedValues(:, 29) * 1.4;  % Shift Ref@2.0 right by increasing value by 40%
 	shiftedValues(:, 30) = shiftedValues(:, 31);  % Shift Super@7 to equal the Super@5 value
 	shiftedValues(:, 30) = shiftedValues(:, 30) * 0.9;  % Shifting here will usually just result in a smaller value. Swapping 5 and 7 would probably have a similar effect.
+end
+
+function [shiftedValues] = shiftLeftRC(vals)
+	shiftedValues = vals;
+	shiftedValues(:, 9) = shiftedValues(:, 9) * .8;  % Shift RRP left by 20%
+	shiftedValues(:, 26) = shiftedValues(:, 26) * .7;  % Shift Ref@2.5 left by decreasing value by 30%.
+	shiftedValues(shiftedValues(:, 26)<0, 26) = 0;  % However, this might be <0, so set those to 0.
+	shiftedValues(:, 29) = shiftedValues(:, 29) * .6;  % Shift Ref@2.0 left by decreasing value by 40%
+	shiftedValues(:, 31) = shiftedValues(:, 30);  % Shift Super@5 to equal the Super@7 value
+	shiftedValues(:, 31) = shiftedValues(:, 31) * 1.1;  % Shifting here will usually just result in a larger value. Swapping 5 and 7 would probably have a similar effect.
 end
