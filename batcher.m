@@ -12,6 +12,13 @@ function [brs] = batcher()
 	% Create a combined vector for labels (with all datasets) and one for values
 	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
 	values = [canValues; japValues; porValues];
+	groupMean = mean(values);
+	groupStd = std(values);
+	values = zeroMeanUnitVar(values, groupMean, groupStd);
+	canValues = zeroMeanUnitVar(canValues, groupMean, groupStd);
+	japValues = zeroMeanUnitVar(japValues, groupMean, groupStd);
+	porValues = zeroMeanUnitVar(porValues, groupMean, groupStd);
+	legValues = zeroMeanUnitVar(legValues, groupMean, groupStd);
 
 	% Calculate and print measures of batching
 	iters = 30;
@@ -44,6 +51,11 @@ function [brs] = batcher()
 	brs = getBatchResults(brs, "Canada shifted left RC", iters, scurr.Seed, @kmeans, 3, [shiftLeftRC(canValues); japValues; porValues], labels);
 
 	printBatchResults(brs);
+end
+
+function [val] = zeroMeanUnitVar(val, mns, stds)
+	val = val - mns;
+	val = bsxfun(@rdivide, val, stds);
 end
 
 % calculateBatchResults will repeatedly calculate batch results with
