@@ -1,5 +1,5 @@
 %% batcher detects batch effects.
-function [canValues, legValues, japValues, porValues, measures, cri, normMutual] = batcher()
+function [brs] = batcher()
 	load('bin/batch-normative.mat');
 
 	% Get and print count of each group and age range
@@ -17,24 +17,28 @@ function [canValues, legValues, japValues, porValues, measures, cri, normMutual]
 	rng('shuffle');
 	scurr = rng(); % Ensure all start with the same seed
 
+	brs = [];
+
 	% Test the normative data
-	printBatchResults('the normative data', iters, scurr.Seed, @kmeans, 3, values, labels);
+	brs = [brs getBatchResults('the normative data', iters, scurr.Seed, @kmeans, 3, values, labels)];
 
 	% Remove each type to see how things change
-	% printBatchResults('no Canada', iters, scurr.Seed, @kmeans, 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2]);
-	% printBatchResults('no Japan', iters, scurr.Seed, @kmeans, 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2]);
-	% printBatchResults('no Portugal', iters, scurr.Seed, @kmeans, 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2]);
+	% brs = [brs getBatchResults('no Canada', iters, scurr.Seed, @kmeans, 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2])];
+	% brs = [brs getBatchResults('no Japan', iters, scurr.Seed, @kmeans, 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2])];
+	% brs = [brs getBatchResults('no Portugal', iters, scurr.Seed, @kmeans, 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2])];
 
 	% Confirm that random and perfectly batched data work as expected
-	% printBatchResults('random labels', iters, scurr.Seed, @kmeans, 3, values);
-	% printBatchResults('batched data', iters, scurr.Seed, @kmeans, 3, length(labels)); % Instead of passing any data at all, request both arrays to be identical random indices.
+	% brs = [brs getBatchResults('random labels', iters, scurr.Seed, @kmeans, 3, values)];
+	% brs = [brs getBatchResults('batched data', iters, scurr.Seed, @kmeans, 3, length(labels)); % Instead of passing any data at all, request both arrays to be identical random indices].
 
 	% Show larger batches with CP instead of median
-	printBatchResults('Canadian legs', iters, scurr.Seed, @kmeans, 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)]);
+	brs = [brs getBatchResults('Canadian legs', iters, scurr.Seed, @kmeans, 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)])];
 
 	% Look at batches when RC is shifted logarithmically in time
-	printBatchResults('all shifted RC', iters, scurr.Seed, @kmeans, 3, shiftValues(values), labels);
-	printBatchResults('Canada shifted RC', iters, scurr.Seed, @kmeans, 3, [shiftValues(canValues); japValues; porValues], labels);
+	brs = [brs getBatchResults('all shifted RC', iters, scurr.Seed, @kmeans, 3, shiftRC(values), labels)];
+	brs = [brs getBatchResults('Canada shifted RC', iters, scurr.Seed, @kmeans, 3, [shiftRC(canValues); japValues; porValues], labels)];
+
+	printBatchResults(brs);
 end
 
 % calculateBatchResults will repeatedly calculate batch results with
@@ -72,12 +76,20 @@ function [cri, norm_mutual] = calculateBatchResults(iters, seed, clusterFunc, nu
 	rmpath lib/info_entropy;
 end
 
-function [] = printBatchResults(str, varargin)
+function [br] = getBatchResults(str, varargin)
 	[cri, normMutual] = calculateBatchResults(varargin{:});
+	br.str = str;
+	br.cri_mean = mean(cri);
+	br.cri_std= std(cri);
+	br.nmi_mean = mean(normMutual);
+	br.nmi_std= std(normMutual);
+end
 
-	% char(177) is the plus/minus symbol
-	fprintf('The adjusted rand index for %s is %.4f%c%.4f.\n', str, mean(cri), char(177), std(cri));
-	fprintf('The normalized mutual information for %s is %.4f%c%.4f.\n', str, mean(normMutual), char(177), std(normMutual));
+function printBatchResults(brs)
+	for br = brs
+		fprintf('The adjusted rand index for %s is %.4f (%.4f).\n', br.str, br.cri_mean, br.cri_mean);
+		fprintf('The normalized mutual information for %s is %.4f (%.4f).\n', br.str, br.nmi_mean, br.nmi_std);
+	end
 end
 
 function [num] = printStats(vals, str)
@@ -102,7 +114,7 @@ function [dedupVals, dedupParts] = deduplicate(vals, parts)
 	dedupVals = vals(sort(indices), :);
 end
 
-function [shiftedValues] = shiftValues(vals)
+function [shiftedValues] = shiftRC(vals)
 	shiftedValues = vals;
 	shiftedValues(:, 9) = shiftedValues(:, 9) * 1.2;  % Shift RRP right by 20%
 	shiftedValues(:, 26) = shiftedValues(:, 26) * 1.3;  % Shift Ref@2.5 right by increasing value by 30%.
