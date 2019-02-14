@@ -17,26 +17,26 @@ function [brs] = batcher()
 	rng('shuffle');
 	scurr = rng(); % Ensure all start with the same seed
 
-	brs = [];
+	brs = struct('str', [], 'cri_mean', [], 'cri_std', [], 'nmi_mean', [], 'nmi_std', []);
 
 	% Test the normative data
-	brs = [brs getBatchResults('the normative data', iters, scurr.Seed, @kmeans, 3, values, labels)];
+	brs = getBatchResults(brs, "Normative data", iters, scurr.Seed, @kmeans, 3, values, labels);
 
 	% Remove each type to see how things change
-	% brs = [brs getBatchResults('no Canada', iters, scurr.Seed, @kmeans, 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2])];
-	% brs = [brs getBatchResults('no Japan', iters, scurr.Seed, @kmeans, 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2])];
-	% brs = [brs getBatchResults('no Portugal', iters, scurr.Seed, @kmeans, 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2])];
+	% brs = getBatchResults(brs, "No Canada", iters, scurr.Seed, @kmeans, 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2]);
+	% brs = getBatchResults(brs, "No Japan", iters, scurr.Seed, @kmeans, 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2]);
+	% brs = getBatchResults(brs, "No Portugal", iters, scurr.Seed, @kmeans, 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2]);
 
 	% Confirm that random and perfectly batched data work as expected
-	% brs = [brs getBatchResults('random labels', iters, scurr.Seed, @kmeans, 3, values)];
-	% brs = [brs getBatchResults('batched data', iters, scurr.Seed, @kmeans, 3, length(labels)); % Instead of passing any data at all, request both arrays to be identical random indices].
+	% brs = getBatchResults(brs, "Random labels", iters, scurr.Seed, @kmeans, 3, values);
+	% brs = getBatchResults(brs, "Batched data", iters, scurr.Seed, @kmeans, 3, length(labels)); % Instead of passing any data at all, request both arrays to be identical random indices.
 
 	% Show larger batches with CP instead of median
-	brs = [brs getBatchResults('Canadian legs', iters, scurr.Seed, @kmeans, 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)])];
+	brs = getBatchResults(brs, "Canadian legs", iters, scurr.Seed, @kmeans, 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)]);
 
 	% Look at batches when RC is shifted logarithmically in time
-	brs = [brs getBatchResults('all shifted RC', iters, scurr.Seed, @kmeans, 3, shiftRC(values), labels)];
-	brs = [brs getBatchResults('Canada shifted RC', iters, scurr.Seed, @kmeans, 3, [shiftRC(canValues); japValues; porValues], labels)];
+	brs = getBatchResults(brs, "All shifted RC", iters, scurr.Seed, @kmeans, 3, shiftRC(values), labels);
+	brs = getBatchResults(brs, "Canada shifted RC", iters, scurr.Seed, @kmeans, 3, [shiftRC(canValues); japValues; porValues], labels);
 
 	printBatchResults(brs);
 end
@@ -76,19 +76,21 @@ function [cri, norm_mutual] = calculateBatchResults(iters, seed, clusterFunc, nu
 	rmpath lib/info_entropy;
 end
 
-function [br] = getBatchResults(str, varargin)
+function [brs] = getBatchResults(brs, str, varargin)
 	[cri, normMutual] = calculateBatchResults(varargin{:});
-	br.str = str;
-	br.cri_mean = mean(cri);
-	br.cri_std= std(cri);
-	br.nmi_mean = mean(normMutual);
-	br.nmi_std= std(normMutual);
+	brs.str = [brs.str, str];
+	brs.cri_mean = [brs.cri_mean, mean(cri)];
+	brs.cri_std = [brs.cri_std, std(cri)];
+	brs.nmi_mean = [brs.nmi_mean, mean(normMutual)];
+	brs.nmi_std = [brs.nmi_std, std(normMutual)];
 end
 
 function printBatchResults(brs)
-	for br = brs
-		fprintf('The adjusted rand index for %s is %.4f (%.4f).\n', br.str, br.cri_mean, br.cri_mean);
-		fprintf('The normalized mutual information for %s is %.4f (%.4f).\n', br.str, br.nmi_mean, br.nmi_std);
+	strs = pad(brs.str);
+	fprintf('%s | CRI (std)     | NMI (std)     \n', pad("Name", strlength(strs(1))));
+	fprintf('%s | ------------- | ------------- \n', strrep(pad(" ", strlength(strs(1))), " ", "-"));
+	for i=1:length(strs)
+		fprintf('%s | %.3f (%.3f) | %.3f (%.3f) \n', strs(i), brs.cri_mean(i), brs.cri_std(i), brs.nmi_mean(i), brs.nmi_std(i));
 	end
 end
 
