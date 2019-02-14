@@ -46,10 +46,14 @@ function [brs] = batcher()
 	% Look at batches when RC is shifted logarithmically in time.
 	% Conclusion without normalization: Shifting everything right causes an increase in both measures, while shifting left causes a decrease. This may be due to the increase in magnitudes. (Perhaps this means RC is actually different between groups, but it only becomes dominant as RC values get larger relative to others. If so, I should scale all measures to have unit variance.) However, even though shifting everything causes an unexpected change, it's not significant, while the increase when only shifting Canada is significant.
 	% Conclusion with normalization: shifting to the right causes an increase, but not to the left. The change only appears in the Canada shift, as expected.
-	brs = getBatchResults(brs, "All shifted right RC", iters, scurr.Seed, @kmeans, 3, zeroMeanUnitVar(shiftRightRC(values), groupMean, groupStd), labels);
-	brs = getBatchResults(brs, "Canada shifted right RC", iters, scurr.Seed, @kmeans, 3, [zeroMeanUnitVar(shiftRightRC(canValues), groupMean, groupStd); japShifted; porShifted], labels);
-	brs = getBatchResults(brs, "All shifted left RC", iters, scurr.Seed, @kmeans, 3, zeroMeanUnitVar(shiftLeftRC(values), groupMean, groupStd), labels);
-	brs = getBatchResults(brs, "Canada shifted left RC", iters, scurr.Seed, @kmeans, 3, [zeroMeanUnitVar(shiftLeftRC(canValues), groupMean, groupStd); japShifted; porShifted], labels);
+	% brs = getBatchResults(brs, "All shifted right RC", iters, scurr.Seed, @kmeans, 3, zeroMeanUnitVar(shiftRightRC(values), groupMean, groupStd), labels);
+	% brs = getBatchResults(brs, "Canada shifted right RC", iters, scurr.Seed, @kmeans, 3, [zeroMeanUnitVar(shiftRightRC(canValues), groupMean, groupStd); japShifted; porShifted], labels);
+	% brs = getBatchResults(brs, "All shifted left RC", iters, scurr.Seed, @kmeans, 3, zeroMeanUnitVar(shiftLeftRC(values), groupMean, groupStd), labels);
+	% brs = getBatchResults(brs, "Canada shifted left RC", iters, scurr.Seed, @kmeans, 3, [zeroMeanUnitVar(shiftLeftRC(canValues), groupMean, groupStd); japShifted; porShifted], labels);
+
+	% Conclusion: All shrunk has a bit of an impact, strangely, but shrinking just Canada has a HUGE impact on clustering the Canadian data.
+	% brs = getBatchResults(brs, "All shrunk RC", iters, scurr.Seed, @kmeans, 3, zeroMeanUnitVar(shrinkRC(values), groupMean, groupStd), labels);
+	% brs = getBatchResults(brs, "Canada shrunk RC", iters, scurr.Seed, @kmeans, 3, [zeroMeanUnitVar(shrinkRC(canValues), groupMean, groupStd); japShifted; porShifted], labels);
 
 	printBatchResults(brs);
 end
@@ -152,4 +156,13 @@ function [shiftedValues] = shiftLeftRC(vals)
 	shiftedValues(:, 29) = shiftedValues(:, 29) * .6;  % Shift Ref@2.0 left by decreasing value by 40%
 	shiftedValues(:, 31) = shiftedValues(:, 30);  % Shift Super@5 to equal the Super@7 value
 	shiftedValues(:, 31) = shiftedValues(:, 31) * 1.1;  % Shifting here will usually just result in a larger value. Swapping 5 and 7 would probably have a similar effect.
+end
+
+function [shiftedValues] = shrinkRC(vals)
+	shiftedValues = vals;
+	shiftedValues(:, 9) = shiftedValues(:, 9) * .1;
+	shiftedValues(:, 26) = shiftedValues(:, 26) * .1;
+	shiftedValues(:, 29) = shiftedValues(:, 29) * .1;
+	shiftedValues(:, 30) = shiftedValues(:, 30) * .1;
+	shiftedValues(:, 31) = shiftedValues(:, 31) * .1;
 end
