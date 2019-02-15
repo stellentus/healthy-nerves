@@ -106,10 +106,10 @@ end
 
 function printBatchResults(brs)
 	strs = pad(brs.str);
-	fprintf('%s | CRI (std)     | NMI (std)     \n', pad("Name", strlength(strs(1))));
-	fprintf('%s | ------------- | ------------- \n', strrep(pad(" ", strlength(strs(1))), " ", "-"));
+	fprintf('%s |  CRI (std)     |  NMI (std)     \n', pad("Name", strlength(strs(1))));
+	fprintf('%s | -------------- | -------------- \n', strrep(pad(" ", strlength(strs(1))), " ", "-"));
 	for i=1:length(strs)
-		fprintf('%s | %.3f (%.3f) | %.3f (%.3f) \n', strs(i), brs.cri_mean(i), brs.cri_std(i), brs.nmi_mean(i), brs.nmi_std(i));
+		fprintf('%s | % .3f (%.3f) | % .3f (%.3f) \n', strs(i), brs.cri_mean(i), brs.cri_std(i), brs.nmi_mean(i), brs.nmi_std(i));
 	end
 end
 
