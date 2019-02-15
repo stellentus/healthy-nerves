@@ -19,91 +19,52 @@ function [brs] = batcher()
 	scurr = rng(); % Ensure all start with the same seed
 	scurr.Seed = 7738;
 
-	brs = struct('str', [], 'cri_mean', [], 'cri_std', [], 'nmi_mean', [], 'nmi_std', []);
-
+	bas = [];
 	% Test the normative data
-	brs = getBatchResults(brs, "Normative data", iters, scurr.Seed, @kmeans, 3, values, labels);
+	bas = [bas BatchAnalyzer("Normative data", iters, 3, values, labels)];
 
 	% Remove each type to see how things change
 	% Conclusion with normalization: There isn't a batch between J and P, there might be one between C and P, and there's definitely one between C and J. But in all cases it's small.
-	brs = getBatchResults(brs, "No Canada", iters, scurr.Seed, @kmeans, 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2]);
-	brs = getBatchResults(brs, "No Japan", iters, scurr.Seed, @kmeans, 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2]);
-	brs = getBatchResults(brs, "No Portugal", iters, scurr.Seed, @kmeans, 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2]);
+	bas = [bas BatchAnalyzer("No Canada", iters, 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2])];
+	bas = [bas BatchAnalyzer("No Japan", iters, 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2])];
+	bas = [bas BatchAnalyzer("No Portugal", iters, 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2])];
 
 	% Confirm that random and perfectly batched data work as expected
-	brs = getBatchResults(brs, "Random labels", iters, scurr.Seed, @kmeans, 3, values);
-	% brs = getBatchResults(brs, "Batched data", iters, scurr.Seed, @kmeans, 3, length(labels)); % Instead of passing any data at all, request both arrays to be identical random indices.
+	bas = [bas BatchAnalyzer("Random labels", iters, 3, values)];
+	% bas = [bas BatchAnalyzer("Batched data", iters, 3, length(labels)); % Instead of passing any data at all, request both arrays to be identical random indices].
 
 	% Show larger batches with CP instead of median
-	brs = getBatchResults(brs, "Canadian legs", iters, scurr.Seed, @kmeans, 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)]);
+	bas = [bas BatchAnalyzer("Canadian legs", iters, 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)])];
 
 	% Look at batches when RC is shifted logarithmically in time.
 	% Conclusion without normalization: Shifting everything right causes an increase in both measures, while shifting left causes a decrease. This may be due to the increase in magnitudes. (Perhaps this means RC is actually different between groups, but it only becomes dominant as RC values get larger relative to others. If so, I should scale all measures to have unit variance.) However, even though shifting everything causes an unexpected change, it's not significant, while the increase when only shifting Canada is significant.
 	% Conclusion with normalization: shifting to the right causes an increase, but not to the left. The change only appears in the Canada shift, as expected.
-	brs = getBatchResults(brs, "All shifted right RC", iters, scurr.Seed, @kmeans, 3, shiftRightRC(values), labels);
-	brs = getBatchResults(brs, "Canada shifted right RC", iters, scurr.Seed, @kmeans, 3, [shiftRightRC(canValues); japValues; porValues], labels);
-	brs = getBatchResults(brs, "All shifted left RC", iters, scurr.Seed, @kmeans, 3, shiftLeftRC(values), labels);
-	brs = getBatchResults(brs, "Canada shifted left RC", iters, scurr.Seed, @kmeans, 3, [shiftLeftRC(canValues); japValues; porValues], labels);
+	bas = [bas BatchAnalyzer("All shifted right RC", iters, 3, shiftRightRC(values), labels)];
+	bas = [bas BatchAnalyzer("Canada shifted right RC", iters, 3, [shiftRightRC(canValues); japValues; porValues], labels)];
+	bas = [bas BatchAnalyzer("All shifted left RC", iters, 3, shiftLeftRC(values), labels)];
+	bas = [bas BatchAnalyzer("Canada shifted left RC", iters, 3, [shiftLeftRC(canValues); japValues; porValues], labels)];
 
 	% Conclusion: All shrunk has no impact because it's all changed to unit variance, but shrinking just Canada has a HUGE impact on clustering the Canadian data.
-	% brs = getBatchResults(brs, "All shrunk RC", iters, scurr.Seed, @kmeans, 3, shrinkRC(values), labels);
-	brs = getBatchResults(brs, "Canada shrunk RC", iters, scurr.Seed, @kmeans, 3, [shrinkRC(canValues); japValues; porValues], labels);
+	% bas = [bas BatchAnalyzer("All shrunk RC", iters, 3, shrinkRC(values), labels)];
+	bas = [bas BatchAnalyzer("Canada shrunk RC", iters, 3, [shrinkRC(canValues); japValues; porValues], labels)];
 
 	% Conclusion: All reduced/increased has no impact because it's all changed to unit variance, but shrinking just Canada decreases the ARI/NMI (while increasing increases), suggesting the Canadian data has more variance than the others.
-	% brs = getBatchResults(brs, "All reduced variance", iters, scurr.Seed, @kmeans, 3, scaleVariance(values, 2.0), labels);
-	brs = getBatchResults(brs, "Canada reduced variance", iters, scurr.Seed, @kmeans, 3, [scaleVariance(canValues, 2.0); japValues; porValues], labels);
-	% brs = getBatchResults(brs, "All increased variance", iters, scurr.Seed, @kmeans, 3, scaleVariance(values, .5), labels);
-	brs = getBatchResults(brs, "Canada increased variance", iters, scurr.Seed, @kmeans, 3, [scaleVariance(canValues, .5); japValues; porValues], labels);
+	% bas = [bas BatchAnalyzer("All reduced variance", iters, 3, scaleVariance(values, 2.0), labels)];
+	bas = [bas BatchAnalyzer("Canada reduced variance", iters, 3, [scaleVariance(canValues, 2.0); japValues; porValues], labels)];
+	% bas = [bas BatchAnalyzer("All increased variance", iters, 3, scaleVariance(values, .5), labels)];
+	bas = [bas BatchAnalyzer("Canada increased variance", iters, 3, [scaleVariance(canValues, .5); japValues; porValues], labels)];
+
+	brs = struct('str', [], 'cri_mean', [], 'cri_std', [], 'nmi_mean', [], 'nmi_std', []);
+	for ba = bas
+		brs = getBatchResults(brs, ba);
+	end
 
 	printBatchResults(brs);
 end
 
-function [val] = zeroMeanUnitVar(val, mns, stds)
-	val = val - mns;
-	val = bsxfun(@rdivide, val, stds);
-end
-
-% calculateBatchResults will repeatedly calculate batch results with
-function [cri, norm_mutual] = calculateBatchResults(iters, seed, clusterFunc, numGroups, values, labels)
-	cri = [];
-	norm_mutual = [];
-	rng(seed); % Ensure all start with the same seed
-
-	% If there's only one value that means 'values' is instead an integer length of random indices.
-	randomIndices = (numel(values) == 1);
-	if ~randomIndices
-		values = zeroMeanUnitVar(values, mean(values), std(values));
-	end
-
-	addpath lib/rand_index;
-	addpath lib/info_entropy;
-	for i=1:iters
-		% Create the clustered groups
-		if randomIndices
-			idx = randi([1 numGroups], 1, values);
-			if nargin < 6
-				labels = idx;
-			end
-		else
-			idx = clusterFunc(values, numGroups);
-			if nargin < 6
-				labels = randi([1 numGroups], 1, length(values));
-			end
-		end
-
-		% Calculate and append corrected rand index; 0 indicates no batch effects while 1 is perfect batches.
-		cri = [cri rand_index(labels, idx, 'adjusted')];
-
-		% Calculate and append the normalized mutual information; 0 indicates to batch effects while (I think) 1 is perfect batches.
-		norm_mutual = [norm_mutual nmi(labels, idx)];
-	end
-	rmpath lib/rand_index;
-	rmpath lib/info_entropy;
-end
-
-function [brs] = getBatchResults(brs, str, varargin)
-	[cri, normMutual] = calculateBatchResults(varargin{:});
-	brs.str = [brs.str, str];
+function [brs] = getBatchResults(brs, ba)
+	[cri, normMutual] = calculateBatch(ba);
+	brs.str = [brs.str, ba.Name];
 	brs.cri_mean = [brs.cri_mean, mean(cri)];
 	brs.cri_std = [brs.cri_std, std(cri)];
 	brs.nmi_mean = [brs.nmi_mean, mean(normMutual)];
