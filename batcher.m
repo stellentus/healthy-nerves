@@ -49,9 +49,11 @@ function [brs] = batcher()
 	brs = getBatchResults(brs, "All shrunk RC", iters, scurr.Seed, @kmeans, 3, shrinkRC(values), labels);
 	brs = getBatchResults(brs, "Canada shrunk RC", iters, scurr.Seed, @kmeans, 3, [shrinkRC(canValues); japValues; porValues], labels);
 
-	% Conclusion: All reduced has no impact because it's all changed to unit variance, but shrinking just Canada decreases the values, suggesting the Canadian data has more variance than the others.
+	% Conclusion: All reduced/increased has no impact because it's all changed to unit variance, but shrinking just Canada decreases the ARI/NMI (while increasing increases), suggesting the Canadian data has more variance than the others.
 	brs = getBatchResults(brs, "All reduced variance", iters, scurr.Seed, @kmeans, 3, scaleVariance(values, 2.0), labels);
 	brs = getBatchResults(brs, "Canada reduced variance", iters, scurr.Seed, @kmeans, 3, [scaleVariance(canValues, 2.0); japValues; porValues], labels);
+	brs = getBatchResults(brs, "All increased variance", iters, scurr.Seed, @kmeans, 3, scaleVariance(values, .5), labels);
+	brs = getBatchResults(brs, "Canada increased variance", iters, scurr.Seed, @kmeans, 3, [scaleVariance(canValues, .5); japValues; porValues], labels);
 
 	printBatchResults(brs);
 end
