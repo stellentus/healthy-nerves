@@ -24,6 +24,7 @@ function [brs] = batcher()
 	iters = 30;
 	rng('shuffle');
 	scurr = rng(); % Ensure all start with the same seed
+	scurr.Seed = 7738;
 
 	brs = struct('str', [], 'cri_mean', [], 'cri_std', [], 'nmi_mean', [], 'nmi_std', []);
 
