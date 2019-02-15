@@ -172,10 +172,5 @@ end
 
 function [vals] = scaleVariance(vals, stdScale)
 	mns = mean(vals);
-	stds = std(vals);
-	vals = vals - mns;
-	vals = bsxfun(@rdivide, vals, stds);
-	% Do things
-	vals = bsxfun(@times, vals, stdScale*stds);
-	vals = vals + mns;
+	vals = bsxfun(@times, vals - mns, stdScale) + mns;
 end
