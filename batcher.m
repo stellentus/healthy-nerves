@@ -49,6 +49,10 @@ function [brs] = batcher()
 	brs = getBatchResults(brs, "All shrunk RC", iters, scurr.Seed, @kmeans, 3, shrinkRC(values), labels);
 	brs = getBatchResults(brs, "Canada shrunk RC", iters, scurr.Seed, @kmeans, 3, [shrinkRC(canValues); japValues; porValues], labels);
 
+	% Conclusion: All reduced has no impact because it's all changed to unit variance, but shrinking just Canada decreases the values, suggesting the Canadian data has more variance than the others.
+	brs = getBatchResults(brs, "All reduced variance", iters, scurr.Seed, @kmeans, 3, scaleVariance(values, 2.0), labels);
+	brs = getBatchResults(brs, "Canada reduced variance", iters, scurr.Seed, @kmeans, 3, [scaleVariance(canValues, 2.0); japValues; porValues], labels);
+
 	printBatchResults(brs);
 end
 
@@ -162,4 +166,14 @@ function [shiftedValues] = shrinkRC(vals)
 	shiftedValues(:, 29) = shiftedValues(:, 29) * .1;
 	shiftedValues(:, 30) = shiftedValues(:, 30) * .1;
 	shiftedValues(:, 31) = shiftedValues(:, 31) * .1;
+end
+
+function [vals] = scaleVariance(vals, stdScale)
+	mns = mean(vals);
+	stds = std(vals);
+	vals = vals - mns;
+	vals = bsxfun(@rdivide, vals, stds);
+	% Do things
+	vals = bsxfun(@times, vals, stdScale*stds);
+	vals = vals + mns;
 end
