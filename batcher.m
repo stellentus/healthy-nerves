@@ -32,7 +32,7 @@ function [brs] = batcher()
 
 	% Confirm that random and perfectly batched data work as expected
 	brs = getBatchResults(brs, "Random labels", iters, scurr.Seed, @kmeans, 3, values);
-	brs = getBatchResults(brs, "Batched data", iters, scurr.Seed, @kmeans, 3, length(labels)); % Instead of passing any data at all, request both arrays to be identical random indices.
+	% brs = getBatchResults(brs, "Batched data", iters, scurr.Seed, @kmeans, 3, length(labels)); % Instead of passing any data at all, request both arrays to be identical random indices.
 
 	% Show larger batches with CP instead of median
 	brs = getBatchResults(brs, "Canadian legs", iters, scurr.Seed, @kmeans, 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)]);
@@ -46,13 +46,13 @@ function [brs] = batcher()
 	brs = getBatchResults(brs, "Canada shifted left RC", iters, scurr.Seed, @kmeans, 3, [shiftLeftRC(canValues); japValues; porValues], labels);
 
 	% Conclusion: All shrunk has no impact because it's all changed to unit variance, but shrinking just Canada has a HUGE impact on clustering the Canadian data.
-	brs = getBatchResults(brs, "All shrunk RC", iters, scurr.Seed, @kmeans, 3, shrinkRC(values), labels);
+	% brs = getBatchResults(brs, "All shrunk RC", iters, scurr.Seed, @kmeans, 3, shrinkRC(values), labels);
 	brs = getBatchResults(brs, "Canada shrunk RC", iters, scurr.Seed, @kmeans, 3, [shrinkRC(canValues); japValues; porValues], labels);
 
 	% Conclusion: All reduced/increased has no impact because it's all changed to unit variance, but shrinking just Canada decreases the ARI/NMI (while increasing increases), suggesting the Canadian data has more variance than the others.
-	brs = getBatchResults(brs, "All reduced variance", iters, scurr.Seed, @kmeans, 3, scaleVariance(values, 2.0), labels);
+	% brs = getBatchResults(brs, "All reduced variance", iters, scurr.Seed, @kmeans, 3, scaleVariance(values, 2.0), labels);
 	brs = getBatchResults(brs, "Canada reduced variance", iters, scurr.Seed, @kmeans, 3, [scaleVariance(canValues, 2.0); japValues; porValues], labels);
-	brs = getBatchResults(brs, "All increased variance", iters, scurr.Seed, @kmeans, 3, scaleVariance(values, .5), labels);
+	% brs = getBatchResults(brs, "All increased variance", iters, scurr.Seed, @kmeans, 3, scaleVariance(values, .5), labels);
 	brs = getBatchResults(brs, "Canada increased variance", iters, scurr.Seed, @kmeans, 3, [scaleVariance(canValues, .5); japValues; porValues], labels);
 
 	printBatchResults(brs);
