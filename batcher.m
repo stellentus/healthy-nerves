@@ -45,7 +45,7 @@ function [brs] = batcher()
 	brs = getBatchResults(brs, "All shifted left RC", iters, scurr.Seed, @kmeans, 3, shiftLeftRC(values), labels);
 	brs = getBatchResults(brs, "Canada shifted left RC", iters, scurr.Seed, @kmeans, 3, [shiftLeftRC(canValues); japValues; porValues], labels);
 
-	% Conclusion: All shrunk has a bit of an impact, strangely, but shrinking just Canada has a HUGE impact on clustering the Canadian data.
+	% Conclusion: All shrunk has no impact because it's all changed to unit variance, but shrinking just Canada has a HUGE impact on clustering the Canadian data.
 	brs = getBatchResults(brs, "All shrunk RC", iters, scurr.Seed, @kmeans, 3, shrinkRC(values), labels);
 	brs = getBatchResults(brs, "Canada shrunk RC", iters, scurr.Seed, @kmeans, 3, [shrinkRC(canValues); japValues; porValues], labels);
 
