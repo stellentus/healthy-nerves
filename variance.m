@@ -39,16 +39,16 @@ function displayMeasure(index, measures, comb, can, jap, por)
 	vals(1:size(jap, 1), 3) = jap(:, index);
 	vals(1:size(por, 1), 4) = por(:, index);
 
-	addpath lib;
+	addpath lib/CategoricalScatterplot;
 
 	pathstr = sprintf('img/norm-var-idx%02d-%d-%d-%d-%d%d%2.0f', index, clock);
 
 	fig = figure('DefaultAxesFontSize', 18);
-	violin(vals, 'xlabel', {'All', 'Canada', 'Japan', 'Portugal'});
+	CategoricalScatterplot(vals, [{'All'} {'Canada'} {'Japan'} {'Portugal'}]);
 	title(['Comparison of' measures(index)]);
 	savefig(fig, strcat(pathstr, '.fig', 'compact'));
 	saveas(fig, strcat(pathstr, '.png'));
 	saveas(fig, sprintf('img/variance-%02d.png',index)); % No timestamp so it's possible to keep the same image open
 
-	rmpath lib;
+	rmpath lib/CategoricalScatterplot;
 end
