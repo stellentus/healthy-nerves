@@ -37,11 +37,11 @@ function [brs] = batcher()
 		% Look at batches when RC is shifted logarithmically in time.
 		% Conclusion without normalization: Shifting everything right causes an increase in both measures, while shifting left causes a decrease. This may be due to the increase in magnitudes. (Perhaps this means RC is actually different between groups, but it only becomes dominant as RC values get larger relative to others. If so, I should scale all measures to have unit variance.) However, even though shifting everything causes an unexpected change, it's not significant, while the increase when only shifting Can is significant.
 		% Conclusion with normalization: shifting to the right causes an increase, but not to the left. The change only appears in the Can shift, as expected.
-		BatchAnalyzer("All shifted right RC", iters, 3, shiftRightRC(values), labels);
+		% BatchAnalyzer("All shifted right RC", iters, 3, shiftRightRC(values), labels);
 		BatchAnalyzer("Can shifted right RC", iters, 3, [shiftRightRC(canValues); japValues; porValues], labels);
 		BatchAnalyzer("Jap shifted right RC", iters, 3, [canValues; shiftRightRC(japValues); porValues], labels);
 		BatchAnalyzer("Por shifted right RC", iters, 3, [canValues; japValues; shiftRightRC(porValues)], labels);
-		BatchAnalyzer("All shifted left RC", iters, 3, shiftLeftRC(values), labels);
+		% BatchAnalyzer("All shifted left RC", iters, 3, shiftLeftRC(values), labels);
 		BatchAnalyzer("Can shifted left RC", iters, 3, [shiftLeftRC(canValues); japValues; porValues], labels);
 		BatchAnalyzer("Jap shifted left RC", iters, 3, [canValues; shiftLeftRC(japValues); porValues], labels);
 		BatchAnalyzer("Por shifted left RC", iters, 3, [canValues; japValues; shiftLeftRC(porValues)], labels);
