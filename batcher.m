@@ -138,11 +138,11 @@ end
 
 function [shiftedValues] = shrinkRC(vals)
 	shiftedValues = vals;
-	shiftedValues(:, 9) = shiftedValues(:, 9) * .1;
-	shiftedValues(:, 26) = shiftedValues(:, 26) * .1;
-	shiftedValues(:, 29) = shiftedValues(:, 29) * .1;
-	shiftedValues(:, 30) = shiftedValues(:, 30) * .1;
-	shiftedValues(:, 31) = shiftedValues(:, 31) * .1;
+	shiftedValues(:, 9) = shiftedValues(:, 9) * .5;
+	shiftedValues(:, 26) = shiftedValues(:, 26) * .5;
+	shiftedValues(:, 29) = shiftedValues(:, 29) * .5;
+	shiftedValues(:, 30) = shiftedValues(:, 30) * .5;
+	shiftedValues(:, 31) = shiftedValues(:, 31) * .5;
 end
 
 function [vals] = scaleVariance(vals, stdScale)
