@@ -1,4 +1,4 @@
-classdef BatchAnalyzer
+classdef BatchAnalyzer < handle
 	properties
 		Name
 		Iters
@@ -9,6 +9,8 @@ classdef BatchAnalyzer
 		RandomIndices
 		Labels
 		FixedLabels
+		CRI
+		NMI
 	end
 	methods
 		function obj = BatchAnalyzer(name, iters, numGroups, values, labels)
@@ -31,10 +33,11 @@ classdef BatchAnalyzer
 
 			obj.ClusterFunc = @kmeans;
 			obj.Seed = 7738;
+
+			obj.CRI = [];
+			obj.NMI = [];
 		end
-		function [cri, norm_mutual] =  calculateBatch(obj)
-			cri = [];
-			norm_mutual = [];
+		function calculateBatch(obj)
 			rng(obj.Seed); % Ensure all start with the same seed
 
 			addpath lib/rand_index;
@@ -54,10 +57,10 @@ classdef BatchAnalyzer
 				end
 
 				% Calculate and append corrected rand index; 0 indicates no batch effects while 1 is perfect batches.
-				cri = [cri rand_index(obj.Labels, idx, 'adjusted')];
+				obj.CRI = [obj.CRI rand_index(obj.Labels, idx, 'adjusted')];
 
 				% Calculate and append the normalized mutual information; 0 indicates to batch effects while (I think) 1 is perfect batches.
-				norm_mutual = [norm_mutual nmi(obj.Labels, idx)];
+				obj.NMI = [obj.NMI nmi(obj.Labels, idx)];
 			end
 			rmpath lib/rand_index;
 			rmpath lib/info_entropy;

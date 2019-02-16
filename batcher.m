@@ -54,21 +54,19 @@ function [brs] = batcher()
 	% bas = [bas BatchAnalyzer("All increased variance", iters, 3, scaleVariance(values, .5), labels)];
 	bas = [bas BatchAnalyzer("Canada increased variance", iters, 3, [scaleVariance(canValues, .5); japValues; porValues], labels)];
 
-	brs = struct('str', [], 'cri_mean', [], 'cri_std', [], 'nmi_mean', [], 'nmi_std', []);
-	for ba = bas
-		brs = getBatchResults(brs, ba);
+	num = length(bas);
+	brs = struct('str', strings(1,num), 'cri_mean', zeros(1,num), 'cri_std', zeros(1,num), 'nmi_mean', zeros(1,num), 'nmi_std', zeros(1,num));
+	for i = 1:num
+		ba = bas(i);
+		calculateBatch(ba);
+		brs.str(i) = ba.Name;
+		brs.cri_mean(i) = mean(ba.CRI);
+		brs.cri_std(i) = std(ba.CRI);
+		brs.nmi_mean(i) = mean(ba.NMI);
+		brs.nmi_std(i) = std(ba.NMI);
 	end
 
 	printBatchResults(brs);
-end
-
-function [brs] = getBatchResults(brs, ba)
-	[cri, normMutual] = calculateBatch(ba);
-	brs.str = [brs.str, ba.Name];
-	brs.cri_mean = [brs.cri_mean, mean(cri)];
-	brs.cri_std = [brs.cri_std, std(cri)];
-	brs.nmi_mean = [brs.nmi_mean, mean(normMutual)];
-	brs.nmi_std = [brs.nmi_std, std(normMutual)];
 end
 
 function printBatchResults(brs)
