@@ -23,9 +23,9 @@ function [brs] = batcher()
 
 		% Remove each type to see how things change
 		% Conclusion with normalization: There isn't a batch between J and P, there might be one between C and P, and there's definitely one between C and J. But in all cases it's small.
-		BatchAnalyzer("No Canada", iters, 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2]);
-		BatchAnalyzer("No Japan", iters, 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2]);
-		BatchAnalyzer("No Portugal", iters, 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2]);
+		BatchAnalyzer("No Can", iters, 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2]);
+		BatchAnalyzer("No Jap", iters, 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2]);
+		BatchAnalyzer("No Por", iters, 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2]);
 
 		% Confirm that random and perfectly batched data work as expected
 		BatchAnalyzer("Random labels", iters, 3, values);
@@ -35,22 +35,32 @@ function [brs] = batcher()
 		BatchAnalyzer("Canadian legs", iters, 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)]);
 
 		% Look at batches when RC is shifted logarithmically in time.
-		% Conclusion without normalization: Shifting everything right causes an increase in both measures, while shifting left causes a decrease. This may be due to the increase in magnitudes. (Perhaps this means RC is actually different between groups, but it only becomes dominant as RC values get larger relative to others. If so, I should scale all measures to have unit variance.) However, even though shifting everything causes an unexpected change, it's not significant, while the increase when only shifting Canada is significant.
-		% Conclusion with normalization: shifting to the right causes an increase, but not to the left. The change only appears in the Canada shift, as expected.
+		% Conclusion without normalization: Shifting everything right causes an increase in both measures, while shifting left causes a decrease. This may be due to the increase in magnitudes. (Perhaps this means RC is actually different between groups, but it only becomes dominant as RC values get larger relative to others. If so, I should scale all measures to have unit variance.) However, even though shifting everything causes an unexpected change, it's not significant, while the increase when only shifting Can is significant.
+		% Conclusion with normalization: shifting to the right causes an increase, but not to the left. The change only appears in the Can shift, as expected.
 		BatchAnalyzer("All shifted right RC", iters, 3, shiftRightRC(values), labels);
-		BatchAnalyzer("Canada shifted right RC", iters, 3, [shiftRightRC(canValues); japValues; porValues], labels);
+		BatchAnalyzer("Can shifted right RC", iters, 3, [shiftRightRC(canValues); japValues; porValues], labels);
+		BatchAnalyzer("Jap shifted right RC", iters, 3, [canValues; shiftRightRC(japValues); porValues], labels);
+		BatchAnalyzer("Por shifted right RC", iters, 3, [canValues; japValues; shiftRightRC(porValues)], labels);
 		BatchAnalyzer("All shifted left RC", iters, 3, shiftLeftRC(values), labels);
-		BatchAnalyzer("Canada shifted left RC", iters, 3, [shiftLeftRC(canValues); japValues; porValues], labels);
+		BatchAnalyzer("Can shifted left RC", iters, 3, [shiftLeftRC(canValues); japValues; porValues], labels);
+		BatchAnalyzer("Jap shifted left RC", iters, 3, [canValues; shiftLeftRC(japValues); porValues], labels);
+		BatchAnalyzer("Por shifted left RC", iters, 3, [canValues; japValues; shiftLeftRC(porValues)], labels);
 
-		% Conclusion: All shrunk has no impact because it's all changed to unit variance, but shrinking just Canada has a HUGE impact on clustering the Canadian data.
+		% Conclusion: All shrunk has no impact because it's all changed to unit variance, but shrinking just Can has a HUGE impact on clustering the Canadian data.
 		% BatchAnalyzer("All shrunk RC", iters, 3, shrinkRC(values), labels);
-		BatchAnalyzer("Canada shrunk RC", iters, 3, [shrinkRC(canValues); japValues; porValues], labels);
+		BatchAnalyzer("Can shrunk RC", iters, 3, [shrinkRC(canValues); japValues; porValues], labels);
+		BatchAnalyzer("Jap shrunk RC", iters, 3, [canValues; shrinkRC(japValues); porValues], labels);
+		BatchAnalyzer("Por shrunk RC", iters, 3, [canValues; japValues; shrinkRC(porValues)], labels);
 
-		% Conclusion: All reduced/increased has no impact because it's all changed to unit variance, but shrinking just Canada decreases the ARI/NMI (while increasing increases), suggesting the Canadian data has more variance than the others.
+		% Conclusion: All reduced/increased has no impact because it's all changed to unit variance, but shrinking just Can decreases the ARI/NMI (while increasing increases), suggesting the Canadian data has more variance than the others.
 		% BatchAnalyzer("All reduced variance", iters, 3, scaleVariance(values, 2.0), labels);
-		BatchAnalyzer("Canada reduced variance", iters, 3, [scaleVariance(canValues, 2.0); japValues; porValues], labels);
+		BatchAnalyzer("Can reduced variance", iters, 3, [scaleVariance(canValues, 2.0); japValues; porValues], labels);
+		BatchAnalyzer("Jap reduced variance", iters, 3, [canValues; scaleVariance(japValues, 2.0); porValues], labels);
+		BatchAnalyzer("Por reduced variance", iters, 3, [canValues; japValues; scaleVariance(porValues, 2.0)], labels);
 		% BatchAnalyzer("All increased variance", iters, 3, scaleVariance(values, .5), labels);
-		BatchAnalyzer("Canada increased variance", iters, 3, [scaleVariance(canValues, .5); japValues; porValues], labels);
+		BatchAnalyzer("Can increased variance", iters, 3, [scaleVariance(canValues, .5); japValues; porValues], labels);
+		BatchAnalyzer("Jap increased variance", iters, 3, [canValues; scaleVariance(japValues, .5); porValues], labels);
+		BatchAnalyzer("Por increased variance", iters, 3, [canValues; japValues; scaleVariance(porValues, .5)], labels);
 	];
 
 	num = length(bas);
