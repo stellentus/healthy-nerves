@@ -13,13 +13,12 @@ function [brs] = batcher()
 	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
 	values = [canValues; japValues; porValues];
 
-	% Calculate and print measures of batching
 	iters = 30;
-	rng('shuffle');
-	scurr = rng(); % Ensure all start with the same seed
-	scurr.Seed = 7738;
+
+	addpath analyze;
 
 	bas = [];
+
 	% Test the normative data
 	bas = [bas BatchAnalyzer("Normative data", iters, 3, values, labels)];
 
@@ -70,6 +69,8 @@ function [brs] = batcher()
 		nmi_mean(i) = mean(ba.NMI);
 		nmi_std(i) = std(ba.NMI);
 	end
+
+	rmpath analyze;
 
 	printBatchResults(str, cri_mean, cri_std, nmi_mean, nmi_std);
 end
