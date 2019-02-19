@@ -9,18 +9,19 @@ function [brs] = batchVarSeeker()
 
 	addpath analyze;
 
-	bas = [BatchAnalyzer('Normative', iters, 3, [canValues; japValues; porValues], labels)];
+	ba = BatchAnalyzer('Normative', iters, 3, [canValues; japValues; porValues], labels);
+	bas = [ba];
 	for i = [1:length(measures)]
-		bas = [bas BatchAnalyzer(sprintf('Increase %s', measures(i)), iters, 3, [scaleVariance(canValues, 2.0, i); japValues; porValues], labels)];
-		bas = [bas BatchAnalyzer(sprintf('Decrease %s', measures(i)), iters, 3, [scaleVariance(canValues, 0.5, i); japValues; porValues], labels)];
+		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s', measures(i)), [scaleVariance(canValues, 0.5, i); japValues; porValues])];
+		bas = [bas BACopyWithValues(ba, sprintf('Increase %s', measures(i)), [scaleVariance(canValues, 2.0, i); japValues; porValues])];
 	end
 	for plt = ["SR" "IV" "QT" "TEd" "TEh" "Meta" "RC" "all"];
-		bas = [bas BatchAnalyzer(sprintf('Decrease %s', plt), iters, 3, [scaleVariance(canValues, 0.5, indicesForPlot(plt)); japValues; porValues], labels)];
-		bas = [bas BatchAnalyzer(sprintf('Increase %s', plt), iters, 3, [scaleVariance(canValues, 2.0, indicesForPlot(plt)); japValues; porValues], labels)];
+		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s', plt), [scaleVariance(canValues, 0.5, indicesForPlot(plt)); japValues; porValues])];
+		bas = [bas BACopyWithValues(ba, sprintf('Increase %s', plt), [scaleVariance(canValues, 2.0, indicesForPlot(plt)); japValues; porValues])];
 	end
 	for channel = ["Ci" "Cmy" "Gmy" "GKf" "GKfi" "GKir" "GKs" "GLk" "GLki" "PNa" "PNap" "vleak" "all"];
-		bas = [bas BatchAnalyzer(sprintf('Decrease %s', channel), iters, 3, [scaleVariance(canValues, 0.5, indicesForChannel(channel)); japValues; porValues], labels)];
-		bas = [bas BatchAnalyzer(sprintf('Increase %s', channel), iters, 3, [scaleVariance(canValues, 2.0, indicesForChannel(channel)); japValues; porValues], labels)];
+		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s', channel), [scaleVariance(canValues, 0.5, indicesForChannel(channel)); japValues; porValues])];
+		bas = [bas BACopyWithValues(ba, sprintf('Increase %s', channel), [scaleVariance(canValues, 2.0, indicesForChannel(channel)); japValues; porValues])];
 	end
 
 	num = length(bas);
