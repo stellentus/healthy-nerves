@@ -53,14 +53,14 @@ function [brs] = batcher()
 		BatchAnalyzer("Por shrunk RC", iters, 3, [canValues; japValues; shrinkRC(porValues)], labels);
 
 		% Conclusion: All reduced/increased has no impact because it's all changed to unit variance, but shrinking just Can decreases the ARI/NMI (while increasing increases), suggesting the Canadian data has more variance than the others.
-		% BatchAnalyzer("All reduced variance", iters, 3, scaleVariance(values, 2.0), labels);
-		BatchAnalyzer("Can reduced variance", iters, 3, [scaleVariance(canValues, 2.0); japValues; porValues], labels);
-		BatchAnalyzer("Jap reduced variance", iters, 3, [canValues; scaleVariance(japValues, 2.0); porValues], labels);
-		BatchAnalyzer("Por reduced variance", iters, 3, [canValues; japValues; scaleVariance(porValues, 2.0)], labels);
-		% BatchAnalyzer("All increased variance", iters, 3, scaleVariance(values, .5), labels);
-		BatchAnalyzer("Can increased variance", iters, 3, [scaleVariance(canValues, .5); japValues; porValues], labels);
-		BatchAnalyzer("Jap increased variance", iters, 3, [canValues; scaleVariance(japValues, .5); porValues], labels);
-		BatchAnalyzer("Por increased variance", iters, 3, [canValues; japValues; scaleVariance(porValues, .5)], labels);
+		% BatchAnalyzer("All increased variance", iters, 3, scaleVariance(values, 2.0), labels);
+		BatchAnalyzer("Can increased variance", iters, 3, [scaleVariance(canValues, 2.0); japValues; porValues], labels);
+		BatchAnalyzer("Jap increased variance", iters, 3, [canValues; scaleVariance(japValues, 2.0); porValues], labels);
+		BatchAnalyzer("Por increased variance", iters, 3, [canValues; japValues; scaleVariance(porValues, 2.0)], labels);
+		% BatchAnalyzer("All decreased variance", iters, 3, scaleVariance(values, .5), labels);
+		BatchAnalyzer("Can decreased variance", iters, 3, [scaleVariance(canValues, .5); japValues; porValues], labels);
+		BatchAnalyzer("Jap decreased variance", iters, 3, [canValues; scaleVariance(japValues, .5); porValues], labels);
+		BatchAnalyzer("Por decreased variance", iters, 3, [canValues; japValues; scaleVariance(porValues, .5)], labels);
 	];
 
 	num = length(bas);
@@ -140,6 +140,7 @@ function [shiftedValues] = shrinkRC(vals)
 end
 
 function [vals] = scaleVariance(vals, stdScale)
-	mns = mean(vals);
-	vals = bsxfun(@times, vals - mns, stdScale) + mns;
+	colInd = [1:31];
+	mns = mean(vals(:,colInd));
+	vals(:,colInd) = bsxfun(@times, vals(:,colInd) - mns, stdScale) + mns;
 end
