@@ -39,10 +39,10 @@ end
 
 function printBatchResults(str, cri_mean, cri_std, nmi_mean, nmi_std)
 	strs = pad(str);
-	fprintf('%s |  CRI (std)     |  NMI (std)     \n', pad("Name", strlength(strs(1))));
-	fprintf('%s | -------------- | -------------- \n', strrep(pad(" ", strlength(strs(1))), " ", "-"));
+	fprintf('%s ,  CRI , CRIstd  ,  NMI , NMIstd  \n', pad("Name", strlength(strs(1))));
+	fprintf('%s , -----,-------- , -----,-------- \n', strrep(pad(" ", strlength(strs(1))), " ", "-"));
 	for i=1:length(strs)
-		fprintf('%s | % .3f (%.3f) | % .3f (%.3f) \n', strs(i), cri_mean(i), cri_std(i), nmi_mean(i), nmi_std(i));
+		fprintf('%s , % .3f , %.3f , % .3f , %.3f \n', strs(i), cri_mean(i), cri_std(i), nmi_mean(i), nmi_std(i));
 	end
 end
 
