@@ -110,12 +110,6 @@ function [minAge, maxAge] = ageRange(vals)
 	maxAge = max(vals(:, 14));
 end
 
-function [dedupVals, dedupParts] = deduplicate(vals, parts)
-	[~, indices] = unique(parts, 'first');
-	dedupParts = parts(sort(indices));
-	dedupVals = vals(sort(indices), :);
-end
-
 function [shiftedValues] = shiftRightRC(vals)
 	shiftedValues = vals;
 	shiftedValues(:, 9) = shiftedValues(:, 9) * 1.2;  % Shift RRP right by 20%

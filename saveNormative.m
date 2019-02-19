@@ -65,3 +65,9 @@ function [vals, parts] = deleteNoSex(vals, parts)
 	vals = vals(hasSex, :);
 	parts = parts(hasSex);
 end
+
+function [dedupVals, dedupParts] = deduplicate(vals, parts)
+	[~, indices] = unique(parts, 'first');
+	dedupParts = parts(sort(indices));
+	dedupVals = vals(sort(indices), :);
+end
