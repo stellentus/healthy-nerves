@@ -2,8 +2,8 @@
 function [brs] = batchVarSeeker()
 	load('bin/batch-normative.mat');
 
-	% Create a combined vector for labels (with all datasets) and one for values
-	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
+	% Create a combined vector for labels (with all datasets)
+	labels = [ones(size(canValues, 1), 1); ones(size(japValues, 1), 1) * 2; repmat(3, size(porValues, 1), 1)];
 
 	iters = 30;
 
