@@ -31,6 +31,12 @@ function saveNormative(pathPrefix, nanMethod)
 	[japValues, japParticipants] = deleteNoSex(japValues, japParticipants);
 	[porValues, porParticipants] = deleteNoSex(porValues, porParticipants);
 
+	% Delete duplicate records
+	[canValues, canParticipants] = deduplicate(canValues, canParticipants);
+	[legValues, legParticipants] = deduplicate(legValues, legParticipants);
+	[japValues, japParticipants] = deduplicate(japValues, japParticipants);
+	[porValues, porParticipants] = deduplicate(porValues, porParticipants);
+
 	% Fill missing data
 	addpath missing;
 	canValues = fillWithMethod(canValues, nanMethod, true);
@@ -67,7 +73,11 @@ function [vals, parts] = deleteNoSex(vals, parts)
 end
 
 function [dedupVals, dedupParts] = deduplicate(vals, parts)
+	orig = length(parts);
 	[~, indices] = unique(parts, 'first');
 	dedupParts = parts(sort(indices));
 	dedupVals = vals(sort(indices), :);
+	if length(dedupParts) ~= orig
+		fprintf('Deleted %d duplicates', orig-length(dedupParts));
+	end
 end
