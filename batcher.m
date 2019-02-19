@@ -17,9 +17,10 @@ function [brs] = batcher()
 
 	addpath analyze;
 
+	ba = BatchAnalyzer("Normative data", iters, 3, values, labels);
 	bas = [
 		% Test the normative data
-		BatchAnalyzer("Normative data", iters, 3, values, labels);
+		ba;
 
 		% Remove each type to see how things change
 		% Conclusion with normalization: There isn't a batch between J and P, there might be one between C and P, and there's definitely one between C and J. But in all cases it's small.
@@ -37,30 +38,31 @@ function [brs] = batcher()
 		% Look at batches when RC is shifted logarithmically in time.
 		% Conclusion without normalization: Shifting everything right causes an increase in both measures, while shifting left causes a decrease. This may be due to the increase in magnitudes. (Perhaps this means RC is actually different between groups, but it only becomes dominant as RC values get larger relative to others. If so, I should scale all measures to have unit variance.) However, even though shifting everything causes an unexpected change, it's not significant, while the increase when only shifting Can is significant.
 		% Conclusion with normalization: shifting to the right causes an increase, but not to the left. The change only appears in the Can shift, as expected.
-		% BatchAnalyzer("All shifted right RC", iters, 3, shiftRightRC(values), labels);
-		BatchAnalyzer("Can shifted right RC", iters, 3, [shiftRightRC(canValues); japValues; porValues], labels);
-		BatchAnalyzer("Jap shifted right RC", iters, 3, [canValues; shiftRightRC(japValues); porValues], labels);
-		BatchAnalyzer("Por shifted right RC", iters, 3, [canValues; japValues; shiftRightRC(porValues)], labels);
-		% BatchAnalyzer("All shifted left RC", iters, 3, shiftLeftRC(values), labels);
-		BatchAnalyzer("Can shifted left RC", iters, 3, [shiftLeftRC(canValues); japValues; porValues], labels);
-		BatchAnalyzer("Jap shifted left RC", iters, 3, [canValues; shiftLeftRC(japValues); porValues], labels);
-		BatchAnalyzer("Por shifted left RC", iters, 3, [canValues; japValues; shiftLeftRC(porValues)], labels);
+		% BACopyWithValues(ba, "All shifted right RC", shiftRightRC(values));
+		BACopyWithValues(ba, "Can shifted right RC", [shiftRightRC(canValues); japValues; porValues]);
+		BACopyWithValues(ba, "Jap shifted right RC", [canValues; shiftRightRC(japValues); porValues]);
+		BACopyWithValues(ba, "Por shifted right RC", [canValues; japValues; shiftRightRC(porValues)]);
+		% BACopyWithValues(ba, "All shifted left RC", shiftLeftRC(values));
+		BACopyWithValues(ba, "Can shifted left RC", [shiftLeftRC(canValues); japValues; porValues]);
+		BACopyWithValues(ba, "Jap shifted left RC", [canValues; shiftLeftRC(japValues); porValues]);
+		BACopyWithValues(ba, "Por shifted left RC", [canValues; japValues; shiftLeftRC(porValues)]);
 
 		% Conclusion: All shrunk has no impact because it's all changed to unit variance, but shrinking just Can has a HUGE impact on clustering the Canadian data.
 		% BatchAnalyzer("All shrunk RC", iters, 3, shrinkRC(values), labels);
-		BatchAnalyzer("Can shrunk RC", iters, 3, [shrinkRC(canValues); japValues; porValues], labels);
-		BatchAnalyzer("Jap shrunk RC", iters, 3, [canValues; shrinkRC(japValues); porValues], labels);
-		BatchAnalyzer("Por shrunk RC", iters, 3, [canValues; japValues; shrinkRC(porValues)], labels);
+		BACopyWithValues(ba, "Can shrunk RC", [shrinkRC(canValues); japValues; porValues]);
+		BACopyWithValues(ba, "Jap shrunk RC", [canValues; shrinkRC(japValues); porValues]);
+		BACopyWithValues(ba, "Por shrunk RC", [canValues; japValues; shrinkRC(porValues)]);
 
 		% Conclusion: All reduced/increased has no impact because it's all changed to unit variance, but shrinking just Can decreases the ARI/NMI (while increasing increases), suggesting the Canadian data has more variance than the others.
-		% BatchAnalyzer("All increased variance", iters, 3, scaleVariance(values, 2.0), labels);
-		BatchAnalyzer("Can increased variance", iters, 3, [scaleVariance(canValues, 2.0); japValues; porValues], labels);
-		BatchAnalyzer("Jap increased variance", iters, 3, [canValues; scaleVariance(japValues, 2.0); porValues], labels);
-		BatchAnalyzer("Por increased variance", iters, 3, [canValues; japValues; scaleVariance(porValues, 2.0)], labels);
+		% BACopyWithValues(ba, "All increased variance", scaleVariance(values, 2.0));
+		BACopyWithValues(ba, "Can increased variance", [scaleVariance(canValues, 2.0); japValues; porValues]);
+		BACopyWithValues(ba, "Jap increased variance", [canValues; scaleVariance(japValues, 2.0); porValues]);
+		BACopyWithValues(ba, "Por increased variance", [canValues; japValues; scaleVariance(porValues, 2.0)]);
+		% BACopyWithValues(ba, "All decreased variance", scaleVariance(values, 0.5));
+		BACopyWithValues(ba, "Can decreased variance", [scaleVariance(canValues, 0.5); japValues; porValues]);
+		BACopyWithValues(ba, "Jap decreased variance", [canValues; scaleVariance(japValues, 0.5); porValues]);
+		BACopyWithValues(ba, "Por decreased variance", [canValues; japValues; scaleVariance(porValues, 0.5)]);
 		% BatchAnalyzer("All decreased variance", iters, 3, scaleVariance(values, .5), labels);
-		BatchAnalyzer("Can decreased variance", iters, 3, [scaleVariance(canValues, .5); japValues; porValues], labels);
-		BatchAnalyzer("Jap decreased variance", iters, 3, [canValues; scaleVariance(japValues, .5); porValues], labels);
-		BatchAnalyzer("Por decreased variance", iters, 3, [canValues; japValues; scaleVariance(porValues, .5)], labels);
 	];
 
 	num = length(bas);

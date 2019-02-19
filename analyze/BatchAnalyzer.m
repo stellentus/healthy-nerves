@@ -1,4 +1,4 @@
-classdef BatchAnalyzer < handle
+classdef BatchAnalyzer < matlab.mixin.Copyable
 	properties
 		Name
 		Iters
@@ -18,13 +18,7 @@ classdef BatchAnalyzer < handle
 			obj.Iters = iters;
 			obj.NumGroups = numGroups;
 
-			obj.RandomIndices = (numel(values) == 1);
-			if ~obj.RandomIndices
-				% Zero mean unit variance
-				obj.Values = bsxfun(@rdivide, values - mean(values), std(values));
-			else
-				obj.Values = values;
-			end
+			setValues(obj, values);
 
 			obj.FixedLabels = (nargin == 5);
 			if obj.FixedLabels
@@ -36,6 +30,20 @@ classdef BatchAnalyzer < handle
 
 			obj.CRI = [];
 			obj.NMI = [];
+		end
+		function obj = setValues(obj, values)
+			obj.RandomIndices = (numel(values) == 1);
+			if ~obj.RandomIndices
+				% Zero mean unit variance
+				obj.Values = bsxfun(@rdivide, values - mean(values), std(values));
+			else
+				obj.Values = values;
+			end
+		end
+		function ba = BACopyWithValues(obj, name, values)
+			ba = copy(obj);
+			ba.Name = name;
+			setValues(ba, values);
 		end
 		function calculateBatch(obj)
 			rng(obj.Seed); % Ensure all start with the same seed
