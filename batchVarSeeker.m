@@ -16,12 +16,12 @@ function [brs] = batchVarSeeker()
 		bas = [bas BACopyWithValues(ba, sprintf('Increase %s', measures(i)), [scaleVariance(canValues, 2.0, i); japValues; porValues])];
 	end
 	for plt = ["SR" "IV" "QT" "TEd" "TEh" "Meta" "RC" "all"];
-		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s', plt), [scaleVariance(canValues, 0.5, indicesForPlot(plt)); japValues; porValues])];
-		bas = [bas BACopyWithValues(ba, sprintf('Increase %s', plt), [scaleVariance(canValues, 2.0, indicesForPlot(plt)); japValues; porValues])];
+		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s plot', plt), [scaleVariance(canValues, 0.5, indicesForPlot(plt)); japValues; porValues])];
+		bas = [bas BACopyWithValues(ba, sprintf('Increase %s plot', plt), [scaleVariance(canValues, 2.0, indicesForPlot(plt)); japValues; porValues])];
 	end
 	for channel = ["Ci" "Cmy" "Gmy" "GKf" "GKfi" "GKir" "GKs" "GLk" "GLki" "PNa" "PNap" "vleak" "all"];
-		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s', channel), [scaleVariance(canValues, 0.5, indicesForChannel(channel)); japValues; porValues])];
-		bas = [bas BACopyWithValues(ba, sprintf('Increase %s', channel), [scaleVariance(canValues, 2.0, indicesForChannel(channel)); japValues; porValues])];
+		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s channel', channel), [scaleVariance(canValues, 0.5, indicesForChannel(channel)); japValues; porValues])];
+		bas = [bas BACopyWithValues(ba, sprintf('Increase %s channel', channel), [scaleVariance(canValues, 2.0, indicesForChannel(channel)); japValues; porValues])];
 	end
 
 	num = length(bas);
