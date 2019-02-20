@@ -95,7 +95,7 @@ function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, curr, weight, ori
 
 		% Only go partway, since we don't want to overshoot
 		count = count + 1;
-		adj = adj/count/numMeas;
+		adj = adj/count/2;
 	end
 
 	if origBatch < thisBatch
