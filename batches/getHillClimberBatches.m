@@ -47,7 +47,7 @@ end
 
 function [vals] = scaleValues(vals, stdScale, mnBias)
 	mns = mean(vals);
-	vals = bsxfun(@times, vals - mns, 1+stdScale) + mns + mnBias;
+	vals = bsxfun(@times, vals - mns, exp(stdScale)) + mns + mnBias;
 end
 
 function thisBatch = batchVal(ba, useNMI)
@@ -92,15 +92,6 @@ function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, curr, weight, ori
 
 		% Now predict the adjustment to give zero BE if it were linear.
 		adj = lastBatch*adj/(lastBatch-thisBatch) + origWeight;
-
-		% Prevent values from straying too far.
-		if curr + modWeight(i) + adj < -1
-			% fprintf("\t\tAttempt to move to % .4f\n", curr + modWeight(i) + adj);
-			adj = -1-curr-modWeight(i);
-		elseif curr + modWeight(i) + adj > 1
-			% fprintf("\t\tAttempt to move to % .4f\n", curr + modWeight(i) + adj);
-			adj = 1-curr-modWeight(i);
-		end
 
 		% Only go partway, since we don't want to overshoot
 		count = count + 1;
