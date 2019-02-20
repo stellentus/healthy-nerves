@@ -14,7 +14,7 @@ function getHillClimberBatches(iters, useNMI)
 	labels = [ones(size(vals.can, 1), 1); ones(size(vals.jap, 1), 1) * 2; repmat(3, size(vals.por, 1), 1)];
 	numMeas = length(measures);
 
-	randLimit = 0.2;
+	randLimit = 0.0005;
 	weight.Jap.Std = -randLimit + (randLimit+randLimit)*rand(1, numMeas);
 	weight.Jap.Mn = -randLimit + (randLimit+randLimit)*rand(1, numMeas);
 	weight.Por.Std = -randLimit + (randLimit+randLimit)*rand(1, numMeas);
@@ -22,28 +22,30 @@ function getHillClimberBatches(iters, useNMI)
 	printWeights(weight);
 
 	lastBestBatch = 1;
-	threshold = 1e-7;
+	threshold = 1e-10;
 	mag = 0;
 
 	ba = BatchAnalyzer('Normative', 3, [vals.can; vals.jap; vals.por], labels, 'iters', iters);
-	thisBatch = batchVal(ba, useNMI);
-	fprintf("Original batch effect is %.4f\n", thisBatch);
+	origBatch = batchVal(ba, useNMI);
 	thisBatch = batchVal(BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, weight.Jap.Std, weight.Jap.Mn); scaleValues(vals.por, weight.Por.Std, weight.Por.Mn)]), useNMI);
-	fprintf("Randomly scaled batch effect is %.4f\n", thisBatch);
+	fprintf("Original batch effect is %.4f, scaled up to %.4f\n", origBatch, thisBatch);
 
-	while abs(thisBatch - lastBestBatch) > threshold && mag < 20
+	while abs(thisBatch - lastBestBatch) > threshold && mag < 100
 		lastBestBatch = thisBatch;
 		for i=randperm(numMeas)
-			[weight.Jap.Std(i), thisBatch] = optimize(ba, vals, useNMI, numMeas, weight.Jap.Std(i), weight, thisBatch, i, mag, @scaledBAJapStd, 'JapSt');
-			[weight.Jap.Mn(i), thisBatch] = optimize(ba, vals, useNMI, numMeas, weight.Jap.Mn(i), weight, thisBatch, i, mag, @scaledBAJapMn, 'JapMn');
-			[weight.Por.Std(i), thisBatch] = optimize(ba, vals, useNMI, numMeas, weight.Por.Std(i), weight, thisBatch, i, mag, @scaledBAPorStd, 'PorSt');
-			[weight.Por.Mn(i), thisBatch] = optimize(ba, vals, useNMI, numMeas, weight.Por.Mn(i), weight, thisBatch, i, mag, @scaledBAPorMn, 'PorMn');
+			minDelta = 0.001/(2^mag);
+			epsilon = 1e-7;
+			adj = 1/(2^mag);
+
+			[weight.Jap.Std(i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight.Jap.Std(i), weight, thisBatch, i, mag, @scaledBAJapStd, 'JapSt');
+			[weight.Jap.Mn(i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight.Jap.Mn(i), weight, thisBatch, i, mag, @scaledBAJapMn, 'JapMn');
+			[weight.Por.Std(i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight.Por.Std(i), weight, thisBatch, i, mag, @scaledBAPorStd, 'PorSt');
+			[weight.Por.Mn(i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight.Por.Mn(i), weight, thisBatch, i, mag, @scaledBAPorMn, 'PorMn');
 		end
 		printWeights(weight);
 		fprintf("Batch effect decreased from %.4f %.4f\n", lastBestBatch, thisBatch);
 		mag = mag + 1;
 	end
-	disp("Done");
 end
 
 function [vals] = scaleValues(vals, stdScale, mnBias)
@@ -76,13 +78,10 @@ function ba = scaledBAPorMn(ba, vals, wgt, modwgt)
 	ba = BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, wgt.Jap.Std, wgt.Jap.Mn); scaleValues(vals.por, wgt.Por.Std, wgt.Por.Mn+modwgt)]);
 end
 
-function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, curr, weight, origBatch, i, mag, scaledBAFunc, str)
+function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, curr, weight, origBatch, i, mag, scaledBAFunc, str)
 	modWeight = zeros(1, numMeas);
-	adj = .3/(2^mag);
 	thisBatch = origBatch;
 	lastBatch = 0;
-	epsilon = 1e-5;
-	minDelta = 0.003/(2^mag);
 	wt = curr;
 
 	modWeight(i) = modWeight(i) + adj;
@@ -90,7 +89,7 @@ function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, curr, weight, ori
 	modWeight(i) = modWeight(i) - 2*adj;
 	decBatch = batchVal(scaledBAFunc(ba, vals, weight, modWeight), useNMI);
 
-	if decBatch < incBatch
+	if decBatch < incBatch && decBatch < origBatch - minDelta
 		% It's better to decrease
 		adj = -adj;
 		% fprintf('\t |----- %s weight at %2d (BE %.4f; -1 iters) adju % .3f\n', str, i, thisBatch, adj);
@@ -103,7 +102,7 @@ function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, curr, weight, ori
 	end
 
 	count = 0;
-	while abs(thisBatch-lastBatch) > epsilon && count < mag + 10
+	while count < mag + 3
 		count = count + 1;
 		lastBatch = thisBatch;
 		modWeight(i) = modWeight(i) + adj;
@@ -118,12 +117,12 @@ function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, curr, weight, ori
 		end
 	end
 
-	if origBatch < thisBatch
-		thisBatch = origBatch;
-		fprintf('\t-Update %s weight at %2d (BE %.4f; %2d iters) keep % .3f\n', str, i, lastBatch, count, curr);
-	else
+	if thisBatch < origBatch - minDelta
 		wt = curr + modWeight(i);
 		fprintf('\tUpdated %s weight at %2d (BE %.4f; %2d iters) from % .3f to % .3f\n', str, i, thisBatch, count, curr, wt);
+	else
+		thisBatch = origBatch;
+		fprintf('\t-Update %s weight at %2d (BE %.4f; %2d iters) keep % .3f\n', str, i, lastBatch, count, curr);
 	end
 end
 
