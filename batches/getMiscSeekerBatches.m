@@ -42,7 +42,7 @@ function [bas] = getMiscSeekerBatches(iters)
 		BACopyWithValues(ba, "Por shifted left RC", [canValues; japValues; shiftLeftRC(porValues)]);
 
 		% Conclusion: All shrunk has no impact because it's all changed to unit variance, but shrinking just Can has a HUGE impact on clustering the Canadian data.
-		% BatchAnalyzer("All shrunk RC", iters, 3, shrinkRC(values), labels);
+		% BACopyWithValues(ba, "All shrunk RC", shrinkRC(values));
 		BACopyWithValues(ba, "Can shrunk RC", [shrinkRC(canValues); japValues; porValues]);
 		BACopyWithValues(ba, "Jap shrunk RC", [canValues; shrinkRC(japValues); porValues]);
 		BACopyWithValues(ba, "Por shrunk RC", [canValues; japValues; shrinkRC(porValues)]);
@@ -56,7 +56,7 @@ function [bas] = getMiscSeekerBatches(iters)
 		BACopyWithValues(ba, "Can decreased variance", [scaleVariance(canValues, 0.5); japValues; porValues]);
 		BACopyWithValues(ba, "Jap decreased variance", [canValues; scaleVariance(japValues, 0.5); porValues]);
 		BACopyWithValues(ba, "Por decreased variance", [canValues; japValues; scaleVariance(porValues, 0.5)]);
-		% BatchAnalyzer("All decreased variance", iters, 3, scaleVariance(values, .5), labels);
+		% BACopyWithValues(ba, "All decreased variance", scaleVariance(values, .5));
 	];
 end
 
