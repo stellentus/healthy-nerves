@@ -40,8 +40,8 @@ function getHillClimberBatches(iters, useNMI)
 			[weight(4,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(4,i), weight, thisBatch, i, mag, @scaledBAPorMn, 'PorMn');
 		end
 		printWeights(weight);
-		fprintf("Batch effect decreased from %.4f to %.4f\n", lastBestBatch, thisBatch);
 		mag = mag + 1;
+		fprintf("%2d: Batch effect decreased from %.4f to %.4f\n", mag, lastBestBatch, thisBatch);
 	end
 
 	% Some weights started very close to zero. Such small weights should be reset.
@@ -121,7 +121,7 @@ function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon
 	end
 
 	count = 0;
-	while count <= 2 % Since each iteration uses adj/2, the most times we should need to loop here is 2 (other than possibly the first). This actually allows 4 adjustments, which is double what we need.
+	while count <= 100 % This is totally excessive, but in practice it won't happen often (or ever).
 		count = count + 1;
 		lastBatch = thisBatch;
 		modWeight(i) = modWeight(i) + adj;
@@ -157,6 +157,9 @@ function printWeight(str, wt)
 	fprintf("%s: ", str)
 	for i=1:num
 		fprintf("% .3f ", wt(i));
+		if i == 15
+			fprintf("\n ");
+		end
 	end
 	fprintf("\n")
 end
