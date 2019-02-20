@@ -54,7 +54,9 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			setValues(ba, values);
 		end
 		function calculateBatch(obj)
-			rng(obj.Seed); % Ensure all start with the same seed
+			if obj.Seed ~= 0
+				rng(obj.Seed); % Ensure all start with the same seed
+			end
 
 			addpath lib/rand_index;
 			addpath lib/info_entropy;
