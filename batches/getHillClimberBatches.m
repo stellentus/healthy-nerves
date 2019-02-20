@@ -83,7 +83,7 @@ function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, curr, weight, ori
 	lastBatch = 0;
 	epsilon = 1e-5;
 	minDelta = 0.003/(2^mag);
-	wt = 0;
+	wt = curr;
 
 	modWeight(i) = modWeight(i) + adj;
 	incBatch = batchVal(scaledBAFunc(ba, vals, weight, modWeight), useNMI);
@@ -119,7 +119,6 @@ function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, curr, weight, ori
 	end
 
 	if origBatch < thisBatch
-		wt = 0;
 		thisBatch = origBatch;
 		fprintf('\t-Update %s weight at %2d (BE %.4f; %2d iters) keep % .3f\n', str, i, lastBatch, count, curr);
 	else
