@@ -30,6 +30,8 @@ function getHillClimberBatches(iters, useNMI)
 
 	while abs(thisBatch - lastBestBatch) > threshold && mag < 100
 		lastBestBatch = thisBatch;
+		ba.Seed = randi(intmax);
+
 		for i=randperm(numMeas)
 			minDelta = 0.001/(2^mag);
 			adj = 1/(2^mag);
@@ -39,15 +41,18 @@ function getHillClimberBatches(iters, useNMI)
 			[weight(3,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(3,i), weight, thisBatch, i, mag, @scaledBAPorStd, 'PorSt');
 			[weight(4,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(4,i), weight, thisBatch, i, mag, @scaledBAPorMn, 'PorMn');
 		end
+
+		rng(ba.Seed);
+
 		printWeights(weight);
 		mag = mag + 1;
-		fprintf("%2d: Batch effect decreased from %.4f to %.4f\n", mag, lastBestBatch, thisBatch);
+		fprintf("%02d: Batch effect decreased from %.4f to %.4f\n", mag, lastBestBatch, thisBatch);
 	end
 
 	% Some weights started very close to zero. Such small weights should be reset.
 	weight(abs(weight) < randLimit) = 0;
 	zeroedBatch = batchVal(scaledBA(ba, vals, weight), useNMI);
-	printWeights(weight);
+	printWeights(weight, 6);
 	fprintf("Zeroed BE is %.6f instead of %.6f\n", zeroedBatch, thisBatch);
 
 	% Now do one more pass in case any of the weights shouldn't have been reset to zero.
@@ -59,7 +64,7 @@ function getHillClimberBatches(iters, useNMI)
 	[weight(3,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(3,i), weight, thisBatch, i, mag, @scaledBAPorStd, 'PorSt');
 	[weight(4,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(4,i), weight, thisBatch, i, mag, @scaledBAPorMn, 'PorMn');
 	zeroedBatch = batchVal(scaledBA(ba, vals, weight), useNMI);
-	printWeights(weight);
+	printWeights(weight, 7);
 	fprintf("Run-again BE is %.7f instead of zeroed %.7f\n", thisBatch, zeroedBatch);
 end
 
@@ -145,20 +150,24 @@ function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon
 	end
 end
 
-function printWeights(weight)
-	printWeight("JAP ST", weight(1,:));
-	printWeight("JAP MN", weight(2,:));
-	printWeight("POR ST", weight(3,:));
-	printWeight("POR MN", weight(4,:));
+function printWeights(weight, sig)
+	if nargin < 2
+		sig = 3;
+	end
+	printWeight("JAP ST", weight(1,:), sig);
+	printWeight("JAP MN", weight(2,:), sig);
+	printWeight("POR ST", weight(3,:), sig);
+	printWeight("POR MN", weight(4,:), sig);
 end
 
-function printWeight(str, wt)
+function printWeight(str, wt, sig)
+	formatString = sprintf("%% .%df ", sig);
 	num = length(wt);
 	fprintf("%s: ", str)
 	for i=1:num
-		fprintf("% .3f ", wt(i));
-		if i == 15
-			fprintf("\n ");
+		fprintf(formatString, wt(i));
+		if i == 16
+			fprintf("\n        ");
 		end
 	end
 	fprintf("\n")
