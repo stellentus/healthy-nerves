@@ -30,7 +30,7 @@ function getHillClimberBatches(iters, useNMI)
 
 	while abs(thisBatch - lastBestBatch) > threshold && mag < 100
 		lastBestBatch = thisBatch;
-		ba.Seed = randi(intmax);
+		seed = randi(intmax);
 
 		for i=randperm(numMeas)
 			minDelta = 0.001/(2^mag);
@@ -42,7 +42,7 @@ function getHillClimberBatches(iters, useNMI)
 			[weight(4,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(4,i), weight, thisBatch, i, mag, @scaledBAPorMn, 'PorMn');
 		end
 
-		rng(ba.Seed);
+		rng(seed);
 
 		printWeights(weight);
 		mag = mag + 1;
