@@ -21,17 +21,17 @@ function getHillClimberBatches(iters, useNMI)
 	lastBestBatch = 1;
 	threshold = 1e-10;
 	mag = 0;
+	epsilon = 1e-7;
 
 	ba = BatchAnalyzer('Normative', 3, [vals.can; vals.jap; vals.por], labels, 'iters', iters);
 	origBatch = batchVal(ba, useNMI);
-	thisBatch = batchVal(BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, weight(1,:), weight(2,:)); scaleValues(vals.por, weight(3,:), weight(4,:))]), useNMI);
+	thisBatch = batchVal(scaledBA(ba, vals, weight), useNMI);
 	fprintf("Original batch effect is %.4f, scaled up to %.4f\n", origBatch, thisBatch);
 
 	while abs(thisBatch - lastBestBatch) > threshold && mag < 100
 		lastBestBatch = thisBatch;
 		for i=randperm(numMeas)
 			minDelta = 0.001/(2^mag);
-			epsilon = 1e-7;
 			adj = 1/(2^mag);
 
 			[weight(1,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(1,i), weight, thisBatch, i, mag, @scaledBAJapStd, 'JapSt');
@@ -40,9 +40,27 @@ function getHillClimberBatches(iters, useNMI)
 			[weight(4,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(4,i), weight, thisBatch, i, mag, @scaledBAPorMn, 'PorMn');
 		end
 		printWeights(weight);
-		fprintf("Batch effect decreased from %.4f %.4f\n", lastBestBatch, thisBatch);
+		fprintf("Batch effect decreased from %.4f to %.4f\n", lastBestBatch, thisBatch);
 		mag = mag + 1;
 	end
+
+	% Some weights started very close to zero. Such small weights should be reset.
+	weight(abs(weight) < randLimit) = 0;
+	zeroedBatch = batchVal(scaledBA(ba, vals, weight), useNMI);
+	printWeights(weight);
+	fprintf("Zeroed BE is %.6f instead of %.6f\n", zeroedBatch, thisBatch);
+
+	% Now do one more pass in case any of the weights shouldn't have been reset to zero.
+	minDelta = threshold; % Effectively no minimum
+	adj = 1/(2^mag);
+	thisBatch = zeroedBatch;
+	[weight(1,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(1,i), weight, thisBatch, i, mag, @scaledBAJapStd, 'JapSt');
+	[weight(2,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(2,i), weight, thisBatch, i, mag, @scaledBAJapMn, 'JapMn');
+	[weight(3,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(3,i), weight, thisBatch, i, mag, @scaledBAPorStd, 'PorSt');
+	[weight(4,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(4,i), weight, thisBatch, i, mag, @scaledBAPorMn, 'PorMn');
+	zeroedBatch = batchVal(scaledBA(ba, vals, weight), useNMI);
+	printWeights(weight);
+	fprintf("Run-again BE is %.7f instead of zeroed %.7f\n", thisBatch, zeroedBatch);
 end
 
 function [vals] = scaleValues(vals, stdScale, mnBias)
@@ -57,6 +75,10 @@ function thisBatch = batchVal(ba, useNMI)
 	else
 		thisBatch = abs(mean(ba.CRI));
 	end
+end
+
+function ba = scaledBA(ba, vals, wgt)
+	ba = BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, wgt(1,:), wgt(2,:)); scaleValues(vals.por, wgt(3,:), wgt(4,:))]);
 end
 
 function ba = scaledBAJapStd(ba, vals, wgt, modwgt)
@@ -99,7 +121,7 @@ function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon
 	end
 
 	count = 0;
-	while count < mag + 3
+	while count <= 2 % Since each iteration uses adj/2, the most times we should need to loop here is 2 (other than possibly the first). This actually allows 4 adjustments, which is double what we need.
 		count = count + 1;
 		lastBatch = thisBatch;
 		modWeight(i) = modWeight(i) + adj;
