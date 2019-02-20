@@ -78,25 +78,44 @@ end
 
 function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, curr, weight, origBatch, i, mag, scaledBAFunc, str)
 	modWeight = zeros(1, numMeas);
-	adj = .1/(2^mag);
-	count = 0;
+	adj = .3/(2^mag);
 	thisBatch = origBatch;
 	lastBatch = 0;
 	epsilon = 1e-5;
+	minDelta = 0.003/(2^mag);
+	wt = 0;
 
-	while abs(thisBatch-lastBatch) > epsilon && count < mag + 2
+	modWeight(i) = modWeight(i) + adj;
+	incBatch = batchVal(scaledBAFunc(ba, vals, weight, modWeight), useNMI);
+	modWeight(i) = modWeight(i) - 2*adj;
+	decBatch = batchVal(scaledBAFunc(ba, vals, weight, modWeight), useNMI);
+
+	if decBatch < incBatch
+		% It's better to decrease
+		adj = -adj;
+		% fprintf('\t |----- %s weight at %2d (BE %.4f; -1 iters) adju % .3f\n', str, i, thisBatch, adj);
+	elseif incBatch < origBatch - minDelta
+		% Increasing is an adequate improvement to keep going
+		modWeight(i) = modWeight(i) + 2*adj; % Set modWeight back to what worked
+		% fprintf('\t |----- %s weight at %2d (BE %.4f; -1 iters) adju % .3f\n', str, i, thisBatch, adj);
+	else
+		return
+	end
+
+	count = 0;
+	while abs(thisBatch-lastBatch) > epsilon && count < mag + 10
 		lastBatch = thisBatch;
-		origWeight = modWeight(i);
 		modWeight(i) = modWeight(i) + adj;
-		ba = scaledBAFunc(ba, vals, weight, modWeight);
-		thisBatch = batchVal(ba, useNMI);
+		thisBatch = batchVal(scaledBAFunc(ba, vals, weight, modWeight), useNMI);
+		% fprintf('\t |----- %s weight at %2d (BE %.4f; %2d iters) adju % .3f\n', str, i, thisBatch, count, adj);
 
-		% Now predict the adjustment to give zero BE if it were linear.
-		adj = lastBatch*adj/(lastBatch-thisBatch) + origWeight;
-
-		% Only go partway, since we don't want to overshoot
+		if thisBatch > lastBatch
+			% We've gone to far, so go back and quit
+			modWeight(i) = modWeight(i) - adj;
+			thisBatch = lastBatch;
+			break;
+		end
 		count = count + 1;
-		adj = adj/count/2;
 	end
 
 	if origBatch < thisBatch
@@ -120,7 +139,7 @@ function printWeight(str, wt)
 	num = length(wt);
 	fprintf("%s: ", str)
 	for i=1:num
-		fprintf("%.3f ", wt(i));
+		fprintf("% .3f ", wt(i));
 	end
 	fprintf("\n")
 end
