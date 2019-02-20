@@ -15,10 +15,7 @@ function getHillClimberBatches(iters, useNMI)
 	numMeas = length(measures);
 
 	randLimit = 0.0005;
-	weight.Jap.Std = -randLimit + (randLimit+randLimit)*rand(1, numMeas);
-	weight.Jap.Mn = -randLimit + (randLimit+randLimit)*rand(1, numMeas);
-	weight.Por.Std = -randLimit + (randLimit+randLimit)*rand(1, numMeas);
-	weight.Por.Mn = -randLimit + (randLimit+randLimit)*rand(1, numMeas);
+	weight = -randLimit + (randLimit+randLimit)*rand(4, numMeas);
 	printWeights(weight);
 
 	lastBestBatch = 1;
@@ -27,7 +24,7 @@ function getHillClimberBatches(iters, useNMI)
 
 	ba = BatchAnalyzer('Normative', 3, [vals.can; vals.jap; vals.por], labels, 'iters', iters);
 	origBatch = batchVal(ba, useNMI);
-	thisBatch = batchVal(BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, weight.Jap.Std, weight.Jap.Mn); scaleValues(vals.por, weight.Por.Std, weight.Por.Mn)]), useNMI);
+	thisBatch = batchVal(BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, weight(1,:), weight(2,:)); scaleValues(vals.por, weight(3,:), weight(4,:))]), useNMI);
 	fprintf("Original batch effect is %.4f, scaled up to %.4f\n", origBatch, thisBatch);
 
 	while abs(thisBatch - lastBestBatch) > threshold && mag < 100
@@ -37,10 +34,10 @@ function getHillClimberBatches(iters, useNMI)
 			epsilon = 1e-7;
 			adj = 1/(2^mag);
 
-			[weight.Jap.Std(i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight.Jap.Std(i), weight, thisBatch, i, mag, @scaledBAJapStd, 'JapSt');
-			[weight.Jap.Mn(i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight.Jap.Mn(i), weight, thisBatch, i, mag, @scaledBAJapMn, 'JapMn');
-			[weight.Por.Std(i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight.Por.Std(i), weight, thisBatch, i, mag, @scaledBAPorStd, 'PorSt');
-			[weight.Por.Mn(i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight.Por.Mn(i), weight, thisBatch, i, mag, @scaledBAPorMn, 'PorMn');
+			[weight(1,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(1,i), weight, thisBatch, i, mag, @scaledBAJapStd, 'JapSt');
+			[weight(2,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(2,i), weight, thisBatch, i, mag, @scaledBAJapMn, 'JapMn');
+			[weight(3,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(3,i), weight, thisBatch, i, mag, @scaledBAPorStd, 'PorSt');
+			[weight(4,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(4,i), weight, thisBatch, i, mag, @scaledBAPorMn, 'PorMn');
 		end
 		printWeights(weight);
 		fprintf("Batch effect decreased from %.4f %.4f\n", lastBestBatch, thisBatch);
@@ -63,19 +60,19 @@ function thisBatch = batchVal(ba, useNMI)
 end
 
 function ba = scaledBAJapStd(ba, vals, wgt, modwgt)
-	ba = BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, wgt.Jap.Std+modwgt, wgt.Jap.Mn); scaleValues(vals.por, wgt.Por.Std, wgt.Por.Mn)]);
+	ba = BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, wgt(1,:)+modwgt, wgt(2,:)); scaleValues(vals.por, wgt(3,:), wgt(4,:))]);
 end
 
 function ba = scaledBAJapMn(ba, vals, wgt, modwgt)
-	ba = BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, wgt.Jap.Std, wgt.Jap.Mn+modwgt); scaleValues(vals.por, wgt.Por.Std, wgt.Por.Mn)]);
+	ba = BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, wgt(1,:), wgt(2,:)+modwgt); scaleValues(vals.por, wgt(3,:), wgt(4,:))]);
 end
 
 function ba = scaledBAPorStd(ba, vals, wgt, modwgt)
-	ba = BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, wgt.Jap.Std, wgt.Jap.Mn); scaleValues(vals.por, wgt.Por.Std+modwgt, wgt.Por.Mn)]);
+	ba = BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, wgt(1,:), wgt(2,:)); scaleValues(vals.por, wgt(3,:)+modwgt, wgt(4,:))]);
 end
 
 function ba = scaledBAPorMn(ba, vals, wgt, modwgt)
-	ba = BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, wgt.Jap.Std, wgt.Jap.Mn); scaleValues(vals.por, wgt.Por.Std, wgt.Por.Mn+modwgt)]);
+	ba = BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, wgt(1,:), wgt(2,:)); scaleValues(vals.por, wgt(3,:), wgt(4,:)+modwgt)]);
 end
 
 function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, curr, weight, origBatch, i, mag, scaledBAFunc, str)
@@ -127,10 +124,10 @@ function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon
 end
 
 function printWeights(weight)
-	printWeight("JAP ST", weight.Jap.Std);
-	printWeight("JAP MN", weight.Jap.Mn);
-	printWeight("POR ST", weight.Por.Std);
-	printWeight("POR MN", weight.Por.Mn);
+	printWeight("JAP ST", weight(1,:));
+	printWeight("JAP MN", weight(2,:));
+	printWeight("POR ST", weight(3,:));
+	printWeight("POR MN", weight(4,:));
 end
 
 function printWeight(str, wt)
