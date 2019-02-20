@@ -15,14 +15,17 @@ function [brs] = batchVarSeeker()
 		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s', measures(i)), [scaleVariance(canValues, 0.1, i); japValues; porValues])];
 		bas = [bas BACopyWithValues(ba, sprintf('Increase %s', measures(i)), [scaleVariance(canValues, 10, i); japValues; porValues])];
 	end
+
+	addpath import;
 	for plt = ["SR" "IV" "QT" "TEd" "TEh" "Meta" "RC" "all"];
-		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s plot', plt), [scaleVariance(canValues, 0.1, indicesForPlot(plt)); japValues; porValues])];
-		bas = [bas BACopyWithValues(ba, sprintf('Increase %s plot', plt), [scaleVariance(canValues, 10, indicesForPlot(plt)); japValues; porValues])];
+		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s plot', plt), [scaleVariance(canValues, 0.1, indicesForPlotNoTE20(plt)); japValues; porValues])];
+		bas = [bas BACopyWithValues(ba, sprintf('Increase %s plot', plt), [scaleVariance(canValues, 10, indicesForPlotNoTE20(plt)); japValues; porValues])];
 	end
 	for channel = ["Ci" "Cmy" "Gmy" "GKf" "GKfi" "GKir" "GKs" "GLk" "GLki" "PNa" "PNap" "vleak" "all"];
-		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s channel', channel), [scaleVariance(canValues, 0.1, indicesForChannel(channel)); japValues; porValues])];
-		bas = [bas BACopyWithValues(ba, sprintf('Increase %s channel', channel), [scaleVariance(canValues, 10, indicesForChannel(channel)); japValues; porValues])];
+		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s channel', channel), [scaleVariance(canValues, 0.1, indicesForChannelNoTE20(channel)); japValues; porValues])];
+		bas = [bas BACopyWithValues(ba, sprintf('Increase %s channel', channel), [scaleVariance(canValues, 10, indicesForChannelNoTE20(channel)); japValues; porValues])];
 	end
+	rmpath import;
 
 	num = length(bas);
 	str = strings(1,num);
@@ -60,63 +63,4 @@ function [vals] = scaleVariance(vals, stdScale, colInd)
 	stdScale = (stdScale-1)/sqrt(length(colInd))+1;
 	mns = mean(vals(:,colInd));
 	vals(:,colInd) = bsxfun(@times, vals(:,colInd) - mns, stdScale) + mns;
-end
-
-function [inds] = indicesForPlot(plot)
-	switch plot
-		case "SR"
-			inds = [1,4,5];
-		case "IV"
-			inds = [6,7,25];
-		case "QT"
-			inds = [2,3];
-		case "TEd"
-			inds = [22,11,17,18,20,24,23];
-		case "TEh"
-			inds = [10,19,21,27,28];
-		case "Meta"
-			inds = [8,14,15,16];
-		case "RC"
-			inds = [26,9,29,30,31,12,13];
-		case "all"
-			inds = [1:31]; % includes all of the above plots
-		otherwise
-			inds = [];
-			warning("Could not get indices");
-	end
-end
-
-function [inds] = indicesForChannel(channel)
-	% This is just based on my visual inspection of the available data from a page of ±40% plots Dr. Jones gave me.
-	switch channel
-		case "Ci"
-			inds = [9,26,29,30,31,12,13,25,6,7,11,22,17,24,18,23,20,19,27,10,28,21];
-		case "Cmy"
-			inds = [9,29,25,10];
-		case "Gmy"
-			inds = [9,26,29,30,31,12,13,25,6,7,11,22,17,24,18,23,20,19,27,10,28,21];
-		case "GKf"
-			inds = [9,26,29,30,31,12,6,7,11,22,17,24,18,23,20];
-		case "GKfi"
-			inds = [26,30,31,12,6,7,22,17,24,18,23,20,10];
-		case "GKir"
-			inds = [30,12,25,6,7,22,17,24,18,20,27,10,21];
-		case "GKs"
-			inds = [9,26,29,30,31,12,13,25,6,7,11,22,17,24,18,20,27,10,21];
-		case "GLk"
-			inds = [25,6,7,22,23,27,10,21];
-		case "GLki"
-			inds = [25,6,7,22,17,24,18,27,10,21];
-		case "PNa"
-			inds = [9,26,29,30,31,12,13,25,6,7,11,22,17,24,18,23,20,10];
-		case "PNap"
-			inds = [9,26,29,30,31,12,13,25,6,7,11,22,17,24,18,23,20,27];
-		case "vleak"
-			inds = [9,26,29,30,31,12,13,25,6,7,11,22,17,24,18,20,19,27,10,28,21];
-		case "all"
-			inds = [6:7,9:13,17:31]; % includes all of the above channels
-		otherwise
-			inds = [];
-			warning("Could not get indices");
-	end
 end
