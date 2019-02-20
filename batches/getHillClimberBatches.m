@@ -39,7 +39,7 @@ function getHillClimberBatches(iters, useNMI)
 			[weight.Por.Mn(i), thisBatch] = optimize(ba, vals, useNMI, numMeas, weight.Por.Mn(i), weight, thisBatch, i, mag, @scaledBAPorMn, 'PorMn');
 		end
 		printWeights(weight);
-		fprintf("Batch effect is %.4f\n", thisBatch);
+		fprintf("Batch effect decreased from %.4f %.4f\n", lastBestBatch, thisBatch);
 		mag = mag + 1;
 	end
 	disp("Done");
