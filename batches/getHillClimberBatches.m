@@ -104,6 +104,7 @@ function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, curr, weight, ori
 
 	count = 0;
 	while abs(thisBatch-lastBatch) > epsilon && count < mag + 10
+		count = count + 1;
 		lastBatch = thisBatch;
 		modWeight(i) = modWeight(i) + adj;
 		thisBatch = batchVal(scaledBAFunc(ba, vals, weight, modWeight), useNMI);
@@ -115,7 +116,6 @@ function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, curr, weight, ori
 			thisBatch = lastBatch;
 			break;
 		end
-		count = count + 1;
 	end
 
 	if origBatch < thisBatch
