@@ -19,7 +19,8 @@ function batcher(varargin)
 		case "mean"
 			bas = getMeanSeekerBatches(p.Results.iter);
 		case "hill"
-			bas = getHillClimberBatches(p.Results.iter);
+			getHillClimberBatches(p.Results.iter);
+			return;
 		otherwise
 			error(sprintf("%s is an invalid argument to batcher", p.Results.action));
 			return;
