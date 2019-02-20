@@ -28,7 +28,8 @@ function getHillClimberBatches(iters, useNMI)
 	ba = BatchAnalyzer('Normative', 3, [vals.can; vals.jap; vals.por], labels, 'iters', iters);
 	thisBatch = batchVal(ba, useNMI);
 	fprintf("Original batch effect is %.4f\n", thisBatch);
-	fprintf("Scaled batch effect is %.4f\n", batchVal(BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, weight.Jap.Std, weight.Jap.Mn); scaleValues(vals.por, weight.Por.Std, weight.Por.Mn)]), useNMI));
+	thisBatch = batchVal(BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, weight.Jap.Std, weight.Jap.Mn); scaleValues(vals.por, weight.Por.Std, weight.Por.Mn)]), useNMI);
+	fprintf("Scaled batch effect is %.4f\n", thisBatch);
 
 	while abs(thisBatch - lastBestBatch) > threshold && mag < 20
 		lastBestBatch = thisBatch;
