@@ -8,12 +8,12 @@ function [bas] = getMeanSeekerBatches(iters)
 	ba = BatchAnalyzer("Normative", 3, [canValues; japValues; porValues], labels, 'iters', iters);
 	bas = [ba];
 	for i = [1:length(measures)]
-		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s', measures(i)), [scaleMean(canValues, 0.9, i); japValues; porValues])];
-		bas = [bas BACopyWithValues(ba, sprintf('Increase %s', measures(i)), [scaleMean(canValues, 1.1, i); japValues; porValues])];
+		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s', measures(i)), [scaleMean(canValues, -0.1, i); japValues; porValues])];
+		bas = [bas BACopyWithValues(ba, sprintf('Increase %s', measures(i)), [scaleMean(canValues, 0.1, i); japValues; porValues])];
 	end
 	for plt = ["SR" "IV" "QT" "TEd" "TEh" "Meta" "RC" "all"];
-		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s plot', plt), [scaleMean(canValues, 0.9, indicesForPlotNoTE20(plt)); japValues; porValues])];
-		bas = [bas BACopyWithValues(ba, sprintf('Increase %s plot', plt), [scaleMean(canValues, 1.1, indicesForPlotNoTE20(plt)); japValues; porValues])];
+		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s plot', plt), [scaleMean(canValues, -0.1, indicesForPlotNoTE20(plt)); japValues; porValues])];
+		bas = [bas BACopyWithValues(ba, sprintf('Increase %s plot', plt), [scaleMean(canValues, 0.1, indicesForPlotNoTE20(plt)); japValues; porValues])];
 	end
 	for channel = ["Ci" "Cmy" "Gmy" "GKf" "GKfi" "GKir" "GKs" "GLk" "GLki" "PNa" "PNap" "vleak" "all"];
 		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s channel', channel), [scaleMean(canValues, -0.1, indicesForChannelNoTE20(channel)); japValues; porValues])];
