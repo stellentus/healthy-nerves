@@ -15,7 +15,7 @@ function [brs] = batcher()
 
 	iters = 30;
 
-	addpath analyze;
+	addpath batches;
 
 	ba = BatchAnalyzer("Normative data", iters, 3, values, labels);
 	bas = [
@@ -82,7 +82,7 @@ function [brs] = batcher()
 		nmi_std(i) = std(ba.NMI);
 	end
 
-	rmpath analyze;
+	rmpath batches;
 
 	printBatchResults(str, cri_mean, cri_std, nmi_mean, nmi_std);
 end

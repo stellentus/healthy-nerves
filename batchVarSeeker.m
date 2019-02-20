@@ -7,7 +7,7 @@ function [brs] = batchVarSeeker()
 
 	iters = 30;
 
-	addpath analyze;
+	addpath batches;
 
 	ba = BatchAnalyzer('Normative', iters, 3, [canValues; japValues; porValues], labels);
 	bas = [ba];
@@ -15,8 +15,6 @@ function [brs] = batchVarSeeker()
 		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s', measures(i)), [scaleVariance(canValues, 0.1, i); japValues; porValues])];
 		bas = [bas BACopyWithValues(ba, sprintf('Increase %s', measures(i)), [scaleVariance(canValues, 10, i); japValues; porValues])];
 	end
-
-	addpath import;
 	for plt = ["SR" "IV" "QT" "TEd" "TEh" "Meta" "RC" "all"];
 		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s plot', plt), [scaleVariance(canValues, 0.1, indicesForPlotNoTE20(plt)); japValues; porValues])];
 		bas = [bas BACopyWithValues(ba, sprintf('Increase %s plot', plt), [scaleVariance(canValues, 10, indicesForPlotNoTE20(plt)); japValues; porValues])];
@@ -25,7 +23,6 @@ function [brs] = batchVarSeeker()
 		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s channel', channel), [scaleVariance(canValues, 0.1, indicesForChannelNoTE20(channel)); japValues; porValues])];
 		bas = [bas BACopyWithValues(ba, sprintf('Increase %s channel', channel), [scaleVariance(canValues, 10, indicesForChannelNoTE20(channel)); japValues; porValues])];
 	end
-	rmpath import;
 
 	num = length(bas);
 	str = strings(1,num);
@@ -44,7 +41,7 @@ function [brs] = batchVarSeeker()
 		nmi_std(i) = std(ba.NMI);
 	end
 
-	rmpath analyze;
+	rmpath batches;
 
 	printBatchResults(str, cri_mean, cri_std, nmi_mean, nmi_std);
 end
