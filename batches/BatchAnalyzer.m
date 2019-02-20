@@ -13,20 +13,28 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		NMI
 	end
 	methods
-		function obj = BatchAnalyzer(name, iters, numGroups, values, labels)
-			obj.Name = name;
-			obj.Iters = iters;
-			obj.NumGroups = numGroups;
+		function obj = BatchAnalyzer(name, numGroups, values, varargin)
+			p = inputParser;
+			addRequired(p, 'name', @(x) isstring(x) || ischar(x));
+			addRequired(p, 'numGroups', @isnumeric);
+			addRequired(p, 'values', @ismatrix);
+			addOptional(p, 'labels', [], @(x) isinteger(x) || isnumeric(x));
+			addParameter(p, 'iters', 30, @isnumeric);
+			addParameter(p, 'clusterFunc', @kmeans);
+			addParameter(p, 'seed', 7738, @isnumeric);
+			parse(p, name, numGroups, values, varargin{:});
 
-			setValues(obj, values);
+			obj.Name = p.Results.name;
+			obj.Iters = p.Results.iters;
+			obj.NumGroups = p.Results.numGroups;
 
-			obj.FixedLabels = (nargin == 5);
-			if obj.FixedLabels
-				obj.Labels = labels;
-			end
+			setValues(obj, p.Results.values);
 
-			obj.ClusterFunc = @kmeans;
-			obj.Seed = 7738;
+			obj.Labels = p.Results.labels;
+			obj.FixedLabels = (length(obj.Labels) > 0);
+
+			obj.ClusterFunc = p.Results.clusterFunc;
+			obj.Seed = p.Results.seed;
 
 			obj.CRI = [];
 			obj.NMI = [];

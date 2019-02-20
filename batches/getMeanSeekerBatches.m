@@ -5,7 +5,7 @@ function [bas] = getMeanSeekerBatches(iters)
 	% Create a combined vector for labels (with all datasets)
 	labels = [ones(size(canValues, 1), 1); ones(size(japValues, 1), 1) * 2; repmat(3, size(porValues, 1), 1)];
 
-	ba = BatchAnalyzer('Normative', iters, 3, [canValues; japValues; porValues], labels);
+	ba = BatchAnalyzer("Normative", 3, [canValues; japValues; porValues], labels, 'iters', iters);
 	bas = [ba];
 	for i = [1:length(measures)]
 		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s', measures(i)), [scaleMean(canValues, 0.9, i); japValues; porValues])];

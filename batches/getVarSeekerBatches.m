@@ -7,7 +7,7 @@ function [bas] = getVarSeekerBatches(iters)
 
 	addpath batches;
 
-	ba = BatchAnalyzer('Normative', iters, 3, [canValues; japValues; porValues], labels);
+	ba = BatchAnalyzer('Normative', 3, [canValues; japValues; porValues], labels, 'iters', iters);
 	bas = [ba];
 	for i = [1:length(measures)]
 		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s', measures(i)), [scaleVariance(canValues, 0.1, i); japValues; porValues])];
