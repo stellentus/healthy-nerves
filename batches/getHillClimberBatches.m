@@ -14,21 +14,25 @@ function getHillClimberBatches(iters, useNMI)
 	labels = [ones(size(vals.can, 1), 1); ones(size(vals.jap, 1), 1) * 2; repmat(3, size(vals.por, 1), 1)];
 	numMeas = length(measures);
 
-	weight.Jap.Std = zeros(1, numMeas);
-	weight.Jap.Mn = zeros(1, numMeas);
-	weight.Por.Std = zeros(1, numMeas);
-	weight.Por.Mn = zeros(1, numMeas);
+	randLimit = 0.2;
+	weight.Jap.Std = -randLimit + (randLimit+randLimit)*rand(1, numMeas);
+	weight.Jap.Mn = -randLimit + (randLimit+randLimit)*rand(1, numMeas);
+	weight.Por.Std = -randLimit + (randLimit+randLimit)*rand(1, numMeas);
+	weight.Por.Mn = -randLimit + (randLimit+randLimit)*rand(1, numMeas);
 	printWeights(weight);
 
 	lastBestBatch = 1;
 	threshold = 1e-7;
 	mag = 0;
+
 	ba = BatchAnalyzer('Normative', 3, [vals.can; vals.jap; vals.por], labels, 'iters', iters);
 	thisBatch = batchVal(ba, useNMI);
-	fprintf("Batch effect is %.4f\n", thisBatch);
+	fprintf("Original batch effect is %.4f\n", thisBatch);
+	fprintf("Scaled batch effect is %.4f\n", batchVal(BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, weight.Jap.Std, weight.Jap.Mn); scaleValues(vals.por, weight.Por.Std, weight.Por.Mn)]), useNMI));
+
 	while abs(thisBatch - lastBestBatch) > threshold && mag < 20
 		lastBestBatch = thisBatch;
-		for i=1:numMeas
+		for i=randperm(numMeas)
 			[weight.Jap.Std(i), thisBatch] = optimize(ba, vals, useNMI, numMeas, weight.Jap.Std(i), weight, thisBatch, i, mag, @scaledBAJapStd, 'JapSt');
 			[weight.Jap.Mn(i), thisBatch] = optimize(ba, vals, useNMI, numMeas, weight.Jap.Mn(i), weight, thisBatch, i, mag, @scaledBAJapMn, 'JapMn');
 			[weight.Por.Std(i), thisBatch] = optimize(ba, vals, useNMI, numMeas, weight.Por.Std(i), weight, thisBatch, i, mag, @scaledBAPorStd, 'PorSt');
