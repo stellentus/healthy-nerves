@@ -1,22 +1,25 @@
 %% batcher detects batch effects.
-function batcher(action)
+function batcher(varargin)
+	p = inputParser;
+	addOptional(p, 'action', "stats", @(x) any(validatestring(x, {'stats', 'misc', 'var', 'mean'})));
+	addParameter(p, 'iter', 30, @isnumeric);
+	addParameter(p, 'printAsCSV', true, @islogical);
+	parse(p, varargin{:});
+
 	addpath batches;
 
-	iter = 30;
-	printAsCSV = true;
-
-	switch action
+	switch p.Results.action
 		case "stats"
 			printStats();
 			return;
 		case "misc"
-			bas = getMiscSeekerBatches(iter);
+			bas = getMiscSeekerBatches(p.Results.iter);
 		case "var"
-			bas = getVarSeekerBatches(iter);
+			bas = getVarSeekerBatches(p.Results.iter);
 		case "mean"
-			bas = getMeanSeekerBatches(iter);
+			bas = getMeanSeekerBatches(p.Results.iter);
 		otherwise
-			error(sprintf("%s is an invalid argument to batcher", action));
+			error(sprintf("%s is an invalid argument to batcher", p.Results.action));
 			return;
 	end
 
@@ -39,7 +42,7 @@ function batcher(action)
 
 	rmpath batches;
 
-	if printAsCSV
+	if p.Results.printAsCSV
 		printBatchResultsCSV(str, cri_mean, cri_std, nmi_mean, nmi_std);
 	else
 		printBatchResults(str, cri_mean, cri_std, nmi_mean, nmi_std);
