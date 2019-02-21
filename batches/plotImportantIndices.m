@@ -1,5 +1,5 @@
 %% plotImportantIndices plots the indices causing the most batching. It assumes it is receiving a bas calculated by getDeletedFeatureBatches.
-function plotImportantIndices(bas)
+function plotImportantIndices(bas, measures)
 	scores = zeros(1,31);
 	count = 0;
 	for i=2:length(bas)
@@ -16,13 +16,14 @@ function plotImportantIndices(bas)
 	scores = scores - bas(1).CRI_mean * count / 31;
 
 	[~, ind] = sort(scores);
-	disp(scores)
 
-	figref = figure('DefaultAxesFontSize', 18);
+	figref = figure();
 	bar(scores(ind));
-	xticklabels(ind)
+	xticklabels(measures(ind))
 	xticks(1:1:length(ind))
-	xtickangle(90)
+	xtickangle(45)
+	title("Measures Causing BE (Worst on Left)")
+	ylabel("Average change to CRI when index is removed")
 
 	pathstr = sprintf('img/impind-%d-%d-%d-%d%d%2.0f', clock);
 	savefig(figref, strcat(pathstr, '.fig', 'compact'));

@@ -77,7 +77,8 @@ function bas = batcher(varargin)
 	end
 
 	if p.Results.plotImportantIndices
-		plotImportantIndices(bas);
+		load('bin/batch-normative.mat');
+		plotImportantIndices(bas, measures);
 	end
 
 	rmpath batches;
