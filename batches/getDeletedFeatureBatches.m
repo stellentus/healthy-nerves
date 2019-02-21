@@ -1,4 +1,5 @@
 %% getDeletedFeatureBatches returns a list of BatchAnalyzer that delete each feature.
+% These results somewhat point to SDTC, Hyperpol I/V slope, TEd(10-20ms), TEd(90-100ms), and Age, but it's not really significant.
 function [bas] = getDeletedFeatureBatches(iters)
 	load('bin/batch-normative.mat');
 
