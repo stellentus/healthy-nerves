@@ -1,5 +1,5 @@
-function [brs] = printStats()
-	load('bin/batch-normative.mat');
+function [brs] = printStats(filepath)
+	load(filepath);
 
 	% Get and print count of each group and age range
 	canNum = printIndividualStats(canValues, 'Canada');

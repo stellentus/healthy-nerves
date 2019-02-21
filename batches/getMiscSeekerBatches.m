@@ -1,6 +1,6 @@
 %% getMiscSeekerBatches returns a list of BatchAnalyzer that try to seek out various types of batch effects.
-function [bas] = getMiscSeekerBatches(iters)
-	load('bin/batch-normative.mat');
+function [bas] = getMiscSeekerBatches(iters, filepath)
+	load(filepath);
 
 	canNum = size(canValues, 1);
 	japNum = size(japValues, 1);

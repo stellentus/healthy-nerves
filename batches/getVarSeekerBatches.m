@@ -1,6 +1,6 @@
 %% getVarSeekerBatches returns a list of BatchAnalyzer that try to seek out the indices with the strongest variance-induced batch effects.
-function [bas] = getVarSeekerBatches(iters)
-	load('bin/batch-normative.mat');
+function [bas] = getVarSeekerBatches(iters, filepath)
+	load(filepath);
 
 	% Create a combined vector for labels (with all datasets)
 	labels = [ones(size(canValues, 1), 1); ones(size(japValues, 1), 1) * 2; repmat(3, size(porValues, 1), 1)];

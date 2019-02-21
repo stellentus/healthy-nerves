@@ -1,10 +1,10 @@
 %% getHillClimberBatches returns a list of BatchAnalyzer that try to seek out a transformation that minimizes the batch effects.
-function getHillClimberBatches(iters, useNMI)
-	if nargin < 2
+function getHillClimberBatches(iters, filepath, useNMI)
+	if nargin < 3
 		useNMI = false;
 	end
 
-	load('bin/batch-normative.mat');
+	load(filepath);
 	vals.can = canValues;
 	vals.jap = japValues;
 	vals.por = porValues;

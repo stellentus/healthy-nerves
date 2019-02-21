@@ -1,6 +1,6 @@
 %% getAgeMatchedBatches returns a list of BatchAnalyzer that use age-matched groups from the countries.
-function [bas] = getAgeMatchedBatches(iters)
-	load('bin/batch-normative.mat');
+function [bas] = getAgeMatchedBatches(iters, filepath)
+	load(filepath);
 
 	% Drop some rows so the histograms are more balanced by age
 	[canValues, japValues, porValues] = matchAges(canValues, japValues, porValues);

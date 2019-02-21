@@ -1,6 +1,6 @@
 %% getMeanSeekerBatches returns a list of BatchAnalyzer that try to seek out the indices with the strongest mean-induced batch effects.
-function [bas] = getMeanSeekerBatches(iters)
-	load('bin/batch-normative.mat');
+function [bas] = getMeanSeekerBatches(iters, filepath)
+	load(filepath);
 
 	% Create a combined vector for labels (with all datasets)
 	labels = [ones(size(canValues, 1), 1); ones(size(japValues, 1), 1) * 2; repmat(3, size(porValues, 1), 1)];

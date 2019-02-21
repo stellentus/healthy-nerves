@@ -9,27 +9,28 @@ function bas = batcher(varargin)
 	addParameter(p, 'printPercent', 100, @(x) isnumeric(x) && x>0 && x<=100); % Percent of results to print
 	addParameter(p, 'sortStat', "CRI", @(x) any(validatestring(x, {'CRI', 'NMI'})));
 	addParameter(p, 'sortOrder', "ascend", @(x) any(validatestring(x, {'ascend', 'descend'})));
+	addParameter(p, 'file', "bin/batch-normative.mat", @isstring);
 	parse(p, varargin{:});
 
 	addpath batches;
 
 	switch p.Results.action
 		case "stats"
-			printStats();
+			printStats(p.Results.file);
 			bas = []; % Not used
 			return;
 		case "age"
-			bas = getAgeMatchedBatches(p.Results.iter);
+			bas = getAgeMatchedBatches(p.Results.iter, p.Results.file);
 		case "misc"
-			bas = getMiscSeekerBatches(p.Results.iter);
+			bas = getMiscSeekerBatches(p.Results.iter, p.Results.file);
 		case "var"
-			bas = getVarSeekerBatches(p.Results.iter);
+			bas = getVarSeekerBatches(p.Results.iter, p.Results.file);
 		case "mean"
-			bas = getMeanSeekerBatches(p.Results.iter);
+			bas = getMeanSeekerBatches(p.Results.iter, p.Results.file);
 		case "del"
-			bas = getDeletedFeatureBatches(p.Results.iter, p.Results.args);
+			bas = getDeletedFeatureBatches(p.Results.iter, p.Results.file, p.Results.args);
 		case "hill"
-			getHillClimberBatches(p.Results.iter);
+			getHillClimberBatches(p.Results.iter, p.Results.file);
 			bas = []; % Not used
 			return;
 		otherwise
@@ -79,7 +80,7 @@ function bas = batcher(varargin)
 	end
 
 	if p.Results.plotImportantIndices
-		load('bin/batch-normative.mat');
+		load(p.Results.file);
 		plotImportantIndices(bas, measures);
 	end
 

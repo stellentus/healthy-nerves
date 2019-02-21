@@ -1,8 +1,8 @@
 %% getDeletedFeatureBatches returns a list of BatchAnalyzer that delete each feature.
 % These results somewhat point to SDTC, Hyperpol I/V slope, TEd(10-20ms), TEd(90-100ms), and Age, but it's not really significant.
 %% arg.toDelete is the number of indices to delete (default 1).
-function [bas] = getDeletedFeatureBatches(iters, arg)
-	load('bin/batch-normative.mat');
+function [bas] = getDeletedFeatureBatches(iters, filepath, arg)
+	load(filepath);
 
 	if nargin < 2
 		arg = struct();
