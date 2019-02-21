@@ -4,6 +4,7 @@ function bas = batcher(varargin)
 	addOptional(p, 'action', "stats", @(x) any(validatestring(x, {'stats', 'misc', 'var', 'mean', 'del', 'hill'})));
 	addParameter(p, 'iter', 30, @isnumeric);
 	addParameter(p, 'printAsCSV', true, @islogical);
+	addParameter(p, 'plotImportantIndices', false, @islogical); % This only works with 'action'=='del'
 	addParameter(p, 'args', struct(), @isstruct); % Passed to other functions; not always used
 	addParameter(p, 'printPercent', 100, @(x) isnumeric(x) && x>0 && x<=100); % Percent of results to print
 	addParameter(p, 'sortStat', "CRI", @(x) any(validatestring(x, {'CRI', 'NMI'})));
@@ -73,6 +74,10 @@ function bas = batcher(varargin)
 		meanBA.NMI_mean = mean([bas.NMI_mean]);
 		meanBA.NMI_std = mean([bas.NMI_std]);
 		disp(BAString(meanBA, padLen, p.Results.printAsCSV));
+	end
+
+	if p.Results.plotImportantIndices
+		plotImportantIndices(bas);
 	end
 
 	rmpath batches;
