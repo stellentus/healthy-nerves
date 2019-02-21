@@ -10,7 +10,11 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		Labels
 		FixedLabels
 		CRI
+		CRI_mean
+		CRI_std
 		NMI
+		NMI_mean
+		NMI_std
 	end
 	methods
 		function obj = BatchAnalyzer(name, numGroups, values, varargin)
@@ -82,6 +86,11 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			end
 			rmpath lib/rand_index;
 			rmpath lib/info_entropy;
+
+			obj.CRI_mean = mean(obj.CRI);
+			obj.CRI_std = std(obj.CRI);
+			obj.NMI_mean = mean(obj.NMI);
+			obj.NMI_std = std(obj.NMI);
 		end
 		function str = BAString(obj, padLen, asCSV)
 			if nargin < 3
@@ -97,7 +106,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 				formatStr = '%s | % .3f (%.3f) | % .3f (%.3f) ';
 			end
 
-			str = sprintf(formatStr, pad(obj.Name, padLen), mean(obj.CRI), std(obj.CRI), mean(obj.NMI), std(obj.NMI));
+			str = sprintf(formatStr, pad(obj.Name, padLen), obj.CRI_mean, obj.CRI_std, obj.NMI_mean, obj.NMI_std);
 		end
 	end
 end
