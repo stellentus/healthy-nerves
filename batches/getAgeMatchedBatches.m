@@ -15,16 +15,11 @@ function [bas] = getAgeMatchedBatches(iters)
 	values = [canValues; japValues; porValues];
 
 	ba = BatchAnalyzer("Age-matched data", 3, values, labels, 'iters', iters);
-	bas = [
-		% Test the normative data
-		ba;
+	bas = [ba];
 
-		% Remove each type to see how things change
-		% Conclusion with normalization: There isn't a batch between J and P, there might be one between C and P, and there's definitely one between C and J. But in all cases it's small.
-		BatchAnalyzer("No Can", 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2], 'iters', iters);
-		BatchAnalyzer("No Jap", 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2], 'iters', iters);
-		BatchAnalyzer("No Por", 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2], 'iters', iters);
-	];
+	bas = [bas BatchAnalyzer("No Can", 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2], 'iters', iters)];
+	bas = [bas BatchAnalyzer("No Jap", 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2], 'iters', iters)];
+	bas = [bas BatchAnalyzer("No Por", 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2], 'iters', iters)];
 end
 
 function [canAgeValues, japAgeValues, porAgeValues] = matchAges(canValues, japValues, porValues)
