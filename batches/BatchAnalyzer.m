@@ -83,5 +83,21 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			rmpath lib/rand_index;
 			rmpath lib/info_entropy;
 		end
+		function str = BAString(obj, padLen, asCSV)
+			if nargin < 3
+				asCSV = false
+				if nargin < 2
+					padLen = 0;
+				end
+			end
+
+			if asCSV
+				formatStr = '%s , % .3f , %.3f , % .3f , %.3f ';
+			else
+				formatStr = '%s | % .3f (%.3f) | % .3f (%.3f) ';
+			end
+
+			str = sprintf(formatStr, pad(obj.Name, padLen), mean(obj.CRI), std(obj.CRI), mean(obj.NMI), std(obj.NMI));
+		end
 	end
 end
