@@ -5,6 +5,8 @@ function bas = batcher(varargin)
 	addParameter(p, 'iter', 30, @isnumeric);
 	addParameter(p, 'printAsCSV', true, @islogical);
 	addParameter(p, 'args', struct(), @isstruct); % Passed to other functions; not always used
+	addParameter(p, 'printPercent', 100, @(x) isnumeric(x) && x>0 && x<=100); % Percent of results to print
+	addParameter(p, 'sortStat', "CRI", @(x) any(validatestring(x, {'CRI', 'NMI'})));
 	parse(p, varargin{:});
 
 	addpath batches;
@@ -32,11 +34,41 @@ function bas = batcher(varargin)
 			return;
 	end
 
-	num = length(bas);
+	if p.Results.printPercent == 100
+		padLen = printHeader(bas, p.Results.printAsCSV);
+	end
 
+	% Calculate BE and print
+	for i = 1:length(bas)
+		ba = bas(i);
+		calculateBatch(ba);
+		if p.Results.printPercent == 100
+			disp(BAString(ba, padLen, p.Results.printAsCSV));
+		end
+	end
+
+	if p.Results.printPercent < 100
+		if strcmp(p.Results.sortStat, "CRI")
+			[~, ind] = sort([bas.CRI_mean]);
+		else
+			[~, ind] = sort([bas.NMI_mean]);
+		end
+
+		maxIndex = round(length(bas)*p.Results.printPercent/100);
+
+		padLen = printHeader(bas(ind(1:maxIndex)), p.Results.printAsCSV);
+		for i=1:maxIndex
+			disp(BAString(bas(ind(i)), padLen, p.Results.printAsCSV));
+		end
+	end
+
+	rmpath batches;
+end
+
+function padLen = printHeader(bas, printAsCSV)
 	% Get length of longest string for padding purposes
 	padLen = 0;
-	for i = 1:num
+	for i = 1:length(bas)
 		slen = strlength(bas(i).Name);
 		if slen > padLen
 			padLen = slen;
@@ -44,28 +76,11 @@ function bas = batcher(varargin)
 	end
 
 	% Print the table header
-	if p.Results.printAsCSV
-		printHeaderCSV(padLen);
+	if printAsCSV
+		fprintf('%s , CRI    ,CRIstd , NMI    ,NMIstd \n', pad("Name", padLen));
+		fprintf('%s , ------ , ----- , ------ , ----- \n', strrep(pad(" ", padLen), " ", "-"));
 	else
-		printHeader(padLen);
+		fprintf('%s |  CRI (std)     |  NMI (std)     \n', pad("Name", padLen));
+		fprintf('%s | -------------- | -------------- \n', strrep(pad(" ", padLen), " ", "-"));
 	end
-
-	% Calculate BE and print
-	for i = 1:num
-		ba = bas(i);
-		calculateBatch(ba);
-		disp(BAString(ba, padLen, p.Results.printAsCSV));
-	end
-
-	rmpath batches;
-end
-
-function printHeader(padLen)
-	fprintf('%s |  CRI (std)     |  NMI (std)     \n', pad("Name", padLen));
-	fprintf('%s | -------------- | -------------- \n', strrep(pad(" ", padLen), " ", "-"));
-end
-
-function printHeaderCSV(padLen)
-	fprintf('%s , CRI    ,CRIstd , NMI    ,NMIstd \n', pad("Name", padLen));
-	fprintf('%s , ------ , ----- , ------ , ----- \n', strrep(pad(" ", padLen), " ", "-"));
 end
