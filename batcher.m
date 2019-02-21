@@ -59,10 +59,11 @@ function bas = batcher(varargin)
 		end
 
 		maxIndex = round(length(bas)*p.Results.printPercent/100);
+		sortedBas = bas(ind(1:maxIndex));
 
-		padLen = printHeader(bas(ind(1:maxIndex)), p.Results.printAsCSV);
+		padLen = printHeader(sortedBas, p.Results.printAsCSV);
 		for i=1:maxIndex
-			disp(BAString(bas(ind(i)), padLen, p.Results.printAsCSV));
+			disp(BAString(sortedBas(i), padLen, p.Results.printAsCSV));
 		end
 	end
 
