@@ -13,10 +13,16 @@ function plotImportantIndices(bas)
 	end
 
 	[~, ind] = sort(scores);
+
+	figref = figure('DefaultAxesFontSize', 18);
 	bar(scores(ind));
 	xticklabels(ind)
 	xticks(1:1:length(ind))
 	xtickangle(90)
+
+	pathstr = sprintf('img/impind-%d-%d-%d-%d%d%2.0f', clock);
+	savefig(figref, strcat(pathstr, '.fig', 'compact'));
+	saveas(figref, strcat(pathstr, '.png'));
 end
 
 % This results in the following indices, starting with the ones causing the most batching (when 3 are removed):
