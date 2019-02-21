@@ -30,11 +30,6 @@ function batcher(varargin)
 	end
 
 	num = length(bas);
-	str = strings(1,num);
-	cri_mean = zeros(1,num);
-	cri_std = zeros(1,num);
-	nmi_mean = zeros(1,num);
-	nmi_std = zeros(1,num);
 
 	% Get length of longest string for padding purposes
 	padLen = 0;
