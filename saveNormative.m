@@ -1,9 +1,12 @@
 % saveNormative multiple datasets and confirms they can be concatenated.
 function saveNormative(pathPrefix, nanMethod)
-	if nargin < 2
+	if nargin < 3
 		nanMethod = 'IterateRegr';
-		if nargin < 1
+		if nargin < 2
 			pathPrefix = 'data/';
+			if nargin < 1
+				savefilepath = 'bin/batch-normative.mat';
+			end
 		end
 	end
 
@@ -45,7 +48,7 @@ function saveNormative(pathPrefix, nanMethod)
 	porValues = fillWithMethod(porValues, nanMethod, true);
 	rmpath missing;
 
-	save('bin/batch-normative.mat', 'canValues', 'canParticipants', 'japValues', 'japParticipants', 'porValues', 'porParticipants', 'legValues', 'legParticipants', 'measures', 'nanMethod')
+	save(savefilepath, 'canValues', 'canParticipants', 'japValues', 'japParticipants', 'porValues', 'porParticipants', 'legValues', 'legParticipants', 'measures', 'nanMethod')
 end
 
 function [flatVals, flatParts] = flattenStructs(structVals, structParts)
