@@ -63,7 +63,6 @@ function getHillClimberBatches(iters, useNMI)
 	[weight(2,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(2,i), weight, thisBatch, i, mag, @scaledBAJapMn, 'JapMn');
 	[weight(3,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(3,i), weight, thisBatch, i, mag, @scaledBAPorStd, 'PorSt');
 	[weight(4,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(4,i), weight, thisBatch, i, mag, @scaledBAPorMn, 'PorMn');
-	zeroedBatch = batchVal(scaledBA(ba, vals, weight), useNMI);
 	printWeights(weight, 7);
 	fprintf("Run-again BE is %.7f instead of zeroed %.7f\n", thisBatch, zeroedBatch);
 end
