@@ -14,7 +14,7 @@ function [bas] = getAgeMatchedBatches(iters)
 	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
 	values = [canValues; japValues; porValues];
 
-	ba = BatchAnalyzer("Normative data", 3, values, labels, 'iters', iters);
+	ba = BatchAnalyzer("Age-matched data", 3, values, labels, 'iters', iters);
 	bas = [
 		% Test the normative data
 		ba;
