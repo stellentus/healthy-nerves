@@ -22,10 +22,10 @@
 % OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 % OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-function [L,C] = kmeans(X,k)
+function [L,C] = fkmeans(X,k)
 %KMEANS Cluster multivariate data using the k-means++ algorithm.
-%   [L,C] = kmeans(X,k) produces a 1-by-size(X,2) vector L with one class
-%   label per column in X and a size(X,1)-by-k matrix C containing the
+%   [L,C] = kmeans(X,k) produces a 1-by-size(X,1) vector L with one class
+%   label per row in X and a size(X,2)-by-k matrix C containing the
 %   centers corresponding to each class.
 %   Version: 2013-02-08
 %   Authors: Laurent Sorber (Laurent.Sorber@cs.kuleuven.be)
@@ -39,6 +39,7 @@ function [L,C] = kmeans(X,k)
 %       Careful Seeding", Technical Report 2006-13, Stanford InfoLab, 2006.
 L = [];
 L1 = 0;
+X=X';
 while length(unique(L)) ~= k
 
     % The k-means++ initialization.
