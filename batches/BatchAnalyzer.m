@@ -24,7 +24,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			addRequired(p, 'values', @ismatrix);
 			addOptional(p, 'labels', [], @(x) isinteger(x) || isnumeric(x));
 			addParameter(p, 'iters', 30, @isnumeric);
-			addParameter(p, 'clusterFunc', @kmeans);
+			addParameter(p, 'clusterFunc', @fkmeans);
 			addParameter(p, 'seed', 7738, @isnumeric);
 			parse(p, name, numGroups, values, varargin{:});
 
@@ -64,6 +64,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 
 			addpath lib/rand_index;
 			addpath lib/info_entropy;
+			addpath lib;
 			for i=1:obj.Iters
 				% Create the clustered groups
 				if obj.RandomIndices
@@ -86,6 +87,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			end
 			rmpath lib/rand_index;
 			rmpath lib/info_entropy;
+			rmpath lib;
 
 			obj.CRI_mean = mean(obj.CRI);
 			obj.CRI_std = std(obj.CRI);
