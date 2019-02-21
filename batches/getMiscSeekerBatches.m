@@ -1,4 +1,4 @@
-%% getVarSeekerBatches returns a list of BatchAnalyzer that try to seek out various types of batch effects.
+%% getMiscSeekerBatches returns a list of BatchAnalyzer that try to seek out various types of batch effects.
 function [bas] = getMiscSeekerBatches(iters)
 	load('bin/batch-normative.mat');
 
