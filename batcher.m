@@ -1,7 +1,7 @@
 %% batcher detects batch effects.
 function bas = batcher(varargin)
 	p = inputParser;
-	addOptional(p, 'action', "stats", @(x) any(validatestring(x, {'stats', 'misc', 'var', 'mean', 'del', 'hill'})));
+	addOptional(p, 'action', "stats", @(x) any(validatestring(x, {'stats', 'age', 'misc', 'var', 'mean', 'del', 'hill'})));
 	addParameter(p, 'iter', 30, @isnumeric);
 	addParameter(p, 'printAsCSV', true, @islogical);
 	addParameter(p, 'plotImportantIndices', false, @islogical); % This only works with 'action'=='del'
@@ -18,6 +18,8 @@ function bas = batcher(varargin)
 			printStats();
 			bas = []; % Not used
 			return;
+		case "age"
+			bas = getAgeMatchedBatches(p.Results.iter);
 		case "misc"
 			bas = getMiscSeekerBatches(p.Results.iter);
 		case "var"
