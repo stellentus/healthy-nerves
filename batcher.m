@@ -68,10 +68,10 @@ function bas = batcher(varargin)
 
 		% Now print the mean values for a reference point
 		meanBA = BatchAnalyzer("Means", 3, []);
-		meanBA.CRI_mean = mean([sortedBas.CRI_mean]);
-		meanBA.CRI_std = mean([sortedBas.CRI_std]);
-		meanBA.NMI_mean = mean([sortedBas.NMI_mean]);
-		meanBA.NMI_std = mean([sortedBas.NMI_std]);
+		meanBA.CRI_mean = mean([bas.CRI_mean]);
+		meanBA.CRI_std = mean([bas.CRI_std]);
+		meanBA.NMI_mean = mean([bas.NMI_mean]);
+		meanBA.NMI_std = mean([bas.NMI_std]);
 		disp(BAString(meanBA, padLen, p.Results.printAsCSV));
 	end
 
