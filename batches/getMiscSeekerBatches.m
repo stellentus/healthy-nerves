@@ -24,6 +24,7 @@ function [bas] = getMiscSeekerBatches(iters)
 
 		% Confirm that random and perfectly batched data work as expected
 		BatchAnalyzer("Random labels", 3, values, 'iters', iters);
+		BatchAnalyzer("Random labels (J+P)", 2, [japValues; porValues], 'iters', iters);
 		% BatchAnalyzer("Batched data", 3, length(labels), 'iters', iters); % Instead of passing any data at all, request both arrays to be identical random indices
 
 		% Show larger batches with CP instead of median
