@@ -1,5 +1,5 @@
 %% batcher detects batch effects.
-function batcher(varargin)
+function bas = batcher(varargin)
 	p = inputParser;
 	addOptional(p, 'action', "stats", @(x) any(validatestring(x, {'stats', 'misc', 'var', 'mean', 'del', 'hill'})));
 	addParameter(p, 'iter', 30, @isnumeric);
@@ -12,6 +12,7 @@ function batcher(varargin)
 	switch p.Results.action
 		case "stats"
 			printStats();
+			bas = []; % Not used
 			return;
 		case "misc"
 			bas = getMiscSeekerBatches(p.Results.iter);
@@ -23,9 +24,11 @@ function batcher(varargin)
 			bas = getDeletedFeatureBatches(p.Results.iter, p.Results.args);
 		case "hill"
 			getHillClimberBatches(p.Results.iter);
+			bas = []; % Not used
 			return;
 		otherwise
 			error(sprintf("%s is an invalid argument to batcher", p.Results.action));
+			bas = []; % Not used
 			return;
 	end
 
