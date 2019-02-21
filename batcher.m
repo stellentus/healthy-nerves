@@ -7,6 +7,7 @@ function bas = batcher(varargin)
 	addParameter(p, 'args', struct(), @isstruct); % Passed to other functions; not always used
 	addParameter(p, 'printPercent', 100, @(x) isnumeric(x) && x>0 && x<=100); % Percent of results to print
 	addParameter(p, 'sortStat', "CRI", @(x) any(validatestring(x, {'CRI', 'NMI'})));
+	addParameter(p, 'sortOrder', "ascend", @(x) any(validatestring(x, {'ascend', 'descend'})));
 	parse(p, varargin{:});
 
 	addpath batches;
@@ -52,6 +53,9 @@ function bas = batcher(varargin)
 			[~, ind] = sort([bas.CRI_mean]);
 		else
 			[~, ind] = sort([bas.NMI_mean]);
+		end
+		if strcmp(p.Results.sortOrder, "descend")
+			ind = fliplr(ind);
 		end
 
 		maxIndex = round(length(bas)*p.Results.printPercent/100);
