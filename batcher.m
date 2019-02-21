@@ -1,7 +1,7 @@
 %% batcher detects batch effects.
 function batcher(varargin)
 	p = inputParser;
-	addOptional(p, 'action', "stats", @(x) any(validatestring(x, {'stats', 'misc', 'var', 'mean', 'hill'})));
+	addOptional(p, 'action', "stats", @(x) any(validatestring(x, {'stats', 'misc', 'var', 'mean', 'del', 'hill'})));
 	addParameter(p, 'iter', 30, @isnumeric);
 	addParameter(p, 'printAsCSV', true, @islogical);
 	parse(p, varargin{:});
@@ -18,6 +18,8 @@ function batcher(varargin)
 			bas = getVarSeekerBatches(p.Results.iter);
 		case "mean"
 			bas = getMeanSeekerBatches(p.Results.iter);
+		case "del"
+			bas = getDeletedFeatureBatches(p.Results.iter);
 		case "hill"
 			getHillClimberBatches(p.Results.iter);
 			return;
