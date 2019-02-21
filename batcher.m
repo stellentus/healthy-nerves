@@ -4,6 +4,7 @@ function batcher(varargin)
 	addOptional(p, 'action', "stats", @(x) any(validatestring(x, {'stats', 'misc', 'var', 'mean', 'del', 'hill'})));
 	addParameter(p, 'iter', 30, @isnumeric);
 	addParameter(p, 'printAsCSV', true, @islogical);
+	addParameter(p, 'args', struct(), @isstruct); % Passed to other functions; not always used
 	parse(p, varargin{:});
 
 	addpath batches;
@@ -19,7 +20,7 @@ function batcher(varargin)
 		case "mean"
 			bas = getMeanSeekerBatches(p.Results.iter);
 		case "del"
-			bas = getDeletedFeatureBatches(p.Results.iter);
+			bas = getDeletedFeatureBatches(p.Results.iter, p.Results.args);
 		case "hill"
 			getHillClimberBatches(p.Results.iter);
 			return;
