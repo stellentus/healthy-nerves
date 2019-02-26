@@ -86,7 +86,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 				obj.CRI = [obj.CRI rand_index(thisIterLabels, idx, 'adjusted')];
 
 				% Calculate and append the normalized mutual information; 0 indicates to batch effects while (I think) 1 is perfect batches.
-				obj.NMI = [obj.NMI nmi(obj.Labels, idx)];
+				obj.NMI = [obj.NMI nmi(thisIterLabels, idx)];
 			end
 			rmpath lib/rand_index;
 			rmpath lib/info_entropy;
