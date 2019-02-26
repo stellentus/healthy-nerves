@@ -7,6 +7,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		NumGroups
 		Values
 		UseRandomIndices
+		SampleFraction
 		Labels
 		FixedLabels
 		CRI
@@ -24,6 +25,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			addRequired(p, 'values', @ismatrix);
 			addOptional(p, 'labels', [], @(x) isinteger(x) || isnumeric(x));
 			addParameter(p, 'iters', 30, @isnumeric);
+			addParameter(p, 'sampleFraction', 1, @isnumeric);
 			addParameter(p, 'clusterFunc', @fkmeans);
 			addParameter(p, 'seed', 7738, @isnumeric);
 			parse(p, name, numGroups, values, varargin{:});
@@ -42,6 +44,8 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 
 			obj.CRI = [];
 			obj.NMI = [];
+
+			obj.SampleFraction = p.Results.sampleFraction;
 		end
 		function obj = setValues(obj, values)
 			obj.UseRandomIndices = (numel(values) == 1);
@@ -69,6 +73,13 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			addpath lib/info_entropy;
 			addpath lib;
 			for i=1:obj.Iters
+				if obj.SampleFraction < 1
+					len = size(obj.Values, 1);
+					indices = randi(len, 1, round(obj.SampleFraction * len)); % Sample with replacement
+					thisIterVals = obj.Values(indices, :);
+					thisIterLabels = obj.Labels(indices);
+				end
+
 				% Create the clustered groups
 				if obj.UseRandomIndices
 					idx = randi([1 obj.NumGroups], 1, length(thisIterVals));
