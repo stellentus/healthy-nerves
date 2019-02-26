@@ -71,7 +71,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			for i=1:obj.Iters
 				% Create the clustered groups
 				if obj.UseRandomIndices
-					idx = randi([1 obj.NumGroups], 1, thisIterVals);
+					idx = randi([1 obj.NumGroups], 1, length(thisIterVals));
 					if ~obj.FixedLabels
 						thisIterLabels = idx;
 					end
