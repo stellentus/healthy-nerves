@@ -6,8 +6,6 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		ClusterFunc
 		NumGroups
 		Values
-		ValueIndices
-		UseValueIndices
 		UseRandomIndices
 		Labels
 		FixedLabels
@@ -25,7 +23,6 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			addRequired(p, 'numGroups', @isnumeric);
 			addRequired(p, 'values', @ismatrix);
 			addOptional(p, 'labels', [], @(x) isinteger(x) || isnumeric(x));
-			addParameter(p, 'indices', {}, @(x) iscell(x) && isnumeric(x{1}) && length(x{1}) > 1); % Test that this is a cell array with numeric elements with a length of at least 1
 			addParameter(p, 'iters', 30, @isnumeric);
 			addParameter(p, 'clusterFunc', @fkmeans);
 			addParameter(p, 'seed', 7738, @isnumeric);
@@ -34,24 +31,6 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			obj.Name = p.Results.name;
 			obj.Iters = p.Results.iters;
 			obj.NumGroups = p.Results.numGroups;
-
-			obj.Indices = p.Results.indices;
-			indLen = length(obj.Indices);
-			if indLen > 0
-				obj.UseValueIndices = true;
-				if indLen ~= p.Results.iters
-					error(sprintf("Indices should be length %d, not whatever we got", p.Results.iters, obj.Indices));
-					return;
-				end
-				for i = 1:indLen
-					if ~(isnumeric(obj.Indices{i}) && length(obj.Indices{i}) > 1)
-						error(sprintf("The indices at %d have a length of %d", i, length(obj.Indices{i}));
-						return;
-					end
-				end
-			else
-				obj.UseValueIndices = false;
-			end
 
 			setValues(obj, p.Results.values);
 
@@ -90,11 +69,6 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			addpath lib/info_entropy;
 			addpath lib;
 			for i=1:obj.Iters
-				if obj.UseValueIndices
-					thisIterVals = obj.Values(obj.ValueIndices{i}, :);
-					thisIterLabels = obj.Labels(obj.ValueIndices{i});
-				end
-
 				% Create the clustered groups
 				if obj.UseRandomIndices
 					idx = randi([1 obj.NumGroups], 1, thisIterVals);
