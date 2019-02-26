@@ -6,7 +6,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		ClusterFunc
 		NumGroups
 		Values
-		RandomIndices
+		UseRandomIndices
 		Labels
 		FixedLabels
 		CRI
@@ -44,8 +44,8 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			obj.NMI = [];
 		end
 		function obj = setValues(obj, values)
-			obj.RandomIndices = (numel(values) == 1);
-			if ~obj.RandomIndices
+			obj.UseRandomIndices = (numel(values) == 1);
+			if ~obj.UseRandomIndices
 				% Zero mean unit variance
 				obj.Values = bsxfun(@rdivide, values - mean(values), std(values));
 			else
@@ -67,7 +67,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			addpath lib;
 			for i=1:obj.Iters
 				% Create the clustered groups
-				if obj.RandomIndices
+				if obj.UseRandomIndices
 					idx = randi([1 obj.NumGroups], 1, obj.Values);
 					if ~obj.FixedLabels
 						obj.Labels = idx;
