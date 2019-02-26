@@ -73,23 +73,26 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			addpath lib/info_entropy;
 			addpath lib;
 			for i=1:obj.Iters
+				len = size(obj.Values, 1);
 				if obj.SampleFraction < 1
-					len = size(obj.Values, 1);
-					indices = randi(len, 1, round(obj.SampleFraction * len)); % Sample with replacement
+					len = round(obj.SampleFraction * len);
+					indices = randi(size(obj.Values, 1), 1, len); % Sample with replacement
 					thisIterVals = obj.Values(indices, :);
-					thisIterLabels = obj.Labels(indices);
+					if obj.FixedLabels
+						thisIterLabels = obj.Labels(indices);
+					end
 				end
 
 				% Create the clustered groups
 				if obj.UseRandomIndices
-					idx = randi([1 obj.NumGroups], 1, length(thisIterVals));
+					idx = randi([1 obj.NumGroups], 1, len);
 					if ~obj.FixedLabels
 						thisIterLabels = idx;
 					end
 				else
 					idx = obj.ClusterFunc(thisIterVals, obj.NumGroups);
 					if ~obj.FixedLabels
-						thisIterLabels = randi([1 obj.NumGroups], 1, length(thisIterVals));
+						thisIterLabels = randi([1 obj.NumGroups], 1, len);
 					end
 				end
 
