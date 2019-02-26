@@ -62,25 +62,28 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 				rng(obj.Seed); % Ensure all start with the same seed
 			end
 
+			thisIterVals = obj.Values;
+			thisIterLabels = obj.Labels;
+
 			addpath lib/rand_index;
 			addpath lib/info_entropy;
 			addpath lib;
 			for i=1:obj.Iters
 				% Create the clustered groups
 				if obj.UseRandomIndices
-					idx = randi([1 obj.NumGroups], 1, obj.Values);
+					idx = randi([1 obj.NumGroups], 1, thisIterVals);
 					if ~obj.FixedLabels
-						obj.Labels = idx;
+						thisIterLabels = idx;
 					end
 				else
-					idx = obj.ClusterFunc(obj.Values, obj.NumGroups);
+					idx = obj.ClusterFunc(thisIterVals, obj.NumGroups);
 					if ~obj.FixedLabels
-						obj.Labels = randi([1 obj.NumGroups], 1, length(obj.Values));
+						thisIterLabels = randi([1 obj.NumGroups], 1, length(thisIterVals));
 					end
 				end
 
 				% Calculate and append corrected rand index; 0 indicates no batch effects while 1 is perfect batches.
-				obj.CRI = [obj.CRI rand_index(obj.Labels, idx, 'adjusted')];
+				obj.CRI = [obj.CRI rand_index(thisIterLabels, idx, 'adjusted')];
 
 				% Calculate and append the normalized mutual information; 0 indicates to batch effects while (I think) 1 is perfect batches.
 				obj.NMI = [obj.NMI nmi(obj.Labels, idx)];
