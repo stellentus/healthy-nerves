@@ -2,7 +2,7 @@
 function bas = batcher(varargin)
 	p = inputParser;
 	addOptional(p, 'action', "stats", @(x) any(validatestring(x, {'stats', 'age', 'misc', 'var', 'mean', 'del', 'hill'})));
-	addParameter(p, 'iter', 30, @isnumeric);
+	addParameter(p, 'iter', 5, @isnumeric);
 	addParameter(p, 'printAsCSV', true, @islogical);
 	addParameter(p, 'plotImportantIndices', false, @islogical); % This only works with 'action'=='del'
 	addParameter(p, 'args', struct(), @isstruct); % Passed to other functions; not always used

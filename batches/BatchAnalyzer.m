@@ -26,7 +26,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			addOptional(p, 'labels', [], @(x) isinteger(x) || isnumeric(x));
 			addParameter(p, 'iters', 30, @isnumeric);
 			addParameter(p, 'sampleFraction', 1, @isnumeric);
-			addParameter(p, 'clusterFunc', @fkmeans);
+			addParameter(p, 'clusterFunc', @linkageCluster);
 			addParameter(p, 'seed', 7738, @isnumeric);
 			parse(p, name, numGroups, values, varargin{:});
 
