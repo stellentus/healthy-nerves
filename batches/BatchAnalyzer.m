@@ -152,7 +152,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 					if numLabels > 3
 						warning("HELL is only valid for up to 3 labels");
 					else
-						hd = hellingerFromMatrixSimpleTriple(x, y, z);
+						hd = hellingerFromMatrixSimple(x, y, z);
 					end
 				else
 					hd = hellingerFromMatrixSimple(x, y);
