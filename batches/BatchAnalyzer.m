@@ -6,6 +6,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		ClusterFunc
 		NumGroups
 		Values
+		ZMUVValues
 		UseRandomIndices
 		SampleFraction
 		Labels
@@ -52,12 +53,13 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			obj.SampleFraction = p.Results.sampleFraction;
 		end
 		function obj = setValues(obj, values)
+			obj.Values = values;
 			obj.UseRandomIndices = (numel(values) == 1);
 			if ~obj.UseRandomIndices
 				% Zero mean unit variance
-				obj.Values = bsxfun(@rdivide, values - mean(values), std(values));
+				obj.ZMUVValues = bsxfun(@rdivide, values - mean(values), std(values));
 			else
-				obj.Values = values;
+				obj.ZMUVValues = values;
 			end
 		end
 		function ba = BACopyWithValues(obj, name, values)
@@ -93,7 +95,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 						thisIterLabels = idx;
 					end
 				else
-					idx = obj.ClusterFunc(obj.Values(indices, :), obj.NumGroups);
+					idx = obj.ClusterFunc(obj.ZMUVValues(indices, :), obj.NumGroups);
 					if ~obj.FixedLabels
 						thisIterLabels = randi([1 obj.NumGroups], 1, len);
 					end
