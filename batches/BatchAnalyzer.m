@@ -81,7 +81,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 				else
 					indices = 1:size(obj.Values, 1);
 				end
-				thisIterVals = obj.Values(indices, :);
+
 				if obj.FixedLabels
 					thisIterLabels = obj.Labels(indices);
 				end
@@ -93,13 +93,13 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 						thisIterLabels = idx;
 					end
 				else
-					idx = obj.ClusterFunc(thisIterVals, obj.NumGroups);
+					idx = obj.ClusterFunc(obj.Values(indices, :), obj.NumGroups);
 					if ~obj.FixedLabels
 						thisIterLabels = randi([1 obj.NumGroups], 1, len);
 					end
 				end
 
-				obj.HEL = [obj.HEL hell(obj, thisIterVals, thisIterLabels)];
+				obj.HEL = [obj.HEL hell(obj, obj.Values(indices, :), thisIterLabels)];
 
 				% Calculate and append corrected rand index; 0 indicates no batch effects while 1 is perfect batches.
 				obj.CRI = [obj.CRI rand_index(thisIterLabels, idx, 'adjusted')];
