@@ -70,9 +70,6 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 				rng(obj.Seed); % Ensure all start with the same seed
 			end
 
-			thisIterVals = obj.Values;
-			thisIterLabels = obj.Labels;
-
 			addpath lib/rand_index;
 			addpath lib/info_entropy;
 			addpath lib;
@@ -81,10 +78,12 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 				if obj.SampleFraction < 1
 					len = round(obj.SampleFraction * len);
 					indices = randi(size(obj.Values, 1), 1, len); % Sample with replacement
-					thisIterVals = obj.Values(indices, :);
-					if obj.FixedLabels
-						thisIterLabels = obj.Labels(indices);
-					end
+				else
+					indices = 1:size(obj.Values, 1);
+				end
+				thisIterVals = obj.Values(indices, :);
+				if obj.FixedLabels
+					thisIterLabels = obj.Labels(indices);
 				end
 
 				% Create the clustered groups
