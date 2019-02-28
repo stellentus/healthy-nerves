@@ -7,7 +7,7 @@ function bas = batcher(varargin)
 	addParameter(p, 'plotImportantIndices', false, @islogical); % This only works with 'action'=='del'
 	addParameter(p, 'args', struct(), @isstruct); % Passed to other functions; not always used
 	addParameter(p, 'printPercent', 100, @(x) isnumeric(x) && x>0 && x<=100); % Percent of results to print
-	addParameter(p, 'sortStat', "CRI", @(x) any(validatestring(x, {'CRI', 'NMI'})));
+	addParameter(p, 'sortStat', "HEL", @(x) any(validatestring(x, {'CRI', 'NMI', 'HEL'})));
 	addParameter(p, 'sortOrder', "ascend", @(x) any(validatestring(x, {'ascend', 'descend'})));
 	addParameter(p, 'file', "bin/batch-normative.mat", @isstring);
 	parse(p, varargin{:});
@@ -53,7 +53,9 @@ function bas = batcher(varargin)
 	end
 
 	if p.Results.printPercent < 100
-		if strcmp(p.Results.sortStat, "CRI")
+		if strcmp(p.Results.sortStat, "HEL")
+			[~, ind] = sort([bas.HEL_mean]);
+		elseif strcmp(p.Results.sortStat, "CRI")
 			[~, ind] = sort([bas.CRI_mean]);
 		else
 			[~, ind] = sort([bas.NMI_mean]);
@@ -72,6 +74,8 @@ function bas = batcher(varargin)
 
 		% Now print the mean values for a reference point
 		meanBA = BatchAnalyzer("Means", 3, []);
+		meanBA.HEL_mean = mean([bas.HEL_mean]);
+		meanBA.HEL_std = mean([bas.HEL_std]);
 		meanBA.CRI_mean = mean([bas.CRI_mean]);
 		meanBA.CRI_std = mean([bas.CRI_std]);
 		meanBA.NMI_mean = mean([bas.NMI_mean]);
@@ -99,10 +103,10 @@ function padLen = printHeader(bas, printAsCSV)
 
 	% Print the table header
 	if printAsCSV
-		fprintf('%s , CRI    ,CRIstd , NMI    ,NMIstd \n', pad("Name", padLen));
-		fprintf('%s , ------ , ----- , ------ , ----- \n', strrep(pad(" ", padLen), " ", "-"));
+		fprintf('%s , HEL    ,HELstd , CRI    ,CRIstd , NMI    ,NMIstd \n', pad("Name", padLen));
+		fprintf('%s , ------ , ----- , ------ , ----- , ------ , ----- \n', strrep(pad(" ", padLen), " ", "-"));
 	else
-		fprintf('%s |  CRI (std)     |  NMI (std)     \n', pad("Name", padLen));
-		fprintf('%s | -------------- | -------------- \n', strrep(pad(" ", padLen), " ", "-"));
+		fprintf('%s |  HEL (std)     |  CRI (std)     |  NMI (std)     \n', pad("Name", padLen));
+		fprintf('%s | -------------- | -------------- | -------------- \n', strrep(pad(" ", padLen), " ", "-"));
 	end
 end

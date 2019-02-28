@@ -16,6 +16,9 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		NMI
 		NMI_mean
 		NMI_std
+		HEL
+		HEL_mean
+		HEL_std
 	end
 	methods
 		function obj = BatchAnalyzer(name, numGroups, values, varargin)
@@ -44,6 +47,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 
 			obj.CRI = [];
 			obj.NMI = [];
+			obj.HEL = [];
 
 			obj.SampleFraction = p.Results.sampleFraction;
 		end
@@ -96,16 +100,21 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 					end
 				end
 
+				obj.HEL = [obj.HEL hell(obj, thisIterVals, thisIterLabels)];
+
 				% Calculate and append corrected rand index; 0 indicates no batch effects while 1 is perfect batches.
 				obj.CRI = [obj.CRI rand_index(thisIterLabels, idx, 'adjusted')];
 
 				% Calculate and append the normalized mutual information; 0 indicates to batch effects while (I think) 1 is perfect batches.
 				obj.NMI = [obj.NMI nmi(thisIterLabels, idx)];
+
 			end
 			rmpath lib/rand_index;
 			rmpath lib/info_entropy;
 			rmpath lib;
 
+			obj.HEL_mean = mean(obj.HEL);
+			obj.HEL_std = std(obj.HEL);
 			obj.CRI_mean = mean(obj.CRI);
 			obj.CRI_std = std(obj.CRI);
 			obj.NMI_mean = mean(obj.NMI);
@@ -120,12 +129,37 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			end
 
 			if asCSV
-				formatStr = '%s , % .3f , %.3f , % .3f , %.3f ';
+				formatStr = '%s , % .3f , %.3f , % .3f , %.3f , % .3f , %.3f ';
 			else
-				formatStr = '%s | % .3f (%.3f) | % .3f (%.3f) ';
+				formatStr = '%s | % .3f (%.3f) | % .3f (%.3f) | % .3f (%.3f) ';
 			end
 
-			str = sprintf(formatStr, pad(obj.Name, padLen), obj.CRI_mean, obj.CRI_std, obj.NMI_mean, obj.NMI_std);
+			str = sprintf(formatStr, pad(obj.Name, padLen), obj.HEL_mean, obj.HEL_std, obj.CRI_mean, obj.CRI_std, obj.NMI_mean, obj.NMI_std);
+		end
+		function hd = hell(obj, vals, labels)
+			if obj.UseRandomIndices || ~obj.FixedLabels
+				hd = 0;
+				return;
+			end
+			labelList = unique(labels);
+			numLabels = length(labelList);
+
+			x = vals(labels == labelList(1), :);
+			if numLabels > 1
+				y = vals(labels == labelList(2), :);
+				if numLabels > 2
+					z = vals(labels == labelList(3), :);
+					if numLabels > 3
+						warning("HELL is only valid for up to 3 labels");
+					else
+						hd = hellingerFromMatrixSimpleTriple(x, y, z);
+					end
+				else
+					hd = hellingerFromMatrixSimple(x, y);
+				end
+			else
+				warning("HELL doesn't make sense for just 1 label");
+			end
 		end
 	end
 end
