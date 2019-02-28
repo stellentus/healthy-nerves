@@ -1,3 +1,4 @@
+% Use the mean-squared distance for each feature.
 function hd = hellingerFromMatrixSimple(x, y, z)
 	useZ = nargin == 3;
 	if ~useZ

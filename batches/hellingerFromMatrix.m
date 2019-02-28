@@ -1,3 +1,5 @@
+% Create bins for each feature based on the combined data, and then see how different the individual datasets are.
+% This has a huge issue with sparse data. For 3 bins per, there are about 3^30 (10^14) unique bin combinations, but only around 250 samples.
 function hd = hellingerFromMatrix(x, y, z)
 	useZ = nargin == 3;
 	if ~useZ
