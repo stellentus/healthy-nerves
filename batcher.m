@@ -9,6 +9,7 @@ function bas = batcher(varargin)
 	addParameter(p, 'printPercent', 100, @(x) isnumeric(x) && x>0 && x<=100); % Percent of results to print
 	addParameter(p, 'sortStat', "CRI", @(x) any(validatestring(x, {'CRI', 'NMI', 'HEL'})));
 	addParameter(p, 'sortOrder', "ascend", @(x) any(validatestring(x, {'ascend', 'descend'})));
+	addParameter(p, 'sort', false, @islogical);
 	addParameter(p, 'file', "bin/batch-normative.mat", @isstring);
 	parse(p, varargin{:});
 
@@ -52,11 +53,11 @@ function bas = batcher(varargin)
 		maxIndex = length(bas);
 	end
 
-	if p.Results.printPercent < 100
+	if p.Results.printPercent < 100 || p.Results.sort == true
 		if strcmp(p.Results.sortStat, "HEL")
 			[~, ind] = sort([bas.HEL_mean]);
 		elseif strcmp(p.Results.sortStat, "CRI")
-			[~, ind] = sort([bas.CRI_mean]);
+			[~, ind] = sort(abs([bas.CRI_mean]));
 		else
 			[~, ind] = sort([bas.NMI_mean]);
 		end
