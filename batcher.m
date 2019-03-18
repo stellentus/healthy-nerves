@@ -39,17 +39,17 @@ function bas = batcher(varargin)
 			return;
 	end
 
-	if p.Results.printPercent == 100
-		padLen = printHeader(bas, p.Results.printAsCSV);
-	end
 
 	% Calculate BE and print
 	for i = 1:length(bas)
 		ba = bas(i);
 		calculateBatch(ba);
-		if p.Results.printPercent == 100
-			disp(BAString(ba, padLen, p.Results.printAsCSV));
-		end
+	end
+
+	if p.Results.printPercent < 100
+		maxIndex = round(length(bas)*p.Results.printPercent/100);
+	else
+		maxIndex = length(bas);
 	end
 
 	if p.Results.printPercent < 100
@@ -64,14 +64,17 @@ function bas = batcher(varargin)
 			ind = fliplr(ind);
 		end
 
-		maxIndex = round(length(bas)*p.Results.printPercent/100);
-		sortedBas = bas(ind(1:maxIndex));
+		printBas = bas(ind(1:maxIndex));
+	else
+		printBas = bas;
+	end
 
-		padLen = printHeader(sortedBas, p.Results.printAsCSV);
-		for i=1:maxIndex
-			disp(BAString(sortedBas(i), padLen, p.Results.printAsCSV));
-		end
+	padLen = printHeader(printBas, p.Results.printAsCSV);
+	for i = 1:maxIndex
+		disp(BAString(printBas(i), padLen, p.Results.printAsCSV));
+	end
 
+	if p.Results.printPercent < 100
 		% Now print the mean values for a reference point
 		meanBA = BatchAnalyzer("Means", 3, []);
 		meanBA.HEL_mean = mean([bas.HEL_mean]);
@@ -85,7 +88,7 @@ function bas = batcher(varargin)
 
 	if p.Results.plotImportantIndices
 		load(p.Results.file);
-		plotImportantIndices(bas, measures);
+		plotImportantIndices(printBas, measures);
 	end
 
 	rmpath batches;
