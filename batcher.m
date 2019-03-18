@@ -10,6 +10,7 @@ function bas = batcher(varargin)
 	addParameter(p, 'sortStat', "CRI", @(x) any(validatestring(x, {'CRI', 'NMI', 'HEL'})));
 	addParameter(p, 'sortOrder', "ascend", @(x) any(validatestring(x, {'ascend', 'descend'})));
 	addParameter(p, 'sort', false, @islogical);
+	addParameter(p, 'plotBoxes', false, @islogical);
 	addParameter(p, 'file', "bin/batch-normative.mat", @isstring);
 	parse(p, varargin{:});
 
@@ -39,7 +40,6 @@ function bas = batcher(varargin)
 			bas = []; % Not used
 			return;
 	end
-
 
 	% Calculate BE and print
 	for i = 1:length(bas)
@@ -71,8 +71,10 @@ function bas = batcher(varargin)
 	end
 
 	padLen = printHeader(printBas, p.Results.printAsCSV);
+	scores = zeros(p.Results.iter, maxIndex); % only used by plotBoxes
 	for i = 1:maxIndex
 		disp(BAString(printBas(i), padLen, p.Results.printAsCSV));
+		scores(:, i) = (printBas(i).NMI');
 	end
 
 	if p.Results.printPercent < 100
@@ -90,6 +92,10 @@ function bas = batcher(varargin)
 	if p.Results.plotImportantIndices
 		load(p.Results.file);
 		plotImportantIndices(printBas, measures);
+	end
+
+	if p.Results.plotBoxes
+		plotBoxes(scores, [printBas.Name]');
 	end
 
 	rmpath batches;
@@ -113,4 +119,22 @@ function padLen = printHeader(bas, printAsCSV)
 		fprintf('%s |  HEL (std)     |  CRI (std)     |  NMI (std)     \n', pad("Name", padLen));
 		fprintf('%s | -------------- | -------------- | -------------- \n', strrep(pad(" ", padLen), " ", "-"));
 	end
+end
+
+function plotBoxes(scores, testNames)
+	addpath lib/CategoricalScatterplot
+
+	pathstr = sprintf('img/batbox-%d-%d-%d-%d%d%2.0f', clock);
+
+	fig = figure('DefaultAxesFontSize', 18);
+
+	CategoricalScatterplot(scores, testNames, 'MarkerSize', 50, 'BoxAlpha', .29);
+	title('Batch Effect Measures');
+	xlabel('Group');
+	ylabel('NMI');
+	xtickangle(45)
+	savefig(fig, strcat(pathstr, '.fig', 'compact'));
+	saveas(fig, strcat(pathstr, '.png'));
+
+	rmpath lib/CategoricalScatterplot
 end
