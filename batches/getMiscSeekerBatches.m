@@ -1,5 +1,5 @@
 %% getMiscSeekerBatches returns a list of BatchAnalyzer that try to seek out various types of batch effects.
-function [bas] = getMiscSeekerBatches(iters, filepath)
+function [bas] = getMiscSeekerBatches(iters, sampleFraction, filepath)
 	load(filepath);
 
 	canNum = size(canValues, 1);
@@ -10,8 +10,6 @@ function [bas] = getMiscSeekerBatches(iters, filepath)
 	% Create a combined vector for labels (with all datasets) and one for values
 	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
 	values = [canValues; japValues; porValues];
-
-	sampleFraction = 1/iters;
 
 	ba = BatchAnalyzer("Normative data", 3, values, labels, 'iters', iters, 'sampleFraction', sampleFraction);
 	bas = [

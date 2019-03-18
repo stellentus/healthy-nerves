@@ -3,6 +3,7 @@ function bas = batcher(varargin)
 	p = inputParser;
 	addOptional(p, 'action', "stats", @(x) any(validatestring(x, {'stats', 'age', 'misc', 'var', 'mean', 'del', 'hill'})));
 	addParameter(p, 'iter', 5, @isnumeric);
+	addParameter(p, 'sampleFraction', -1, @isnumeric);
 	addParameter(p, 'printAsCSV', true, @islogical);
 	addParameter(p, 'plotImportantIndices', false, @islogical); % This only works with 'action'=='del'
 	addParameter(p, 'args', struct(), @isstruct); % Passed to other functions; not always used
@@ -16,23 +17,28 @@ function bas = batcher(varargin)
 
 	addpath batches;
 
+	sampleFraction = p.Results.sampleFraction;
+	if sampleFraction < 0 || sampleFraction > 1
+		sampleFraction = 1/p.Results.iter;
+	end
+
 	switch p.Results.action
 		case "stats"
 			printStats(p.Results.file);
 			bas = []; % Not used
 			return;
 		case "age"
-			bas = getAgeMatchedBatches(p.Results.iter, p.Results.file);
+			bas = getAgeMatchedBatches(p.Results.iter, sampleFraction, p.Results.file);
 		case "misc"
-			bas = getMiscSeekerBatches(p.Results.iter, p.Results.file);
+			bas = getMiscSeekerBatches(p.Results.iter, sampleFraction, p.Results.file);
 		case "var"
-			bas = getVarSeekerBatches(p.Results.iter, p.Results.file);
+			bas = getVarSeekerBatches(p.Results.iter, sampleFraction, p.Results.file);
 		case "mean"
-			bas = getMeanSeekerBatches(p.Results.iter, p.Results.file);
+			bas = getMeanSeekerBatches(p.Results.iter, sampleFraction, p.Results.file);
 		case "del"
-			bas = getDeletedFeatureBatches(p.Results.iter, p.Results.file, p.Results.args);
+			bas = getDeletedFeatureBatches(p.Results.iter, sampleFraction, p.Results.file, p.Results.args);
 		case "hill"
-			getHillClimberBatches(p.Results.iter, p.Results.file);
+			getHillClimberBatches(p.Results.iter, sampleFraction, p.Results.file);
 			bas = []; % Not used
 			return;
 		otherwise

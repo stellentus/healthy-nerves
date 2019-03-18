@@ -1,5 +1,5 @@
 %% getAgeMatchedBatches returns a list of BatchAnalyzer that use age-matched groups from the countries.
-function [bas] = getAgeMatchedBatches(iters, filepath)
+function [bas] = getAgeMatchedBatches(iters, sampleFraction, filepath)
 	load(filepath);
 
 	% Drop some rows so the histograms are more balanced by age
@@ -14,12 +14,12 @@ function [bas] = getAgeMatchedBatches(iters, filepath)
 	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
 	values = [canValues; japValues; porValues];
 
-	ba = BatchAnalyzer("Age-matched data", 3, values, labels, 'iters', iters);
+	ba = BatchAnalyzer("Age-matched data", 3, values, labels, 'iters', iters, 'sampleFraction', sampleFraction);
 	bas = [ba];
 
-	bas = [bas BatchAnalyzer("No Can", 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2], 'iters', iters)];
-	bas = [bas BatchAnalyzer("No Jap", 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2], 'iters', iters)];
-	bas = [bas BatchAnalyzer("No Por", 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2], 'iters', iters)];
+	bas = [bas BatchAnalyzer("No Can", 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction)];
+	bas = [bas BatchAnalyzer("No Jap", 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction)];
+	bas = [bas BatchAnalyzer("No Por", 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction)];
 end
 
 function [canAgeValues, japAgeValues, porAgeValues] = matchAges(canValues, japValues, porValues)
