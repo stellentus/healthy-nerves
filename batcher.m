@@ -101,7 +101,7 @@ function bas = batcher(varargin)
 	end
 
 	if p.Results.plotBoxes
-		plotBoxes(scores, [printBas.Name]');
+		plotBoxes(sprintf('Batch Effect Measures (%d iters; size %f)', p.Results.iter, sampleFraction), scores, [printBas.Name]');
 	end
 
 	rmpath batches;
@@ -127,7 +127,7 @@ function padLen = printHeader(bas, printAsCSV)
 	end
 end
 
-function plotBoxes(scores, testNames)
+function plotBoxes(titleLabel, scores, testNames)
 	addpath lib/CategoricalScatterplot
 
 	pathstr = sprintf('img/batbox-%d-%d-%d-%d%d%2.0f', clock);
@@ -135,7 +135,7 @@ function plotBoxes(scores, testNames)
 	fig = figure('DefaultAxesFontSize', 18);
 
 	CategoricalScatterplot(scores, testNames, 'MarkerSize', 50, 'BoxAlpha', .29);
-	title('Batch Effect Measures');
+	title(titleLabel);
 	xlabel('Group');
 	ylabel('NMI');
 	xtickangle(45)
