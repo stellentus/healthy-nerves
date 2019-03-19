@@ -1,7 +1,7 @@
 %% batcher detects batch effects.
 function bas = batcher(varargin)
 	p = inputParser;
-	addOptional(p, 'action', "misc", @(x) any(validatestring(x, {'stats', 'age', 'misc', 'var', 'mean', 'del', 'hill'})));
+	addOptional(p, 'action', "misc", @(x) any(validatestring(x, {'stats', 'age', 'misc', 'var', 'mean', 'del', 'hill', 'k'})));
 	addParameter(p, 'iter', 30, @isnumeric);
 	addParameter(p, 'sampleFraction', 0.8, @isnumeric);
 	addParameter(p, 'plotImportantIndices', false, @islogical); % This only works with 'action'=='del'
@@ -35,6 +35,8 @@ function bas = batcher(varargin)
 			bas = getVarSeekerBatches(p.Results.iter, sampleFraction, p.Results.file, p.Results.printHell);
 		case "mean"
 			bas = getMeanSeekerBatches(p.Results.iter, sampleFraction, p.Results.file, p.Results.printHell);
+		case "k"
+			bas = getkSeekerBatches(p.Results.iter, sampleFraction, p.Results.file, p.Results.printHell);
 		case "del"
 			bas = getDeletedFeatureBatches(p.Results.iter, sampleFraction, p.Results.file, p.Results.printHell, p.Results.args);
 		case "hill"
