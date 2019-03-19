@@ -11,17 +11,22 @@ function [bas] = getkSeekerBatches(iters, sampleFraction, filepath, calcHell)
 	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
 	values = [canValues; japValues; porValues];
 
-	can1 = canValues(1:floor(length(canValues)/2), :);
+	canIdx = randperm(canNum);
+	can1 = canValues(canIdx(1:floor(length(canValues)/2)), :);
 	can1Num = size(can1, 1);
-	can2 = canValues((floor(length(canValues)/2)+1):end, :);
+	can2 = canValues(canIdx((floor(length(canValues)/2)+1):end), :);
 	can2Num = size(can2, 1);
-	jap1 = japValues(1:floor(length(japValues)/2), :);
+
+	japIdx = randperm(japNum);
+	jap1 = japValues(japIdx(1:floor(length(japValues)/2)), :);
 	jap1Num = size(jap1, 1);
-	jap2 = japValues((floor(length(japValues)/2)+1):end, :);
+	jap2 = japValues(japIdx((floor(length(japValues)/2)+1):end), :);
 	jap2Num = size(jap2, 1);
-	por1 = porValues(1:floor(length(porValues)/2), :);
+
+	porIdx = randperm(porNum);
+	por1 = porValues(porIdx(1:floor(length(porValues)/2)), :);
 	por1Num = size(por1, 1);
-	por2 = porValues((floor(length(porValues)/2)+1):end, :);
+	por2 = porValues(porIdx((floor(length(porValues)/2)+1):end), :);
 	por2Num = size(por2, 1);
 
 	ba = BatchAnalyzer("3 Normative data", 3, values, labels, 'iters', iters, 'sampleFraction', sampleFraction, 'calcHell', calcHell);
