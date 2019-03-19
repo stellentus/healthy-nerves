@@ -4,7 +4,6 @@ function bas = batcher(varargin)
 	addOptional(p, 'action', "misc", @(x) any(validatestring(x, {'stats', 'age', 'misc', 'var', 'mean', 'del', 'hill'})));
 	addParameter(p, 'iter', 30, @isnumeric);
 	addParameter(p, 'sampleFraction', 0.8, @isnumeric);
-	addParameter(p, 'printAsCSV', true, @islogical);
 	addParameter(p, 'plotImportantIndices', false, @islogical); % This only works with 'action'=='del'
 	addParameter(p, 'args', struct(), @isstruct); % Passed to other functions; not always used
 	addParameter(p, 'printPercent', 100, @(x) isnumeric(x) && x>0 && x<=100); % Percent of results to print
@@ -76,10 +75,10 @@ function bas = batcher(varargin)
 		printBas = bas;
 	end
 
-	padLen = printHeader(printBas, p.Results.printAsCSV);
+	padLen = printHeader(printBas);
 	scores = zeros(p.Results.iter, maxIndex); % only used by plotBoxes
 	for i = 1:maxIndex
-		disp(BAString(printBas(i), padLen, p.Results.printAsCSV));
+		disp(BAString(printBas(i), padLen));
 		scores(:, i) = (printBas(i).NMI');
 	end
 
@@ -92,7 +91,7 @@ function bas = batcher(varargin)
 		meanBA.CRI_std = mean([bas.CRI_std]);
 		meanBA.NMI_mean = mean([bas.NMI_mean]);
 		meanBA.NMI_std = mean([bas.NMI_std]);
-		disp(BAString(meanBA, padLen, p.Results.printAsCSV));
+		disp(BAString(meanBA, padLen));
 	end
 
 	if p.Results.plotImportantIndices
@@ -107,7 +106,7 @@ function bas = batcher(varargin)
 	rmpath batches;
 end
 
-function padLen = printHeader(bas, printAsCSV)
+function padLen = printHeader(bas)
 	% Get length of longest string for padding purposes
 	padLen = 0;
 	for i = 1:length(bas)
@@ -118,13 +117,8 @@ function padLen = printHeader(bas, printAsCSV)
 	end
 
 	% Print the table header
-	if printAsCSV
-		fprintf('%s , HEL    ,HELstd , CRI    ,CRIstd , NMI    ,NMIstd \n', pad("Name", padLen));
-		fprintf('%s , ------ , ----- , ------ , ----- , ------ , ----- \n', strrep(pad(" ", padLen), " ", "-"));
-	else
-		fprintf('%s |  HEL (std)     |  CRI (std)     |  NMI (std)     \n', pad("Name", padLen));
-		fprintf('%s | -------------- | -------------- | -------------- \n', strrep(pad(" ", padLen), " ", "-"));
-	end
+	fprintf('%s , HEL    ,HELstd , CRI    ,CRIstd , NMI    ,NMIstd \n', pad("Name", padLen));
+	fprintf('%s , ------ , ----- , ------ , ----- , ------ , ----- \n', strrep(pad(" ", padLen), " ", "-"));
 end
 
 function plotBoxes(titleLabel, scores, testNames)
