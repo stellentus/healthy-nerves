@@ -5,7 +5,7 @@ function [bas] = getVarSeekerBatches(iters, sampleFraction, filepath, calcHell)
 	% Create a combined vector for labels (with all datasets)
 	labels = [ones(size(canValues, 1), 1); ones(size(japValues, 1), 1) * 2; repmat(3, size(porValues, 1), 1)];
 
-	ba = BatchAnalyzer('Normative', 3, [canValues; japValues; porValues], labels, 'iters', iters, 'sampleFraction', sampleFraction, 'calcHell', calcHell));
+	ba = BatchAnalyzer('Normative', 3, [canValues; japValues; porValues], labels, 'iters', iters, 'sampleFraction', sampleFraction, 'calcHell', calcHell);
 	bas = [ba];
 	for i = [1:length(measures)]
 		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s', measures(i)), [scaleVariance(canValues, 0.1, i); japValues; porValues])];
