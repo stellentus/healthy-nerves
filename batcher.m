@@ -1,9 +1,9 @@
 %% batcher detects batch effects.
 function bas = batcher(varargin)
 	p = inputParser;
-	addOptional(p, 'action', "stats", @(x) any(validatestring(x, {'stats', 'age', 'misc', 'var', 'mean', 'del', 'hill'})));
-	addParameter(p, 'iter', 5, @isnumeric);
-	addParameter(p, 'sampleFraction', -1, @isnumeric);
+	addOptional(p, 'action', "misc", @(x) any(validatestring(x, {'stats', 'age', 'misc', 'var', 'mean', 'del', 'hill'})));
+	addParameter(p, 'iter', 30, @isnumeric);
+	addParameter(p, 'sampleFraction', 0.8, @isnumeric);
 	addParameter(p, 'printAsCSV', true, @islogical);
 	addParameter(p, 'plotImportantIndices', false, @islogical); % This only works with 'action'=='del'
 	addParameter(p, 'args', struct(), @isstruct); % Passed to other functions; not always used
@@ -11,7 +11,7 @@ function bas = batcher(varargin)
 	addParameter(p, 'sortStat', "CRI", @(x) any(validatestring(x, {'CRI', 'NMI', 'HEL'})));
 	addParameter(p, 'sortOrder', "ascend", @(x) any(validatestring(x, {'ascend', 'descend'})));
 	addParameter(p, 'sort', false, @islogical);
-	addParameter(p, 'plotBoxes', false, @islogical);
+	addParameter(p, 'plotBoxes', true, @islogical);
 	addParameter(p, 'file', "bin/batch-normative.mat", @isstring);
 	parse(p, varargin{:});
 
