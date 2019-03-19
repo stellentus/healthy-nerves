@@ -11,6 +11,7 @@ function bas = batcher(varargin)
 	addParameter(p, 'sortOrder', "ascend", @(x) any(validatestring(x, {'ascend', 'descend'})));
 	addParameter(p, 'sort', false, @islogical);
 	addParameter(p, 'plotBoxes', true, @islogical);
+	addParameter(p, 'printHell', false, @islogical);
 	addParameter(p, 'file', "bin/batch-normative.mat", @isstring);
 	parse(p, varargin{:});
 
@@ -75,10 +76,10 @@ function bas = batcher(varargin)
 		printBas = bas;
 	end
 
-	padLen = printHeader(printBas);
+	padLen = printHeader(printBas, p.Results.printHell);
 	scores = zeros(p.Results.iter, maxIndex); % only used by plotBoxes
 	for i = 1:maxIndex
-		disp(BAString(printBas(i), padLen));
+		disp(BAString(printBas(i), padLen, p.Results.printHell));
 		scores(:, i) = (printBas(i).NMI');
 	end
 
@@ -91,7 +92,7 @@ function bas = batcher(varargin)
 		meanBA.CRI_std = mean([bas.CRI_std]);
 		meanBA.NMI_mean = mean([bas.NMI_mean]);
 		meanBA.NMI_std = mean([bas.NMI_std]);
-		disp(BAString(meanBA, padLen));
+		disp(BAString(meanBA, padLen, p.Results.printHell));
 	end
 
 	if p.Results.plotImportantIndices
@@ -106,7 +107,7 @@ function bas = batcher(varargin)
 	rmpath batches;
 end
 
-function padLen = printHeader(bas)
+function padLen = printHeader(bas, printHell)
 	% Get length of longest string for padding purposes
 	padLen = 0;
 	for i = 1:length(bas)
@@ -116,9 +117,16 @@ function padLen = printHeader(bas)
 		end
 	end
 
+	measStr = ', CRI    ,CRIstd , NMI    ,NMIstd ';
+	measNum = 2;
+	if printHell
+		measStr = strcat(measStr, ', HEL    ,HELstd ');
+		measNum = measNum + 1;
+	end
+
 	% Print the table header
-	fprintf('%s , HEL    ,HELstd , CRI    ,CRIstd , NMI    ,NMIstd \n', pad("Name", padLen));
-	fprintf('%s , ------ , ----- , ------ , ----- , ------ , ----- \n', strrep(pad(" ", padLen), " ", "-"));
+	fprintf('%s %s\n', pad("Name", padLen), measStr);
+	fprintf('%s %s\n', strrep(pad(" ", padLen), " ", "-"), repmat(', ------ , ----- ', 1, measNum));
 end
 
 function plotBoxes(titleLabel, scores, testNames)

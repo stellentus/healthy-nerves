@@ -121,13 +121,17 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			obj.NMI_mean = mean(obj.NMI);
 			obj.NMI_std = std(obj.NMI);
 		end
-		function str = BAString(obj, padLen)
+		function str = BAString(obj, padLen, printHell)
 			if nargin < 2
 				padLen = 0;
 			end
 
-			formatStr = '%s , % .3f , %.3f , % .3f , %.3f , % .3f , %.3f ';
-			str = sprintf(formatStr, pad(obj.Name, padLen), obj.HEL_mean, obj.HEL_std, obj.CRI_mean, obj.CRI_std, obj.NMI_mean, obj.NMI_std);
+			formatStr = '%s , % .3f , %.3f , % .3f , %.3f ';
+			str = sprintf(formatStr, pad(obj.Name, padLen), obj.CRI_mean, obj.CRI_std, obj.NMI_mean, obj.NMI_std);
+
+			if printHell
+				str = sprintf('%s, % .3f , %.3f ', str, obj.HEL_mean, obj.HEL_std);
+			end
 		end
 		function hd = hell(obj, vals, labels)
 			if obj.UseRandomIndices || ~obj.FixedLabels
