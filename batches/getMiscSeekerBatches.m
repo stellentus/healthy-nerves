@@ -1,5 +1,5 @@
 %% getMiscSeekerBatches returns a list of BatchAnalyzer that try to seek out various types of batch effects.
-function [bas] = getMiscSeekerBatches(iters, sampleFraction, filepath)
+function [bas] = getMiscSeekerBatches(iters, sampleFraction, filepath, calcHell)
 	load(filepath);
 
 	canNum = size(canValues, 1);
@@ -11,24 +11,24 @@ function [bas] = getMiscSeekerBatches(iters, sampleFraction, filepath)
 	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
 	values = [canValues; japValues; porValues];
 
-	ba = BatchAnalyzer("Normative data", 3, values, labels, 'iters', iters, 'sampleFraction', sampleFraction);
+	ba = BatchAnalyzer("Normative data", 3, values, labels, 'iters', iters, 'sampleFraction', sampleFraction, 'calcHell', calcHell);
 	bas = [
 		% Test the normative data
 		ba;
 
 		% Remove each type to see how things change
 		% Conclusion with normalization: There isn't a batch between J and P, there might be one between C and P, and there's definitely one between C and J. But in all cases it's small.
-		BatchAnalyzer("No Can", 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("No Jap", 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("No Por", 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("No Can", 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction, 'calcHell', calcHell);
+		BatchAnalyzer("No Jap", 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction, 'calcHell', calcHell);
+		BatchAnalyzer("No Por", 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction, 'calcHell', calcHell);
 
 		% Confirm that random and perfectly batched data work as expected
-		BatchAnalyzer("Random labels", 3, values, 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("Random labels (J+P)", 2, [japValues; porValues], 'iters', iters, 'sampleFraction', sampleFraction);
-		% BatchAnalyzer("Batched data", 3, length(labels), 'iters', iters, 'sampleFraction', sampleFraction); % Instead of passing any data at all, request both arrays to be identical random indices
+		BatchAnalyzer("Random labels", 3, values, 'iters', iters, 'sampleFraction', sampleFraction, 'calcHell', calcHell);
+		BatchAnalyzer("Random labels (J+P)", 2, [japValues; porValues], 'iters', iters, 'sampleFraction', sampleFraction, 'calcHell', calcHell);
+		% BatchAnalyzer("Batched data", 3, length(labels), 'iters', iters, 'sampleFraction', sampleFraction, 'calcHell', calcHell); % Instead of passing any data at all, request both arrays to be identical random indices
 
 		% Show larger batches with CP instead of median
-		BatchAnalyzer("Canadian legs", 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("Canadian legs", 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction, 'calcHell', calcHell);
 
 		% Look at batches when RC is shifted logarithmically in time.
 		% Conclusion without normalization: Shifting everything right causes an increase in both measures, while shifting left causes a decrease. This may be due to the increase in magnitudes. (Perhaps this means RC is actually different between groups, but it only becomes dominant as RC values get larger relative to others. If so, I should scale all measures to have unit variance.) However, even though shifting everything causes an unexpected change, it's not significant, while the increase when only shifting Can is significant.

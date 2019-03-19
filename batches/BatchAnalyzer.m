@@ -11,6 +11,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		SampleFraction
 		Labels
 		FixedLabels
+		CalcHell
 		CRI
 		CRI_mean
 		CRI_std
@@ -32,6 +33,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			addParameter(p, 'sampleFraction', 1, @isnumeric);
 			addParameter(p, 'clusterFunc', @linkageCluster);
 			addParameter(p, 'seed', 7738, @isnumeric);
+			addParameter(p, 'calcHell', 7738, @islogical);
 			parse(p, name, numGroups, values, varargin{:});
 
 			obj.Name = p.Results.name;
@@ -45,6 +47,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 
 			obj.ClusterFunc = p.Results.clusterFunc;
 			obj.Seed = p.Results.seed;
+			obj.CalcHell = p.Results.calcHell;
 
 			obj.CRI = [];
 			obj.NMI = [];
@@ -101,14 +104,15 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 					end
 				end
 
-				obj.HEL = [obj.HEL hell(obj, obj.Values(indices, :), thisIterLabels)];
+				if obj.CalcHell
+					obj.HEL = [obj.HEL hell(obj, obj.Values(indices, :), thisIterLabels)];
+				end
 
 				% Calculate and append corrected rand index; 0 indicates no batch effects while 1 is perfect batches.
 				obj.CRI = [obj.CRI rand_index(thisIterLabels, idx, 'adjusted')];
 
 				% Calculate and append the normalized mutual information; 0 indicates to batch effects while (I think) 1 is perfect batches.
 				obj.NMI = [obj.NMI nmi(thisIterLabels, idx)];
-
 			end
 			rmpath lib/rand_index;
 			rmpath lib/info_entropy;
@@ -121,7 +125,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			obj.NMI_mean = mean(obj.NMI);
 			obj.NMI_std = std(obj.NMI);
 		end
-		function str = BAString(obj, padLen, printHell)
+		function str = BAString(obj, padLen)
 			if nargin < 2
 				padLen = 0;
 			end
@@ -129,7 +133,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			formatStr = '%s , % .3f , %.3f , % .3f , %.3f ';
 			str = sprintf(formatStr, pad(obj.Name, padLen), obj.CRI_mean, obj.CRI_std, obj.NMI_mean, obj.NMI_std);
 
-			if printHell
+			if obj.CalcHell
 				str = sprintf('%s, % .3f , %.3f ', str, obj.HEL_mean, obj.HEL_std);
 			end
 		end

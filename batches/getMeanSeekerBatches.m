@@ -1,11 +1,11 @@
 %% getMeanSeekerBatches returns a list of BatchAnalyzer that try to seek out the indices with the strongest mean-induced batch effects.
-function [bas] = getMeanSeekerBatches(iters, sampleFraction, filepath)
+function [bas] = getMeanSeekerBatches(iters, sampleFraction, filepath, calcHell)
 	load(filepath);
 
 	% Create a combined vector for labels (with all datasets)
 	labels = [ones(size(canValues, 1), 1); ones(size(japValues, 1), 1) * 2; repmat(3, size(porValues, 1), 1)];
 
-	ba = BatchAnalyzer("Normative", 3, [canValues; japValues; porValues], labels, 'iters', iters, 'sampleFraction', sampleFraction);
+	ba = BatchAnalyzer("Normative", 3, [canValues; japValues; porValues], labels, 'iters', iters, 'sampleFraction', sampleFraction, 'calcHell', calcHell);
 	bas = [ba];
 	for i = [1:length(measures)]
 		bas = [bas BACopyWithValues(ba, sprintf('Decrease %s', measures(i)), [scaleMean(canValues, -0.1, i); japValues; porValues])];

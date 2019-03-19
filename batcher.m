@@ -28,17 +28,17 @@ function bas = batcher(varargin)
 			bas = []; % Not used
 			return;
 		case "age"
-			bas = getAgeMatchedBatches(p.Results.iter, sampleFraction, p.Results.file);
+			bas = getAgeMatchedBatches(p.Results.iter, sampleFraction, p.Results.file, p.Results.printHell);
 		case "misc"
-			bas = getMiscSeekerBatches(p.Results.iter, sampleFraction, p.Results.file);
+			bas = getMiscSeekerBatches(p.Results.iter, sampleFraction, p.Results.file, p.Results.printHell);
 		case "var"
-			bas = getVarSeekerBatches(p.Results.iter, sampleFraction, p.Results.file);
+			bas = getVarSeekerBatches(p.Results.iter, sampleFraction, p.Results.file, p.Results.printHell);
 		case "mean"
-			bas = getMeanSeekerBatches(p.Results.iter, sampleFraction, p.Results.file);
+			bas = getMeanSeekerBatches(p.Results.iter, sampleFraction, p.Results.file, p.Results.printHell);
 		case "del"
-			bas = getDeletedFeatureBatches(p.Results.iter, sampleFraction, p.Results.file, p.Results.args);
+			bas = getDeletedFeatureBatches(p.Results.iter, sampleFraction, p.Results.file, p.Results.printHell, p.Results.args);
 		case "hill"
-			getHillClimberBatches(p.Results.iter, sampleFraction, p.Results.file);
+			getHillClimberBatches(p.Results.iter, sampleFraction, p.Results.file, p.Results.printHell);
 			bas = []; % Not used
 			return;
 		otherwise
@@ -79,7 +79,7 @@ function bas = batcher(varargin)
 	padLen = printHeader(printBas, p.Results.printHell);
 	scores = zeros(p.Results.iter, maxIndex); % only used by plotBoxes
 	for i = 1:maxIndex
-		disp(BAString(printBas(i), padLen, p.Results.printHell));
+		disp(BAString(printBas(i), padLen));
 		scores(:, i) = (printBas(i).NMI');
 	end
 
@@ -92,7 +92,7 @@ function bas = batcher(varargin)
 		meanBA.CRI_std = mean([bas.CRI_std]);
 		meanBA.NMI_mean = mean([bas.NMI_mean]);
 		meanBA.NMI_std = mean([bas.NMI_std]);
-		disp(BAString(meanBA, padLen, p.Results.printHell));
+		disp(BAString(meanBA, padLen));
 	end
 
 	if p.Results.plotImportantIndices

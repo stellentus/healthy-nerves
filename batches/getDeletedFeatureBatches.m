@@ -1,7 +1,7 @@
 %% getDeletedFeatureBatches returns a list of BatchAnalyzer that delete each feature.
 % These results somewhat point to SDTC, Hyperpol I/V slope, TEd(10-20ms), TEd(90-100ms), and Age, but it's not really significant.
 %% arg.toDelete is the number of indices to delete (default 1).
-function [bas] = getDeletedFeatureBatches(iters, sampleFraction, filepath, arg)
+function [bas] = getDeletedFeatureBatches(iters, sampleFraction, filepath, calcHell, arg)
 	load(filepath);
 
 	if nargin < 2
@@ -16,7 +16,7 @@ function [bas] = getDeletedFeatureBatches(iters, sampleFraction, filepath, arg)
 	values = [canValues; japValues; porValues];
 	numFeat = length(measures);
 
-	ba = BatchAnalyzer("Normative", 3, [canValues; japValues; porValues], labels, 'iters', iters, 'sampleFraction', sampleFraction);
+	ba = BatchAnalyzer("Normative", 3, [canValues; japValues; porValues], labels, 'iters', iters, 'sampleFraction', sampleFraction, 'calcHell', calcHell);
 	bas = [ba];
 
 	% Try all permutations of removals of the desired number of indices

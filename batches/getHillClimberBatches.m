@@ -1,6 +1,6 @@
 %% getHillClimberBatches returns a list of BatchAnalyzer that try to seek out a transformation that minimizes the batch effects.
-function getHillClimberBatches(iters, sampleFraction, filepath, useNMI)
-	if nargin < 3
+function getHillClimberBatches(iters, sampleFraction, filepath, calcHell, useNMI)
+	if nargin < 5
 		useNMI = false;
 	end
 
@@ -23,7 +23,7 @@ function getHillClimberBatches(iters, sampleFraction, filepath, useNMI)
 	mag = 0;
 	epsilon = 1e-7;
 
-	ba = BatchAnalyzer('Normative', 3, [vals.can; vals.jap; vals.por], labels, 'iters', iters, 'sampleFraction', sampleFraction, 'seed', 0);
+	ba = BatchAnalyzer('Normative', 3, [vals.can; vals.jap; vals.por], labels, 'iters', iters, 'sampleFraction', sampleFraction, 'calcHell', calcHell, 'seed', 0);
 	origBatch = batchVal(ba, useNMI);
 	thisBatch = batchVal(scaledBA(ba, vals, weight), useNMI);
 	fprintf("Original batch effect is %.4f, scaled up to %.4f\n", origBatch, thisBatch);
