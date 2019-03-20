@@ -48,7 +48,12 @@ function saveNormative(pathPrefix, nanMethod)
 	porValues = fillWithMethod(porValues, nanMethod, true);
 	rmpath missing;
 
-	save(savefilepath, 'canValues', 'canParticipants', 'japValues', 'japParticipants', 'porValues', 'porParticipants', 'legValues', 'legParticipants', 'measures', 'nanMethod')
+	canNum = size(canValues, 1);
+	japNum = size(japValues, 1);
+	porNum = size(porValues, 1);
+	legNum = size(legValues, 1);
+
+	save(savefilepath, 'canValues', 'canParticipants', 'canNum', 'japValues', 'japParticipants', 'japNum', 'porValues', 'porParticipants', 'porNum', 'legValues', 'legParticipants', 'legNum', 'measures', 'nanMethod')
 end
 
 function [flatVals, flatParts] = flattenStructs(structVals, structParts)

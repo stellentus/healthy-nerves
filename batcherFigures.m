@@ -5,11 +5,6 @@ function batcherFigures()
 
 	load("bin/batch-normative.mat");
 
-	canNum = size(canValues, 1);
-	japNum = size(japValues, 1);
-	porNum = size(porValues, 1);
-	legNum = size(legValues, 1);
-
 	% Create a combined vector for labels (with all datasets) and one for values
 	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
 	values = [canValues; japValues; porValues];

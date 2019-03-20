@@ -61,7 +61,14 @@ function saveNonNormative(nanMethod, savefilepath)
 	ratValues = fillWithMethod(ratValues, nanMethod, true);
 	rmpath missing;
 
-	save(savefilepath, 'sciValues', 'sciParticipants', 'ratTAValues', 'ratTAParticipants', 'ratSLValues', 'ratSLParticipants', 'ratSPValues', 'ratSPParticipants', 'ratKXValues', 'ratKXParticipants', 'ratValues', 'ratParticipants', 'measures', 'nanMethod');
+	sciNum = size(sciValues, 1);
+	ratTANum = size(ratTAValues, 1);
+	ratSLNum = size(ratSLValues, 1);
+	ratSPNum = size(ratSPValues, 1);
+	ratKXNum = size(ratKXValues, 1);
+	ratNum = size(ratValues, 1);
+
+	save(savefilepath, 'sciValues', 'sciParticipants', 'sciNum', 'ratTAValues', 'ratTAParticipants', 'ratTANum', 'ratSLValues', 'ratSLParticipants', 'ratSLNum', 'ratSPValues', 'ratSPParticipants', 'ratSPNum', 'ratKXValues', 'ratKXParticipants', 'ratKXNum', 'ratValues', 'ratParticipants', 'ratNum', 'measures', 'nanMethod');
 end
 
 function [flatVals, flatParts] = flattenStructs(structVals, structParts)
