@@ -33,7 +33,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			addParameter(p, 'sampleFraction', 1, @isnumeric);
 			addParameter(p, 'clusterFunc', @linkageCluster);
 			addParameter(p, 'seed', 7738, @isnumeric);
-			addParameter(p, 'calcHell', 7738, @islogical);
+			addParameter(p, 'calcHell', false, @islogical);
 			parse(p, name, numGroups, values, varargin{:});
 
 			obj.Name = p.Results.name;
