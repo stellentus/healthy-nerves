@@ -22,13 +22,10 @@ function saveNonNormative(nanMethod, savefilepath)
 	[ratSPValues, ratSPParticipants, ratSPMeasures] = combine(ratTASPValues, ratTASPParticipants, ratTASPMeasures, ratSLSPValues, ratSLSPParticipants, ratSLSPMeasures);
 	[ratKXValues, ratKXParticipants, ratKXMeasures] = combine(ratTAKXValues, ratTAKXParticipants, ratTAKXMeasures, ratSLKXValues, ratSLKXParticipants, ratSLKXMeasures);
 	[ratValues, ratParticipants, ratMeasures] = combine(ratSPValues, ratSPParticipants, ratSPMeasures, ratSPValues, ratSPParticipants, ratSPMeasures);
-	clear ratTASPValues ratTASPParticipants ratTASPMeasures ratTAKXValues ratTAKXParticipants ratTAKXMeasures;
 
 	% Ensure all datasets have the desired measures
 	assert(isequal(sciMeasures, ratTAMeasures), 'SCI and rat TA measures are not the same');
 	assert(isequal(sciMeasures, ratSLMeasures), 'SCI and rat SL measures are not the same');
-	assert(isequal(sciMeasures, ratSPMeasures), 'SCI and rat SP measures are not the same');
-	assert(isequal(sciMeasures, ratKXMeasures), 'SCI and rat KX measures are not the same');
 	assert(isequal(sciMeasures, ratMeasures), 'SCI and rat all measures are not the same');
 	measures = sciMeasures;
 
@@ -37,6 +34,10 @@ function saveNonNormative(nanMethod, savefilepath)
 
 	% Delete people who have no sex
 	[sciValues, sciParticipants] = deleteNoSex(sciValues, sciParticipants);
+	[ratTASPValues, ratTASPParticipants] = deleteNoSex(ratTASPValues, ratTASPParticipants);
+	[ratTAKXValues, ratTAKXParticipants] = deleteNoSex(ratTAKXValues, ratTAKXParticipants);
+	[ratSLSPValues, ratSLSPParticipants] = deleteNoSex(ratSLSPValues, ratSLSPParticipants);
+	[ratSLKXValues, ratSLKXParticipants] = deleteNoSex(ratSLKXValues, ratSLKXParticipants);
 	[ratTAValues, ratTAParticipants] = deleteNoSex(ratTAValues, ratTAParticipants);
 	[ratSLValues, ratSLParticipants] = deleteNoSex(ratSLValues, ratSLParticipants);
 	[ratSPValues, ratSPParticipants] = deleteNoSex(ratSPValues, ratSPParticipants);
@@ -45,6 +46,10 @@ function saveNonNormative(nanMethod, savefilepath)
 
 	% Delete duplicate records
 	[sciValues, sciParticipants] = deduplicate(sciValues, sciParticipants);
+	[ratTASPValues, ratTASPParticipants] = deduplicate(ratTASPValues, ratTASPParticipants);
+	[ratTAKXValues, ratTAKXParticipants] = deduplicate(ratTAKXValues, ratTAKXParticipants);
+	[ratSLSPValues, ratSLSPParticipants] = deduplicate(ratSLSPValues, ratSLSPParticipants);
+	[ratSLKXValues, ratSLKXParticipants] = deduplicate(ratSLKXValues, ratSLKXParticipants);
 	[ratTAValues, ratTAParticipants] = deduplicate(ratTAValues, ratTAParticipants);
 	[ratSLValues, ratSLParticipants] = deduplicate(ratSLValues, ratSLParticipants);
 	[ratSPValues, ratSPParticipants] = deduplicate(ratSPValues, ratSPParticipants);
@@ -54,6 +59,10 @@ function saveNonNormative(nanMethod, savefilepath)
 	% Fill missing data
 	addpath missing;
 	sciValues = fillWithMethod(sciValues, nanMethod, true);
+	ratTASPValues = fillWithMethod(ratTASPValues, nanMethod, true);
+	ratTAKXValues = fillWithMethod(ratTAKXValues, nanMethod, true);
+	ratSLSPValues = fillWithMethod(ratSLSPValues, nanMethod, true);
+	ratSLKXValues = fillWithMethod(ratSLKXValues, nanMethod, true);
 	ratTAValues = fillWithMethod(ratTAValues, nanMethod, true);
 	ratSLValues = fillWithMethod(ratSLValues, nanMethod, true);
 	ratSPValues = fillWithMethod(ratSPValues, nanMethod, true);
@@ -62,13 +71,17 @@ function saveNonNormative(nanMethod, savefilepath)
 	rmpath missing;
 
 	sciNum = size(sciValues, 1);
+	ratTASPNum = size(ratTASPValues, 1);
+	ratTAKXNum = size(ratTAKXValues, 1);
+	ratSLSPNum = size(ratSLSPValues, 1);
+	ratSLKXNum = size(ratSLKXValues, 1);
 	ratTANum = size(ratTAValues, 1);
 	ratSLNum = size(ratSLValues, 1);
 	ratSPNum = size(ratSPValues, 1);
 	ratKXNum = size(ratKXValues, 1);
 	ratNum = size(ratValues, 1);
 
-	save(savefilepath, 'sciValues', 'sciParticipants', 'sciNum', 'ratTAValues', 'ratTAParticipants', 'ratTANum', 'ratSLValues', 'ratSLParticipants', 'ratSLNum', 'ratSPValues', 'ratSPParticipants', 'ratSPNum', 'ratKXValues', 'ratKXParticipants', 'ratKXNum', 'ratValues', 'ratParticipants', 'ratNum', 'measures', 'nanMethod');
+	save(savefilepath, 'sciValues', 'sciParticipants', 'sciNum', 'ratTASPValues', 'ratTASPParticipants', 'ratTASPNum', 'ratTAKXValues', 'ratTAKXParticipants', 'ratTAKXNum', 'ratSLSPValues', 'ratSLSPParticipants', 'ratSLSPNum', 'ratSLKXValues', 'ratSLKXParticipants', 'ratSLKXNum', 'ratTAValues', 'ratTAParticipants', 'ratTANum', 'ratSLValues', 'ratSLParticipants', 'ratSLNum', 'ratSPValues', 'ratSPParticipants', 'ratSPNum', 'ratKXValues', 'ratKXParticipants', 'ratKXNum', 'ratValues', 'ratParticipants', 'ratNum', 'measures', 'nanMethod');
 end
 
 function [flatVals, flatParts] = flattenStructs(structVals, structParts)
