@@ -125,6 +125,22 @@ function batcherFigures()
 	];
 	calcAndPlot(bas, 'batch-f4', 'Figure 4: Adjusting Recovery Cycle (RC)');
 
+	%%%%%%%%% FIGURE 5 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	bas = [
+		baRand;
+		baNorm;
+
+		BACopyWithValues(baNorm, "Can increased variance", [scaleVariance(canValues, 2.0); japValues; porValues]);
+		BACopyWithValues(baNorm, "Jap increased variance", [canValues; scaleVariance(japValues, 2.0); porValues]);
+		BACopyWithValues(baNorm, "Por increased variance", [canValues; japValues; scaleVariance(porValues, 2.0)]);
+
+		BACopyWithValues(baNorm, "Can decreased variance", [scaleVariance(canValues, 0.5); japValues; porValues]);
+		BACopyWithValues(baNorm, "Jap decreased variance", [canValues; scaleVariance(japValues, 0.5); porValues]);
+		BACopyWithValues(baNorm, "Por decreased variance", [canValues; japValues; scaleVariance(porValues, 0.5)]);
+	];
+	calcAndPlot(bas, 'batch-f5', 'Figure 5: Adjusting variance');
+
 	rmpath batches;
 end
 
@@ -164,4 +180,10 @@ function [shiftedValues] = shrinkRC(vals)
 	shiftedValues(:, 29) = shiftedValues(:, 29) * .5;
 	shiftedValues(:, 30) = shiftedValues(:, 30) * .5;
 	shiftedValues(:, 31) = shiftedValues(:, 31) * .5;
+end
+
+function [vals] = scaleVariance(vals, stdScale)
+	colInd = [1:31];
+	mns = mean(vals(:,colInd));
+	vals(:,colInd) = bsxfun(@times, vals(:,colInd) - mns, stdScale) + mns;
 end
