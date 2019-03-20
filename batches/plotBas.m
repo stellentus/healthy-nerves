@@ -1,6 +1,6 @@
 % plotBas is used to print a table and plot an array of BatchAnalyzer
-function plotBas(bas, filename, args)
-	if nargin < 3
+function plotBas(bas, filename, figtitle, args)
+	if nargin < 4
 		args = struct();
 	end
 	args = setArgs(args);
@@ -50,7 +50,7 @@ function plotBas(bas, filename, args)
 	end
 
 	if args.plotBoxes
-		plotBoxes(sprintf('Batch Effect Measures (%d iters; size %f)', iter, sampleFraction), filename, scores, [printBas.Name]');
+		plotBoxes(figtitle, filename, scores, [printBas.Name]');
 	end
 end
 

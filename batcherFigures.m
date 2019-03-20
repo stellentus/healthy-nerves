@@ -22,16 +22,16 @@ function batcherFigures()
 		BatchAnalyzer("Random labels", 3, values, 'iters', iters, 'sampleFraction', sampleFraction);
 	];
 
-	calcAndPlot(bas, 'batch-f1');
+	calcAndPlot(bas, 'batch-f1', 'Figure 1: Normative Data vs Random Data');
 
 	rmpath batches;
 end
 
-function calcAndPlot(bas, name)
+function calcAndPlot(bas, name, figtitle)
 	% Calculate BE and print
 	for i = 1:length(bas)
 		calculateBatch(bas(i));
 	end
 
-	plotBas(bas, name);
+	plotBas(bas, name, figtitle);
 end

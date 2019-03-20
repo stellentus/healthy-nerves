@@ -55,7 +55,7 @@ function bas = batcher(varargin)
 		calculateBatch(ba);
 	end
 
-	plotBas(bas, 'batbox', p.Results);
+	plotBas(bas, 'batbox', sprintf('Batch Effect Measures (%d iters; size %f)', p.Results.iter, sampleFraction), p.Results);
 
 	if p.Results.plotImportantIndices
 		load(p.Results.file);
