@@ -55,7 +55,7 @@ function bas = batcher(varargin)
 		calculateBatch(ba);
 	end
 
-	plotBas(bas, p.Results);
+	plotBas(bas, 'batbox', p.Results);
 
 	if p.Results.plotImportantIndices
 		load(p.Results.file);

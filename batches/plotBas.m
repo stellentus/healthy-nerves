@@ -1,6 +1,6 @@
 % plotBas is used to print a table and plot an array of BatchAnalyzer
-function plotBas(bas, args)
-	if nargin < 2
+function plotBas(bas, filename, args)
+	if nargin < 3
 		args = struct();
 	end
 	args = setArgs(args);
@@ -50,7 +50,7 @@ function plotBas(bas, args)
 	end
 
 	if args.plotBoxes
-		plotBoxes(sprintf('Batch Effect Measures (%d iters; size %f)', iter, sampleFraction), scores, [printBas.Name]');
+		plotBoxes(sprintf('Batch Effect Measures (%d iters; size %f)', iter, sampleFraction), filename, scores, [printBas.Name]');
 	end
 end
 
@@ -98,10 +98,10 @@ function padLen = printHeader(bas, printHell)
 	fprintf('%s %s\n', strrep(pad(" ", padLen), " ", "-"), repmat(', ------ , ----- ', 1, measNum));
 end
 
-function plotBoxes(titleLabel, scores, testNames)
+function plotBoxes(titleLabel, filename, scores, testNames)
 	addpath lib/CategoricalScatterplot
 
-	pathstr = sprintf('img/batbox-%d-%d-%d-%d%d%2.0f', clock);
+	pathstr = sprintf('img/%s-%d-%d-%d-%d%d%2.0f', filename, clock);
 
 	fig = figure('DefaultAxesFontSize', 18);
 

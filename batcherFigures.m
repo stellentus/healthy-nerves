@@ -13,7 +13,7 @@ function batcherFigures()
 		calculateBatch(bas(i));
 	end
 
-	plotBas(bas);
+	plotBas(bas, 'bfigs');
 
 	rmpath batches;
 end
