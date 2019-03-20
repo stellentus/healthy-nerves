@@ -71,6 +71,9 @@ function [args] = setArgs(args)
 	if ~isfield(args, 'printHell')
 		args.printHell = false;
 	end
+	if ~isfield(args, 'plotBoxes')
+		args.plotBoxes = true;
+	end
 end
 
 function padLen = printHeader(bas, printHell)
