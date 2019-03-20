@@ -3,7 +3,12 @@ function batcherFigures()
 	iters = 30;
 	sampleFraction = 0.8;
 
+	% Load the data
 	load("bin/batch-normative.mat");
+	normMeas = measures;
+	load("bin/non-normative.mat");
+	assert(isequal(normMeas, measures), 'Measures for normative and non-normative are not the same');
+	clear normMeas nanMethod;
 
 	% Create a combined vector for labels (with all datasets) and one for values
 	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
@@ -75,6 +80,28 @@ function batcherFigures()
 		BatchAnalyzer("6 Split All", 6, [can1; jap1; por1; can2; jap2; por2], [ones(can1Num, 1); ones(jap1Num, 1) * 2; repmat(3, por1Num, 1); repmat(4, can2Num, 1); repmat(5, jap2Num, 1); repmat(6, por2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 	];
 	calcAndPlot(bas, 'batch-f2', 'Figure 2: Impact of Changing the Number of Groups');
+
+	%%%%%%%%% FIGURE 3 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	bas = [
+		BatchAnalyzer("Random Labels", 3, values, 'iters', iters, 'sampleFraction', sampleFraction);
+		baNorm;
+		BatchAnalyzer("Can Arms->Legs", 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("Add Legs", 4, [values; legValues], [labels; repmat(4, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("Can->SCI", 3, [sciValues; japValues; porValues], [ones(sciNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("Por->SCI", 3, [canValues; japValues; sciValues], [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, sciNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("Jap->Rat", 3, [canValues; ratValues; porValues], [ones(canNum, 1); ones(ratNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("Can->(Rat+SCI)", 3, [ratValues; sciValues; japValues; porValues], [ones(ratNum+sciNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("Arms/SCI/Legs/Rats", 4, [values; sciValues; legValues; ratValues], [repmat(1, length(labels), 1); repmat(2, sciNum, 1); repmat(3, legNum, 1); repmat(4, ratNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("Rat KX vs SP", 2, [ratKXValues; ratSPValues], [ones(ratKXNum, 1); ones(ratSPNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("Rat TA vs SOL", 2, [ratTAValues; ratSLValues], [ones(ratTANum, 1); ones(ratSLNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("4 Rat Types", 4, [ratTASPValues; ratTAKXValues; ratSLSPValues; ratSLKXValues], [repmat(1, ratTASPNum, 1); repmat(2, ratTAKXNum, 1); repmat(3, ratSLSPNum, 1); repmat(4, ratSLKXNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("Arms vs Legs", 2, [values; legValues], [repmat(1, length(labels), 1); repmat(2, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("Humans vs Rats", 2, [values; sciValues; legValues; ratValues], [repmat(1, length(labels)+sciNum+legNum, 1); repmat(2, ratNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("Human Arms vs Rats", 2, [values; ratValues], [repmat(1, length(labels), 1); repmat(2, ratNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("Human Not-Arms vs Rats", 2, [sciValues; legValues; ratValues], [repmat(1, sciNum+legNum, 1); repmat(2, ratNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+	];
+	calcAndPlot(bas, 'batch-f3', 'Figure 3: Comparisons with Non-Normative Data');
 
 	rmpath batches;
 end
