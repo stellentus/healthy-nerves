@@ -16,12 +16,14 @@ function batcherFigures()
 
 	addpath batches;
 
+	baNorm = BatchAnalyzer("Normative Data", 3, values, labels, 'iters', iters, 'sampleFraction', sampleFraction);
+	baRand = BatchAnalyzer("Random Labels", 3, values, 'iters', iters, 'sampleFraction', sampleFraction);
+
 	%%%%%%%%% FIGURE 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-	baNorm = BatchAnalyzer("Normative Data", 3, values, labels, 'iters', iters, 'sampleFraction', sampleFraction);
 	bas = [
 		baNorm;
-		BatchAnalyzer("Random Labels", 3, values, 'iters', iters, 'sampleFraction', sampleFraction);
+		baRand;
 	];
 	calcAndPlot(bas, 'batch-f1', 'Figure 1: Normative Data vs Random Data');
 
@@ -84,7 +86,7 @@ function batcherFigures()
 	%%%%%%%%% FIGURE 3 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 	bas = [
-		BatchAnalyzer("Random Labels", 3, values, 'iters', iters, 'sampleFraction', sampleFraction);
+		baRand;
 		baNorm;
 		BatchAnalyzer("Can Arms->Legs", 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 		BatchAnalyzer("Add Legs", 4, [values; legValues], [labels; repmat(4, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
