@@ -13,10 +13,10 @@ function batcherFigures()
 
 	%%%%%%%%% FIGURE 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-	ba = BatchAnalyzer("Normative data", 3, values, labels, 'iters', iters, 'sampleFraction', sampleFraction);
+	baNorm = BatchAnalyzer("Normative Data", 3, values, labels, 'iters', iters, 'sampleFraction', sampleFraction);
 	bas = [
-		ba;
-		BatchAnalyzer("Random labels", 3, values, 'iters', iters, 'sampleFraction', sampleFraction);
+		baNorm;
+		BatchAnalyzer("Random Labels", 3, values, 'iters', iters, 'sampleFraction', sampleFraction);
 	];
 	calcAndPlot(bas, 'batch-f1', 'Figure 1: Normative Data vs Random Data');
 
