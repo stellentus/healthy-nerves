@@ -1,5 +1,8 @@
 % plotBas is used to print a table and plot an array of BatchAnalyzer
 function plotBas(bas, args)
+	if nargin < 2
+		args = struct();
+	end
 	args = setArgs(args);
 	iter = bas(1).Iters;
 	sampleFraction = bas(1).SampleFraction;
