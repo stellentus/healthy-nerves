@@ -107,7 +107,6 @@ function plotBoxes(titleLabel, filename, scores, testNames)
 
 	CategoricalScatterplot(scores, testNames, 'MarkerSize', 50, 'BoxAlpha', .29);
 	title(titleLabel);
-	xlabel('Group');
 	ylabel('NMI');
 	xtickangle(45)
 	savefig(fig, strcat(pathstr, '.fig', 'compact'));
