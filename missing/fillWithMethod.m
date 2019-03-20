@@ -89,11 +89,12 @@ function [values] = fillWithZeroAsBackup(values, nanMethod, args)
 		if sum(sum(isnan(values))) == 0
 			filled = true;
 		end
-	catch
+	catch e
+		warning(e.message);
 	end
 
 	if ~filled && ~strcmp('none', nanMethod)
 		% It probably failed because the filling method was too complicated, so default to 0 which should always work.
-		thisValues = fillVals(thisValues, 'Zero');
+		values = fillVals(values, 'Zero', struct());
 	end
 end
