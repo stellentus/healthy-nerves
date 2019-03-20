@@ -105,6 +105,26 @@ function batcherFigures()
 	];
 	calcAndPlot(bas, 'batch-f3', 'Figure 3: Comparisons with Non-Normative Data');
 
+	%%%%%%%%% FIGURE 4 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	bas = [
+		baRand;
+		baNorm;
+
+		BACopyWithValues(baNorm, "Can shift right", [shiftRightRC(canValues); japValues; porValues]);
+		BACopyWithValues(baNorm, "Jap shift right", [canValues; shiftRightRC(japValues); porValues]);
+		BACopyWithValues(baNorm, "Por shift right", [canValues; japValues; shiftRightRC(porValues)]);
+
+		BACopyWithValues(baNorm, "Can shift left", [shiftLeftRC(canValues); japValues; porValues]);
+		BACopyWithValues(baNorm, "Jap shift left", [canValues; shiftLeftRC(japValues); porValues]);
+		BACopyWithValues(baNorm, "Por shift left", [canValues; japValues; shiftLeftRC(porValues)]);
+
+		BACopyWithValues(baNorm, "Can shrink", [shrinkRC(canValues); japValues; porValues]);
+		BACopyWithValues(baNorm, "Jap shrink", [canValues; shrinkRC(japValues); porValues]);
+		BACopyWithValues(baNorm, "Por shrink", [canValues; japValues; shrinkRC(porValues)]);
+	];
+	calcAndPlot(bas, 'batch-f4', 'Figure 4: Adjusting Recovery Cycle (RC)');
+
 	rmpath batches;
 end
 
@@ -115,4 +135,33 @@ function calcAndPlot(bas, name, figtitle)
 	end
 
 	plotBas(bas, name, figtitle);
+end
+
+function [shiftedValues] = shiftRightRC(vals)
+	shiftedValues = vals;
+	shiftedValues(:, 9) = shiftedValues(:, 9) * 1.2;  % Shift RRP right by 20%
+	shiftedValues(:, 26) = shiftedValues(:, 26) * 1.3;  % Shift Ref@2.5 right by increasing value by 30%.
+	shiftedValues(shiftedValues(:, 26)<0, 26) = 0;  % However, this might be <0, so set those to 0.
+	shiftedValues(:, 29) = shiftedValues(:, 29) * 1.4;  % Shift Ref@2.0 right by increasing value by 40%
+	shiftedValues(:, 30) = shiftedValues(:, 31);  % Shift Super@7 to equal the Super@5 value
+	shiftedValues(:, 30) = shiftedValues(:, 30) * 0.9;  % Shifting here will usually just result in a smaller value. Swapping 5 and 7 would probably have a similar effect.
+end
+
+function [shiftedValues] = shiftLeftRC(vals)
+	shiftedValues = vals;
+	shiftedValues(:, 9) = shiftedValues(:, 9) * .8;  % Shift RRP left by 20%
+	shiftedValues(:, 26) = shiftedValues(:, 26) * .7;  % Shift Ref@2.5 left by decreasing value by 30%.
+	shiftedValues(shiftedValues(:, 26)<0, 26) = 0;  % However, this might be <0, so set those to 0.
+	shiftedValues(:, 29) = shiftedValues(:, 29) * .6;  % Shift Ref@2.0 left by decreasing value by 40%
+	shiftedValues(:, 31) = shiftedValues(:, 30);  % Shift Super@5 to equal the Super@7 value
+	shiftedValues(:, 31) = shiftedValues(:, 31) * 1.1;  % Shifting here will usually just result in a larger value. Swapping 5 and 7 would probably have a similar effect.
+end
+
+function [shiftedValues] = shrinkRC(vals)
+	shiftedValues = vals;
+	shiftedValues(:, 9) = shiftedValues(:, 9) * .5;
+	shiftedValues(:, 26) = shiftedValues(:, 26) * .5;
+	shiftedValues(:, 29) = shiftedValues(:, 29) * .5;
+	shiftedValues(:, 30) = shiftedValues(:, 30) * .5;
+	shiftedValues(:, 31) = shiftedValues(:, 31) * .5;
 end
