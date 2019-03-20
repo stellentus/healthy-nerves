@@ -1,4 +1,4 @@
-% saveNormative multiple datasets and confirms they can be concatenated.
+% saveNormative loads multiple datasets and confirms they can be concatenated.
 function saveNormative(pathPrefix, nanMethod)
 	if nargin < 3
 		nanMethod = 'IterateRegr';
@@ -70,7 +70,9 @@ end
 
 function [vals, parts] = deleteNoSex(vals, parts)
 	hasSex = ismember(vals(:, 15), [2.0 1.0]);
-	fprintf('Deleting sexless %s.\n', parts(~hasSex));
+	if sum(~hasSex) > 0
+		fprintf('Deleting sexless %s.\n', parts(~hasSex));
+	end
 	vals = vals(hasSex, :);
 	parts = parts(hasSex);
 end
@@ -81,6 +83,6 @@ function [dedupVals, dedupParts] = deduplicate(vals, parts)
 	dedupParts = parts(sort(indices));
 	dedupVals = vals(sort(indices), :);
 	if length(dedupParts) ~= orig
-		fprintf('Deleted %d duplicates', orig-length(dedupParts));
+		fprintf('Deleted %d duplicates\n', orig-length(dedupParts));
 	end
 end
