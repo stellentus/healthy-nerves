@@ -148,7 +148,11 @@ function batcherFigures()
 		baRand;
 		getDeletedFeatureBatches(iters, sampleFraction, filepath, false, struct('toDelete', 1));
 	];
-	calcAndPlot(bas, 'batch-f6', 'Figure 6: Impact of Deleting Each Feature');
+
+	for i = 1:length(bas)
+		calculateBatch(bas(i));
+	end
+	plotBas(sortByMean(bas), 'batch-f6', 'Figure 6: Impact of Deleting Each Feature');
 
 	rmpath batches;
 end
@@ -195,4 +199,9 @@ function [vals] = scaleVariance(vals, stdScale)
 	colInd = [1:31];
 	mns = mean(vals(:,colInd));
 	vals(:,colInd) = bsxfun(@times, vals(:,colInd) - mns, stdScale) + mns;
+end
+
+function [bas] = sortByMean(bas)
+	[~, ind] = sort([bas.NMI_mean]);
+	bas = bas(ind);
 end
