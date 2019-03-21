@@ -13,6 +13,7 @@
 	- In our data it looks like there's a slight increase in NMI as the number of clusters increases: `batbox-2019-3-19-104913.png`.
 * Martha: Prepare a results+discussion of this
 * Batch with the rats and with combined SCI group.
+	- I need to rename some of the rats since the same name with a different muscle should be treated differently.
 * Martha: which parts am I worried about defending? Ask for help on them.
 
 ## Results
@@ -59,6 +60,27 @@ Since many of the features are correlated, it is not surprising that deleting a 
 
 [FIG7: Delete triple-features]
 
-To consider whether deleting the five identified features is meaningful, Figure 7 shows the change in NMI based on deleting all five of the features most likely to increase NMI compared to a few random selections of 5 features. <!-- I have no idea what this will show. -->
+To consider whether deleting the five identified features is meaningful, Figure 8 shows the change in NMI based on deleting all five of the features most likely to increase NMI compared to a few random selections of 5 features. While the deleting these five features does decrease the batch effects, the change is minor compared to other random combinations. (There are 169911 possible combinations of 5 features among 31.)
 
-[FIG7: Delete sets of 5]
+[FIG8: Delete sets of 5]
+
+Since the last few plots were underwhelming, I recommend going back to figures 3 and 4, which contain the most important results. Here's some more detailed analysis of Figure 3:
+
+* **Normative Data**: As in all of the other figures, the normative data consists of median (arm) data from 3 sources: Canada, Japan, and Portugal.
+* **Can Arms->Legs**: Replacing the Canadian median nerve (arm) data with CP nerve (leg) data causes a significant increase, as expected. The CP nerve is expected to give somewhat different results from the median nerve. However, the differences are not so pronounced that an expert could look at a single test result and predict which nerve it was from with 100% accuracy, so an NMI score of 1 is not expected here.
+* **Add Legs**: Adding the leg data results in 4 groups. Now one quarter of the data is from legs instead of one third as in the previous test, so it is expected to calculate an NMI score lower than the last trial but higher than the normative data.
+* **Can->SCI** and **Por->SCI**: The SCI dataset is not clean. Of the 13 participants, some had normative median nerves, some had injured median nerves, and some had injured median nerves undergoing treatment. Furthermore, replacing the Canadian (n=120) or Portuguese (n=42) data with SCI data (n=13) provided fewer samples to compare against. This result says more about the quality of the SCI data than about the NMI calculation.
+* **Jap->Rat**: As was observed when replacing Canadian arms with legs, replacing Japanese participants with rats results in a large change to the NMI score. Rat results are expected to be even less like human legs. (Note this was a combination of four rat groups, all treated as the same. For a description of the different rat groups, see below.)
+* **Can->(Rat+SCI)**: In this trial, the rat and SCI data were combined as if they were part of one batch (i.e. they were given the same label), while Japanese and Portuguese data were treated as two separate groups (i.e. two different labels). This shows that a heterogeneous group (rats and SCI humans) can be detected as different from two homogeneous groups (Japanese and Portuguese humans). The NMI score is likely a bit lower than the previous and next trials because of the heterogeneous group.
+* **Arms/SCI/Legs/Rats**: This trial had four groups: the normative data (with all three countries combined with one label), SCI, Canadian legs, and rats (including all four types described below). This shows that when the normative data is treated as a homogeneous group, non-normative data can be detected, even when the number of normative samples (n=247) is similar to the number of non-normative samples (n=X) and when there are many diverse non-normative groups.
+* **Rat KX vs SP**: Half of the rats were anesthetized with ketamine-xylazine (KX), while half were anesthetized with sodium pentobarbital (SP). These anaesthetics have different effects on the NET, especially RC, so batch effects should be evident. Since this NMI score is similar to the normative data's score, it is possible that there are differences in the normative data of similar magnitude to the rat anaesthetic differences. However, note the rat population is much smaller (X compared to 247). Also note that results from the TA and SOL (described next) were grouped together here. This within-group variance could mask some of the differences between KX and SP.
+* **Rat TA vs SOL**: Rat responses were measured in the sciatic nerve (in the leg) connecting to two different muscles: soleus (SOL) and tibialis anterior (TA). These branches of the nerve have slightly different responses, so batch effects could be evident. These differences are not as pronounced as the differences between KX and SP, so a lower NMI score is expected.
+* **4 Rat Types**: The four rat types (some anesthetized with KX and some with SP, and all measured in both TA and SOL) should show up as four slightly different groups. As expected, this causes an increase to the NMI score. Note the variance in this and the previous 3 trials is low. This variance is likely under-reported since 30 random samples of 80% of these small populations does not vary enough.
+* **Arms vs Legs**: The three sources of normative arm data are compared to the leg data. As expected, large differences are detected. The increased variance may be due to some leg samples being more similar to arms than others.
+* **Humans vs Rats**: The normative *and non-normative* human data was compared to the combined rat data (with one label for each species). Since both of these groups are homogeneous—the human group includes healthy and injured nerves from two different anatomical areas; the rat group includes two anatomical areas and two anaesthetics—the NMI score is low, indicating that two highly heterogeneous groups cannot be distinguished from one another.
+* **Human Arms vs Rats**: When the human data is limited to only normative median nerve data, the NMI score approaches its maximum value, indicating a clear difference between species.
+* **Human Not-Arms vs Rats**: 
+
+The normative data NMI was 0.064. When compared to legs, it tripled to 0.209. When compared to SCI, it ???. This indicates that normative human arm data is somewhat distinguishable from leg or SCI data, but the differences are not large. However, combining leg and arm data into a single group is enough to render it only somewhat distinguishable from the rat group (NMI=0.215) while comparing only arms to the rats results in a near-maximal NMI of 0.87. Since adding leg data to the arm data makes the dataset significantly more heterogeneous, this supports the assertion that the normative human arm NET data is homogeneous. While there could be some minor differences between the datasets from different sites, those differences are of a much smaller magnitude than the differences between different nerves and species, so it is appropriate to combine the Canadian, Japanese, and Portuguese data into a single normative dataset.
+
+*This should be normative vs legs*.
