@@ -16,7 +16,7 @@ function [bas] = getDeletedFeatureBatches(iters, sampleFraction, filepath, calcH
 	values = [canValues; japValues; porValues];
 	numFeat = length(measures);
 
-	ba = BatchAnalyzer("Normative", 3, [canValues; japValues; porValues], labels, 'iters', iters, 'sampleFraction', sampleFraction, 'calcHell', calcHell);
+	ba = BatchAnalyzer("Normative Data", 3, [canValues; japValues; porValues], labels, 'iters', iters, 'sampleFraction', sampleFraction, 'calcHell', calcHell);
 	bas = [ba];
 
 	% Try all permutations of removals of the desired number of indices
