@@ -167,6 +167,21 @@ function batcherFigures()
 	end
 	plotBas(sortByMean(bas), 'batch-f6', 'Figure 6: Impact of Deleting Each Feature');
 
+	%%%%%%%% FIGURE 7 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	bas = getDeletedFeatureBatches(iters, sampleFraction, filepath, false, struct('toDelete', 3));
+	for i = 1:length(bas)
+		calculateBatch(bas(i));
+	end
+	bas = sortByMean(bas);
+	bas = [
+		baRand;
+		baNorm;
+		bas(1:10);
+		bas(end-5:end);
+	];
+	plotBas(bas, 'batch-f7', 'Figure 7: Most and Least Impactful Triple-Deletions');
+
 	rmpath batches;
 end
 
