@@ -12,8 +12,8 @@ function saveNormative(pathPrefix, nanMethod)
 
 	% Load the data
 	addpath import;
-	[canValues, canParticipants, canMeasures] = mefimport(strcat(pathPrefix, 'human/MedianRepeatedMeasures.xlsx'), false, false, canonicalNamesNoTE20()); % TODO this could use all median, not just repeated
-	[legValues, legParticipants, legMeasures] = mefimport(strcat(pathPrefix, 'human/CPrepeatedmeasures.xlsx'), false, false, canonicalNamesNoTE20()); % TODO this could use all CP, not just repeated
+	[canValues, canParticipants, canMeasures] = mefimport(strcat(pathPrefix, 'human/FESmedianAPB.xlsx'), false, false, canonicalNamesNoTE20());
+	[legValues, legParticipants, legMeasures] = mefimport(strcat(pathPrefix, 'human/FEScommonperonealTA.xlsx'), false, false, canonicalNamesNoTE20());
 	[japValues, japParticipants, japMeasures] = importAllXLSX('none', strcat(pathPrefix, 'Japan'));
 	[porValues, porParticipants, porMeasures] = importAllXLSX('none', strcat(pathPrefix, 'Portugal'));
 	rmpath import;

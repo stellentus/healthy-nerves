@@ -10,10 +10,10 @@ function saveNonNormative(nanMethod, savefilepath)
 	% Load the data
 	addpath import;
 	[sciValues, sciParticipants, sciMeasures] = importAllXLSX('none', 'data/MEM/SCI/Cross Sectional Data/MEM+MEF data');
-	[ratTASPValues, ratTASPParticipants, ratTASPMeasures] = mefimport('data/rat/RTA all SP.xlsx', false, false, canonicalNamesNoTE20());
-	[ratTAKXValues, ratTAKXParticipants, ratTAKXMeasures] = mefimport('data/rat/TA-KXpair.xlsx', false, false, canonicalNamesNoTE20());
-	[ratSLSPValues, ratSLSPParticipants, ratSLSPMeasures] = mefimport('data/rat/RSOL all SP.xlsx', false, false, canonicalNamesNoTE20());
-	[ratSLKXValues, ratSLKXParticipants, ratSLKXMeasures] = mefimport('data/rat/SOL-KXpair.xlsx', false, false, canonicalNamesNoTE20());
+	[ratTASPValues, ratTASPParticipants, ratTASPMeasures] = mefimport('data/rat/TA-SP.xlsx', false, false, canonicalNamesNoTE20());
+	[ratTAKXValues, ratTAKXParticipants, ratTAKXMeasures] = mefimport('data/rat/TA-KX.xlsx', false, false, canonicalNamesNoTE20());
+	[ratSLSPValues, ratSLSPParticipants, ratSLSPMeasures] = mefimport('data/rat/SOL-SP.xlsx', false, false, canonicalNamesNoTE20());
+	[ratSLKXValues, ratSLKXParticipants, ratSLKXMeasures] = mefimport('data/rat/SOL-KX.xlsx', false, false, canonicalNamesNoTE20());
 	rmpath import;
 
 	% Combine pairs of rat data

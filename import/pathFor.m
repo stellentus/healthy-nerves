@@ -2,10 +2,10 @@
 function [pth] = pathFor(dataType)
 	switch dataType
 		case 'leg'
-			pth = 'data/human/CPrepeatedmeasures.xlsx';
+			pth = 'data/human/FEScommonperonealTA.xlsx';
 
 		case 'arm'
-			pth = 'data/human/MedianRepeatedMeasures.xlsx';
+			pth = 'data/human/FESmedianAPB.xlsx';
 
 		case 'legSCI'
 			% Previously we used SCI_CP.xlsx
