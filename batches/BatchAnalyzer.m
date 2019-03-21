@@ -49,10 +49,6 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			obj.Seed = p.Results.seed;
 			obj.CalcHell = p.Results.calcHell;
 
-			obj.CRI = [];
-			obj.NMI = [];
-			obj.HEL = [];
-
 			obj.SampleFraction = p.Results.sampleFraction;
 		end
 		function obj = setValues(obj, values)
@@ -64,6 +60,11 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			else
 				obj.ZMUVValues = values;
 			end
+
+			% Clear array values
+			obj.CRI = [];
+			obj.NMI = [];
+			obj.HEL = [];
 		end
 		function ba = BACopyWithValues(obj, name, values)
 			ba = copy(obj);
@@ -74,6 +75,11 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			if obj.Seed ~= 0
 				rng(obj.Seed); % Ensure all start with the same seed
 			end
+
+			% Clear old array values
+			obj.CRI = [];
+			obj.NMI = [];
+			obj.HEL = [];
 
 			addpath lib/rand_index;
 			addpath lib/info_entropy;
