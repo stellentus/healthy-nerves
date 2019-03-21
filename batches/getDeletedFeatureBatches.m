@@ -22,7 +22,7 @@ function [bas] = getDeletedFeatureBatches(iters, sampleFraction, filepath, calcH
 	% Try all permutations of removals of the desired number of indices
 	combos = nchoosek(1:31, arg.toDelete);
 	for i = 1:size(combos, 1)
-		bas = [bas BACopyWithValues(ba, printVector('Remove', combos(i, :)), values(:,setdiff(1:numFeat,combos(i, :))))];
+		bas = [bas; BACopyWithValues(ba, printVector('Remove', combos(i, :)), values(:,setdiff(1:numFeat,combos(i, :))))];
 	end
 end
 
