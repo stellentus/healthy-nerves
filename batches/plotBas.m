@@ -103,7 +103,7 @@ function plotBoxes(titleLabel, filename, scores, testNames)
 
 	pathstr = sprintf('img/%s-%d-%d-%d-%d%d%2.0f', filename, clock);
 
-	fig = figure('DefaultAxesFontSize', 18);
+	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
 
 	CategoricalScatterplot(scores, testNames, 'MarkerSize', 50, 'BoxAlpha', .29);
 	title(titleLabel);
