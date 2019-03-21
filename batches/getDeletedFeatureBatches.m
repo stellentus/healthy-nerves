@@ -28,8 +28,12 @@ end
 
 function str = printVector(str, vec)
 	str = sprintf("%s [", str);
+
+	fmtStr = "%s%d"; % This variable makes sure a space is only added after the first
 	for i=1:length(vec)
-		str = sprintf("%s%d ", str, vec(i));
+		str = sprintf(fmtStr, str, vec(i));
+		fmtStr = " %s%d";
 	end
+
 	str = sprintf("%s]", str);
 end
