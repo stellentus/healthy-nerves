@@ -182,6 +182,19 @@ function batcherFigures()
 	];
 	plotBas(bas, 'batch-f7', 'Figure 7: Most and Least Impactful Triple-Deletions');
 
+	%%%%%%%% FIGURE 8 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	bas = [
+		baRand;
+		baNorm;
+		BACopyWithValues(baNorm, 'Remove Best 5', values(:, setdiff(1:length(measures), [2, 25, 11, 18, 14])));
+		getDeletedFeatureBatches(iters, sampleFraction, filepath, false, struct('toDelete', 5, 'maxNum', 10));  % Choose 10 combinations of 5 indices at random
+	];
+	for i = 3:length(bas)
+		calculateBatch(bas(i));
+	end
+	plotBas(bas, 'batch-f8', 'Figure 8: Assorted Quintuple-Deletions');
+
 	rmpath batches;
 end
 
