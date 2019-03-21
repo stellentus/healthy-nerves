@@ -178,7 +178,7 @@ function batcherFigures()
 		baRand;
 		bas(1:10);
 		baNorm;
-		bas(end-5:end);
+		bas(end-9:end);
 	];
 	plotBas(bas, 'batch-f7', 'Figure 7: Most and Least Impactful Triple-Deletions');
 
