@@ -4,7 +4,8 @@ function batcherFigures()
 	sampleFraction = 0.8;
 
 	% Load the data
-	load("bin/batch-normative.mat");
+	filepath = "bin/batch-normative.mat";
+	load(filepath);
 	normMeas = measures;
 	load("bin/non-normative.mat");
 	assert(isequal(normMeas, measures), 'Measures for normative and non-normative are not the same');
@@ -140,6 +141,14 @@ function batcherFigures()
 		BACopyWithValues(baNorm, "Por decreased variance", [canValues; japValues; scaleVariance(porValues, 0.5)]);
 	];
 	calcAndPlot(bas, 'batch-f5', 'Figure 5: Adjusting variance');
+
+	%%%%%%%% FIGURE 6 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	bas = [
+		baRand;
+		getDeletedFeatureBatches(iters, sampleFraction, filepath, false, struct('toDelete', 1));
+	];
+	calcAndPlot(bas, 'batch-f6', 'Figure 6: Impact of Deleting Each Feature');
 
 	rmpath batches;
 end
