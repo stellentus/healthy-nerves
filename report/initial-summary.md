@@ -17,7 +17,7 @@
 
 ## Results
 
-The data comes from three electrodiagnostic nerve excitability test (NET) datasets (median nerve, i.e. arm) from Canada (n=120), Japan (n=85), and Portugal (n=42). Additionally, some trials used a Canadian common peroneal nerve (i.e. leg) dataset (n=X), a rat dataset (n=X), and a spinal cord injury (SCI) dataset (n=X). The data as analyzed here consists of 36 real-valued measures (age, temperature, and 34 excitability variables) and one categorical measure (male/female) extracted from the NET datasets.
+The data comes from three electrodiagnostic nerve excitability test (NET) datasets (median nerve, i.e. arm) from Canada (n=120), Japan (n=85), and Portugal (n=42). Additionally, some trials used a Canadian common peroneal nerve (i.e. leg) dataset (n=X), a rat dataset (n=X), and a spinal cord injury (SCI) dataset (n=13). The data as analyzed here consists of 36 real-valued measures (age, temperature, and 34 excitability variables) and one categorical measure (male/female) extracted from the NET datasets.
 
 <!-- Describe zero mean unit variance. -->
 
@@ -41,7 +41,7 @@ To be confident in the normative data it was necessary to show a near-zero NMI, 
 
 [FIG3: rat, SCI, leg]
 
-The datasets tested in Figure 3 are significantly different than median nerve (arm), so it is unsurprising that they introduced a noticeable change in the NMI. However, potential technical or ethnic differences between datasets could be more subtle. To test the impact of such smaller changes, some of the 34 excitability variables were subtly adjusted (see Figure 4). In the "RC shift" tests, the 7 variables derived from one portion of the NET (recovery cycle, RC) were transformed in one of the three datasets as if the corresponding underlying data had shifted left or right, imitating a plausible technical difference between datasets. In the "RC shrink" tests, those same 7 variables were increased or decreased by 30%. <!-- confirm --> The results show a (probably not significant?) small increase in NMI.
+The datasets tested in Figure 3 are significantly different than median nerve (arm), so it is unsurprising that they introduced a noticeable change in the NMI. However, potential technical or ethnic differences between datasets could be more subtle. To test the impact of such smaller changes, some of the 34 excitability variables were subtly adjusted (see Figure 4). In the "RC shift" tests, the 7 variables derived from one portion of the NET (recovery cycle, RC) were transformed in one of the three datasets as if the corresponding underlying data had shifted left or right, imitating a plausible technical difference between datasets. In the "RC shrink" tests, those same 7 variables were increased or decreased by 30%. <!-- confirm --> The results show a (probably not significant?) small increase in NMI. There is a more detailed discussion of these results at the end of this report.
 
 [FIG4: Adjust RC]
 
