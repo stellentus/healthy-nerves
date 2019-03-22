@@ -44,7 +44,7 @@ The data was normalized before the NMI was calculated by combining the data (acr
 
 \begin{figure*}[ht]
   \centering
-       \includegraphics[width=0.865\textwidth]{../img/batch-norm-rand.png}
+       \includegraphics[width=\textwidth]{../img/batch-norm-rand.png}
          \caption{}
   \label{fig:norm-rand}
 \end{figure*}
@@ -55,7 +55,7 @@ In Figure 1, NMI for the normative dataset (i.e. combined Canadian, Japanese, an
 
 \begin{figure*}
   \centering
-       \includegraphics[width=0.865\textwidth]{../img/batch-group-size.png}
+       \includegraphics[width=\textwidth]{../img/batch-group-size.png}
          \caption{}
   \label{fig:group-size}
 \end{figure*}
@@ -70,7 +70,7 @@ All of the results in Figure \ref{fig:norm-rand} used three labels, but future f
 
 \begin{figure*}
   \centering
-       \includegraphics[width=0.865\textwidth]{../img/batch-rc.png}
+       \includegraphics[width=\textwidth]{../img/batch-rc.png}
          \caption{}
   \label{fig:rc}
 \end{figure*}
@@ -81,7 +81,7 @@ To be confident in the normative data it was necessary to show a near-zero NMI, 
 
 \begin{figure*}
   \centering
-       \includegraphics[width=0.865\textwidth]{../img/batch-variance.png}
+       \includegraphics[width=\textwidth]{../img/batch-variance.png}
          \caption{}
   \label{fig:variance}
 \end{figure*}
@@ -98,7 +98,7 @@ Larger changes were introduced by doubling or halving the variance of all variab
 
 \begin{figure*}
   \centering
-       \includegraphics[width=0.865\textwidth]{../img/batch-vs-legs.png}
+       \includegraphics[width=\textwidth]{../img/batch-vs-legs.png}
          \caption{}
   \label{fig:vs-legs}
 \end{figure*}
@@ -109,7 +109,7 @@ Testing with simulated batches shows some minor increases to NMI. It will also b
 
 \begin{figure*}
   \centering
-       \includegraphics[width=0.865\textwidth]{../img/batch-within-rats.png}
+       \includegraphics[width=\textwidth]{../img/batch-within-rats.png}
          \caption{}
   \label{fig:within-rats}
 \end{figure*}
@@ -125,12 +125,25 @@ Note the variance in the three rat tests is lower than the normative dataset's v
 
 \begin{figure*}
   \centering
-       \includegraphics[width=0.865\textwidth]{../img/batch-vs-rats.png}
+       \includegraphics[width=\textwidth]{../img/batch-vs-rats.png}
          \caption{}
   \label{fig:vs-rats}
 \end{figure*}
 
 Rat data is radically different from human, so it should be even more clearly a different batch than a comparison to leg data.  Figure \ref{fig:vs-rats} compares NMI for datasets between these groups. Replacing the Canadian or Japanese data with rat data causes a large increase in NMI. Adding rat data to the three normative groups has a slightly smaller impact on NMI (since rat data is now one of four groups instead of one of three groups). Finally, when the normative human median data is compared to the diverse rat data, the NMI score approaches its maximum value, indicating a clear difference between species (in spite of the heterogeneity of the rat data).
+
+\pagebreak
+
+\begin{figure*}
+  \centering
+       \includegraphics[width=\textwidth]{../img/batch-vs-countries.png}
+         \caption{}
+  \label{fig:vs-countries}
+\end{figure*}
+
+After comparing leg data and rat data to the normative data with a single label for the entire normative dataset, Figure \ref{fig:vs-countries} compares two of the countries against the third, using a single label for the two combined countries. In all three cases, the NMI is lower than the NMI comparing all three countries. However, note the NMI for Canada and Portugal vs Japan is the lowest and approaches that of random labels \emph{though I might need to re-calculate the random NMI for this different group size, but it will be close anyway}.
+
+\emph{This is the last plot I thought to generate and I want to send this before I leave for the weekend, so I don't have time to think about what this means (if anything).}
 
 \pagebreak
 
