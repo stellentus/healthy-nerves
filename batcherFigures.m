@@ -92,6 +92,21 @@ function batcherFigures()
 	plotBas(bas, 'batch-group-size', 'Impact of Changing the Number of Groups');
 
 	%%%%%%%%% FIGURE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	fprintf('\n\nOne Country vs Two\n\n');
+
+	bas = [
+		baRand;
+		baNorm;
+		BatchAnalyzer("Normative vs Canada", 2, [canValues; japValues; porValues], [ones(canNum, 1); repmat(2, japNum+porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("Normative vs Japan", 2, [japValues; canValues; porValues], [ones(japNum, 1); repmat(2, canNum+porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("Normative vs Portugal", 2, [porValues; canValues; japValues], [ones(porNum, 1); repmat(2, japNum+canNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+	];
+	for i = 3:length(bas)
+		calculateBatch(bas(i));
+	end
+	plotBas(bas, 'batch-vs-countries', 'Comparisons with Leg Data');
+
+	%%%%%%%%% FIGURE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	fprintf('\n\nComparisons with Leg Data\n\n');
 
 	bas = [
