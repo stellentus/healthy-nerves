@@ -23,16 +23,16 @@ function batcherFigures()
 	calculateBatch(baRand);
 
 	%%%%%%%% FIGURE 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	fprintf('\n\nFigure 1\n');
+	fprintf('\n\nNormative Data vs Random Data\n\n');
 
 	bas = [
 		baNorm;
 		baRand;
 	];
-	plotBas(bas, 'batch-f1', 'Figure 1: Normative Data vs Random Data');
+	plotBas(bas, 'batch-norm-rand', 'Normative Data vs Random Data');
 
 	%%%%%%%%% FIGURE 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	fprintf('\n\nFigure 2\n');
+	fprintf('\n\nImpact of Changing the Number of Groups\n\n');
 
 	canIdx = randperm(canNum);
 	can1 = canValues(canIdx(1:floor(length(canValues)/2)), :);
@@ -89,18 +89,20 @@ function batcherFigures()
 	for i = 1:length(bas)
 		calculateBatch(bas(i));
 	end
-	plotBas(bas, 'batch-f2', 'Figure 2: Impact of Changing the Number of Groups');
+	plotBas(bas, 'batch-group-size', 'Impact of Changing the Number of Groups');
 
 	%%%%%%%%% FIGURE 3 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	fprintf('\n\nFigure 3\n');
+	fprintf('\n\nComparisons with Non-Normative Data\n\n');
 
 	bas = [
 		baRand;
 		baNorm;
 		BatchAnalyzer("Can Arms->Legs", 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 		BatchAnalyzer("Add Legs", 4, [values; legValues], [labels; repmat(4, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("Normative vs Legs", 4, [values; legValues], [repmat(1, length(labels), 1); repmat(2, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 		BatchAnalyzer("Can->SCI", 3, [sciValues; japValues; porValues], [ones(sciNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 		BatchAnalyzer("Por->SCI", 3, [canValues; japValues; sciValues], [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, sciNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("Normative vs SCI", 4, [values; sciValues], [repmat(1, length(labels), 1); repmat(2, sciNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 		BatchAnalyzer("Jap->Rat", 3, [canValues; ratValues; porValues], [ones(canNum, 1); ones(ratNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 		BatchAnalyzer("Can->(Rat+SCI)", 3, [ratValues; sciValues; japValues; porValues], [ones(ratNum+sciNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 		BatchAnalyzer("Arms/SCI/Legs/Rats", 4, [values; sciValues; legValues; ratValues], [repmat(1, length(labels), 1); repmat(2, sciNum, 1); repmat(3, legNum, 1); repmat(4, ratNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
@@ -115,10 +117,10 @@ function batcherFigures()
 	for i = 3:length(bas)
 		calculateBatch(bas(i));
 	end
-	plotBas(bas, 'batch-f3', 'Figure 3: Comparisons with Non-Normative Data');
+	plotBas(bas, 'batch-non-norm', 'Comparisons with Non-Normative Data');
 
 	%%%%%%%%% FIGURE 4 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	fprintf('\n\nFigure 4\n');
+	fprintf('\n\nAdjusting Recovery Cycle (RC)\n\n');
 
 	bas = [
 		baRand;
@@ -139,10 +141,10 @@ function batcherFigures()
 	for i = 3:length(bas)
 		calculateBatch(bas(i));
 	end
-	plotBas(bas, 'batch-f4', 'Figure 4: Adjusting Recovery Cycle (RC)');
+	plotBas(bas, 'batch-rc', 'Adjusting Recovery Cycle (RC)');
 
 	%%%%%%%%% FIGURE 5 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	fprintf('\n\nFigure 5\n');
+	fprintf('\n\nAdjusting Variance\n\n');
 
 	bas = [
 		baRand;
@@ -159,10 +161,10 @@ function batcherFigures()
 	for i = 3:length(bas)
 		calculateBatch(bas(i));
 	end
-	plotBas(bas, 'batch-f5', 'Figure 5: Adjusting variance');
+	plotBas(bas, 'batch-variance', 'Adjusting Variance');
 
 	%%%%%%%% FIGURE 6 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	fprintf('\n\nFigure 6\n');
+	fprintf('\n\nImpact of Deleting Each Feature\n\n');
 
 	bas = [
 		baRand;
@@ -171,10 +173,10 @@ function batcherFigures()
 	for i = 2:length(bas)
 		calculateBatch(bas(i));
 	end
-	plotBas(sortByMean(bas), 'batch-f6', 'Figure 6: Impact of Deleting Each Feature');
+	plotBas(sortByMean(bas), 'batch-delete-features', 'Impact of Deleting Each Feature');
 
 	%%%%%%%% FIGURE 7 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	fprintf('\n\nFigure 7\n');
+	fprintf('\n\nMost and Least Impactful Triple-Deletions\n\n');
 
 	bas = getDeletedFeatureBatches(iters, sampleFraction, filepath, false, struct('toDelete', 3));
 	for i = 1:length(bas)
@@ -187,10 +189,10 @@ function batcherFigures()
 		baNorm;
 		bas(end-9:end);
 	];
-	plotBas(bas, 'batch-f7', 'Figure 7: Most and Least Impactful Triple-Deletions');
+	plotBas(bas, 'batch-triple-deletion', 'Most and Least Impactful Triple-Deletions');
 
 	%%%%%%%% FIGURE 8 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	fprintf('\n\nFigure 8\n');
+	fprintf('\n\nAssorted Quintuple-Deletions\n\n');
 
 	bas = [
 		baRand;
@@ -201,7 +203,7 @@ function batcherFigures()
 	for i = 3:length(bas)
 		calculateBatch(bas(i));
 	end
-	plotBas(bas, 'batch-f8', 'Figure 8: Assorted Quintuple-Deletions');
+	plotBas(bas, 'batch-quintuple-deletion', 'Assorted Quintuple-Deletions');
 
 	rmpath batches;
 end
