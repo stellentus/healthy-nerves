@@ -10,23 +10,23 @@
 \usepackage{amsthm}                % better theorem environments
 \usepackage{titlesec}
 
+\linespread{1}
+
+\usepackage{caption}
+\captionsetup[figure]{labelsep=space}
+
 \usepackage{authblk}
 \title{Batch Effects Summary}
-\author[1,2]{James M Bell}
-\author[2]{Martha White}
-\author[1,3]{Kelvin E Jones}
-\affil[1]{Neuroscience and Mental Health Institute, University of Alberta}
-\affil[2]{Department of Computing Science, University of Alberta}
-\affil[2]{Department of Kinesiology, Sport, and Recreation, University of Alberta}
+\author{James M Bell}
 \renewcommand\Affilfont{\itshape\small}
 
 \begin{document}
 
 \maketitle
 
-\section{Introduction}
+\section*{Introduction and Methods}
 
-The data comes from three electrodiagnostic nerve excitability test (NET) datasets (median nerve, i.e. arm) from Canada (n=120), Japan (n=85), and Portugal (n=42). Additionally, some trials used a Canadian common peroneal nerve (i.e. leg) dataset (n=X), a rat dataset (n=X), and a spinal cord injury (SCI) dataset (n=13). The data as analyzed here consists of 36 real-valued measures (age, temperature, and 34 excitability variables) and one categorical measure (male/female) extracted from the NET datasets.
+The data comes from three electrodiagnostic nerve excitability test (NET) datasets (median nerve, i.e. arm) from Canada (n=120), Japan (n=85), and Portugal (n=42). Additionally, some trials used a Canadian common peroneal nerve (i.e. leg) dataset (n=121), a rat dataset (n=49), and a spinal cord injury (SCI) dataset (n=13). The data as analyzed here consists of 30 real-valued measures (age, temperature, and 28 excitability variables) and one categorical measure (male/female) extracted from the NET datasets.
 
 % Defend use of NMI.
 
@@ -36,110 +36,115 @@ Normalized mutual information can be used to compare two clusterings (or known l
 
 The data was normalized before the NMI was calculated by combining the data (across all labels) and converting it to zero mean, unit variance.
 
-In Figure 1, NMI for the normative dataset (i.e. combined Canadian, Japanese, and Portuguese data) is compared to two different randomly generated lists of three labels with a length of 247. (NMI for identical lists is always exactly 1, so it is not shown.) As expected, NMI for random data is near zero. The normative data is not quite zero, indicating potential (but small) batch effects.
+\emph{My doubts and concerns are emphasized like this.}
 
-\begin{figure*}
+\pagebreak
+
+\section*{Results and Some Discussion}
+
+\begin{figure*}[ht]
   \centering
        \includegraphics[width=0.865\textwidth]{../img/batch-norm-rand.png}
+         \caption{}
   \label{fig:norm-rand}
 \end{figure*}
 
-All of the results in Figure \ref{fig:norm-rand} used three labels, but future figures will not. While NMI theory allows for comparison of NMI with different numbers of clusters, it is illustrative to present a visual comparison of diverse cluster sizes (Figure \ref{fig:group-size}). In this set of tests, one or more of the datasets was randomly divided in half to increase the number of clusters. (The same split was used for all 30 iterations.) For example, Canadian data (n=120) was randomly split into Canadian data A (n=60) and B (n=60) and then combined with Japanese (n=85) and Portuguese (n=42) data to measure NMI with 4 clusters.
+In Figure 1, NMI for the normative dataset (i.e. combined Canadian, Japanese, and Portuguese data) is compared to two different randomly generated lists of three labels with a length of 247. (NMI for identical lists is always exactly 1, so it is not shown.) As expected, NMI for random data is near zero. The normative data is not quite zero, indicating potential (but small) batch effects.
 
-\emph{But actually, with random data, it looks to me like as the number of clusters increases, the mean and standard deviation get smaller (approach zero). So with data that has no batch effects, I think increased clusters would follow the same pattern? Second, if data has 3 strongly-batched data, I would expect that splitting that into 9 clusters would decrease the NMI. Within each cluster (where there are no batch effects) we have now created 3 groups, but the cluster-internal NMI would be 0 (if we were to calculate it on just the 3 sub-groups of one cluster), so I suspect the overall NMI would be reduced as a result. I should probably test this so I can more easily explain the below figure. (On the same lines, there's a difference between splitting one label into two labels or adding an entirely new label and associated data. I'm not entirely sure which one is theoretically not going to change NMI; I assume the former.)}
+\pagebreak
 
 \begin{figure*}
   \centering
        \includegraphics[width=0.865\textwidth]{../img/batch-group-size.png}
+         \caption{}
   \label{fig:group-size}
 \end{figure*}
 
-To be confident in the normative data it was necessary to show a near-zero NMI, but that is not sufficient. The NMI must also change significantly when non-normative data is added. Leg data is similar to arm data, but it is different enough that it should show up as a different batch. Rat data is radically different from human, so it should be even more clearly a different batch. A spinal cord injury can cause significant changes to some excitability variables, so the SCI dataset, which contains participants with diverse impairments, should also demonstrate batch effects. Figure \ref{fig:non-norm} compares NMI for datasets between these groups. It shows that non-normative data increases the NMI as expected.
+All of the results in Figure \ref{fig:norm-rand} used three labels, but future figures will not. While NMI theory allows for comparison of NMI with different numbers of clusters, it is illustrative to present a visual comparison of diverse cluster sizes (Figure \ref{fig:group-size}). In this set of tests, one or more of the datasets was randomly divided in half to increase the number of clusters. (The same split was used for all 30 iterations.) For example, Canadian data (n=120) was randomly split into Canadian data A (n=60) and B (n=60) and then combined with Japanese (n=85) and Portuguese (n=42) data to measure NMI with 4 clusters.
 
-\begin{figure*}
-  \centering
-       \includegraphics[width=0.865\textwidth]{../img/batch-non-norm.png}
-  \label{fig:non-norm}
-\end{figure*}
+\emph{With random data, it looks to me like as the number of clusters increases, the mean and standard deviation get smaller (approach zero). So with data that has no batch effects, I think increased clusters would follow the same pattern?}
 
-The datasets tested in Figure \ref{fig:non-norm} are significantly different than median nerve (arm), so it is unsurprising that they introduced a noticeable change in the NMI. However, potential technical or ethnic differences between datasets could be more subtle. To test the impact of such smaller changes, some of the 34 excitability variables were subtly adjusted (see Figure \ref{fig:rc}). In the "RC shift" tests, the 7 variables derived from one portion of the NET (recovery cycle, RC) were transformed in one of the three datasets as if the corresponding underlying data had shifted left or right, imitating a plausible technical difference between datasets. In the "RC shrink" tests, those same 7 variables were decreased by 50\%. The results show a (probably not significant?) small increase in NMI. There is a more detailed discussion of these results at the end of this report.
+\emph{If data has 3 strongly-batched groups, I would expect that splitting that into 9 groups would decrease the NMI. Within each cluster (where there are no batch effects) we have now created 3 groups, but the cluster-internal NMI would be 0 (if we were to calculate it on just the 3 sub-groups of one cluster), so I suspect the overall NMI would be reduced as a result. I should probably test this so I can more easily explain Figure \ref{fig:group-size}. (Along the same lines, there's a difference between splitting one label into two labels or adding an entirely new label and associated data. I'm not entirely sure which one is theoretically not going to change NMI; I assume the former.)}
+
+\pagebreak
 
 \begin{figure*}
   \centering
        \includegraphics[width=0.865\textwidth]{../img/batch-rc.png}
+         \caption{}
   \label{fig:rc}
 \end{figure*}
 
-Larger changes were introduced by doubling or halving the variance in one of the three datasets, imitating a potentially plausible biological difference (though changing the variance by a factor of 2 is larger-than-plausible; 40\% would be more realistic). Figure \ref{fig:variance} shows that such changes cause barely-noticeable changes to NMI. Doubling the variance of the Canadian data even \emph{decreased} NMI, though it is likely that's due to a random difference in clustering rather than revealing a true difference between datasets. (The variance of the Canadian data is similar to the variance of the other data, indicating an increase in variance is not warranted.)
+To be confident in the normative data it was necessary to show a near-zero NMI, but that is not sufficient. The NMI must also change significantly when non-normative data is added. To test the impact of widespread changes, 6 of the 28 excitability variables were subtly adjusted (see Figure \ref{fig:rc}). In the ``RC shift'' tests, the 7 variables derived from one portion of the NET (recovery cycle, RC) were transformed in one of the three datasets as if the corresponding underlying data had shifted left or right, imitating a plausible technical difference between datasets. In the ``RC shrink'' tests, those same 7 variables were decreased by 50\%. The results show a \emph{(probably not significant?)} small increase in NMI.
+
+\pagebreak
 
 \begin{figure*}
   \centering
        \includegraphics[width=0.865\textwidth]{../img/batch-variance.png}
+         \caption{}
   \label{fig:variance}
 \end{figure*}
 
-Figures \ref{fig:norm-rand}–\ref{fig:variance} show that NMI is an effective measure for detecting batch effects, so it can be used to determine if NET data from diverse sources can be appropriately combined. It is sensitive to large changes (e.g. leg, rat, or SCI data), though it may not be sensitive to smaller, biologically-plausible changes. These results suggest that there are no large batch effects between the Canadian, Japanese, and Portuguese data. If batch effects exist, they must be small. \footnote{I suspect if the majority of the parameters changed by 50\%, I wouldn't detect it, so I'm not sure this really counts as ``small''. See the more detailed discussion at the end for more consideration of this.}
+Larger changes were introduced by doubling or halving the variance of all variables in one of the three datasets, imitating a potentially plausible biological difference (though changing the variance by a factor of 2 is larger-than-plausible; 40\% would be more realistic). Figure \ref{fig:variance} shows that such changes cause barely-noticeable changes to NMI. Doubling the variance of the Canadian data even decreased NMI, though it is likely that's due to a random difference in clustering rather than revealing a true difference between datasets. (The variance of the Canadian data is similar to the variance of the other data, indicating an increase in variance is not warranted.)
 
-Since the NMI of the normative data is non-zero, it is interesting to consider if the batch effects can be attributed to any specific features. Figure \ref{fig:delete-features} shows the NMI calculated with each one of the 36 features removed, ranked in order of average impact on the NMI. These differences are clearly not significant.
+\emph{I'm not sure how to explain why the NMI changed so much in one place here. I don't think ``a random difference in clustering'' is an adequate explanation.}
 
-\begin{figure*}
-  \centering
-       \includegraphics[width=0.865\textwidth]{../img/batch-delete-features.png}
-  \label{fig:delete-features}
-\end{figure*}
+\emph{It's a bit concerning that doubling the variance has such a minor impact on the NMI. Perhaps because so many are anti-correlated?}
 
-Since many of the features are correlated, it is not surprising that deleting a single feature would not be impactful, so each combination of two or three features was deleted with similar results. When the features were ranked by their effect on the NMI when all possible combinations of three features were deleted, five of the features consistently resulted in a decrease to the NMI (especially when they were deleted together): SDTC, hyperpolarization I/V slope, TEd (10–20ms), TEd (90–100ms), and age. Since distribution of ages in each dataset is different, and since some of the excitability measures are correlated with age, % which ones?
-it is plausible that the observed batch effects are entirely due to the age differences in the datasets. Figure \ref{fig:triple-deletion} shows the effect of deleting three features at once. Results to the left of the Normative Data were the 10 best-performing combinations; results to the right, the worst-performing. However, since this plot only shows the 20 most extreme results out of 4495 combinations, these differences are not likely to be significant.
+\emph{I'm not very happy with how weak these results are. Thankfully, the next portion is much stronger, but I'm still concerned about the last two figures.}
+
+\pagebreak
 
 \begin{figure*}
   \centering
-       \includegraphics[width=0.865\textwidth]{../img/batch-triple-deletion.png}
-  \label{fig:triple-deletion}
+       \includegraphics[width=0.865\textwidth]{../img/batch-vs-legs.png}
+         \caption{}
+  \label{fig:vs-legs}
 \end{figure*}
 
-To consider whether deleting the five identified features is meaningful, Figure \ref{fig:quintuple-deletion} shows the change in NMI based on deleting all five of the features most likely to increase NMI compared to a few random selections of 5 features. While the deleting these five features does decrease the batch effects, the change is minor compared to other random combinations. (There are 169911 possible combinations of 5 features among 31.)
+Testing with simulated batches shows some minor increases to NMI. It will also be illustrative to consider batch effects between the normative data and some other datasets. Leg data is similar to arm data, but it is different enough that it should show up as a different batch. In Figure \ref{fig:vs-legs}, the the Canadian median nerve (arm) data is replaced with with CP nerve (leg) data (labeled as \textbf{Can Arms $\rightarrow$ Legs}). This causes a significant NMI increase, as expected. Adding the leg data (\textbf{Add Legs}) results in 4 groups. Now one quarter of the data is from legs instead of one third as in the previous test, so it is expected to calculate an NMI score lower than the last trial but higher than the normative data. Finally, comparing all of the normative data (from all three countries labelled together) to the leg data (\textbf{Normative vs Legs}) shows the legs are obviously a different batch. Also note the NMI when comparing legs to Portugal to Japan (0.26$\pm$0.06) is quite similar to the NMI when comparing legs to all three countries  (0.25$\pm$0.07), suggesting the Canadian data is similar to the other arm data.
+
+\pagebreak
 
 \begin{figure*}
   \centering
-       \includegraphics[width=0.865\textwidth]{../img/batch-quintuple-deletion.png}
-  \label{fig:quintuple-deletion}
+       \includegraphics[width=0.865\textwidth]{../img/batch-within-rats.png}
+         \caption{}
+  \label{fig:within-rats}
 \end{figure*}
 
-Since the last few plots were underwhelming, I recommend going back to Figures \ref{fig:non-norm} and \ref{fig:rc}, which contain the most important results. Here's some more detailed analysis of Figure \ref{fig:non-norm}:
+Before comparing rat data to human data, Figure \ref{fig:within-rats} presents some batch effects within the rat dataset. Half of the rats were anesthetized with ketamine-xylazine (KX), while half were anesthetized with sodium pentobarbital (SP). These anaesthetics have different effects on the NET, especially RC, so batch effects should be evident (\textbf{Rat KX vs SP}). Since this NMI score is similar to the normative data's score, it is possible that there are differences in the normative data of similar magnitude to the rat anaesthetic differences. However, note the rat population is much smaller (49 compared to 247). Also note that results from the TA and SOL (described next) were grouped together here. This within-group variance could mask some of the differences between KX and SP.
+Next, NMI was calculated for results that were measured in the sciatic nerve (in the leg) connecting to two different muscles: soleus (SOL) and tibialis anterior (TA). These branches of the nerve have slightly different responses, so batch effects could be evident (\textbf{Rat TA vs SOL}). These differences are not as pronounced as the differences between KX and SP, so a lower NMI score is expected.
+Finally, the four rat types (some anesthetized with KX and some with SP, and all measured in both TA and SOL) should show up as four slightly different groups (\textbf{4 Rat Types}). As expected, this causes an increase to the NMI score.
+Note the variance in the three rat tests is lower than the normative dataset's variance, but this variance is likely under-reported since 30 random samples of 80\% of these small populations does not vary enough.
 
-\begin{description}
-\item [Normative Data] As in all of the other figures, the normative data consists of median (arm) data from 3 sources: Canada, Japan, and Portugal.
-\item [Can Arms $\rightarrow$ Legs] Replacing the Canadian median nerve (arm) data with CP nerve (leg) data causes a significant increase, as expected. The CP nerve is expected to give somewhat different results from the median nerve. However, the differences are not so pronounced that an expert could look at a single test result and predict which nerve it was from with 100\% accuracy, so an NMI score of 1 is not expected here.
-\item [Add Legs] Adding the leg data results in 4 groups. Now one quarter of the data is from legs instead of one third as in the previous test, so it is expected to calculate an NMI score lower than the last trial but higher than the normative data.
-\item [Can $\rightarrow$ SCI and Por $\rightarrow$ SCI]: The SCI dataset is not clean. Of the 13 participants, some had normative median nerves, some had injured median nerves, and some had injured median nerves undergoing treatment. Furthermore, replacing the Canadian (n=120) or Portuguese (n=42) data with SCI data (n=13) provided fewer samples to compare against. This result says more about the quality of the SCI data than about the NMI calculation.
-\item [Jap $\rightarrow$ Rat] As was observed when replacing Canadian arms with legs, replacing Japanese participants with rats results in a large change to the NMI score. Rat results are expected to be even less like human legs. (Note this was a combination of four rat groups, all treated as the same. For a description of the different rat groups, see below.)
-\item [Can $\rightarrow$ (Rat+SCI)] In this trial, the rat and SCI data were combined as if they were part of one batch (i.e. they were given the same label), while Japanese and Portuguese data were treated as two separate groups (i.e. two different labels). This shows that a heterogeneous group (rats and SCI humans) can be detected as different from two homogeneous groups (Japanese and Portuguese humans). The NMI score is likely a bit lower than the previous and next trials because of the heterogeneous group.
-\item [Arms/SCI/Legs/Rats] This trial had four groups: the normative data (with all three countries combined with one label), SCI, Canadian legs, and rats (including all four types described below). This shows that when the normative data is treated as a homogeneous group, non-normative data can be detected, even when the number of normative samples (n=247) is similar to the number of non-normative samples (n=X) and when there are many diverse non-normative groups.
-\item [Rat KX vs SP] Half of the rats were anesthetized with ketamine-xylazine (KX), while half were anesthetized with sodium pentobarbital (SP). These anaesthetics have different effects on the NET, especially RC, so batch effects should be evident. Since this NMI score is similar to the normative data's score, it is possible that there are differences in the normative data of similar magnitude to the rat anaesthetic differences. However, note the rat population is much smaller (X compared to 247). Also note that results from the TA and SOL (described next) were grouped together here. This within-group variance could mask some of the differences between KX and SP.
-\item [Rat TA vs SOL] Rat responses were measured in the sciatic nerve (in the leg) connecting to two different muscles: soleus (SOL) and tibialis anterior (TA). These branches of the nerve have slightly different responses, so batch effects could be evident. These differences are not as pronounced as the differences between KX and SP, so a lower NMI score is expected.
-\item [4 Rat Types] The four rat types (some anesthetized with KX and some with SP, and all measured in both TA and SOL) should show up as four slightly different groups. As expected, this causes an increase to the NMI score. Note the variance in this and the previous 3 trials is low. This variance is likely under-reported since 30 random samples of 80\% of these small populations does not vary enough.
-\item [Arms vs Legs] The three sources of normative arm data are compared to the leg data. As expected, large differences are detected. The increased variance may be due to some leg samples being more similar to arms than others.
-\item [Humans vs Rats] The normative \emph{and non-normative} human data was compared to the combined rat data (with one label for each species). Since both of these groups are homogeneous—the human group includes healthy and injured nerves from two different anatomical areas; the rat group includes two anatomical areas and two anaesthetics—the NMI score is low, indicating that two highly heterogeneous groups cannot be distinguished from one another.
-\item [Human Arms vs Rats] When the human data is limited to only normative median nerve data, the NMI score approaches its maximum value, indicating a clear difference between species.
-\item [Human Not-Arms vs Rats] %incomplete
-\end{description}
+\emph{This is a rather problematic result. It shows that the differences between anaesthetics or the difference between motor axon types is detectable at the same batch effect level as we see between the median datasets. Either this test isn't sensitive to small differences or there are small differences between the groups.}
 
-The normative data NMI was 0.064. When compared to legs, it tripled to 0.209. When compared to SCI, it ???. This indicates that normative human arm data is somewhat distinguishable from leg or SCI data, but the differences are not large. However, combining leg and arm data into a single group is enough to render it only somewhat distinguishable from the rat group (NMI=0.215) while comparing only arms to the rats results in a near-maximal NMI of 0.87. Since adding leg data to the arm data makes the dataset significantly more heterogeneous, this supports the assertion that the normative human arm NET data is homogeneous. While there could be some minor differences between the datasets from different sites, those differences are of a much smaller magnitude than the differences between different nerves and species, so it is appropriate to combine the Canadian, Japanese, and Portuguese data into a single normative dataset.
+\pagebreak
 
-% This should be normative vs legs.
+\begin{figure*}
+  \centering
+       \includegraphics[width=0.865\textwidth]{../img/batch-non-norm.png}
+         \caption{}
+  \label{fig:vs-rats}
+\end{figure*}
+
+\pagebreak
+
+Rat data is radically different from human, so it should be even more clearly a different batch than a comparison to leg data.  Figure \ref{fig:vs-rats} compares NMI for datasets between these groups. Replacing the Canadian or Japanese data with rat data causes a large increase in NMI. Adding rat data to the three normative groups has a slightly smaller impact on NMI (since rat data is now one of four groups instead of one of three groups). Finally, when the normative human median data is compared to the diverse rat data, the NMI score approaches its maximum value, indicating a clear difference between species (in spite of the heterogeneity of the rat data).
+
+\pagebreak
+
+\section*{More Discussion and Conclusions}
+
+Figures \ref{fig:rc}–\ref{fig:vs-rats} show that NMI is an effective measure for detecting batch effects. The normative data NMI was 0.06$\pm$0.03. When compared to legs, it quadrupled to 0.24$\pm$0.07. When compared to rats, it increased to 0.99$\pm$0.02. This indicates that normative human arm data is somewhat distinguishable from leg data and very distinguishable from rat data, so NMI can be used to determine if NET data from diverse sources can be appropriately combined. NMI is sensitive to large changes (e.g. leg or rat), though it may not be sensitive to smaller, biologically-plausible changes. These results suggest that there are no large batch effects between the Canadian, Japanese, and Portuguese data. If batch effects exist, they must be small.
+
+\emph{I suspect if the majority of the parameters changed by 50\%, I wouldn't detect it, so I'm not sure this really counts as ``small''. Also, see the note above about different anaesthetics or motor axon types.}
+
+Future work could consider what makes legs easy to distinguish from arms (or rats from humans) while differences between rat motor axon types or anaesthetics are not so pronounced. This would give more insight into potential differences between the Canadian, Japanese, and Portuguese datasets.
+
+% The next line has my some previous conclusions. I'm not sure what changed to render them incorrect, but I think the results changed (a lot!) when I added extra rat data. Specifically, I previously only kept one rat with each name, but now they're renamed to include both muscles. Also, a bug in the import code only saved SP data. This meant that I was comparing to rat data that was almost entirely from a single group (SP TA, I think).
+% However, combining leg and arm data into a single group is enough to render it only somewhat distinguishable from the rat group (NMI=0.215) while comparing only arms to the rats results in a near-maximal NMI of 0.87. Since adding leg data to the arm data makes the dataset significantly more heterogeneous, this supports the assertion that the normative human arm NET data is homogeneous. While there could be some minor differences between the datasets from different sites, those differences are of a much smaller magnitude than the differences between different nerves and species, so it is appropriate to combine the Canadian, Japanese, and Portuguese data into a single normative dataset.
 
 \end{document}
-
-% * Is Matlab clustering giving me equal-sized groups?
-% 	- I ran 3 iterations on the normative data and found that linkage cluster (ward) gave different-sized groups:
-% 		Normative data: Cls 46 60 92; Tru 105 65 28
-% 		Normative data: Cls 32 78 88; Tru 101 52 45
-% 		Normative data: Cls 63 52 83; Tru 101 61 36
-% 		<!-- Implemented by adding the following line to the end of BatchAnalyzer:calculateBatch `disp(sprintf('%s: Cls %d %d %d; Tru %d %d %d', obj.Name, sum(idx==1), sum(idx==2), sum(idx==3), sum(thisIterLabels==1), sum(thisIterLabels==2), sum(thisIterLabels==3)));` -->
-% * Kelvin: Is NMI dependent on number of clusters? (Note the 2 clusters drops down). Maybe try testing within Canada. Is NMI=0.1 the same for 3 clusters vs 2 clusters? Is it meaningful to compare across cluster sizes? Find the theoretical answer.
-% 	- Yes, according to theory, NMI can be compared with different numbers of clusters. See https://nlp.stanford.edu/IR-book/html/htmledition/evaluation-of-clustering-1.html.
-% 	- In our data it looks like there's a slight increase in NMI as the number of clusters increases: `batbox-2019-3-19-104913.png`.
-% * Martha: Prepare a results+discussion of this
-% * Batch with the rats and with combined SCI group.
-% 	- I need to rename some of the rats since the same name with a different muscle should be treated differently.
-% * Martha: which parts am I worried about defending? Ask for help on them.

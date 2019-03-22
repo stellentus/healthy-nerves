@@ -1,0 +1,67 @@
+\documentclass[12pt]{article}
+\fontfamily{ptm}\selectfont
+
+\usepackage{setspace} \doublespacing
+\usepackage[margin=1.2in]{geometry}  % set the margins
+\usepackage{graphicx}              % to include figures
+\usepackage{epstopdf}
+\usepackage{amsmath}               % great math stuff
+\usepackage{amsfonts}              % for blackboard bold, etc
+\usepackage{amsthm}                % better theorem environments
+\usepackage{titlesec}
+
+\linespread{1}
+
+\usepackage{caption}
+\captionsetup[figure]{labelsep=space}
+
+\begin{document}
+
+\section*{Batch Effects: Results without Significance}
+
+I started working on the following lines of reasoning, but it's pretty clear that they aren't significant. However, I had already written up most of these conclusions, so I may as well preserve them.
+
+The main thing to note is that deleting one feature or a combination of up to 5 features doesn't have a significant impact on the NMI. This seems to rule out the idea that the batch effects might be due to differences in the age distributions.
+
+\subsection*{Results}
+
+Since the NMI of the normative data is non-zero, it is interesting to consider if the batch effects can be attributed to any specific features. Figure \ref{fig:delete-features} shows the NMI calculated with each one of the 36 features removed, ranked in order of average impact on the NMI. These differences are clearly not significant.
+
+\begin{figure*}[ht]
+  \centering
+       \includegraphics[width=0.865\textwidth]{../img/batch-delete-features.png}
+         \caption{}
+  \label{fig:delete-features}
+\end{figure*}
+
+
+Since many of the features are correlated, it is not surprising that deleting a single feature would not be impactful, so each combination of two or three features was deleted with similar results. When the features were ranked by their effect on the NMI when all possible combinations of three features were deleted, five of the features consistently resulted in a decrease to the NMI (especially when they were deleted together): SDTC, hyperpolarization I/V slope, TEd (10–20ms), TEd (90–100ms), and age. Since distribution of ages in each dataset is different, and since some of the excitability measures are correlated with age, % which ones?
+it is plausible that the observed batch effects are entirely due to the age differences in the datasets. Figure \ref{fig:triple-deletion} shows the effect of deleting three features at once. Results to the left of the Normative Data were the 10 best-performing combinations; results to the right, the worst-performing. However, since this plot only shows the 20 most extreme results out of 4495 combinations, these differences are not likely to be significant.
+
+\begin{figure*}[ht]
+  \centering
+       \includegraphics[width=0.865\textwidth]{../img/batch-delete-features.png}
+         \caption{}
+  \label{fig:triple-deletion}
+\end{figure*}
+
+
+To consider whether deleting the five identified features is meaningful, Figure \ref{fig:quintuple-deletion} shows the change in NMI based on deleting all five of the features most likely to increase NMI compared to a few random selections of 5 features. While the deleting these five features does decrease the batch effects, the change is minor compared to other random combinations. (There are 169911 possible combinations of 5 features among 31.)
+
+\begin{figure*}[ht]
+  \centering
+       \includegraphics[width=0.865\textwidth]{../img/batch-delete-features.png}
+         \caption{}
+  \label{fig:quintuple-deletion}
+\end{figure*}
+
+A spinal cord injury can cause significant changes to some excitability variables, so the SCI dataset, which contains participants with diverse impairments, should also demonstrate batch effects. However, the SCI dataset is not clean. Of the 13 participants, some had normative median nerves, some had injured median nerves, and some had injured median nerves undergoing treatment. Furthermore, replacing the Canadian (n=120) or Portuguese (n=42) data with SCI data (n=13) provided fewer samples to compare against. As a result, Figure \ref{fig:vs-sci} says more about the quality of the SCI data than about the NMI calculation.
+
+\begin{figure*}[ht]
+  \centering
+       \includegraphics[width=0.865\textwidth]{../img/batch-vs-sci.png}
+         \caption{}
+  \label{fig:vs-sci}
+\end{figure*}
+
+\end{document}
