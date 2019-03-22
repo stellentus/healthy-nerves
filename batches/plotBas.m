@@ -111,6 +111,7 @@ function plotBoxes(titleLabel, filename, scores, testNames)
 	xtickangle(45)
 	savefig(fig, strcat(pathstr, '.fig', 'compact'));
 	saveas(fig, strcat(pathstr, '.png'));
+	copyfile(strcat(pathstr, '.png'), strcat('img/', filename, '.png')); % Also save without timestamp
 
 	rmpath lib/CategoricalScatterplot
 end
