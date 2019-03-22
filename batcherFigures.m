@@ -23,7 +23,7 @@ function batcherFigures()
 	calculateBatch(baRand);
 
 	%%%%%%%% FIGURE 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	disp('\n\nFigure 1\n');
+	fprintf('\n\nFigure 1\n');
 
 	bas = [
 		baNorm;
@@ -32,7 +32,7 @@ function batcherFigures()
 	plotBas(bas, 'batch-f1', 'Figure 1: Normative Data vs Random Data');
 
 	%%%%%%%%% FIGURE 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	disp('\n\nFigure 2\n');
+	fprintf('\n\nFigure 2\n');
 
 	canIdx = randperm(canNum);
 	can1 = canValues(canIdx(1:floor(length(canValues)/2)), :);
@@ -92,7 +92,7 @@ function batcherFigures()
 	plotBas(bas, 'batch-f2', 'Figure 2: Impact of Changing the Number of Groups');
 
 	%%%%%%%%% FIGURE 3 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	disp('\n\nFigure 3\n');
+	fprintf('\n\nFigure 3\n');
 
 	bas = [
 		baRand;
@@ -118,7 +118,7 @@ function batcherFigures()
 	plotBas(bas, 'batch-f3', 'Figure 3: Comparisons with Non-Normative Data');
 
 	%%%%%%%%% FIGURE 4 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	disp('\n\nFigure 4\n');
+	fprintf('\n\nFigure 4\n');
 
 	bas = [
 		baRand;
@@ -142,7 +142,7 @@ function batcherFigures()
 	plotBas(bas, 'batch-f4', 'Figure 4: Adjusting Recovery Cycle (RC)');
 
 	%%%%%%%%% FIGURE 5 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	disp('\n\nFigure 5\n');
+	fprintf('\n\nFigure 5\n');
 
 	bas = [
 		baRand;
@@ -162,7 +162,7 @@ function batcherFigures()
 	plotBas(bas, 'batch-f5', 'Figure 5: Adjusting variance');
 
 	%%%%%%%% FIGURE 6 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	disp('\n\nFigure 6\n');
+	fprintf('\n\nFigure 6\n');
 
 	bas = [
 		baRand;
@@ -174,7 +174,7 @@ function batcherFigures()
 	plotBas(sortByMean(bas), 'batch-f6', 'Figure 6: Impact of Deleting Each Feature');
 
 	%%%%%%%% FIGURE 7 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	disp('\n\nFigure 7\n');
+	fprintf('\n\nFigure 7\n');
 
 	bas = getDeletedFeatureBatches(iters, sampleFraction, filepath, false, struct('toDelete', 3));
 	for i = 1:length(bas)
@@ -190,7 +190,7 @@ function batcherFigures()
 	plotBas(bas, 'batch-f7', 'Figure 7: Most and Least Impactful Triple-Deletions');
 
 	%%%%%%%% FIGURE 8 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	disp('\n\nFigure 8\n');
+	fprintf('\n\nFigure 8\n');
 
 	bas = [
 		baRand;
