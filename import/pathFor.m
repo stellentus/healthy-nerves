@@ -2,10 +2,10 @@
 function [pth] = pathFor(dataType)
 	switch dataType
 		case 'leg'
-			pth = 'data/human/FEScommonperonealTA.xlsx';
+			pth = 'data/human/CPrepeatedmeasures.xlsx'; % I'm not using the full set because QTRAC chokes on Excel import after around 130 rows
 
 		case 'arm'
-			pth = 'data/human/FESmedianAPB.xlsx';
+			pth = 'data/human/FESmedianAPB_Concatenated.xlsx';
 
 		case 'legSCI'
 			% Previously we used SCI_CP.xlsx

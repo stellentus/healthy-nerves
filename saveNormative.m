@@ -12,8 +12,8 @@ function saveNormative(pathPrefix, nanMethod)
 
 	% Load the data
 	addpath import;
-	[canValues, canParticipants, canMeasures] = mefimport(strcat(pathPrefix, 'human/FESmedianAPB.xlsx'), false, false, canonicalNamesNoTE20());
-	[legValues, legParticipants, legMeasures] = mefimport(strcat(pathPrefix, 'human/FEScommonperonealTA.xlsx'), false, false, canonicalNamesNoTE20());
+	[canValues, canParticipants, canMeasures] = mefimport(strcat(pathPrefix, 'human/FESmedianAPB_Concatenated.xlsx'), false, false, canonicalNamesNoTE20());
+	[legValues, legParticipants, legMeasures] = mefimport(strcat(pathPrefix, 'human/CPrepeatedmeasures.xlsx'), false, false, canonicalNamesNoTE20()); % I'm not using the full set because QTRAC chokes on Excel import after around 130 rows
 	[japValues, japParticipants, japMeasures] = importAllXLSX('none', strcat(pathPrefix, 'Japan'));
 	[porValues, porParticipants, porMeasures] = importAllXLSX('none', strcat(pathPrefix, 'Portugal'));
 	rmpath import;
