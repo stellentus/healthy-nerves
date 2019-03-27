@@ -84,7 +84,7 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'batch-group-size', 'Impact of Changing the Number of Groups (60 samples within each)');
 	end
 
-	if strcmp(figToPlot, 'country-splits')
+	if plotAll || strcmp(figToPlot, 'country-splits')
 		fprintf('\n\nImpact of Splitting Within-Group Data\n\n');
 		% The purpose of this plot is to see if within each country the VOI matches the random expectation for groups of those sizes.
 		% In each case, the country's pair should be compared, but I see the second one (with real data) is always higher.
@@ -160,7 +160,7 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'batch-vs-legs', 'Comparisons with Leg Data');
 	end
 
-	if plotAll || strcmp(figToPlot, 'vs-sci')
+	if strcmp(figToPlot, 'vs-sci')
 		fprintf('\n\nComparisons with SCI Data\n\n');
 
 		bas = [
@@ -177,7 +177,7 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'batch-vs-sci', 'Comparisons with SCI Data');
 	end
 
-	if plotAll || strcmp(figToPlot, 'within-rats')
+	if strcmp(figToPlot, 'within-rats')
 		fprintf('\n\nComparisons Within a Rat Dataset\n\n');
 
 		bas = [
@@ -235,7 +235,7 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'batch-rc', 'Adjusting Recovery Cycle (RC)');
 	end
 
-	if plotAll || strcmp(figToPlot, 'variance')
+	if strcmp(figToPlot, 'variance')
 		fprintf('\n\nAdjusting Variance\n\n');
 
 		bas = [
@@ -256,7 +256,7 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'batch-variance', 'Adjusting Variance');
 	end
 
-	if plotAll || strcmp(figToPlot, 'delete-features')
+	if strcmp(figToPlot, 'delete-features')
 		fprintf('\n\nImpact of Deleting Each Feature\n\n');
 
 		bas = [
@@ -269,7 +269,7 @@ function batcherFigures(figToPlot)
 		plotBas(sortByMean(bas), 'batch-delete-features', 'Impact of Deleting Each Feature');
 	end
 
-	if plotAll || strcmp(figToPlot, 'triple-deletion')
+	if strcmp(figToPlot, 'triple-deletion')
 		fprintf('\n\nMost and Least Impactful Triple-Deletions\n\n');
 
 		bas = getDeletedFeatureBatches(iters, sampleFraction, filepath, false, struct('toDelete', 3));
@@ -286,7 +286,7 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'batch-triple-deletion', 'Most and Least Impactful Triple-Deletions');
 	end
 
-	if plotAll || strcmp(figToPlot, 'quintuple-deletion')
+	if strcmp(figToPlot, 'quintuple-deletion')
 		fprintf('\n\nAssorted Quintuple-Deletions\n\n');
 
 		bas = [
