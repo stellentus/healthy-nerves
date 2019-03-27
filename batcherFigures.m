@@ -143,10 +143,10 @@ function batcherFigures(figToPlot)
 			BatchAnalyzer("Normative vs Portugal", 2, [porValues; canValues; japValues], [ones(porNum, 1); repmat(2, japNum+canNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Random (N vs Portugal)", [canNum+japNum; porNum], 'iters', iters, 'sampleFraction', sampleFraction);
 		];
-		for i = 3:length(bas)
+		for i = 1:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'batch-vs-countries', 'Comparisons between Countries');
+		plotBas(bas, 'batch-vs-countries', 'One Country vs Two');
 	end
 
 	if plotAll || strcmp(figToPlot, 'vs-legs')
