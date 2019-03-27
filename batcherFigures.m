@@ -65,23 +65,21 @@ function batcherFigures(figToPlot)
 	end
 
 	if plotAll || strcmp(figToPlot, 'group-size')
-		fprintf('\n\nImpact of Changing the Number of Groups\n\n');
+		fprintf('\n\nImpact of Changing the Number of Groups (60 samples within each)\n\n');
 
 		bas = [
 			%%%%%%%%%%% Random Data (should be 0) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			BatchAnalyzer("2 Random c-j", [canNum, japNum], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("2 Random j-c", [japNum, canNum], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("2 Random c-p", [canNum, porNum], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("2 Random p-c", [porNum, canNum], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("2 Random j-p", [japNum, porNum], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("2 Random p-j", [porNum, japNum], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("3 Random sum", [canNum, japNum, porNum], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("4 Random", [canNum, japNum, porNum, legNum], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("1 Random", 1, 60, repmat(1, 60, 1), 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("2 Random", repmat(60, 2, 1), 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("3 Random", repmat(60, 3, 1), 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("4 Random", repmat(60, 4, 1), 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("5 Random", repmat(60, 5, 1), 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("6 Random", repmat(60, 6, 1), 'iters', iters, 'sampleFraction', sampleFraction);
 		];
 		for i = 1:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'batch-group-size', 'Impact of Changing the Number of Groups');
+		plotBas(bas, 'batch-group-size', 'Impact of Changing the Number of Groups (60 samples within each)');
 	end
 
 	if plotAll || strcmp(figToPlot, 'vs-countries')
