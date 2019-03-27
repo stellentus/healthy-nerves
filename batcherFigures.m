@@ -37,6 +37,33 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'batch-norm-rand', 'Normative Data vs Random Data');
 	end
 
+	% This is not plotted by default
+	if strcmp(figToPlot, 'group-size-order')
+		fprintf('\n\nImpact of Changing the Order of Groups\n\n');
+		% This plot shows that the order of the random labels doesn't change the result as iters->inf.
+		% I did this because smaller numbers of iterations appears to care about order.
+
+		bas = [
+			%%%%%%%%%%% Random Data (should be 0) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			BatchAnalyzer("2 Random c-j", [canNum, japNum], 'iters', 1000, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("2 Random j-c", [japNum, canNum], 'iters', 1000, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("2 Random c-p", [canNum, porNum], 'iters', 1000, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("2 Random p-c", [porNum, canNum], 'iters', 1000, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("2 Random j-p", [japNum, porNum], 'iters', 1000, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("2 Random p-j", [porNum, japNum], 'iters', 1000, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("3 Random c-j-p", [canNum, japNum, porNum], 'iters', 1000, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("3 Random c-p-j", [canNum, porNum, japNum], 'iters', 1000, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("3 Random j-p-c", [japNum, porNum, canNum], 'iters', 1000, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("3 Random p-c-j", [porNum, canNum, japNum], 'iters', 1000, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("4 Random c-j-p-l", [canNum, japNum, porNum, legNum], 'iters', 1000, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("4 Random p-l-j-c", [porNum, legNum, japNum, canNum], 'iters', 1000, 'sampleFraction', sampleFraction);
+		];
+		for i = 1:length(bas)
+			calculateBatch(bas(i));
+		end
+		plotBas(bas, 'batch-group-size', 'Impact of Changing the Number of Groups');
+	end
+
 	if plotAll || strcmp(figToPlot, 'group-size')
 		fprintf('\n\nImpact of Changing the Number of Groups\n\n');
 
