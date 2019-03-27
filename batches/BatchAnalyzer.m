@@ -11,19 +11,11 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		SampleFraction
 		Labels
 		FixedLabels
-		CalcHell
-		CRI
-		CRI_mean
-		CRI_std
-		NMI
-		NMI_mean
-		NMI_std
-		VOI
-		VOI_mean
-		VOI_std
-		HEL
-		HEL_mean
-		HEL_std
+		ScoreName
+		ScoreFunc
+		Score
+		Score_mean
+		Score_std
 	end
 	methods
 		function obj = BatchAnalyzer(name, numGroups, values, varargin)
@@ -36,7 +28,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			addParameter(p, 'sampleFraction', 1, @isnumeric);
 			addParameter(p, 'clusterFunc', @linkageCluster);
 			addParameter(p, 'seed', 7738, @isnumeric);
-			addParameter(p, 'calcHell', false, @islogical);
+			addParameter(p, 'score', "VOI", @(x) any(validatestring(x, {'CRI', 'NMI', 'HEL', 'VOI'})));
 			parse(p, name, numGroups, values, varargin{:});
 
 			if length(numGroups) > 1
@@ -60,7 +52,18 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 
 			obj.ClusterFunc = p.Results.clusterFunc;
 			obj.Seed = p.Results.seed;
-			obj.CalcHell = p.Results.calcHell;
+
+			obj.ScoreName = p.Results.score;
+			switch p.Results.score
+				case 'CRI'
+					obj.ScoreFunc = @calc_cri;
+				case 'NMI'
+					obj.ScoreFunc = @calc_nmi;
+				case 'HEL'
+					obj.ScoreFunc = @calc_hell;
+				case 'VOI'
+					obj.ScoreFunc = @calc_voi;
+			end
 
 			obj.SampleFraction = p.Results.sampleFraction;
 		end
@@ -73,10 +76,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			end
 
 			% Clear array values
-			obj.CRI = [];
-			obj.NMI = [];
-			obj.VOI = [];
-			obj.HEL = [];
+			obj.Score = [];
 		end
 		function ba = BACopyWithValues(obj, name, values)
 			ba = copy(obj);
@@ -89,10 +89,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			end
 
 			% Clear old array values
-			obj.CRI = [];
-			obj.NMI = [];
-			obj.VOI = [];
-			obj.HEL = [];
+			obj.Score = [];
 
 			addpath lib/rand_index;
 			addpath lib/info_entropy;
@@ -127,43 +124,23 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 					end
 				end
 
-				if obj.CalcHell && ~obj.UseRandomIndices
-					obj.HEL = [obj.HEL calc_hell(obj, thisIterLabels, idx, indices)];
-				end
-
-				% Calculate and append corrected rand index; 0 indicates no batch effects while 1 is perfect batches.
-				obj.CRI = [obj.CRI calc_cri(obj, thisIterLabels, idx, indices)];
-
-				% Calculate and append the normalized mutual information; 0 indicates no batch effects while 1 is perfect batches.
-				obj.NMI = [obj.NMI calc_nmi(obj, thisIterLabels, idx, indices)];
-
-				% Calculate and append the variation of information; 0 indicates to batch effects while 1 is perfect batches.
-				obj.VOI = [obj.VOI calc_voi(obj, thisIterLabels, idx, indices)];
+				% Calculate and append the batch effect score.
+				obj.Score = [obj.Score obj.ScoreFunc(obj, thisIterLabels, idx, indices)];
 			end
 			rmpath lib/rand_index;
 			rmpath lib/info_entropy;
 			rmpath lib;
 
-			obj.HEL_mean = mean(obj.HEL);
-			obj.HEL_std = std(obj.HEL);
-			obj.CRI_mean = mean(obj.CRI);
-			obj.CRI_std = std(obj.CRI);
-			obj.NMI_mean = mean(obj.NMI);
-			obj.NMI_std = std(obj.NMI);
-			obj.VOI_mean = mean(obj.VOI);
-			obj.VOI_std = std(obj.VOI);
+			obj.Score_mean = mean(obj.Score);
+			obj.Score_std = std(obj.Score);
 		end
 		function str = BAString(obj, padLen)
 			if nargin < 2
 				padLen = 0;
 			end
 
-			formatStr = '%s , % .3f , %.3f , % .3f , %.3f , % .3f , %.3f ';
-			str = sprintf(formatStr, pad(obj.Name, padLen), obj.CRI_mean, obj.CRI_std, obj.NMI_mean, obj.NMI_std, obj.VOI_mean, obj.VOI_std);
-
-			if obj.CalcHell
-				str = sprintf('%s, % .3f , %.3f ', str, obj.HEL_mean, obj.HEL_std);
-			end
+			formatStr = '%s , % .3f , %.3f ';
+			str = sprintf(formatStr, pad(obj.Name, padLen), obj.Score_mean, obj.Score_std);
 		end
 		function hd = hell(obj, vals, labels)
 			if obj.UseRandomIndices || ~obj.FixedLabels
@@ -200,7 +177,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			score = voi(x, y);
 		end
 		function score = calc_hell(obj, x, y, ind)
-			score = hell(obj, obj.Values(ind, :), x)];
+			score = hell(obj, obj.Values(ind, :), x);
 		end
 	end
 end

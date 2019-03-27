@@ -14,15 +14,7 @@ function plotBas(bas, filename, figtitle, args)
 	end
 
 	if args.printPercent < 100 || args.sort == true
-		if strcmp(args.sortStat, "HEL")
-			[~, ind] = sort([bas.HEL_mean]);
-		elseif strcmp(args.sortStat, "VOI")
-			[~, ind] = sort([bas.VOI_mean]);
-		elseif strcmp(args.sortStat, "CRI")
-			[~, ind] = sort(abs([bas.CRI_mean]));
-		else
-			[~, ind] = sort([bas.NMI_mean]);
-		end
+		[~, ind] = sort([bas.Score_mean]);
 		if strcmp(args.sortOrder, "descend")
 			ind = fliplr(ind);
 		end
@@ -32,29 +24,23 @@ function plotBas(bas, filename, figtitle, args)
 		printBas = bas;
 	end
 
-	padLen = printHeader(printBas, args.printHell);
-	scores = zeros(length(printBas(1).VOI), maxIndex); % only used by plotBoxes
+	padLen = printHeader(printBas);
+	scores = zeros(length(printBas(1).Score), maxIndex); % only used by plotBoxes
 	for i = 1:maxIndex
 		disp(BAString(printBas(i), padLen));
-		scores(:, i) = (printBas(i).VOI');
+		scores(:, i) = (printBas(i).Score');
 	end
 
 	if args.printPercent < 100
 		% Now print the mean values for a reference point
 		meanBA = BatchAnalyzer("Means", 3, []);
-		meanBA.HEL_mean = mean([bas.HEL_mean]);
-		meanBA.HEL_std = mean([bas.HEL_std]);
-		meanBA.CRI_mean = mean([bas.CRI_mean]);
-		meanBA.CRI_std = mean([bas.CRI_std]);
-		meanBA.NMI_mean = mean([bas.NMI_mean]);
-		meanBA.NMI_std = mean([bas.NMI_std]);
-		meanBA.VOI_mean = mean([bas.VOI_mean]);
-		meanBA.VOI_std = mean([bas.VOI_std]);
+		meanBA.Score_mean = mean([bas.Score_mean]);
+		meanBA.Score_std = mean([bas.Score_std]);
 		disp(BAString(meanBA, padLen));
 	end
 
 	if args.plotBoxes
-		plotBoxes(figtitle, filename, scores, [printBas.Name]');
+		plotBoxes(figtitle, filename, scores, printBas(1).ScoreName, [printBas.Name]');
 	end
 end
 
@@ -66,21 +52,15 @@ function [args] = setArgs(args)
 	if ~isfield(args, 'sort')
 		args.sort = false;
 	end
-	if ~isfield(args, 'sortStat')
-		args.sortStat = 'VOI';
-	end
 	if ~isfield(args, 'sortOrder')
 		args.sortOrder = 'ascend';
-	end
-	if ~isfield(args, 'printHell')
-		args.printHell = false;
 	end
 	if ~isfield(args, 'plotBoxes')
 		args.plotBoxes = true;
 	end
 end
 
-function padLen = printHeader(bas, printHell)
+function padLen = printHeader(bas)
 	% Get length of longest string for padding purposes
 	padLen = 0;
 	for i = 1:length(bas)
@@ -90,19 +70,12 @@ function padLen = printHeader(bas, printHell)
 		end
 	end
 
-	measStr = ', CRI    ,CRIstd , NMI    ,NMIstd , VOI    ,VOIstd ';
-	measNum = 3;
-	if printHell
-		measStr = strcat(measStr, ', HEL    ,HELstd ');
-		measNum = measNum + 1;
-	end
-
 	% Print the table header
-	fprintf('%s %s\n', pad("Name", padLen), measStr);
-	fprintf('%s %s\n', strrep(pad(" ", padLen), " ", "-"), repmat(', ------ , ----- ', 1, measNum));
+	fprintf('%s , Score  ,  std  \n', pad("Name", padLen));
+	fprintf('%s , ------ , ----- \n', strrep(pad(" ", padLen), " ", "-"));
 end
 
-function plotBoxes(titleLabel, filename, scores, testNames)
+function plotBoxes(titleLabel, filename, scores, scoreName, testNames)
 	addpath lib/CategoricalScatterplot
 
 	pathstr = sprintf('img/%s-%d-%d-%d-%d%d%2.0f', filename, clock);
@@ -111,7 +84,7 @@ function plotBoxes(titleLabel, filename, scores, testNames)
 
 	CategoricalScatterplot(scores, testNames, 'MarkerSize', 50, 'BoxAlpha', .29);
 	title(titleLabel);
-	ylabel('VOI');
+	ylabel(scoreName);
 	xtickangle(45)
 	savefig(fig, strcat(pathstr, '.fig', 'compact'));
 	saveas(fig, strcat(pathstr, '.png'));

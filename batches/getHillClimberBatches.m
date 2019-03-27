@@ -1,9 +1,5 @@
 %% getHillClimberBatches returns a list of BatchAnalyzer that try to seek out a transformation that minimizes the batch effects.
-function getHillClimberBatches(iters, sampleFraction, filepath, calcHell, useNMI)
-	if nargin < 5
-		useNMI = false;
-	end
-
+function getHillClimberBatches(iters, sampleFraction, filepath)
 	load(filepath);
 	vals.can = canValues;
 	vals.jap = japValues;
@@ -23,9 +19,9 @@ function getHillClimberBatches(iters, sampleFraction, filepath, calcHell, useNMI
 	mag = 0;
 	epsilon = 1e-7;
 
-	ba = BatchAnalyzer('Normative', 3, [vals.can; vals.jap; vals.por], labels, 'iters', iters, 'sampleFraction', sampleFraction, 'calcHell', calcHell, 'seed', 0);
-	origBatch = batchVal(ba, useNMI);
-	thisBatch = batchVal(scaledBA(ba, vals, weight), useNMI);
+	ba = BatchAnalyzer('Normative', 3, [vals.can; vals.jap; vals.por], labels, 'iters', iters, 'sampleFraction', sampleFraction, 'seed', 0);
+	origBatch = batchVal(ba);
+	thisBatch = batchVal(scaledBA(ba, vals, weight));
 	fprintf("Original batch effect is %.4f, scaled up to %.4f\n", origBatch, thisBatch);
 
 	while abs(thisBatch - lastBestBatch) > threshold && mag < 100
@@ -36,10 +32,10 @@ function getHillClimberBatches(iters, sampleFraction, filepath, calcHell, useNMI
 			minDelta = 0.001/(2^mag);
 			adj = 1/(2^mag);
 
-			[weight(1,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(1,i), weight, thisBatch, i, mag, @scaledBAJapStd, 'JapSt');
-			[weight(2,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(2,i), weight, thisBatch, i, mag, @scaledBAJapMn, 'JapMn');
-			[weight(3,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(3,i), weight, thisBatch, i, mag, @scaledBAPorStd, 'PorSt');
-			[weight(4,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(4,i), weight, thisBatch, i, mag, @scaledBAPorMn, 'PorMn');
+			[weight(1,i), thisBatch] = optimize(ba, vals, numMeas, minDelta, epsilon, adj, weight(1,i), weight, thisBatch, i, mag, @scaledBAJapStd, 'JapSt');
+			[weight(2,i), thisBatch] = optimize(ba, vals, numMeas, minDelta, epsilon, adj, weight(2,i), weight, thisBatch, i, mag, @scaledBAJapMn, 'JapMn');
+			[weight(3,i), thisBatch] = optimize(ba, vals, numMeas, minDelta, epsilon, adj, weight(3,i), weight, thisBatch, i, mag, @scaledBAPorStd, 'PorSt');
+			[weight(4,i), thisBatch] = optimize(ba, vals, numMeas, minDelta, epsilon, adj, weight(4,i), weight, thisBatch, i, mag, @scaledBAPorMn, 'PorMn');
 		end
 
 		rng(seed);
@@ -51,7 +47,7 @@ function getHillClimberBatches(iters, sampleFraction, filepath, calcHell, useNMI
 
 	% Some weights started very close to zero. Such small weights should be reset.
 	weight(abs(weight) < randLimit) = 0;
-	zeroedBatch = batchVal(scaledBA(ba, vals, weight), useNMI);
+	zeroedBatch = batchVal(scaledBA(ba, vals, weight));
 	printWeights(weight, 6);
 	fprintf("Zeroed BE is %.6f instead of %.6f\n", zeroedBatch, thisBatch);
 
@@ -59,10 +55,10 @@ function getHillClimberBatches(iters, sampleFraction, filepath, calcHell, useNMI
 	minDelta = threshold; % Effectively no minimum
 	adj = 1/(2^mag);
 	thisBatch = zeroedBatch;
-	[weight(1,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(1,i), weight, thisBatch, i, mag, @scaledBAJapStd, 'JapSt');
-	[weight(2,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(2,i), weight, thisBatch, i, mag, @scaledBAJapMn, 'JapMn');
-	[weight(3,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(3,i), weight, thisBatch, i, mag, @scaledBAPorStd, 'PorSt');
-	[weight(4,i), thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, weight(4,i), weight, thisBatch, i, mag, @scaledBAPorMn, 'PorMn');
+	[weight(1,i), thisBatch] = optimize(ba, vals, numMeas, minDelta, epsilon, adj, weight(1,i), weight, thisBatch, i, mag, @scaledBAJapStd, 'JapSt');
+	[weight(2,i), thisBatch] = optimize(ba, vals, numMeas, minDelta, epsilon, adj, weight(2,i), weight, thisBatch, i, mag, @scaledBAJapMn, 'JapMn');
+	[weight(3,i), thisBatch] = optimize(ba, vals, numMeas, minDelta, epsilon, adj, weight(3,i), weight, thisBatch, i, mag, @scaledBAPorStd, 'PorSt');
+	[weight(4,i), thisBatch] = optimize(ba, vals, numMeas, minDelta, epsilon, adj, weight(4,i), weight, thisBatch, i, mag, @scaledBAPorMn, 'PorMn');
 	printWeights(weight, 7);
 	fprintf("Run-again BE is %.7f instead of zeroed %.7f\n", thisBatch, zeroedBatch);
 end
@@ -72,13 +68,9 @@ function [vals] = scaleValues(vals, stdScale, mnBias)
 	vals = bsxfun(@times, vals - mns, exp(stdScale)) + mns + mnBias;
 end
 
-function thisBatch = batchVal(ba, useNMI)
+function thisBatch = batchVal(ba)
 	calculateBatch(ba);
-	if useNMI
-		thisBatch = abs(mean(ba.NMI));
-	else
-		thisBatch = abs(mean(ba.CRI));
-	end
+	thisBatch = abs(mean(ba.Score));
 end
 
 function ba = scaledBA(ba, vals, wgt)
@@ -101,16 +93,16 @@ function ba = scaledBAPorMn(ba, vals, wgt, modwgt)
 	ba = BACopyWithValues(ba, 'scaled', [vals.can; scaleValues(vals.jap, wgt(1,:), wgt(2,:)); scaleValues(vals.por, wgt(3,:), wgt(4,:)+modwgt)]);
 end
 
-function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon, adj, curr, weight, origBatch, i, mag, scaledBAFunc, str)
+function [wt, thisBatch] = optimize(ba, vals, numMeas, minDelta, epsilon, adj, curr, weight, origBatch, i, mag, scaledBAFunc, str)
 	modWeight = zeros(1, numMeas);
 	thisBatch = origBatch;
 	lastBatch = 0;
 	wt = curr;
 
 	modWeight(i) = modWeight(i) + adj;
-	incBatch = batchVal(scaledBAFunc(ba, vals, weight, modWeight), useNMI);
+	incBatch = batchVal(scaledBAFunc(ba, vals, weight, modWeight));
 	modWeight(i) = modWeight(i) - 2*adj;
-	decBatch = batchVal(scaledBAFunc(ba, vals, weight, modWeight), useNMI);
+	decBatch = batchVal(scaledBAFunc(ba, vals, weight, modWeight));
 
 	if decBatch < incBatch && decBatch < origBatch - minDelta
 		% It's better to decrease
@@ -129,7 +121,7 @@ function [wt, thisBatch] = optimize(ba, vals, useNMI, numMeas, minDelta, epsilon
 		count = count + 1;
 		lastBatch = thisBatch;
 		modWeight(i) = modWeight(i) + adj;
-		thisBatch = batchVal(scaledBAFunc(ba, vals, weight, modWeight), useNMI);
+		thisBatch = batchVal(scaledBAFunc(ba, vals, weight, modWeight));
 		% fprintf('\t |----- %s weight at %2d (BE %.4f; %2d iters) adju % .3f\n', str, i, thisBatch, count, adj);
 
 		if thisBatch > lastBatch
