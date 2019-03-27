@@ -117,7 +117,8 @@ function batcherFigures(figToPlot)
 			BatchAnalyzer("Three-split Jap", 3, [jap1; jap2; jap3], [ones(japSplitNum, 1); repmat(2, japSplitNum, 1); repmat(3, japSplitNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Random (Por-sized)", repmat(porSplitNum, 3, 1), 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Three-split Por", 3, [por1; por2; por3], [ones(porSplitNum, 1); repmat(2, porSplitNum, 1); repmat(3, porSplitNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("Random (Norm-sized)", 3, size(values, 1), labels, 'iters', iters, 'sampleFraction', sampleFraction),
+			BatchAnalyzer("Random (Norm-sized)", [canNum, japNum, porNum], 'iters', iters, 'sampleFraction', sampleFraction),
+			BatchAnalyzer("Shuffled Normative", 3, values, labels(randperm(length(labels))), 'iters', iters, 'sampleFraction', sampleFraction),
 			baNorm,
 		];
 		for i = 1:length(bas)
