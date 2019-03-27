@@ -28,7 +28,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			addParameter(p, 'sampleFraction', 1, @isnumeric);
 			addParameter(p, 'clusterFunc', @linkageCluster);
 			addParameter(p, 'seed', 7738, @isnumeric);
-			addParameter(p, 'score', "VOI", @(x) any(validatestring(x, {'CRI', 'NMI', 'HEL', 'VOI'})));
+			addParameter(p, 'score', "BVI", @(x) any(validatestring(x, {'CRI', 'NMI', 'HEL', 'VOI', 'BVI'})));
 			parse(p, name, numGroups, values, varargin{:});
 
 			if length(numGroups) > 1
@@ -63,6 +63,8 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 					obj.ScoreFunc = @calc_hell;
 				case 'VOI'
 					obj.ScoreFunc = @calc_voi;
+				case 'BVI'
+					obj.ScoreFunc = @calc_bvi;
 			end
 
 			obj.SampleFraction = p.Results.sampleFraction;
@@ -175,6 +177,9 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		end
 		function score = calc_voi(obj, x, y, ind)
 			score = voi(x, y);
+		end
+		function score = calc_bvi(obj, x, y, ind)
+			score = bvi(x, y, obj.NumGroups);
 		end
 		function score = calc_hell(obj, x, y, ind)
 			score = hell(obj, obj.Values(ind, :), x);
