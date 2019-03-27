@@ -128,17 +128,17 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 				end
 
 				if obj.CalcHell && ~obj.UseRandomIndices
-					obj.HEL = [obj.HEL hell(obj, obj.Values(indices, :), thisIterLabels)];
+					obj.HEL = [obj.HEL calc_hell(obj, thisIterLabels, idx, indices)];
 				end
 
 				% Calculate and append corrected rand index; 0 indicates no batch effects while 1 is perfect batches.
-				obj.CRI = [obj.CRI rand_index(thisIterLabels, idx, 'adjusted')];
+				obj.CRI = [obj.CRI calc_cri(obj, thisIterLabels, idx, indices)];
 
-				% Calculate and append the normalized mutual information; 0 indicates to batch effects while 1 is perfect batches.
-				obj.NMI = [obj.NMI nmi(thisIterLabels, idx)];
+				% Calculate and append the normalized mutual information; 0 indicates no batch effects while 1 is perfect batches.
+				obj.NMI = [obj.NMI calc_nmi(obj, thisIterLabels, idx, indices)];
 
 				% Calculate and append the variation of information; 0 indicates to batch effects while 1 is perfect batches.
-				obj.VOI = [obj.VOI voi(thisIterLabels, idx)];
+				obj.VOI = [obj.VOI calc_voi(obj, thisIterLabels, idx, indices)];
 			end
 			rmpath lib/rand_index;
 			rmpath lib/info_entropy;
@@ -189,6 +189,18 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			else
 				warning("HELL doesn't make sense for just 1 label");
 			end
+		end
+		function score = calc_nmi(obj, x, y, ind)
+			score = nmi(x, y);
+		end
+		function score = calc_cri(obj, x, y, ind)
+			score = rand_index(x, y, 'adjusted');
+		end
+		function score = calc_voi(obj, x, y, ind)
+			score = voi(x, y);
+		end
+		function score = calc_hell(obj, x, y, ind)
+			score = hell(obj, obj.Values(ind, :), x)];
 		end
 	end
 end
