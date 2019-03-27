@@ -71,7 +71,6 @@ function batcherFigures(figToPlot)
 
 		bas = [
 			%%%%%%%%%%% Random Data (should be 0) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			BatchAnalyzer("1 Random", 1, 60, repmat(1, 60, 1), 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("2 Random", repmat(60, 2, 1), 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("3 Random", repmat(60, 3, 1), 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("4 Random", repmat(60, 4, 1), 'iters', iters, 'sampleFraction', sampleFraction);
