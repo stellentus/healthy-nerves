@@ -57,8 +57,6 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			if ~obj.UseRandomIndices
 				% Zero mean unit variance
 				obj.ZMUVValues = bsxfun(@rdivide, values - mean(values), std(values));
-			else
-				obj.ZMUVValues = values;
 			end
 
 			% Clear array values
@@ -85,32 +83,36 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			addpath lib/info_entropy;
 			addpath lib;
 			for i=1:obj.Iters
-				len = size(obj.Values, 1);
+				if obj.UseRandomIndices
+					numValues = obj.Values;
+				else
+					numValues = size(obj.Values, 1);
+				end
 				if obj.SampleFraction < 1
-					len = round(obj.SampleFraction * len);
-					indices = randi(size(obj.Values, 1), 1, len); % Sample with replacement
+					len = round(obj.SampleFraction * numValues);
+					indices = randi(numValues, 1, len); % Sample with replacement
 				else
 					indices = 1:size(obj.Values, 1);
-				end
-
-				if obj.FixedLabels
-					thisIterLabels = obj.Labels(indices);
 				end
 
 				% Create the clustered groups
 				if obj.UseRandomIndices
 					idx = randi([1 obj.NumGroups], 1, len);
-					if ~obj.FixedLabels
+					if obj.FixedLabels
+						thisIterLabels = obj.Labels(indices);
+					else
 						thisIterLabels = idx;
 					end
 				else
 					idx = obj.ClusterFunc(obj.ZMUVValues(indices, :), obj.NumGroups);
-					if ~obj.FixedLabels
+					if obj.FixedLabels
+						thisIterLabels = obj.Labels(indices);
+					else
 						thisIterLabels = randi([1 obj.NumGroups], 1, len);
 					end
 				end
 
-				if obj.CalcHell
+				if obj.CalcHell && ~obj.UseRandomIndices
 					obj.HEL = [obj.HEL hell(obj, obj.Values(indices, :), thisIterLabels)];
 				end
 
