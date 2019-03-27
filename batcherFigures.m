@@ -3,6 +3,7 @@ function batcherFigures(figToPlot)
 	plotAll = false;
 	if nargin < 1
 		plotAll = true;
+		figToPlot = '';
 	end
 
 	iters = 30;
