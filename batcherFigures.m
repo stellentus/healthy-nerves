@@ -27,6 +27,9 @@ function batcherFigures(figToPlot)
 	baNorm = BatchAnalyzer("Normative Data", 3, values, labels, 'iters', iters, 'sampleFraction', sampleFraction);
 	calculateBatch(baNorm);
 
+	shufNorm = BatchAnalyzer("Shuffled Normative", 3, values, labels(randperm(length(labels))), 'iters', iters, 'sampleFraction', sampleFraction);
+	calculateBatch(shufNorm);
+
 	% Calculate for random labels with the same group sizes as the normative data.
 	baRand = BatchAnalyzer("Random Labels", 3, size(values, 1), labels, 'iters', iters, 'sampleFraction', sampleFraction);
 	calculateBatch(baRand);
@@ -36,6 +39,7 @@ function batcherFigures(figToPlot)
 
 		bas = [
 			baNorm;
+			shufNorm;
 			baRand;
 		];
 		plotBas(bas, 'batch-norm-rand', 'Normative Data vs Random Data');
@@ -119,7 +123,7 @@ function batcherFigures(figToPlot)
 			BatchAnalyzer("Random (Por-sized)", repmat(porSplitNum, 3, 1), 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Three-split Por", 3, [por1; por2; por3], [ones(porSplitNum, 1); repmat(2, porSplitNum, 1); repmat(3, porSplitNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Random (Norm-sized)", [canNum, japNum, porNum], 'iters', iters, 'sampleFraction', sampleFraction),
-			BatchAnalyzer("Shuffled Normative", 3, values, labels(randperm(length(labels))), 'iters', iters, 'sampleFraction', sampleFraction),
+			shufNorm,
 			baNorm,
 		];
 		for i = 1:length(bas)
@@ -134,14 +138,17 @@ function batcherFigures(figToPlot)
 		bas = [
 			baRand;
 			baNorm;
+			BatchAnalyzer("Random (N vs Canada)", [canNum; japNum+porNum], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Normative vs Canada", 2, [canValues; japValues; porValues], [ones(canNum, 1); repmat(2, japNum+porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Random (N vs Japan)", [japNum; canNum+porNum], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Normative vs Japan", 2, [japValues; canValues; porValues], [ones(japNum, 1); repmat(2, canNum+porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Random (N vs Portugal)", [canNum+japNum; porNum], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Normative vs Portugal", 2, [porValues; canValues; japValues], [ones(porNum, 1); repmat(2, japNum+canNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 		];
 		for i = 3:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'batch-vs-countries', 'Comparisons with Leg Data');
+		plotBas(bas, 'batch-vs-countries', 'Comparisons between Countries');
 	end
 
 	if plotAll || strcmp(figToPlot, 'vs-legs')
