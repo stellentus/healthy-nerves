@@ -24,7 +24,7 @@ function batcherFigures(figToPlot)
 
 	baNorm = BatchAnalyzer("Normative Data", 3, values, labels, 'iters', iters, 'sampleFraction', sampleFraction);
 	calculateBatch(baNorm);
-	baRand = BatchAnalyzer("Random Labels", 3, values, 'iters', iters, 'sampleFraction', sampleFraction);
+	baRand = BatchAnalyzer("Random Labels", 3, size(values, 1), labels, 'iters', iters, 'sampleFraction', sampleFraction);
 	calculateBatch(baRand);
 
 	if plotAll || strcmp(figToPlot, 'norm-rand')
