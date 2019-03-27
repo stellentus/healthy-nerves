@@ -86,7 +86,7 @@ function batcherFigures(figToPlot)
 
 	if strcmp(figToPlot, 'country-splits')
 		fprintf('\n\nImpact of Splitting Within-Group Data\n\n');
-		% The purpose of this plot is to see if within each country the NMI matches the random expectation for groups of those sizes.
+		% The purpose of this plot is to see if within each country the VOI matches the random expectation for groups of those sizes.
 		% In each case, the country's pair should be compared, but I see the second one (with real data) is always higher.
 		% This is probably because k-means is finding uneven group sizes (i.e. for Can not very close to 50-50-50), while the labels are distributed much closer to 50-50-50.
 		% (Note due to 80% sampling, the size is actually 40-40-40, and we expect there to be a bit of random variation from that exact split.)

@@ -16,6 +16,8 @@ function plotBas(bas, filename, figtitle, args)
 	if args.printPercent < 100 || args.sort == true
 		if strcmp(args.sortStat, "HEL")
 			[~, ind] = sort([bas.HEL_mean]);
+		elseif strcmp(args.sortStat, "VOI")
+			[~, ind] = sort([bas.VOI_mean]);
 		elseif strcmp(args.sortStat, "CRI")
 			[~, ind] = sort(abs([bas.CRI_mean]));
 		else
@@ -31,10 +33,10 @@ function plotBas(bas, filename, figtitle, args)
 	end
 
 	padLen = printHeader(printBas, args.printHell);
-	scores = zeros(length(printBas(1).NMI), maxIndex); % only used by plotBoxes
+	scores = zeros(length(printBas(1).VOI), maxIndex); % only used by plotBoxes
 	for i = 1:maxIndex
 		disp(BAString(printBas(i), padLen));
-		scores(:, i) = (printBas(i).NMI');
+		scores(:, i) = (printBas(i).VOI');
 	end
 
 	if args.printPercent < 100
@@ -46,6 +48,8 @@ function plotBas(bas, filename, figtitle, args)
 		meanBA.CRI_std = mean([bas.CRI_std]);
 		meanBA.NMI_mean = mean([bas.NMI_mean]);
 		meanBA.NMI_std = mean([bas.NMI_std]);
+		meanBA.VOI_mean = mean([bas.VOI_mean]);
+		meanBA.VOI_std = mean([bas.VOI_std]);
 		disp(BAString(meanBA, padLen));
 	end
 
@@ -63,7 +67,7 @@ function [args] = setArgs(args)
 		args.sort = false;
 	end
 	if ~isfield(args, 'sortStat')
-		args.sortStat = 'NMI';
+		args.sortStat = 'VOI';
 	end
 	if ~isfield(args, 'sortOrder')
 		args.sortOrder = 'ascend';
@@ -86,8 +90,8 @@ function padLen = printHeader(bas, printHell)
 		end
 	end
 
-	measStr = ', CRI    ,CRIstd , NMI    ,NMIstd ';
-	measNum = 2;
+	measStr = ', CRI    ,CRIstd , NMI    ,NMIstd , VOI    ,VOIstd ';
+	measNum = 3;
 	if printHell
 		measStr = strcat(measStr, ', HEL    ,HELstd ');
 		measNum = measNum + 1;
@@ -107,7 +111,7 @@ function plotBoxes(titleLabel, filename, scores, testNames)
 
 	CategoricalScatterplot(scores, testNames, 'MarkerSize', 50, 'BoxAlpha', .29);
 	title(titleLabel);
-	ylabel('NMI');
+	ylabel('VOI');
 	xtickangle(45)
 	savefig(fig, strcat(pathstr, '.fig', 'compact'));
 	saveas(fig, strcat(pathstr, '.png'));

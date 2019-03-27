@@ -18,6 +18,9 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		NMI
 		NMI_mean
 		NMI_std
+		VOI
+		VOI_mean
+		VOI_std
 		HEL
 		HEL_mean
 		HEL_std
@@ -72,6 +75,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			% Clear array values
 			obj.CRI = [];
 			obj.NMI = [];
+			obj.VOI = [];
 			obj.HEL = [];
 		end
 		function ba = BACopyWithValues(obj, name, values)
@@ -87,6 +91,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			% Clear old array values
 			obj.CRI = [];
 			obj.NMI = [];
+			obj.VOI = [];
 			obj.HEL = [];
 
 			addpath lib/rand_index;
@@ -129,8 +134,11 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 				% Calculate and append corrected rand index; 0 indicates no batch effects while 1 is perfect batches.
 				obj.CRI = [obj.CRI rand_index(thisIterLabels, idx, 'adjusted')];
 
-				% Calculate and append the normalized mutual information; 0 indicates to batch effects while (I think) 1 is perfect batches.
+				% Calculate and append the normalized mutual information; 0 indicates to batch effects while 1 is perfect batches.
 				obj.NMI = [obj.NMI nmi(thisIterLabels, idx)];
+
+				% Calculate and append the variation of information; 0 indicates to batch effects while 1 is perfect batches.
+				obj.VOI = [obj.VOI voi(thisIterLabels, idx)];
 			end
 			rmpath lib/rand_index;
 			rmpath lib/info_entropy;
@@ -142,14 +150,16 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			obj.CRI_std = std(obj.CRI);
 			obj.NMI_mean = mean(obj.NMI);
 			obj.NMI_std = std(obj.NMI);
+			obj.VOI_mean = mean(obj.VOI);
+			obj.VOI_std = std(obj.VOI);
 		end
 		function str = BAString(obj, padLen)
 			if nargin < 2
 				padLen = 0;
 			end
 
-			formatStr = '%s , % .3f , %.3f , % .3f , %.3f ';
-			str = sprintf(formatStr, pad(obj.Name, padLen), obj.CRI_mean, obj.CRI_std, obj.NMI_mean, obj.NMI_std);
+			formatStr = '%s , % .3f , %.3f , % .3f , %.3f , % .3f , %.3f ';
+			str = sprintf(formatStr, pad(obj.Name, padLen), obj.CRI_mean, obj.CRI_std, obj.NMI_mean, obj.NMI_std, obj.VOI_mean, obj.VOI_std);
 
 			if obj.CalcHell
 				str = sprintf('%s, % .3f , %.3f ', str, obj.HEL_mean, obj.HEL_std);
