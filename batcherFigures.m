@@ -136,14 +136,12 @@ function batcherFigures(figToPlot)
 		fprintf('\n\nOne Country vs Two\n\n');
 
 		bas = [
-			baRand;
-			baNorm;
-			BatchAnalyzer("Random (N vs Canada)", [canNum; japNum+porNum], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Normative vs Canada", 2, [canValues; japValues; porValues], [ones(canNum, 1); repmat(2, japNum+porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("Random (N vs Japan)", [japNum; canNum+porNum], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Random (N vs Canada)", [canNum; japNum+porNum], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Normative vs Japan", 2, [japValues; canValues; porValues], [ones(japNum, 1); repmat(2, canNum+porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("Random (N vs Portugal)", [canNum+japNum; porNum], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Random (N vs Japan)", [japNum; canNum+porNum], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Normative vs Portugal", 2, [porValues; canValues; japValues], [ones(porNum, 1); repmat(2, japNum+canNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Random (N vs Portugal)", [canNum+japNum; porNum], 'iters', iters, 'sampleFraction', sampleFraction);
 		];
 		for i = 3:length(bas)
 			calculateBatch(bas(i));
