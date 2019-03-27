@@ -42,14 +42,14 @@ function batcherFigures(figToPlot)
 
 		bas = [
 			%%%%%%%%%%% Random Data (should be 0) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			BatchAnalyzer("2 Random c-j", 2, canNum+japNum, [ones(canNum, 1); repmat(2, japNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("2 Random j-c", 2, japNum+canNum, [ones(japNum, 1); repmat(2, canNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("2 Random c-p", 2, canNum+porNum, [ones(canNum, 1); repmat(2, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("2 Random p-c", 2, porNum+canNum, [ones(porNum, 1); repmat(2, canNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("2 Random j-p", 2, japNum+porNum, [ones(japNum, 1); repmat(2, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("2 Random p-j", 2, porNum+japNum, [ones(porNum, 1); repmat(2, japNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("3 Random sum", 3, canNum+japNum+porNum, labels, 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("4 Random", 4, canNum+japNum+porNum+legNum, [labels; repmat(4, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("2 Random c-j", [canNum, japNum], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("2 Random j-c", [japNum, canNum], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("2 Random c-p", [canNum, porNum], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("2 Random p-c", [porNum, canNum], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("2 Random j-p", [japNum, porNum], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("2 Random p-j", [porNum, japNum], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("3 Random sum", [canNum, japNum, porNum], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("4 Random", [canNum, japNum, porNum, legNum], 'iters', iters, 'sampleFraction', sampleFraction);
 		];
 		for i = 1:length(bas)
 			calculateBatch(bas(i));
