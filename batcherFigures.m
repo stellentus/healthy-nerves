@@ -40,7 +40,6 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'batch-norm-rand', 'Normative Data vs Random Data');
 	end
 
-	% This is not plotted by default
 	if strcmp(figToPlot, 'group-size-order')
 		fprintf('\n\nImpact of Changing the Order of Groups\n\n');
 		% This plot shows that the order of the random labels doesn't change the result as iters->inf.
@@ -64,7 +63,7 @@ function batcherFigures(figToPlot)
 		for i = 1:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'batch-group-size', 'Impact of Changing the Number of Groups');
+		plotBas(bas, 'batch-group-size-order', 'Impact of Changing the Order of Groups');
 	end
 
 	if plotAll || strcmp(figToPlot, 'group-size')
