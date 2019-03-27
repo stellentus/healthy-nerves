@@ -51,6 +51,8 @@ The data was normalized before the NMI was calculated by combining the data (acr
 
 In Figure 1, NMI for the normative dataset (i.e. combined Canadian, Japanese, and Portuguese data) is compared to two different randomly generated lists of three labels with a length of 247. (NMI for identical lists is always exactly 1, so it is not shown.) As expected, NMI for random data is near zero. The normative data is not quite zero, indicating potential (but small) batch effects.
 
+% TODO I can't explain why the mean trends up. Why is there an effect of group size?
+
 \pagebreak
 
 \begin{figure*}
@@ -70,6 +72,17 @@ All of the results in Figure \ref{fig:norm-rand} used three labels, but future f
 
 \begin{figure*}
   \centering
+       \includegraphics[width=\textwidth]{../img/batch-vs-countries.png}
+         \caption{}
+  \label{fig:vs-countries}
+\end{figure*}
+
+% TODO
+
+\pagebreak
+
+\begin{figure*}
+  \centering
        \includegraphics[width=\textwidth]{../img/batch-rc.png}
          \caption{}
   \label{fig:rc}
@@ -77,22 +90,11 @@ All of the results in Figure \ref{fig:norm-rand} used three labels, but future f
 
 To be confident in the normative data it was necessary to show a near-zero NMI, but that is not sufficient. The NMI must also change significantly when non-normative data is added. To test the impact of widespread changes, 6 of the 28 excitability variables were subtly adjusted (see Figure \ref{fig:rc}). In the ``RC shift'' tests, the 7 variables derived from one portion of the NET (recovery cycle, RC) were transformed in one of the three datasets as if the corresponding underlying data had shifted left or right, imitating a plausible technical difference between datasets. In the ``RC shrink'' tests, those same 7 variables were decreased by 50\%. The results show a \emph{(probably not significant?)} small increase in NMI.
 
-\pagebreak
-
-\begin{figure*}
-  \centering
-       \includegraphics[width=\textwidth]{../img/batch-variance.png}
-         \caption{}
-  \label{fig:variance}
-\end{figure*}
-
-Larger changes were introduced by doubling or halving the variance of all variables in one of the three datasets, imitating a potentially plausible biological difference (though changing the variance by a factor of 2 is larger-than-plausible; 40\% would be more realistic). Figure \ref{fig:variance} shows that such changes cause barely-noticeable changes to NMI. Doubling the variance of the Canadian data even decreased NMI, though it is likely that's due to a random difference in clustering rather than revealing a true difference between datasets. (The variance of the Canadian data is similar to the variance of the other data, indicating an increase in variance is not warranted.)
-
-\emph{I'm not sure how to explain why the NMI changed so much in one place here. I don't think ``a random difference in clustering'' is an adequate explanation.}
-
-\emph{It's a bit concerning that doubling the variance has such a minor impact on the NMI. Perhaps because so many are anti-correlated?}
-
-\emph{I'm not very happy with how weak these results are. Thankfully, the next portion is much stronger, but I'm still concerned about the last two figures.}
+% TODO note shifting RC only changes 3 parameters, while shrinking changes 7.
+% Maybe show what the shift looks like. Logarithmic or what?
+% Note the shift really only impacts measures from the first 20ms, so this is a bad test.
+% Maybe shift TE up or down.
+% Maybe in my thesis I can use this as a point about updating the list of excitability indices. Can I suggest in the future a reason or way to dispose of the excitability measures in favor of the entire waveform (or I think a different set from feature selection). As part of this I could show two people with identical excitability measures, but with different waveforms after 50ms.
 
 \pagebreak
 
@@ -109,41 +111,12 @@ Testing with simulated batches shows some minor increases to NMI. It will also b
 
 \begin{figure*}
   \centering
-       \includegraphics[width=\textwidth]{../img/batch-within-rats.png}
-         \caption{}
-  \label{fig:within-rats}
-\end{figure*}
-
-Before comparing rat data to human data, Figure \ref{fig:within-rats} presents some batch effects within the rat dataset. Half of the rats were anesthetized with ketamine-xylazine (KX), while half were anesthetized with sodium pentobarbital (SP). These anaesthetics have different effects on the NET, especially RC, so batch effects should be evident (\textbf{Rat KX vs SP}). Since this NMI score is similar to the normative data's score, it is possible that there are differences in the normative data of similar magnitude to the rat anaesthetic differences. However, note the rat population is much smaller (49 compared to 247). Also note that results from the TA and SOL (described next) were grouped together here. This within-group variance could mask some of the differences between KX and SP.
-Next, NMI was calculated for results that were measured in the sciatic nerve (in the leg) connecting to two different muscles: soleus (SOL) and tibialis anterior (TA). These branches of the nerve have slightly different responses, so batch effects could be evident (\textbf{Rat TA vs SOL}). These differences are not as pronounced as the differences between KX and SP, so a lower NMI score is expected.
-Finally, the four rat types (some anesthetized with KX and some with SP, and all measured in both TA and SOL) should show up as four slightly different groups (\textbf{4 Rat Types}). As expected, this causes an increase to the NMI score.
-Note the variance in the three rat tests is lower than the normative dataset's variance, but this variance is likely under-reported since 30 random samples of 80\% of these small populations does not vary enough.
-
-\emph{This is a rather problematic result. It shows that the differences between anaesthetics or the difference between motor axon types is detectable at the same batch effect level as we see between the median datasets. Either this test isn't sensitive to small differences or there are small differences between the groups.}
-
-\pagebreak
-
-\begin{figure*}
-  \centering
        \includegraphics[width=\textwidth]{../img/batch-vs-rats.png}
          \caption{}
   \label{fig:vs-rats}
 \end{figure*}
 
 Rat data is radically different from human, so it should be even more clearly a different batch than a comparison to leg data.  Figure \ref{fig:vs-rats} compares NMI for datasets between these groups. Replacing the Canadian or Japanese data with rat data causes a large increase in NMI. Adding rat data to the three normative groups has a slightly smaller impact on NMI (since rat data is now one of four groups instead of one of three groups). Finally, when the normative human median data is compared to the diverse rat data, the NMI score approaches its maximum value, indicating a clear difference between species (in spite of the heterogeneity of the rat data).
-
-\pagebreak
-
-\begin{figure*}
-  \centering
-       \includegraphics[width=\textwidth]{../img/batch-vs-countries.png}
-         \caption{}
-  \label{fig:vs-countries}
-\end{figure*}
-
-After comparing leg data and rat data to the normative data with a single label for the entire normative dataset, Figure \ref{fig:vs-countries} compares two of the countries against the third, using a single label for the two combined countries. In all three cases, the NMI is lower than the NMI comparing all three countries. However, note the NMI for Canada and Portugal vs Japan is the lowest and approaches that of random labels \emph{though I might need to re-calculate the random NMI for this different group size, but it will be close anyway}.
-
-\emph{This is the last plot I thought to generate and I want to send this before I leave for the weekend, so I don't have time to think about what this means (if anything).}
 
 \pagebreak
 
@@ -154,8 +127,5 @@ Figures \ref{fig:rc}–\ref{fig:vs-rats} show that NMI is an effective measure f
 \emph{I suspect if the majority of the parameters changed by 50\%, I wouldn't detect it, so I'm not sure this really counts as ``small''. Also, see the note above about different anaesthetics or motor axon types.}
 
 Future work could consider what makes legs easy to distinguish from arms (or rats from humans) while differences between rat motor axon types or anaesthetics are not so pronounced. This would give more insight into potential differences between the Canadian, Japanese, and Portuguese datasets.
-
-% The next line has my some previous conclusions. I'm not sure what changed to render them incorrect, but I think the results changed (a lot!) when I added extra rat data. Specifically, I previously only kept one rat with each name, but now they're renamed to include both muscles. Also, a bug in the import code only saved SP data. This meant that I was comparing to rat data that was almost entirely from a single group (SP TA, I think).
-% However, combining leg and arm data into a single group is enough to render it only somewhat distinguishable from the rat group (NMI=0.215) while comparing only arms to the rats results in a near-maximal NMI of 0.87. Since adding leg data to the arm data makes the dataset significantly more heterogeneous, this supports the assertion that the normative human arm NET data is homogeneous. While there could be some minor differences between the datasets from different sites, those differences are of a much smaller magnitude than the differences between different nerves and species, so it is appropriate to combine the Canadian, Japanese, and Portuguese data into a single normative dataset.
 
 \end{document}
