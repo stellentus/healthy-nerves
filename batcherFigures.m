@@ -104,7 +104,7 @@ function batcherFigures()
 	for i = 3:length(bas)
 		calculateBatch(bas(i));
 	end
-	plotBas(bas, 'batch-vs-countries', 'Comparisons with Leg Data');
+	plotBas(bas, 'batch-vs-countries', 'One Country vs Two');
 
 	%%%%%%%%% FIGURE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	fprintf('\n\nComparisons with Leg Data\n\n');
