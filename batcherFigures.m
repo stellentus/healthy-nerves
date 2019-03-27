@@ -22,8 +22,11 @@ function batcherFigures(figToPlot)
 
 	addpath batches;
 
+	% Calculate for the normative data, since this is used repeatedly for comparison.
 	baNorm = BatchAnalyzer("Normative Data", 3, values, labels, 'iters', iters, 'sampleFraction', sampleFraction);
 	calculateBatch(baNorm);
+
+	% Calculate for random labels with the same group sizes as the normative data.
 	baRand = BatchAnalyzer("Random Labels", 3, size(values, 1), labels, 'iters', iters, 'sampleFraction', sampleFraction);
 	calculateBatch(baRand);
 
