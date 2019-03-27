@@ -84,6 +84,49 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'batch-group-size', 'Impact of Changing the Number of Groups (60 samples within each)');
 	end
 
+	if strcmp(figToPlot, 'country-splits')
+		fprintf('\n\nImpact of Splitting Within-Group Data\n\n');
+		% The purpose of this plot is to see if within each country the NMI matches the random expectation for groups of those sizes.
+		% In each case, the country's pair should be compared, but I see the second one (with real data) is always higher.
+		% This is probably because k-means is finding uneven group sizes (i.e. for Can not very close to 50-50-50), while the labels are distributed much closer to 50-50-50.
+		% (Note due to 80% sampling, the size is actually 40-40-40, and we expect there to be a bit of random variation from that exact split.)
+		% Portuguese data is more likely to be splitting unevenly, probably because k-means happens to find that some of the participants are clustered closer to one another than others.
+
+		canIdx = randperm(canNum);
+		canSplitNum = floor(canNum/3);
+		can1 = canValues(canIdx(1:canSplitNum), :);
+		can2 = canValues(canIdx((canSplitNum+1):(2*canSplitNum)), :);
+		can3 = canValues(canIdx((2*canSplitNum+1):(3*canSplitNum)), :);
+
+		japIdx = randperm(japNum);
+		japSplitNum = floor(japNum/3);
+		jap1 = japValues(japIdx(1:japSplitNum), :);
+		jap2 = japValues(japIdx((japSplitNum+1):(2*japSplitNum)), :);
+		jap3 = japValues(japIdx((2*japSplitNum+1):(3*japSplitNum)), :);
+
+		porIdx = randperm(porNum);
+		porSplitNum = floor(porNum/3);
+		por1 = porValues(porIdx(1:porSplitNum), :);
+		por2 = porValues(porIdx((porSplitNum+1):(2*porSplitNum)), :);
+		por3 = porValues(porIdx((2*porSplitNum+1):(3*porSplitNum)), :);
+
+		bas = [
+			%%%%%%%%%%% Random Data (should be 0) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			BatchAnalyzer("Random (Can-sized)", repmat(canSplitNum, 3, 1), 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Three-split Can", 3, [can1; can2; can3], [ones(canSplitNum, 1); repmat(2, canSplitNum, 1); repmat(3, canSplitNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Random (Jap-sized)", repmat(japSplitNum, 3, 1), 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Three-split Jap", 3, [jap1; jap2; jap3], [ones(japSplitNum, 1); repmat(2, japSplitNum, 1); repmat(3, japSplitNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Random (Por-sized)", repmat(porSplitNum, 3, 1), 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Three-split Por", 3, [por1; por2; por3], [ones(porSplitNum, 1); repmat(2, porSplitNum, 1); repmat(3, porSplitNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Random (Norm-sized)", 3, size(values, 1), labels, 'iters', iters, 'sampleFraction', sampleFraction),
+			baNorm,
+		];
+		for i = 1:length(bas)
+			calculateBatch(bas(i));
+		end
+		plotBas(bas, 'batch-country-splits', 'Impact of Splitting Within-Group Data');
+	end
+
 	if plotAll || strcmp(figToPlot, 'vs-countries')
 		fprintf('\n\nOne Country vs Two\n\n');
 
