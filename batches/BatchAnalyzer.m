@@ -27,7 +27,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			p = inputParser;
 			addRequired(p, 'name', @(x) isstring(x) || ischar(x));
 			addRequired(p, 'numGroups', @isnumeric);
-			addRequired(p, 'values', @ismatrix);
+			addOptional(p, 'values', @ismatrix);
 			addOptional(p, 'labels', [], @(x) isinteger(x) || isnumeric(x));
 			addParameter(p, 'iters', 30, @isnumeric);
 			addParameter(p, 'sampleFraction', 1, @isnumeric);
@@ -36,14 +36,24 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			addParameter(p, 'calcHell', false, @islogical);
 			parse(p, name, numGroups, values, varargin{:});
 
+			if length(numGroups) > 1
+				% If numGroups is an array, it's actually the group sizes. 'values' and 'labels' should not have been passsed in.
+				obj.NumGroups = length(numGroups);
+				setValues(obj, sum(numGroups));
+				obj.Labels = [];
+				for i=1:obj.NumGroups
+					obj.Labels = [obj.Labels; repmat(i, numGroups(i), 1)];
+				end
+				obj.FixedLabels = true;
+			else
+				obj.NumGroups = p.Results.numGroups;
+				setValues(obj, p.Results.values);
+				obj.Labels = p.Results.labels;
+				obj.FixedLabels = (length(obj.Labels) > 0);
+			end
+
 			obj.Name = p.Results.name;
 			obj.Iters = p.Results.iters;
-			obj.NumGroups = p.Results.numGroups;
-
-			setValues(obj, p.Results.values);
-
-			obj.Labels = p.Results.labels;
-			obj.FixedLabels = (length(obj.Labels) > 0);
 
 			obj.ClusterFunc = p.Results.clusterFunc;
 			obj.Seed = p.Results.seed;
