@@ -22,9 +22,10 @@ function [values] = fillVals(values, method, args)
 	missingMask = ~isnan(missingX);
 
 	switch method
-		case 'CCA'  % This doesn't actually delete those rows. It just passes them as-is.
-			func = @fillCCA;
-			args = mergeArgs(args, struct());
+		case 'CCA'
+			warning("fillWithMethod('CCA') doesn't perserve index order (since rows are deleted).");
+			values = completeX;
+			return;
 		case 'Zero'
 			func = @fillNaive;
 			args = mergeArgs(args, struct('handleNaN', 'zero', 'useMissingMaskForNaNFill', true));
