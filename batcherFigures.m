@@ -215,30 +215,30 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'batch-vs-rats', 'Comparisons with Rat Data');
 	end
 
-	% if plotAll || strcmp(figToPlot, 'rc')
-	% 	fprintf('\n\nAdjusting Recovery Cycle (RC)\n\n');
+	if plotAll || strcmp(figToPlot, 'rc')
+		fprintf('\n\nAdjusting Recovery Cycle (RC)\n\n');
 
-	% 	bas = [
-	% 		baRand;
-	% 		baNorm;
+		bas = [
+			baRand;
+			baNorm;
 
-	% 		BACopyWithValues(baNorm, "Can shift right", [shiftRightRC(canValues); japValues; porValues]);
-	% 		BACopyWithValues(baNorm, "Jap shift right", [canValues; shiftRightRC(japValues); porValues]);
-	% 		BACopyWithValues(baNorm, "Por shift right", [canValues; japValues; shiftRightRC(porValues)]);
+			BACopyWithValues(baNorm, "Can shift right", [shiftRightRC(canValues); japValues; porValues]);
+			BACopyWithValues(baNorm, "Jap shift right", [canValues; shiftRightRC(japValues); porValues]);
+			BACopyWithValues(baNorm, "Por shift right", [canValues; japValues; shiftRightRC(porValues)]);
 
-	% 		BACopyWithValues(baNorm, "Can shift left", [shiftLeftRC(canValues); japValues; porValues]);
-	% 		BACopyWithValues(baNorm, "Jap shift left", [canValues; shiftLeftRC(japValues); porValues]);
-	% 		BACopyWithValues(baNorm, "Por shift left", [canValues; japValues; shiftLeftRC(porValues)]);
+			BACopyWithValues(baNorm, "Can shift left", [shiftLeftRC(canValues); japValues; porValues]);
+			BACopyWithValues(baNorm, "Jap shift left", [canValues; shiftLeftRC(japValues); porValues]);
+			BACopyWithValues(baNorm, "Por shift left", [canValues; japValues; shiftLeftRC(porValues)]);
 
-	% 		BACopyWithValues(baNorm, "Can shrink", [shrinkRC(canValues); japValues; porValues]);
-	% 		BACopyWithValues(baNorm, "Jap shrink", [canValues; shrinkRC(japValues); porValues]);
-	% 		BACopyWithValues(baNorm, "Por shrink", [canValues; japValues; shrinkRC(porValues)]);
-	% 	];
-	% 	for i = 3:length(bas)
-	% 		calculateBatch(bas(i));
-	% 	end
-	% 	plotBas(bas, 'batch-rc', 'Adjusting Recovery Cycle (RC)');
-	% end
+			BACopyWithValues(baNorm, "Can shrink", [shrinkRC(canValues); japValues; porValues]);
+			BACopyWithValues(baNorm, "Jap shrink", [canValues; shrinkRC(japValues); porValues]);
+			BACopyWithValues(baNorm, "Por shrink", [canValues; japValues; shrinkRC(porValues)]);
+		];
+		for i = 3:length(bas)
+			calculateBatch(bas(i));
+		end
+		plotBas(bas, 'batch-rc', 'Adjusting Recovery Cycle (RC)');
+	end
 
 	if strcmp(figToPlot, 'variance')
 		fprintf('\n\nAdjusting Variance\n\n');
@@ -339,7 +339,7 @@ function [shiftedValues] = shrinkRC(vals)
 end
 
 function [vals] = scaleVariance(vals, stdScale)
-	colInd = [1:27];
+	colInd = [1:31];
 	mns = mean(vals(:,colInd));
 	vals(:,colInd) = bsxfun(@times, vals(:,colInd) - mns, stdScale) + mns;
 end
