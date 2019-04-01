@@ -102,7 +102,7 @@ function [flatVals, flatParts] = flattenStructs(structVals, structParts)
 end
 
 function [vals, parts] = deleteNoSex(vals, parts)
-	hasSex = ismember(vals(:, 15), [2.0 1.0]);
+	hasSex = ismember(vals(:, 13), [2.0 1.0]);
 	if sum(~hasSex) > 0
 		fprintf('Deleting sexless %s.\n', parts(~hasSex));
 	end
