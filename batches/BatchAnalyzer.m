@@ -113,8 +113,10 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 				if obj.UseRandomIndices
 					idx = randi([1 obj.NumGroups], 1, len);
 					if obj.FixedLabels
+						% The expected value is based on the probabilitiy in the label list. For K labels with probability p(k), E[VI] = - sum_{k=1}^K [p(k) log p(k)], where p(k) is the count of that label/length(labels).
 						thisIterLabels = obj.Labels(indices);
 					else
+						% The expected value is zero because the groups are identical.
 						thisIterLabels = idx;
 					end
 				else
