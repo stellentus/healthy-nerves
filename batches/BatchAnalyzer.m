@@ -17,6 +17,9 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		BaselineScore
 		BaselineScore_mean
 		BaselineScore_std
+		ScoreDiff
+		ScoreDiff_mean
+		ScoreDiff_std
 	end
 	methods
 		function obj = BatchAnalyzer(name, numGroups, values, varargin)
@@ -53,6 +56,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 
 			% Clear array values
 			obj.Score = [];
+			obj.ScoreDiff = [];
 			obj.BaselineScore = [];
 			obj.AllBaselineScores = [];
 		end
@@ -107,6 +111,10 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			obj.BaselineScore = obj.AllBaselineScores(:, 1); % Only add the first one from each iteration
 			obj.BaselineScore_mean = mean(obj.AllBaselineScores(:));
 			obj.BaselineScore_std = std(obj.AllBaselineScores(:));
+
+			obj.ScoreDiff = obj.Score - mean(obj.AllBaselineScores, 2)';
+			obj.ScoreDiff_mean = mean(obj.ScoreDiff);
+			obj.ScoreDiff_std = std(obj.ScoreDiff);  % TODO This isn't making use of the variance in obj.BaselineScore_std
 		end
 		function str = BAString(obj, padLen)
 			if nargin < 2
