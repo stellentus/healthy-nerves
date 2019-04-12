@@ -17,7 +17,7 @@ function plotBas(bas, filename, figtitle, args)
 	end
 
 	if args.plotBoxes
-		plotBoxes(figtitle, filename, scores, 'NVI', names);
+		plotBoxes(figtitle, filename, scores, 'NVI', names, args);
 	end
 end
 
@@ -34,6 +34,9 @@ function [args] = setArgs(args)
 	end
 	if ~isfield(args, 'plotBoxes')
 		args.plotBoxes = true;
+	end
+	if ~isfield(args, 'LadderLines')
+		args.LadderLines = false;
 	end
 end
 
@@ -52,10 +55,10 @@ function padLen = printHeader(bas)
 	fprintf('%s , ------ , ----- , ------ , ----- , ----- \n', strrep(pad(" ", padLen), " ", "-"));
 end
 
-function plotBoxes(titleLabel, filename, scores, scoreName, testNames)
+function plotBoxes(titleLabel, filename, scores, scoreName, testNames, args)
 	addpath lib/CategoricalScatterplot
 
-	CategoricalScatterplot(scores, testNames, 'MarkerSize', 50, 'BoxAlpha', .29);
+	CategoricalScatterplot(scores, testNames, 'MarkerSize', 50, 'BoxAlpha', .29, 'LadderLines', args.LadderLines);
 	title(titleLabel);
 	ylabel(scoreName);
 	xtickangle(45)
