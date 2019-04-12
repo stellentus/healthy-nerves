@@ -13,6 +13,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		Score
 		Score_mean
 		Score_std
+		AllBaselineScores
 		BaselineScore
 		BaselineScore_mean
 		BaselineScore_std
@@ -43,8 +44,6 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 
 			obj.SampleFraction = p.Results.sampleFraction;
 			obj.BaselineIters = p.Results.baselineIters;
-
-			obj.BaselineScore = [];
 		end
 		function obj = setValues(obj, values)
 			obj.Values = values;
@@ -55,6 +54,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			% Clear array values
 			obj.Score = [];
 			obj.BaselineScore = [];
+			obj.AllBaselineScores = [];
 		end
 		function ba = BACopyWithValues(obj, name, values)
 			ba = copy(obj);
@@ -69,7 +69,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			% Clear old array values
 			obj.Score = [];
 			obj.BaselineScore = [];
-			baselineScores = [];
+			obj.AllBaselineScores = zeros(obj.Iters, obj.BaselineIters);
 
 			addpath lib/rand_index;
 			addpath lib/info_entropy;
@@ -92,11 +92,10 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 				obj.Score = [obj.Score voi(thisIterLabels, idx)];
 
 				% Calculate a lot of different possible scores that could come from the same group sizes.
-				for i=1:obj.BaselineIters
+				for j=1:obj.BaselineIters
 					shuffled = idx(randperm(length(idx)));
-					baselineScores = [baselineScores; voi(thisIterLabels, shuffled)];
+					obj.AllBaselineScores(i, j) = voi(thisIterLabels, shuffled);
 				end
-				obj.BaselineScore = [obj.BaselineScore; baselineScores(length(baselineScores))]; % Only add the last one
 			end
 			rmpath lib/rand_index;
 			rmpath lib/info_entropy;
@@ -105,11 +104,9 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			obj.Score_mean = mean(obj.Score);
 			obj.Score_std = std(obj.Score);
 
-			obj.BaselineScore_mean = mean(baselineScores);
-			obj.BaselineScore_std = std(baselineScores);
-
-			% TODO REMOVE
-			% obj.BaselineScore = baselineScores;
+			obj.BaselineScore = obj.AllBaselineScores(:, 1); % Only add the first one from each iteration
+			obj.BaselineScore_mean = mean(obj.AllBaselineScores(:));
+			obj.BaselineScore_std = std(obj.AllBaselineScores(:));
 		end
 		function str = BAString(obj, padLen)
 			if nargin < 2
