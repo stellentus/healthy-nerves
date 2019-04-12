@@ -51,8 +51,8 @@ function padLen = printHeader(bas)
 	end
 
 	% Print the table header
-	fprintf('%s , Score  ,  std  , Base   ,  std  , Batch \n', pad("Name", padLen));
-	fprintf('%s , ------ , ----- , ------ , ----- , ----- \n', strrep(pad(" ", padLen), " ", "-"));
+	fprintf('%s , Score  ,  std  , Base   ,  std  , Batch ,  PVal \n', pad("Name", padLen));
+	fprintf('%s , ------ , ----- , ------ , ----- , ----- , ----- \n', strrep(pad(" ", padLen), " ", "-"));
 end
 
 function plotBoxes(titleLabel, filename, scores, scoreName, testNames, args)

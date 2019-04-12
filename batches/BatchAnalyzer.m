@@ -20,6 +20,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		ScoreDiff
 		ScoreDiff_mean
 		ScoreDiff_std
+		PValue
 	end
 	methods
 		function obj = BatchAnalyzer(name, numGroups, values, varargin)
@@ -59,6 +60,8 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			obj.ScoreDiff = [];
 			obj.BaselineScore = [];
 			obj.AllBaselineScores = [];
+
+			obj.PValue = 0; % Initialize to impossible 0.
 		end
 		function ba = BACopyWithValues(obj, name, values)
 			ba = copy(obj);
@@ -114,14 +117,16 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			obj.ScoreDiff = (obj.BaselineScore - obj.Score)/2/log2(obj.NumGroups);
 			obj.ScoreDiff_mean = mean(obj.ScoreDiff);
 			obj.ScoreDiff_std = std(obj.ScoreDiff);  % TODO This isn't making use of the variance in obj.BaselineScore_std
+
+			[~, obj.PValue] = ttest2(obj.Score, obj.BaselineScore);
 		end
 		function str = BAString(obj, padLen)
 			if nargin < 2
 				padLen = 0;
 			end
 
-			formatStr = '%s , % .3f , %.3f , % .3f , %.3f , %3.0f%% ';
-			str = sprintf(formatStr, pad(obj.Name, padLen), obj.Score_mean, obj.Score_std, obj.BaselineScore_mean, obj.BaselineScore_std, obj.ScoreDiff_mean*100);
+			formatStr = '%s , % .3f , %.3f , % .3f , %.3f , %3.0f%%  , %.3f ';
+			str = sprintf(formatStr, pad(obj.Name, padLen), obj.Score_mean, obj.Score_std, obj.BaselineScore_mean, obj.BaselineScore_std, obj.ScoreDiff_mean*100, obj.PValue);
 		end
 	end
 end
