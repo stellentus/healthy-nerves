@@ -5,42 +5,19 @@ function plotBas(bas, filename, figtitle, args)
 	end
 	args = setArgs(args);
 	iter = bas(1).Iters;
-	sampleFraction = bas(1).SampleFraction;
 
-	if args.printPercent < 100
-		maxIndex = round(length(bas)*args.printPercent/100);
-	else
-		maxIndex = length(bas);
-	end
-
-	if args.printPercent < 100 || args.sort == true
-		[~, ind] = sort([bas.Score_mean]);
-		if strcmp(args.sortOrder, "descend")
-			ind = fliplr(ind);
-		end
-
-		printBas = bas(ind(1:maxIndex));
-	else
-		printBas = bas;
-	end
-
-	padLen = printHeader(printBas);
-	scores = zeros(length(printBas(1).Score), maxIndex); % only used by plotBoxes
-	for i = 1:maxIndex
-		disp(BAString(printBas(i), padLen));
-		scores(:, i) = (printBas(i).Score');
-	end
-
-	if args.printPercent < 100
-		% Now print the mean values for a reference point
-		meanBA = BatchAnalyzer("Means", 3, []);
-		meanBA.Score_mean = mean([bas.Score_mean]);
-		meanBA.Score_std = mean([bas.Score_std]);
-		disp(BAString(meanBA, padLen));
+	padLen = printHeader(bas);
+	scores = zeros(length(bas(1).Score), length(bas)*2); % only used by plotBoxes
+	names = [];
+	for i = 1:length(bas)
+		disp(BAString(bas(i), padLen));
+		scores(:, 2*i-1) = (bas(i).Score');
+		scores(:, 2*i) = (bas(i).BaselineScore');
+		names = [names; bas(i).Name; bas(i).Name + " RAND"];
 	end
 
 	if args.plotBoxes
-		plotBoxes(figtitle, filename, scores, printBas(1).ScoreName, [printBas.Name]');
+		plotBoxes(figtitle, filename, scores, 'NVI', names);
 	end
 end
 
@@ -71,24 +48,17 @@ function padLen = printHeader(bas)
 	end
 
 	% Print the table header
-	fprintf('%s , Score  ,  std  \n', pad("Name", padLen));
-	fprintf('%s , ------ , ----- \n', strrep(pad(" ", padLen), " ", "-"));
+	fprintf('%s , Score  ,  std  , Base   ,  std  , %%diff  \n', pad("Name", padLen));
+	fprintf('%s , ------ , ----- , ------ , ----- , ----- \n', strrep(pad(" ", padLen), " ", "-"));
 end
 
 function plotBoxes(titleLabel, filename, scores, scoreName, testNames)
 	addpath lib/CategoricalScatterplot
 
-	pathstr = sprintf('img/%s-%d-%d-%d-%d%d%2.0f', filename, clock);
-
-	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
-
 	CategoricalScatterplot(scores, testNames, 'MarkerSize', 50, 'BoxAlpha', .29);
 	title(titleLabel);
 	ylabel(scoreName);
 	xtickangle(45)
-	savefig(fig, strcat(pathstr, '.fig', 'compact'));
-	saveas(fig, strcat(pathstr, '.png'));
-	copyfile(strcat(pathstr, '.png'), strcat('img/', filename, '.png')); % Also save without timestamp
 
 	rmpath lib/CategoricalScatterplot
 end
