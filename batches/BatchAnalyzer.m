@@ -72,7 +72,6 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 
 			% Clear old array values
 			obj.Score = [];
-			obj.BaselineScore = [];
 			obj.AllBaselineScores = zeros(obj.Iters, obj.BaselineIters);
 
 			addpath lib/rand_index;
@@ -108,11 +107,11 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			obj.Score_mean = mean(obj.Score);
 			obj.Score_std = std(obj.Score);
 
-			obj.BaselineScore = obj.AllBaselineScores(:, 1); % Only add the first one from each iteration
+			obj.BaselineScore = mean(obj.AllBaselineScores, 2)'; % The mean for each iteration.
 			obj.BaselineScore_mean = mean(obj.AllBaselineScores(:));
 			obj.BaselineScore_std = std(obj.AllBaselineScores(:));
 
-			obj.ScoreDiff = obj.Score - mean(obj.AllBaselineScores, 2)';
+			obj.ScoreDiff = (obj.BaselineScore - obj.Score)/2/log2(obj.NumGroups);
 			obj.ScoreDiff_mean = mean(obj.ScoreDiff);
 			obj.ScoreDiff_std = std(obj.ScoreDiff);  % TODO This isn't making use of the variance in obj.BaselineScore_std
 		end
@@ -122,7 +121,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			end
 
 			formatStr = '%s , % .3f , %.3f , % .3f , %.3f , %3.0f%% ';
-			str = sprintf(formatStr, pad(obj.Name, padLen), obj.Score_mean, obj.Score_std, obj.BaselineScore_mean, obj.BaselineScore_std, 100-obj.Score_mean/obj.BaselineScore_mean*100);
+			str = sprintf(formatStr, pad(obj.Name, padLen), obj.Score_mean, obj.Score_std, obj.BaselineScore_mean, obj.BaselineScore_std, obj.ScoreDiff_mean*100);
 		end
 	end
 end
