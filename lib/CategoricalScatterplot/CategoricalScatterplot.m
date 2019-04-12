@@ -202,9 +202,9 @@ for i = 1:length(groups)
         end
     else
         if (ischar(parsed.Color)||size(parsed.Color,1))
-            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color, 'filled');
+            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color);
         else
-            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color(i,:), 'filled');
+            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color(i,:));
         end
     end
 
