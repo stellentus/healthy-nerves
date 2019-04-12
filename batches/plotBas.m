@@ -48,7 +48,7 @@ function padLen = printHeader(bas)
 	end
 
 	% Print the table header
-	fprintf('%s , Score  ,  std  , Base   ,  std  , %%diff  \n', pad("Name", padLen));
+	fprintf('%s , Score  ,  std  , Base   ,  std  , Batch \n', pad("Name", padLen));
 	fprintf('%s , ------ , ----- , ------ , ----- , ----- \n', strrep(pad(" ", padLen), " ", "-"));
 end
 
