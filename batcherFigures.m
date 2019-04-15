@@ -27,22 +27,22 @@ function batcherFigures(figToPlot)
 	baNorm = BatchAnalyzer("Normative Data", 3, values, labels, 'iters', iters, 'sampleFraction', sampleFraction);
 	calculateBatch(baNorm);
 
-	shufNorm = BatchAnalyzer("Shuffled Normative", 3, values, labels(randperm(length(labels))), 'iters', iters, 'sampleFraction', sampleFraction);
-	calculateBatch(shufNorm);
+	% shufNorm = BatchAnalyzer("Shuffled Normative", 3, values, labels(randperm(length(labels))), 'iters', iters, 'sampleFraction', sampleFraction);
+	% calculateBatch(shufNorm);
 
-	% Calculate for random labels with the same group sizes as the normative data.
-	baRand = BatchAnalyzer("Random Labels", 3, size(values, 1), labels, 'iters', iters, 'sampleFraction', sampleFraction);
-	calculateBatch(baRand);
+	% % Calculate for random labels with the same group sizes as the normative data.
+	% baRand = BatchAnalyzer("Random Labels", 3, size(values, 1), labels, 'iters', iters, 'sampleFraction', sampleFraction);
+	% calculateBatch(baRand);
 
 	if plotAll || strcmp(figToPlot, 'norm-rand')
 		fprintf('\n\nNormative Data vs Random Data\n\n');
 
 		bas = [
 			baNorm;
-			shufNorm;
-			baRand;
+			% shufNorm;
+			% baRand;
 		];
-		plotBas(bas, 'batch-norm-rand', 'Normative Data vs Random Data');
+		plotBas(bas, 'batch-norm-rand', 'Normative Data vs Random Data', struct('LadderLines', true));
 	end
 
 	if strcmp(figToPlot, 'group-size-order')
