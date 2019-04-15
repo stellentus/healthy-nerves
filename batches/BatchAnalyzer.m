@@ -125,8 +125,14 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 				padLen = 0;
 			end
 
-			formatStr = '%s , % .3f , %.3f , % .3f , %.3f , %3.0f%%  , %.3f ';
-			str = sprintf(formatStr, pad(obj.Name, padLen), obj.Score_mean, obj.Score_std, obj.BaselineScore_mean, obj.BaselineScore_std, obj.ScoreDiff_mean*100, obj.PValue);
+			if obj.PValue < 0.001
+				pStr = sprintf('%.0e', obj.PValue);
+			else
+				pStr = sprintf('%.4f', obj.PValue);
+			end
+
+			formatStr = '%s , % .3f , %.3f , % .3f , %.3f , %3.0f%%  , %s ';
+			str = sprintf(formatStr, pad(obj.Name, padLen), obj.Score_mean, obj.Score_std, obj.BaselineScore_mean, obj.BaselineScore_std, obj.ScoreDiff_mean*100, pStr);
 		end
 	end
 end
