@@ -139,13 +139,12 @@ function batcherFigures(figToPlot)
 		fprintf('\n\nComparisons with Rat Data\n\n');
 
 		bas = [
-			baNorm;
 			BatchAnalyzer("Can->Rat", 3, [ratValues; japValues; porValues], [ones(ratNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Jap->Rat", 3, [canValues; ratValues; porValues], [ones(canNum, 1); ones(ratNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Add Rats", 4, [values; ratValues], [labels; repmat(4, ratNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Human vs Rats", 2, [values; ratValues], [repmat(1, length(labels), 1); repmat(2, ratNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 		];
-		for i = 2:length(bas)
+		for i = 1:length(bas)
 			calculateBatch(bas(i));
 		end
 		plotBas(bas, 'batch-vs-rats', 'Comparisons with Rat Data');
