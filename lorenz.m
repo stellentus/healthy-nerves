@@ -52,18 +52,6 @@ function plotTwo(data1, data2, labels, colors, titlename, filename, paired)
 	end
 	xlim([.5, 2.5]);
 
-	if paired
-		[h, p] = ttest(data1, data2);
-	else
-		[h, p] = ttest2(data1, data2);
-	end
-
-	if h
-		text(0.5, 0.9, '*', 'Units', 'normalized', 'FontSize', 64, 'HorizontalAlignment', 'center');
-	else
-		text(0.5, 0.9, 'n.s.', 'Units', 'normalized', 'FontSize', 26, 'HorizontalAlignment', 'center');
-	end
-
 	saveTightFigure(gcf, filename);
 	close;
 end
