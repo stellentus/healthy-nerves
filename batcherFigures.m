@@ -237,6 +237,24 @@ function batcherFigures(figToPlot)
 	end
 
 	rmpath batches;
+
+	if strcmp(figToPlot, 'age-batches')
+		fprintf('\n\nAge Batches\n\n');
+
+		bas = [
+			baNorm;
+			baForAgeSplit(values, [51], iters, sampleFraction);
+			baForAgeSplit(values, [31 61], iters, sampleFraction);
+			baForAgeSplit(values, [26 41 56], iters, sampleFraction);
+			baForAgeSplit(values, [21 31 41 51 61], iters, sampleFraction);
+		];
+		for i = 2:length(bas)
+			calculateBatch(bas(i));
+		end
+		plotBas(bas, 'batch-age-batches', 'Age Batches');
+	end
+
+	rmpath batches;
 end
 
 function [shiftedValues] = shiftRightRC(vals)
@@ -277,4 +295,24 @@ end
 function [bas] = sortByMean(bas)
 	[~, ind] = sort([bas.Homogeneity_mean]);
 	bas = bas(ind);
+end
+
+function [ba] = baForAgeSplit(values, ageThresholds, iters, sampleFraction)
+	addpath lib;
+	[ageLabels, values] = makeAgeBatches(values, ageThresholds);
+	rmpath lib;
+	addpath batches;
+	ba = BatchAnalyzer(printVector("", ageThresholds), length(ageThresholds)+1, values, ageLabels, 'iters', iters, 'sampleFraction', sampleFraction);
+end
+
+function str = printVector(str, vec)
+	str = sprintf("%s [", str);
+
+	fmtStr = "%s%d"; % This variable makes sure a space is only added after the first
+	for i=1:length(vec)
+		str = sprintf(fmtStr, str, vec(i));
+		fmtStr = "%s %d";
+	end
+
+	str = sprintf("%s]", str);
 end
