@@ -275,6 +275,6 @@ function [vals] = scaleVariance(vals, stdScale)
 end
 
 function [bas] = sortByMean(bas)
-	[~, ind] = sort([bas.NMI_mean]);
+	[~, ind] = sort([bas.Homogeneity_mean]);
 	bas = bas(ind);
 end
