@@ -19,6 +19,14 @@ function plotBas(bas, filename, figtitle, args)
 	if args.plotBoxes
 		figure;
 		plotBoxes(figtitle, filename, scores, 'NVI', names);
+		yl = ylim;
+		if yl(1) > 0
+			yl(1) = 0;
+		end
+		if yl(2) < 1
+			yl(2) = 1;
+		end
+		ylim(yl)
 	end
 end
 
