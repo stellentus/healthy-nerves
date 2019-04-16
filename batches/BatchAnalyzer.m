@@ -17,9 +17,9 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		BaselineScore
 		BaselineScore_mean
 		BaselineScore_std
-		ScoreDiff
-		ScoreDiff_mean
-		ScoreDiff_std
+		Homogeneity
+		Homogeneity_mean
+		Homogeneity_std
 		PValue
 	end
 	methods
@@ -57,7 +57,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 
 			% Clear array values
 			obj.Score = [];
-			obj.ScoreDiff = [];
+			obj.Homogeneity = [];
 			obj.BaselineScore = [];
 			obj.AllBaselineScores = [];
 
@@ -114,9 +114,9 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			obj.BaselineScore_mean = mean(obj.AllBaselineScores(:));
 			obj.BaselineScore_std = std(obj.AllBaselineScores(:));
 
-			obj.ScoreDiff = (obj.BaselineScore - obj.Score)/2/log2(obj.NumGroups);
-			obj.ScoreDiff_mean = mean(obj.ScoreDiff);
-			obj.ScoreDiff_std = std(obj.ScoreDiff);  % TODO This isn't making use of the variance in obj.BaselineScore_std
+			obj.Homogeneity = obj.Score ./ obj.BaselineScore;
+			obj.Homogeneity_mean = mean(obj.Homogeneity);
+			obj.Homogeneity_std = std(obj.Homogeneity);  % TODO This isn't making use of the variance in obj.BaselineScore_std
 
 			[~, obj.PValue] = ttest2(obj.Score, obj.BaselineScore);
 		end
@@ -132,7 +132,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			end
 
 			formatStr = '%s , % .3f , %.3f , % .3f , %.3f , %3.0f%%  , %s ';
-			str = sprintf(formatStr, pad(obj.Name, padLen), obj.Score_mean, obj.Score_std, obj.BaselineScore_mean, obj.BaselineScore_std, obj.ScoreDiff_mean*100, pStr);
+			str = sprintf(formatStr, pad(obj.Name, padLen), obj.Score_mean, obj.Score_std, obj.BaselineScore_mean, obj.BaselineScore_std, obj.Homogeneity_mean*100, pStr);
 		end
 	end
 end

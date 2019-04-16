@@ -110,7 +110,7 @@ function [bas] = plotGroup(plGrp, data1, data2, shouldPlot)
 		plot([1:length(ba.Score)], ba.Score, 'x');
 
 		subplot(2, 2, 3);
-		CategoricalScatterplot([ba.Score; ba.BaselineScore; ba.ScoreDiff]', ["Scores"; "Diff"; "Baseline"], 'MarkerSize', 50, 'BoxAlpha', .29, 'LadderLines', true);
+		CategoricalScatterplot([ba.Score; ba.BaselineScore; ba.Homogeneity]', ["Scores"; "Diff"; "Baseline"], 'MarkerSize', 50, 'BoxAlpha', .29, 'LadderLines', true);
 		title('Diff of Scores');
 		xtickangle(45)
 		rmpath ./lib/CategoricalScatterplot
