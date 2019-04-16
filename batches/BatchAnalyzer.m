@@ -23,18 +23,18 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		PValue
 	end
 	methods
-		function obj = BatchAnalyzer(name, numGroups, values, varargin)
+		function obj = BatchAnalyzer(name, numGroups, values, labels, varargin)
 			p = inputParser;
 			addRequired(p, 'name', @(x) isstring(x) || ischar(x));
 			addRequired(p, 'numGroups', @isnumeric);
-			addOptional(p, 'values', @ismatrix);
-			addOptional(p, 'labels', [], @(x) isinteger(x) || isnumeric(x));
+			addRequired(p, 'values', @ismatrix);
+			addRequired(p, 'labels', @(x) isinteger(x) || isnumeric(x));
 			addParameter(p, 'iters', 30, @isnumeric);
 			addParameter(p, 'baselineIters', 100, @isnumeric);
 			addParameter(p, 'sampleFraction', 0.8, @isnumeric);
 			addParameter(p, 'clusterFunc', @linkageCluster);
 			addParameter(p, 'seed', 7738, @isnumeric);
-			parse(p, name, numGroups, values, varargin{:});
+			parse(p, name, numGroups, values, labels, varargin{:});
 
 			obj.NumGroups = p.Results.numGroups;
 			setValues(obj, p.Results.values);
