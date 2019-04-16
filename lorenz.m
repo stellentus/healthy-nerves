@@ -41,8 +41,9 @@ end
 
 function plotTwo(data1, data2, labels, colors, titlename, filename, paired)
 	figure('rend', 'painters', 'pos', [10 10 450 600]);
-	UnivarScatter(padcat(data1, data2), 'Label', labels, 'MarkerEdgeColor', colors, 'MarkerFaceColor', colors, 'PointSize', 132, 'WhiskWidthRatio', 1.3);
-	set(gca,'box','off');
+	addpath lib/CategoricalScatterplot;
+	CategoricalScatterplot(padcat(data1, data2), labels, 'MarkerSize', 132, 'LadderLines', paired);
+	rmpath lib/CategoricalScatterplot;
 	set(gca,'FontSize', 32);
 	set(gca,'FontWeight','bold');
 	if strcmp(titlename, 'Superexcitability at 5 ms (%)')
