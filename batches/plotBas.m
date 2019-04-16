@@ -11,8 +11,8 @@ function plotBas(bas, filename, figtitle, args)
 	names = [];
 	for i = 1:length(bas)
 		disp(BAString(bas(i), padLen));
-		scores(:, 2*i-1) = (bas(i).Score');
-		scores(:, 2*i) = (bas(i).BaselineScore');
+		scores(:, 2*i-1) = (bas(i).Score'/bas(i).BaselineScore_mean);
+		scores(:, 2*i) = (bas(i).BaselineScore'/bas(i).BaselineScore_mean);
 		names = [names; bas(i).Name; bas(i).Name + " RAND"];
 	end
 
