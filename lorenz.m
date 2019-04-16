@@ -22,8 +22,8 @@ function lorenz()
 	for k = 1:length(thingsToPlot)
 		index = find(measureNames == thingsToPlot{k});
 
-		plotTwo(SP_SOL(:, index), KX_SOL(:, index), {'SP', 'KX'}, colors_SOL, thingsToPlot{k}, sprintf('img/lorenz/SOL-%d.png', index), false);
-		plotTwo(SP_TA(:, index), KX_TA(:, index), {'SP', 'KX'}, colors_TA, thingsToPlot{k}, sprintf('img/lorenz/TA-%d.png', index), false);
+		plotTwo(SP_SOL(:, index), KX_SOL(:, index), {'SP', 'KX'}, colors_SOL, thingsToPlot{k}, sprintf('img/lorenz-SOL-%d.png', index), false);
+		plotTwo(SP_TA(:, index), KX_TA(:, index), {'SP', 'KX'}, colors_TA, thingsToPlot{k}, sprintf('img/lorenz-TA-%d.png', index), false);
 	end
 
 	% Plot SOL vs TA, but only for SP.
@@ -35,7 +35,7 @@ function lorenz()
 			fprintf('Could not plot missing thing %s\n', thingsToPlot{k});
 			continue;
 		end
-		plotTwo(SP_TA(:, index), SP_SOL(:, index), {'TA', 'SOL'}, colors_SP, thingsToPlot{k}, sprintf('img/lorenz/SP-%d.png', index), true);
+		plotTwo(SP_TA(:, index), SP_SOL(:, index), {'TA', 'SOL'}, colors_SP, thingsToPlot{k}, sprintf('img/lorenz-SP-%d.png', index), true);
 	end
 end
 
