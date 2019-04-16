@@ -17,6 +17,7 @@ function plotBas(bas, filename, figtitle, args)
 	end
 
 	if args.plotBoxes
+		figure;
 		plotBoxes(figtitle, filename, scores, 'NVI', names, args);
 	end
 end
