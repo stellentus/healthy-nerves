@@ -26,14 +26,6 @@ function [bas] = getkSeekerBatches(iters, sampleFraction, filepath)
 
 	ba = BatchAnalyzer("3 Normative data", 3, values, labels, 'iters', iters, 'sampleFraction', sampleFraction);
 	bas = [
-		%%%%%%%%%%% Random Data (should be 0) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		BatchAnalyzer("2 Random c", 2, [japValues; porValues], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("2 Random j", 2, [canValues; porValues], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("2 Random p", 2, [japValues; canValues], 'iters', iters, 'sampleFraction', sampleFraction);
-
-		% Confirm that random and perfectly batched data work as expected
-		BatchAnalyzer("3 Random", 3, values, 'iters', iters, 'sampleFraction', sampleFraction);
-
 		%%%%%%%%%%% Different-sized Splits of Normative Data %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 		BatchAnalyzer("2 SplitCanOnly", 2, [can1; can2], [ones(can1Num, 1); repmat(2, can2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);

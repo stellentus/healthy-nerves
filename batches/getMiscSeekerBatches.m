@@ -17,11 +17,6 @@ function [bas] = getMiscSeekerBatches(iters, sampleFraction, filepath)
 		BatchAnalyzer("No Jap", 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
 		BatchAnalyzer("No Por", 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
 
-		% Confirm that random and perfectly batched data work as expected
-		BatchAnalyzer("Random labels", 3, values, 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("Random labels (J+P)", 2, [japValues; porValues], 'iters', iters, 'sampleFraction', sampleFraction);
-		% BatchAnalyzer("Batched data", 3, length(labels), 'iters', iters, 'sampleFraction', sampleFraction); % Instead of passing any data at all, request both arrays to be identical random indices
-
 		% Show larger batches with CP instead of median
 		BatchAnalyzer("Canadian legs", 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 
