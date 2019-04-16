@@ -198,7 +198,7 @@ function batcherFigures(figToPlot)
 		fprintf('\n\nImpact of Deleting Each Feature\n\n');
 
 		bas = [
-			getDeletedFeatureBatches(iters, sampleFraction, filepath, false, struct('toDelete', 1));
+			getDeletedFeatureBatches(iters, sampleFraction, filepath, struct('toDelete', 1));
 		];
 		for i = 1:length(bas)
 			calculateBatch(bas(i));
@@ -209,7 +209,7 @@ function batcherFigures(figToPlot)
 	if strcmp(figToPlot, 'triple-deletion')
 		fprintf('\n\nMost and Least Impactful Triple-Deletions\n\n');
 
-		bas = getDeletedFeatureBatches(iters, sampleFraction, filepath, false, struct('toDelete', 3));
+		bas = getDeletedFeatureBatches(iters, sampleFraction, filepath, struct('toDelete', 3));
 		for i = 1:length(bas)
 			calculateBatch(bas(i));
 		end
@@ -228,7 +228,7 @@ function batcherFigures(figToPlot)
 		bas = [
 			baNorm;
 			BACopyWithValues(baNorm, 'Remove Best 5', values(:, setdiff(1:length(measures), [2, 25, 11, 18, 14])));
-			getDeletedFeatureBatches(iters, sampleFraction, filepath, false, struct('toDelete', 5, 'maxNum', 10));  % Choose 10 combinations of 5 indices at random
+			getDeletedFeatureBatches(iters, sampleFraction, filepath, struct('toDelete', 5, 'maxNum', 10));  % Choose 10 combinations of 5 indices at random
 		];
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
