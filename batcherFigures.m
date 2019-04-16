@@ -33,7 +33,7 @@ function batcherFigures(figToPlot)
 		bas = [
 			baNorm;
 		];
-		plotBas(bas, 'batch-norm-rand', 'Normative Data vs Random Data', struct('LadderLines', true));
+		plotBas(bas, 'batch-norm-rand', 'Normative Data vs Random Data');
 	end
 
 	if plotAll || strcmp(figToPlot, 'country-splits')
