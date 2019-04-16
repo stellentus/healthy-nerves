@@ -14,9 +14,9 @@ function [bas] = getAgeMatchedBatches(iters, sampleFraction, filepath)
 	bas = [ba];
 
 	bas = [bas BatchAnalyzer("Age-matched data", 3, values, labels, 'iters', iters, 'sampleFraction', sampleFraction)];
-	bas = [bas BatchAnalyzer("No Can", 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction)];
-	bas = [bas BatchAnalyzer("No Jap", 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction)];
-	bas = [bas BatchAnalyzer("No Por", 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction)];
+	bas = [bas BatchAnalyzer("No CA", 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction)];
+	bas = [bas BatchAnalyzer("No JA", 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction)];
+	bas = [bas BatchAnalyzer("No PO", 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction)];
 end
 
 function [canAgeValues, japAgeValues, porAgeValues] = matchAges(canValues, japValues, porValues)

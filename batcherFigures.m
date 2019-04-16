@@ -40,7 +40,7 @@ function batcherFigures(figToPlot)
 		fprintf('\n\nImpact of Splitting Within-Group Data\n\n');
 		% The purpose of this plot is to see if within each country the VOI matches the random expectation for groups of those sizes.
 		% In each case, the country's pair should be compared, but I see the second one (with real data) is always higher.
-		% This is probably because k-means is finding uneven group sizes (i.e. for Can not very close to 50-50-50), while the labels are distributed much closer to 50-50-50.
+		% This is probably because k-means is finding uneven group sizes (i.e. for CA not very close to 50-50-50), while the labels are distributed much closer to 50-50-50.
 		% (Note due to 80% sampling, the size is actually 40-40-40, and we expect there to be a bit of random variation from that exact split.)
 		% Portuguese data is more likely to be splitting unevenly, probably because k-means happens to find that some of the participants are clustered closer to one another than others.
 
@@ -65,9 +65,9 @@ function batcherFigures(figToPlot)
 		bas = [
 			baNorm,
 			%%%%%%%%%%% Random Data (should be 0) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			BatchAnalyzer("Three-split Can", 3, [can1; can2; can3], [ones(canSplitNum, 1); repmat(2, canSplitNum, 1); repmat(3, canSplitNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("Three-split Jap", 3, [jap1; jap2; jap3], [ones(japSplitNum, 1); repmat(2, japSplitNum, 1); repmat(3, japSplitNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("Three-split Por", 3, [por1; por2; por3], [ones(porSplitNum, 1); repmat(2, porSplitNum, 1); repmat(3, porSplitNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Three-split CA", 3, [can1; can2; can3], [ones(canSplitNum, 1); repmat(2, canSplitNum, 1); repmat(3, canSplitNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Three-split JA", 3, [jap1; jap2; jap3], [ones(japSplitNum, 1); repmat(2, japSplitNum, 1); repmat(3, japSplitNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Three-split PO", 3, [por1; por2; por3], [ones(porSplitNum, 1); repmat(2, porSplitNum, 1); repmat(3, porSplitNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 		];
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
@@ -79,9 +79,9 @@ function batcherFigures(figToPlot)
 		fprintf('\n\nOne Country vs Two\n\n');
 
 		bas = [
-			BatchAnalyzer("Normative vs Canada", 2, [canValues; japValues; porValues], [ones(canNum, 1); repmat(2, japNum+porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("Normative vs Japan", 2, [japValues; canValues; porValues], [ones(japNum, 1); repmat(2, canNum+porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("Normative vs Portugal", 2, [porValues; canValues; japValues], [ones(porNum, 1); repmat(2, japNum+canNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Normative vs CA", 2, [canValues; japValues; porValues], [ones(canNum, 1); repmat(2, japNum+porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Normative vs JA", 2, [japValues; canValues; porValues], [ones(japNum, 1); repmat(2, canNum+porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Normative vs PO", 2, [porValues; canValues; japValues], [ones(porNum, 1); repmat(2, japNum+canNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 		];
 		for i = 1:length(bas)
 			calculateBatch(bas(i));
@@ -94,7 +94,7 @@ function batcherFigures(figToPlot)
 
 		bas = [
 			baNorm;
-			BatchAnalyzer("Can Arms->Legs", 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("CA Arms->Legs", 3, [legValues; japValues; porValues], [ones(legNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Add Legs", 4, [values; legValues], [labels; repmat(4, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Normative vs Legs", 2, [values; legValues], [repmat(1, length(labels), 1); repmat(2, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 		];
@@ -109,8 +109,8 @@ function batcherFigures(figToPlot)
 
 		bas = [
 			baNorm;
-			BatchAnalyzer("Can->SCI", 3, [sciValues; japValues; porValues], [ones(sciNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("Por->SCI", 3, [canValues; japValues; sciValues], [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, sciNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("CA->SCI", 3, [sciValues; japValues; porValues], [ones(sciNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("PO->SCI", 3, [canValues; japValues; sciValues], [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, sciNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Add SCI", 4, [values; sciValues], [labels; repmat(4, sciNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Normative vs SCI", 2, [values; sciValues], [repmat(1, length(labels), 1); repmat(2, sciNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 		];
@@ -139,8 +139,8 @@ function batcherFigures(figToPlot)
 		fprintf('\n\nComparisons with Rat Data\n\n');
 
 		bas = [
-			BatchAnalyzer("Can->Rat", 3, [ratValues; japValues; porValues], [ones(ratNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("Jap->Rat", 3, [canValues; ratValues; porValues], [ones(canNum, 1); ones(ratNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("CA->Rat", 3, [ratValues; japValues; porValues], [ones(ratNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("JA->Rat", 3, [canValues; ratValues; porValues], [ones(canNum, 1); ones(ratNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Add Rats", 4, [values; ratValues], [labels; repmat(4, ratNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Human vs Rats", 2, [values; ratValues], [repmat(1, length(labels), 1); repmat(2, ratNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 		];
@@ -156,17 +156,17 @@ function batcherFigures(figToPlot)
 		bas = [
 			baNorm;
 
-			BACopyWithValues(baNorm, "Can shift right", [shiftRightRC(canValues); japValues; porValues]);
-			BACopyWithValues(baNorm, "Jap shift right", [canValues; shiftRightRC(japValues); porValues]);
-			BACopyWithValues(baNorm, "Por shift right", [canValues; japValues; shiftRightRC(porValues)]);
+			BACopyWithValues(baNorm, "CA shift right", [shiftRightRC(canValues); japValues; porValues]);
+			BACopyWithValues(baNorm, "JA shift right", [canValues; shiftRightRC(japValues); porValues]);
+			BACopyWithValues(baNorm, "PO shift right", [canValues; japValues; shiftRightRC(porValues)]);
 
-			BACopyWithValues(baNorm, "Can shift left", [shiftLeftRC(canValues); japValues; porValues]);
-			BACopyWithValues(baNorm, "Jap shift left", [canValues; shiftLeftRC(japValues); porValues]);
-			BACopyWithValues(baNorm, "Por shift left", [canValues; japValues; shiftLeftRC(porValues)]);
+			BACopyWithValues(baNorm, "CA shift left", [shiftLeftRC(canValues); japValues; porValues]);
+			BACopyWithValues(baNorm, "JA shift left", [canValues; shiftLeftRC(japValues); porValues]);
+			BACopyWithValues(baNorm, "PO shift left", [canValues; japValues; shiftLeftRC(porValues)]);
 
-			BACopyWithValues(baNorm, "Can shrink", [shrinkRC(canValues); japValues; porValues]);
-			BACopyWithValues(baNorm, "Jap shrink", [canValues; shrinkRC(japValues); porValues]);
-			BACopyWithValues(baNorm, "Por shrink", [canValues; japValues; shrinkRC(porValues)]);
+			BACopyWithValues(baNorm, "CA shrink", [shrinkRC(canValues); japValues; porValues]);
+			BACopyWithValues(baNorm, "JA shrink", [canValues; shrinkRC(japValues); porValues]);
+			BACopyWithValues(baNorm, "PO shrink", [canValues; japValues; shrinkRC(porValues)]);
 		];
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
@@ -180,13 +180,13 @@ function batcherFigures(figToPlot)
 		bas = [
 			baNorm;
 
-			BACopyWithValues(baNorm, "Can increased variance", [scaleVariance(canValues, 2.0); japValues; porValues]);
-			BACopyWithValues(baNorm, "Jap increased variance", [canValues; scaleVariance(japValues, 2.0); porValues]);
-			BACopyWithValues(baNorm, "Por increased variance", [canValues; japValues; scaleVariance(porValues, 2.0)]);
+			BACopyWithValues(baNorm, "CA increased variance", [scaleVariance(canValues, 2.0); japValues; porValues]);
+			BACopyWithValues(baNorm, "JA increased variance", [canValues; scaleVariance(japValues, 2.0); porValues]);
+			BACopyWithValues(baNorm, "PO increased variance", [canValues; japValues; scaleVariance(porValues, 2.0)]);
 
-			BACopyWithValues(baNorm, "Can decreased variance", [scaleVariance(canValues, 0.5); japValues; porValues]);
-			BACopyWithValues(baNorm, "Jap decreased variance", [canValues; scaleVariance(japValues, 0.5); porValues]);
-			BACopyWithValues(baNorm, "Por decreased variance", [canValues; japValues; scaleVariance(porValues, 0.5)]);
+			BACopyWithValues(baNorm, "CA decreased variance", [scaleVariance(canValues, 0.5); japValues; porValues]);
+			BACopyWithValues(baNorm, "JA decreased variance", [canValues; scaleVariance(japValues, 0.5); porValues]);
+			BACopyWithValues(baNorm, "PO decreased variance", [canValues; japValues; scaleVariance(porValues, 0.5)]);
 		];
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
