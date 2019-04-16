@@ -26,39 +26,31 @@ function [bas] = getkSeekerBatches(iters, sampleFraction, filepath)
 
 	ba = BatchAnalyzer("3 Normative data", 3, values, labels, 'iters', iters, 'sampleFraction', sampleFraction);
 	bas = [
-		%%%%%%%%%%% Random Data (should be 0) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		BatchAnalyzer("2 Random c", 2, [japValues; porValues], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("2 Random j", 2, [canValues; porValues], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("2 Random p", 2, [japValues; canValues], 'iters', iters, 'sampleFraction', sampleFraction);
-
-		% Confirm that random and perfectly batched data work as expected
-		BatchAnalyzer("3 Random", 3, values, 'iters', iters, 'sampleFraction', sampleFraction);
-
 		%%%%%%%%%%% Different-sized Splits of Normative Data %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-		BatchAnalyzer("2 SplitCanOnly", 2, [can1; can2], [ones(can1Num, 1); repmat(2, can2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("2 SplitJapOnly", 2, [jap1; jap2], [ones(jap1Num, 1); repmat(2, jap2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("2 SplitPorOnly", 2, [por1; por2], [repmat(1, por1Num, 1); repmat(2, por2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("2 SplitCAOnly", 2, [can1; can2], [ones(can1Num, 1); repmat(2, can2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("2 SplitJPOnly", 2, [jap1; jap2], [ones(jap1Num, 1); repmat(2, jap2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("2 SplitPOOnly", 2, [por1; por2], [repmat(1, por1Num, 1); repmat(2, por2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 
 		% Remove each type to see how things change
-		BatchAnalyzer("2 No Can", 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("2 No Jap", 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("2 No Por", 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("2 No CA", 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("2 No JP", 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("2 No PO", 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
 
 		% Test the normative data
 		ba;
 
-		BatchAnalyzer("3 SplitCan,SubPor", 3, [can1; japValues; can2], [ones(can1Num, 1); ones(japNum, 1) * 2; repmat(3, can2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("3 SplitJap,SubCan", 3, [jap1; porValues; jap2], [ones(jap1Num, 1); repmat(2, porNum, 1); repmat(3, jap2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("3 SplitPor,SubJap", 3, [canValues; por1; por2], [ones(canNum, 1); repmat(2, por1Num, 1); repmat(3, por2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("3 SplitCA,SubPO", 3, [can1; japValues; can2], [ones(can1Num, 1); ones(japNum, 1) * 2; repmat(3, can2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("3 SplitJP,SubCA", 3, [jap1; porValues; jap2], [ones(jap1Num, 1); repmat(2, porNum, 1); repmat(3, jap2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("3 SplitPO,SubJP", 3, [canValues; por1; por2], [ones(canNum, 1); repmat(2, por1Num, 1); repmat(3, por2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 
-		BatchAnalyzer("4 Split Can", 4, [can1; japValues; porValues; can2], [ones(can1Num, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1); repmat(4, can2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("4 Split Jap", 4, [canValues; jap1; porValues; jap2], [ones(canNum, 1); ones(jap1Num, 1) * 2; repmat(3, porNum, 1); repmat(4, jap2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("4 Split Por", 4, [canValues; japValues; por1; por2], [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, por1Num, 1); repmat(4, por2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("4 Split CA", 4, [can1; japValues; porValues; can2], [ones(can1Num, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1); repmat(4, can2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("4 Split JP", 4, [canValues; jap1; porValues; jap2], [ones(canNum, 1); ones(jap1Num, 1) * 2; repmat(3, porNum, 1); repmat(4, jap2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("4 Split PO", 4, [canValues; japValues; por1; por2], [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, por1Num, 1); repmat(4, por2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 
-		BatchAnalyzer("5 Split CanJap", 5, [can1; jap1; porValues; can2; jap2], [ones(can1Num, 1); ones(jap1Num, 1) * 2; repmat(3, porNum, 1); repmat(4, can2Num, 1); repmat(5, jap2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("5 Split JapPor", 5, [canValues; jap1; por1; jap2; por2], [ones(canNum, 1); ones(jap1Num, 1) * 2; repmat(3, por1Num, 1); repmat(4, jap2Num, 1); repmat(5, por2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("5 Split PorCan", 5, [can1; japValues; por1; can2; por2], [ones(can1Num, 1); ones(japNum, 1) * 2; repmat(3, por1Num, 1); repmat(4, can2Num, 1); repmat(5, por2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("5 Split CA,JP", 5, [can1; jap1; porValues; can2; jap2], [ones(can1Num, 1); ones(jap1Num, 1) * 2; repmat(3, porNum, 1); repmat(4, can2Num, 1); repmat(5, jap2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("5 Split JP,PO", 5, [canValues; jap1; por1; jap2; por2], [ones(canNum, 1); ones(jap1Num, 1) * 2; repmat(3, por1Num, 1); repmat(4, jap2Num, 1); repmat(5, por2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("5 Split PO,CA", 5, [can1; japValues; por1; can2; por2], [ones(can1Num, 1); ones(japNum, 1) * 2; repmat(3, por1Num, 1); repmat(4, can2Num, 1); repmat(5, por2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 
 		BatchAnalyzer("6 Split All", 6, [can1; jap1; por1; can2; jap2; por2], [ones(can1Num, 1); ones(jap1Num, 1) * 2; repmat(3, por1Num, 1); repmat(4, can2Num, 1); repmat(5, jap2Num, 1); repmat(6, por2Num, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 
@@ -70,13 +62,13 @@ function [bas] = getkSeekerBatches(iters, sampleFraction, filepath)
 		% Show larger batches with CP instead of median
 		BatchAnalyzer("4 Add legs", 4, [canValues; japValues; porValues; legValues], [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1); repmat(4, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 
-		BatchAnalyzer("5 Leg+Split Can", 5, [can1; japValues; porValues; can2; legValues], [ones(can1Num, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1); repmat(4, can2Num, 1); repmat(5, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("5 Leg+Split Jap", 5, [canValues; jap1; porValues; jap2; legValues], [ones(canNum, 1); ones(jap1Num, 1) * 2; repmat(3, porNum, 1); repmat(4, jap2Num, 1); repmat(5, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("5 Leg+Split Por", 5, [canValues; japValues; por1; por2; legValues], [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, por1Num, 1); repmat(4, por2Num, 1); repmat(5, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("5 Leg+Split CA", 5, [can1; japValues; porValues; can2; legValues], [ones(can1Num, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1); repmat(4, can2Num, 1); repmat(5, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("5 Leg+Split JP", 5, [canValues; jap1; porValues; jap2; legValues], [ones(canNum, 1); ones(jap1Num, 1) * 2; repmat(3, porNum, 1); repmat(4, jap2Num, 1); repmat(5, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("5 Leg+Split PO", 5, [canValues; japValues; por1; por2; legValues], [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, por1Num, 1); repmat(4, por2Num, 1); repmat(5, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 
-		BatchAnalyzer("6 Leg+Split CanJap", 6, [can1; jap1; porValues; can2; jap2; legValues], [ones(can1Num, 1); ones(jap1Num, 1) * 2; repmat(3, porNum, 1); repmat(4, can2Num, 1); repmat(5, jap2Num, 1); repmat(6, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("6 Leg+Split JapPor", 6, [canValues; jap1; por1; jap2; por2; legValues], [ones(canNum, 1); ones(jap1Num, 1) * 2; repmat(3, por1Num, 1); repmat(4, jap2Num, 1); repmat(5, por2Num, 1); repmat(6, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-		BatchAnalyzer("6 Leg+Split PorCan", 6, [can1; japValues; por1; can2; por2; legValues], [ones(can1Num, 1); ones(japNum, 1) * 2; repmat(3, por1Num, 1); repmat(4, can2Num, 1); repmat(5, por2Num, 1); repmat(6, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("6 Leg+Split CA,JP", 6, [can1; jap1; porValues; can2; jap2; legValues], [ones(can1Num, 1); ones(jap1Num, 1) * 2; repmat(3, porNum, 1); repmat(4, can2Num, 1); repmat(5, jap2Num, 1); repmat(6, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("6 Leg+Split JP,PO", 6, [canValues; jap1; por1; jap2; por2; legValues], [ones(canNum, 1); ones(jap1Num, 1) * 2; repmat(3, por1Num, 1); repmat(4, jap2Num, 1); repmat(5, por2Num, 1); repmat(6, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		BatchAnalyzer("6 Leg+Split PO,CA", 6, [can1; japValues; por1; can2; por2; legValues], [ones(can1Num, 1); ones(japNum, 1) * 2; repmat(3, por1Num, 1); repmat(4, can2Num, 1); repmat(5, por2Num, 1); repmat(6, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 
 		BatchAnalyzer("7 Leg+Split All", 7, [can1; jap1; por1; can2; jap2; por2; legValues], [ones(can1Num, 1); ones(jap1Num, 1) * 2; repmat(3, por1Num, 1); repmat(4, can2Num, 1); repmat(5, jap2Num, 1); repmat(6, por2Num, 1); repmat(7, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 	];

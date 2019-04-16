@@ -4,7 +4,7 @@
 function [bas] = getDeletedFeatureBatches(iters, sampleFraction, filepath, arg)
 	load(filepath);
 
-	if nargin < 5
+	if nargin < 4
 		arg = struct();
 	end
 	if ~isfield(arg, 'toDelete')

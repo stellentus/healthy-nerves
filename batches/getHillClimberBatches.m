@@ -145,10 +145,10 @@ function printWeights(weight, sig)
 	if nargin < 2
 		sig = 3;
 	end
-	printWeight("JAP ST", weight(1,:), sig);
-	printWeight("JAP MN", weight(2,:), sig);
-	printWeight("POR ST", weight(3,:), sig);
-	printWeight("POR MN", weight(4,:), sig);
+	printWeight("JA ST", weight(1,:), sig);
+	printWeight("JA MN", weight(2,:), sig);
+	printWeight("PO ST", weight(3,:), sig);
+	printWeight("PO MN", weight(4,:), sig);
 end
 
 function printWeight(str, wt, sig)

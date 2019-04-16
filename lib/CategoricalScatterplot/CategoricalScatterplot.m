@@ -81,6 +81,7 @@ addParameter(p, 'WhiskerLineStyle', '--', ...
 addParameter(p, 'BoxLineWidth', 1.0, @(x) isnumeric(x));
 addParameter(p, 'MedianLineWidth', 1.0, @(x) isnumeric(x));
 addParameter(p, 'WhiskerLineWidth', 1.0, @(x) isnumeric(x));
+addParameter(p, 'LadderLines', false, @(x) islogical(x));
 % Parse inputs and unpack structure
 parse(p, X, varargin{:});
 parsed = p.Results;
@@ -202,10 +203,17 @@ for i = 1:length(groups)
         end
     else
         if (ischar(parsed.Color)||size(parsed.Color,1))
-            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color, 'filled');
+            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color);
         else
-            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color(i,:), 'filled');
+            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color(i,:));
         end
+    end
+
+    % Draw ladder lines, if necessary
+    if parsed.LadderLines && mod(i,2)==0
+        ladderColor = parsed.Color;
+        ladderColor(4) = 0.2;
+        plot([new_data{i-1,2}'; new_data{i,2}'], [new_data{i-1,1}'; new_data{i,1}'], 'Color', ladderColor);
     end
 
     % Draw median

@@ -2,50 +2,43 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 	properties
 		Name
 		Iters
+		BaselineIters
 		Seed
 		ClusterFunc
 		NumGroups
 		Values
 		ZMUVValues
-		UseRandomIndices
 		SampleFraction
 		Labels
-		FixedLabels
-		ScoreName
-		ScoreFunc
 		Score
 		Score_mean
 		Score_std
+		AllBaselineScores
+		BaselineScore
+		BaselineScore_mean
+		BaselineScore_std
+		Homogeneity
+		Homogeneity_mean
+		Homogeneity_std
+		PValue
 	end
 	methods
-		function obj = BatchAnalyzer(name, numGroups, values, varargin)
+		function obj = BatchAnalyzer(name, numGroups, values, labels, varargin)
 			p = inputParser;
 			addRequired(p, 'name', @(x) isstring(x) || ischar(x));
 			addRequired(p, 'numGroups', @isnumeric);
-			addOptional(p, 'values', @ismatrix);
-			addOptional(p, 'labels', [], @(x) isinteger(x) || isnumeric(x));
+			addRequired(p, 'values', @ismatrix);
+			addRequired(p, 'labels', @(x) isinteger(x) || isnumeric(x));
 			addParameter(p, 'iters', 30, @isnumeric);
-			addParameter(p, 'sampleFraction', 1, @isnumeric);
+			addParameter(p, 'baselineIters', 100, @isnumeric);
+			addParameter(p, 'sampleFraction', 0.8, @isnumeric);
 			addParameter(p, 'clusterFunc', @linkageCluster);
 			addParameter(p, 'seed', 7738, @isnumeric);
-			addParameter(p, 'score', "BVI", @(x) any(validatestring(x, {'CRI', 'NMI', 'HEL', 'VOI', 'BVI'})));
-			parse(p, name, numGroups, values, varargin{:});
+			parse(p, name, numGroups, values, labels, varargin{:});
 
-			if length(numGroups) > 1
-				% If numGroups is an array, it's actually the group sizes. 'values' and 'labels' should not have been passsed in.
-				obj.NumGroups = length(numGroups);
-				setValues(obj, sum(numGroups));
-				obj.Labels = [];
-				for i=1:obj.NumGroups
-					obj.Labels = [obj.Labels; repmat(i, numGroups(i), 1)];
-				end
-				obj.FixedLabels = true;
-			else
-				obj.NumGroups = p.Results.numGroups;
-				setValues(obj, p.Results.values);
-				obj.Labels = p.Results.labels;
-				obj.FixedLabels = (length(obj.Labels) > 0);
-			end
+			obj.NumGroups = p.Results.numGroups;
+			setValues(obj, p.Results.values);
+			obj.Labels = p.Results.labels;
 
 			obj.Name = p.Results.name;
 			obj.Iters = p.Results.iters;
@@ -53,32 +46,22 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			obj.ClusterFunc = p.Results.clusterFunc;
 			obj.Seed = p.Results.seed;
 
-			obj.ScoreName = p.Results.score;
-			switch p.Results.score
-				case 'CRI'
-					obj.ScoreFunc = @calc_cri;
-				case 'NMI'
-					obj.ScoreFunc = @calc_nmi;
-				case 'HEL'
-					obj.ScoreFunc = @calc_hell;
-				case 'VOI'
-					obj.ScoreFunc = @calc_voi;
-				case 'BVI'
-					obj.ScoreFunc = @calc_bvi;
-			end
-
 			obj.SampleFraction = p.Results.sampleFraction;
+			obj.BaselineIters = p.Results.baselineIters;
 		end
 		function obj = setValues(obj, values)
 			obj.Values = values;
-			obj.UseRandomIndices = (numel(values) == 1);
-			if ~obj.UseRandomIndices
-				% Zero mean unit variance
-				obj.ZMUVValues = bsxfun(@rdivide, values - mean(values), std(values));
-			end
+
+			% Zero mean unit variance
+			obj.ZMUVValues = bsxfun(@rdivide, values - mean(values), std(values));
 
 			% Clear array values
 			obj.Score = [];
+			obj.Homogeneity = [];
+			obj.BaselineScore = [];
+			obj.AllBaselineScores = [];
+
+			obj.PValue = 0; % Initialize to impossible 0.
 		end
 		function ba = BACopyWithValues(obj, name, values)
 			ba = copy(obj);
@@ -92,16 +75,14 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 
 			% Clear old array values
 			obj.Score = [];
+			obj.AllBaselineScores = zeros(obj.Iters, obj.BaselineIters);
 
 			addpath lib/rand_index;
 			addpath lib/info_entropy;
 			addpath lib;
 			for i=1:obj.Iters
-				if obj.UseRandomIndices
-					numValues = obj.Values;
-				else
-					numValues = size(obj.Values, 1);
-				end
+				numValues = size(obj.Values, 1);
+
 				if obj.SampleFraction < 1
 					len = round(obj.SampleFraction * numValues);
 					indices = randi(numValues, 1, len); % Sample with replacement
@@ -110,24 +91,17 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 				end
 
 				% Create the clustered groups
-				if obj.UseRandomIndices
-					idx = randi([1 obj.NumGroups], 1, len);
-					if obj.FixedLabels
-						thisIterLabels = obj.Labels(indices);
-					else
-						thisIterLabels = idx;
-					end
-				else
-					idx = obj.ClusterFunc(obj.ZMUVValues(indices, :), obj.NumGroups);
-					if obj.FixedLabels
-						thisIterLabels = obj.Labels(indices);
-					else
-						thisIterLabels = randi([1 obj.NumGroups], 1, len);
-					end
-				end
+				idx = obj.ClusterFunc(obj.ZMUVValues(indices, :), obj.NumGroups);
+				thisIterLabels = obj.Labels(indices);
 
 				% Calculate and append the batch effect score.
-				obj.Score = [obj.Score obj.ScoreFunc(obj, thisIterLabels, idx, indices)];
+				obj.Score = [obj.Score voi(thisIterLabels, idx)];
+
+				% Calculate a lot of different possible scores that could come from the same group sizes.
+				for j=1:obj.BaselineIters
+					shuffled = idx(randperm(length(idx)));
+					obj.AllBaselineScores(i, j) = voi(thisIterLabels, shuffled);
+				end
 			end
 			rmpath lib/rand_index;
 			rmpath lib/info_entropy;
@@ -135,54 +109,30 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 
 			obj.Score_mean = mean(obj.Score);
 			obj.Score_std = std(obj.Score);
+
+			obj.BaselineScore = mean(obj.AllBaselineScores, 2)'; % The mean for each iteration.
+			obj.BaselineScore_mean = mean(obj.AllBaselineScores(:));
+			obj.BaselineScore_std = std(obj.AllBaselineScores(:));
+
+			obj.Homogeneity = obj.Score ./ obj.BaselineScore;
+			obj.Homogeneity_mean = mean(obj.Homogeneity);
+			obj.Homogeneity_std = std(obj.Homogeneity);  % TODO This isn't making use of the variance in obj.BaselineScore_std
+
+			[~, obj.PValue] = ttest2(obj.Score, obj.BaselineScore);
 		end
 		function str = BAString(obj, padLen)
 			if nargin < 2
 				padLen = 0;
 			end
 
-			formatStr = '%s , % .3f , %.3f ';
-			str = sprintf(formatStr, pad(obj.Name, padLen), obj.Score_mean, obj.Score_std);
-		end
-		function hd = hell(obj, vals, labels)
-			if obj.UseRandomIndices || ~obj.FixedLabels
-				hd = 0;
-				return;
-			end
-			labelList = unique(labels);
-			numLabels = length(labelList);
-
-			x = vals(labels == labelList(1), :);
-			if numLabels > 1
-				y = vals(labels == labelList(2), :);
-				if numLabels > 2
-					z = vals(labels == labelList(3), :);
-					if numLabels > 3
-						warning("HELL is only valid for up to 3 labels");
-					else
-						hd = hellingerFromMatrixSimple(x, y, z);
-					end
-				else
-					hd = hellingerFromMatrixSimple(x, y);
-				end
+			if obj.PValue < 0.001
+				pStr = sprintf('%.0e', obj.PValue);
 			else
-				warning("HELL doesn't make sense for just 1 label");
+				pStr = sprintf('%.4f', obj.PValue);
 			end
-		end
-		function score = calc_nmi(obj, x, y, ind)
-			score = nmi(x, y);
-		end
-		function score = calc_cri(obj, x, y, ind)
-			score = rand_index(x, y, 'adjusted');
-		end
-		function score = calc_voi(obj, x, y, ind)
-			score = voi(x, y);
-		end
-		function score = calc_bvi(obj, x, y, ind)
-			score = bvi(x, y, obj.NumGroups);
-		end
-		function score = calc_hell(obj, x, y, ind)
-			score = hell(obj, obj.Values(ind, :), x);
+
+			formatStr = '%s , % .3f , %.3f , % .3f , %.3f , %3.0f%%  , %s ';
+			str = sprintf(formatStr, pad(obj.Name, padLen), obj.Score_mean, obj.Score_std, obj.BaselineScore_mean, obj.BaselineScore_std, obj.Homogeneity_mean*100, pStr);
 		end
 	end
 end
