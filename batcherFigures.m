@@ -236,8 +236,6 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'batch-quintuple-deletion', 'Assorted Quintuple-Deletions');
 	end
 
-	rmpath batches;
-
 	if strcmp(figToPlot, 'age-batches')
 		fprintf('\n\nAge Batches\n\n');
 

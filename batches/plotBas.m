@@ -70,7 +70,13 @@ function plotBoxes(titleLabel, filename, scores, scoreName, testNames)
 	CategoricalScatterplot(scores, testNames, 'MarkerSize', 50, 'BoxAlpha', .29, 'LadderLines', true);
 	title(titleLabel);
 	ylabel(scoreName);
-	xtickangle(45)
+
+	ax = gca;
+    labels = string(ax.XAxis.TickLabels);
+    labels(2:2:end) = nan; % ensure every other one is unset
+    names = labels(1:2:end-1);
+    labels(1:2:end-1) = [strcat(repmat("                 ", size(names,1), 1), names)]; % set the others (with extra spaces in front)
+    ax.XAxis.TickLabels = labels;
 
 	rmpath lib/CategoricalScatterplot
 end

@@ -118,7 +118,7 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			obj.Homogeneity_mean = mean(obj.Homogeneity);
 			obj.Homogeneity_std = std(obj.Homogeneity);  % TODO This isn't making use of the variance in obj.BaselineScore_std
 
-			[~, obj.PValue] = ttest2(obj.Score, obj.BaselineScore);
+			obj.PValue = signrank(obj.Score, obj.BaselineScore);
 		end
 		function str = BAString(obj, padLen)
 			if nargin < 2
