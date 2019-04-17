@@ -1,4 +1,4 @@
-function [names] = canonicalNamesNoTE20(removeTE20)
+function [names] = canonicalNamesNoTE20()
 	names = [
 		"Stimulus (mA) for 50% max response",   % 1
 		"Strength-duration time constant (ms)", % 2
