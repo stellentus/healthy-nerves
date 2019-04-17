@@ -42,7 +42,7 @@ end
 function plotTwo(data1, data2, labels, colors, titlename, filename, paired)
 	figure('rend', 'painters', 'pos', [10 10 450 600]);
 	addpath lib/CategoricalScatterplot;
-	CategoricalScatterplot(padcat(data1, data2), labels, 'MarkerSize', 132, 'LadderLines', paired);
+	CategoricalScatterplot(padcat(data1, data2), labels, colors, 'MarkerSize', 132, 'LadderLines', paired);
 	rmpath lib/CategoricalScatterplot;
 	set(gca,'FontSize', 32);
 	set(gca,'FontWeight','bold');
