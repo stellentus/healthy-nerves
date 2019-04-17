@@ -25,7 +25,7 @@ function batcherFigures(figToPlot)
 
 	% Calculate for the normative data, since this is used repeatedly for comparison.
 	baNorm = BatchAnalyzer("Normative Data", 3, values, labels, 'iters', iters, 'sampleFraction', sampleFraction);
-	calculateBatch(baNorm)
+	calculateBatch(baNorm);
 
 	if plotAll || strcmp(figToPlot, 'norm-rand')
 		fprintf('\n\nNormative Data vs Random Data\n\n');
