@@ -10,7 +10,7 @@ function [ageLabels, values] = makeAgeBatches(values, ageThresholds)
 	lastAge = 1;
 	for i = 1:length(ageThresholds)
 		labelForAge(lastAge:ageThresholds(i)) = i;
-		lastAge = ageThresholds(i);
+		lastAge = ageThresholds(i)+1;
 	end
 
 	ageLabels = labelForAge(ages);
