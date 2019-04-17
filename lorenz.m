@@ -35,7 +35,7 @@ function lorenz()
 			fprintf('Could not plot missing thing %s\n', thingsToPlot{k});
 			continue;
 		end
-		plotTwo(SP_TA(:, index), SP_SOL(:, index), {'TA', 'SOL'}, colors_SP, thingsToPlot{k}, sprintf('img/lorenz/SP-%d.png', index), true);
+		plotTwo(SP_TA(:, index), SP_SOL(:, index), {'TA', 'SOL'}, colors_SP, thingsToPlot{k}, sprintf('img/lorenz/SP-%d.png', index), false);
 	end
 end
 
