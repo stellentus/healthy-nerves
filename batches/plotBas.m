@@ -17,7 +17,6 @@ function plotBas(bas, filename, figtitle, args)
 	end
 
 	if args.plotBoxes
-		figure;
 		plotBoxes(figtitle, filename, scores, 'NVI', names);
 		yl = ylim;
 		if yl(1) > 0
@@ -67,6 +66,10 @@ end
 function plotBoxes(titleLabel, filename, scores, scoreName, testNames)
 	addpath lib/CategoricalScatterplot
 
+	pathstr = sprintf('img/batch/%s-%d-%d-%d-%d%d%2.0f', filename, clock);
+
+	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
+
 	CategoricalScatterplot(scores, testNames, 'MarkerSize', 50, 'BoxAlpha', .29, 'LadderLines', true);
 	title(titleLabel);
 	ylabel(scoreName);
@@ -77,6 +80,11 @@ function plotBoxes(titleLabel, filename, scores, scoreName, testNames)
     names = labels(1:2:end-1);
     labels(1:2:end-1) = [strcat(repmat("                 ", size(names,1), 1), names)]; % set the others (with extra spaces in front)
     ax.XAxis.TickLabels = labels;
+
+	savefig(fig, strcat(pathstr, '.fig', 'compact'));
+	saveas(fig, strcat(pathstr, '.png'));
+	copyfile(strcat(pathstr, '.png'), strcat('img/batch/', filename, '.png')); % Also save without timestamp
+
 
 	rmpath lib/CategoricalScatterplot
 end

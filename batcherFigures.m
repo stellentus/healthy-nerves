@@ -33,7 +33,7 @@ function batcherFigures(figToPlot)
 		bas = [
 			baNorm;
 		];
-		plotBas(bas, 'batch-norm-rand', 'Normative Data vs Random Data');
+		plotBas(bas, 'norm-rand', 'Normative Data vs Random Data');
 	end
 
 	if plotAll || strcmp(figToPlot, 'country-splits')
@@ -72,7 +72,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'batch-country-splits', 'Impact of Splitting Within-Group Data');
+		plotBas(bas, 'country-splits', 'Impact of Splitting Within-Group Data');
 	end
 
 	if plotAll || strcmp(figToPlot, 'vs-countries')
@@ -86,7 +86,7 @@ function batcherFigures(figToPlot)
 		for i = 1:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'batch-vs-countries', 'One Country vs Two');
+		plotBas(bas, 'vs-countries', 'One Country vs Two');
 	end
 
 	if plotAll || strcmp(figToPlot, 'vs-legs')
@@ -101,7 +101,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'batch-vs-legs', 'Comparisons with Leg Data');
+		plotBas(bas, 'vs-legs', 'Comparisons with Leg Data');
 	end
 
 	if strcmp(figToPlot, 'vs-sci')
@@ -117,7 +117,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'batch-vs-sci', 'Comparisons with SCI Data');
+		plotBas(bas, 'vs-sci', 'Comparisons with SCI Data');
 	end
 
 	if strcmp(figToPlot, 'within-rats')
@@ -132,7 +132,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'batch-within-rats', 'Comparisons with Non-Normative Data');
+		plotBas(bas, 'within-rats', 'Comparisons with Non-Normative Data');
 	end
 
 	if plotAll || strcmp(figToPlot, 'vs-rats')
@@ -147,7 +147,7 @@ function batcherFigures(figToPlot)
 		for i = 1:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'batch-vs-rats', 'Comparisons with Rat Data');
+		plotBas(bas, 'vs-rats', 'Comparisons with Rat Data');
 	end
 
 	if plotAll || strcmp(figToPlot, 'rc')
@@ -171,7 +171,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'batch-rc', 'Adjusting Recovery Cycle (RC)');
+		plotBas(bas, 'rc', 'Adjusting Recovery Cycle (RC)');
 	end
 
 	if strcmp(figToPlot, 'variance')
@@ -191,7 +191,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'batch-variance', 'Adjusting Variance');
+		plotBas(bas, 'variance', 'Adjusting Variance');
 	end
 
 	if strcmp(figToPlot, 'delete-features')
@@ -203,7 +203,7 @@ function batcherFigures(figToPlot)
 		for i = 1:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(sortByMean(bas), 'batch-delete-features', 'Impact of Deleting Each Feature');
+		plotBas(sortByMean(bas), 'delete-features', 'Impact of Deleting Each Feature');
 	end
 
 	if strcmp(figToPlot, 'triple-deletion')
@@ -219,7 +219,7 @@ function batcherFigures(figToPlot)
 			baNorm;
 			bas(end-9:end);
 		];
-		plotBas(bas, 'batch-triple-deletion', 'Most and Least Impactful Triple-Deletions');
+		plotBas(bas, 'triple-deletion', 'Most and Least Impactful Triple-Deletions');
 	end
 
 	if strcmp(figToPlot, 'quintuple-deletion')
@@ -233,7 +233,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'batch-quintuple-deletion', 'Assorted Quintuple-Deletions');
+		plotBas(bas, 'quintuple-deletion', 'Assorted Quintuple-Deletions');
 	end
 
 	if strcmp(figToPlot, 'age-batches')
@@ -249,7 +249,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'batch-age-batches', 'Age Batches');
+		plotBas(bas, 'age-batches', 'Age Batches');
 	end
 
 	rmpath batches;
