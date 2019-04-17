@@ -75,7 +75,7 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'country-splits', 'Impact of Splitting Within-Group Data');
 	end
 
-	if plotAll || strcmp(figToPlot, 'vs-countries')
+	if strcmp(figToPlot, 'vs-countries')
 		fprintf('\n\nOne Country vs Two\n\n');
 
 		bas = [
