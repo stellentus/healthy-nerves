@@ -81,6 +81,7 @@ addParameter(p, 'BoxLineWidth', 1.0, @(x) isnumeric(x));
 addParameter(p, 'MedianLineWidth', 1.0, @(x) isnumeric(x));
 addParameter(p, 'WhiskerLineWidth', 1.0, @(x) isnumeric(x));
 addParameter(p, 'LadderLines', false, @(x) islogical(x));
+addParameter(p, 'IgnoreOddLabels', false, @(x) islogical(x));
 % Parse inputs and unpack structure
 parse(p, X, varargin{:});
 parsed = p.Results;
@@ -273,6 +274,14 @@ ax.XTick = 1:length(groups);
 if (~islogical(parsed.Labels) || parsed.Labels)
     group_names = parsed.Labels;
 end
-ax.XTickLabel = group_names;
+
+if parsed.IgnoreOddLabels
+    labels = string(ax.XAxis.TickLabels);
+    labels(2:2:end) = nan; % ensure every other one is unset
+    labels(1:2:end-1) = [strcat(repmat("                 ", size(group_names,1), 1), group_names)]; % set the others (with extra spaces in front)
+    ax.XAxis.TickLabels = labels;
+else
+    ax.XTickLabel = group_names;
+end
 
 end
