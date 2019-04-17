@@ -13,7 +13,7 @@ function plotBas(bas, filename, figtitle, args)
 		disp(BAString(bas(i), padLen));
 		scores(:, 2*i-1) = (bas(i).Score'/bas(i).BaselineScore_mean);
 		scores(:, 2*i) = (bas(i).BaselineScore'/bas(i).BaselineScore_mean);
-		names = [names; bas(i).Name];
+		names = [names; bas(i).Name; bas(i).Name + " RAND"];
 	end
 
 	if args.plotBoxes
@@ -67,9 +67,16 @@ end
 function plotBoxes(titleLabel, filename, scores, scoreName, testNames)
 	addpath lib/CategoricalScatterplot
 
-	CategoricalScatterplot(scores, testNames, 'MarkerSize', 50, 'BoxAlpha', .29, 'LadderLines', true, 'IgnoreOddLabels', true);
+	CategoricalScatterplot(scores, testNames, 'MarkerSize', 50, 'BoxAlpha', .29, 'LadderLines', true);
 	title(titleLabel);
 	ylabel(scoreName);
+
+	ax = gca;
+    labels = string(ax.XAxis.TickLabels);
+    labels(2:2:end) = nan; % ensure every other one is unset
+    names = labels(1:2:end-1);
+    labels(1:2:end-1) = [strcat(repmat("                 ", size(names,1), 1), names)]; % set the others (with extra spaces in front)
+    ax.XAxis.TickLabels = labels;
 
 	rmpath lib/CategoricalScatterplot
 end
