@@ -35,14 +35,15 @@ function lorenz()
 			fprintf('Could not plot missing thing %s\n', thingsToPlot{k});
 			continue;
 		end
-		plotTwo(SP_TA(:, index), SP_SOL(:, index), {'TA', 'SOL'}, colors_SP, thingsToPlot{k}, sprintf('img/lorenz/SP-%d.png', index), true);
+		plotTwo(SP_TA(:, index), SP_SOL(:, index), {'TA', 'SOL'}, colors_SP, thingsToPlot{k}, sprintf('img/lorenz/SP-%d.png', index), false);
 	end
 end
 
 function plotTwo(data1, data2, labels, colors, titlename, filename, paired)
 	figure('rend', 'painters', 'pos', [10 10 450 600]);
-	UnivarScatter(padcat(data1, data2), 'Label', labels, 'MarkerEdgeColor', colors, 'MarkerFaceColor', colors, 'PointSize', 132, 'WhiskWidthRatio', 1.3);
-	set(gca,'box','off');
+	addpath lib/CategoricalScatterplot;
+	CategoricalScatterplot(padcat(data1, data2), labels, colors, 'MarkerSize', 132, 'LadderLines', paired, 'MedianColor', 'k');
+	rmpath lib/CategoricalScatterplot;
 	set(gca,'FontSize', 32);
 	set(gca,'FontWeight','bold');
 	if strcmp(titlename, 'Superexcitability at 5 ms (%)')
@@ -51,18 +52,6 @@ function plotTwo(data1, data2, labels, colors, titlename, filename, paired)
 		title(titlename, 'FontSize', 32);
 	end
 	xlim([.5, 2.5]);
-
-	if paired
-		[h, p] = ttest(data1, data2);
-	else
-		[h, p] = ttest2(data1, data2);
-	end
-
-	if h
-		text(0.5, 0.9, '*', 'Units', 'normalized', 'FontSize', 64, 'HorizontalAlignment', 'center');
-	else
-		text(0.5, 0.9, 'n.s.', 'Units', 'normalized', 'FontSize', 26, 'HorizontalAlignment', 'center');
-	end
 
 	saveTightFigure(gcf, filename);
 	close;

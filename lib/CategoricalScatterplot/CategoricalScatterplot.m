@@ -49,8 +49,7 @@ p = inputParser;
 % Main arguments
 addRequired(p, 'X', @(X) ismatrix(X));
 addOptional(p, 'Group', [], @(X) ismatrix(X) || iscellstr(X) || ischar(X));
-% Group = [];
-Color = [0.03529411764705882353, 0.38039215686274509804, 0.2];
+addOptional(p, 'Color', [0 0 0], @(x) all(size(x) == size(X)) || all([size(X,2),3] == size(x)) || all(size(x) == [1, 3]));
 addOptional(p, 'Labels', false, @(X) iscellstr(X));
 
 % Scatter parameters
@@ -86,7 +85,17 @@ addParameter(p, 'LadderLines', false, @(x) islogical(x));
 parse(p, X, varargin{:});
 parsed = p.Results;
 Group = parsed.Group;
-parsed.Color = Color;
+
+% Handle color input
+if all(size(parsed.Color)==[1,3])
+    if isempty(Group)
+        Color = repmat({parsed.Color}, size(X,1), size(X,2));
+    else
+        Color = repmat(parsed.Color, length(X), 1);
+    end
+else
+    Color = parsed.Color;
+end
 
 if (size(X,2) == 1) || (size(X,1) == 1)
     %% Convert the groups into a cell array
@@ -196,13 +205,13 @@ for i = 1:length(groups)
 
     % Draw points
     if parsed.FillMarker
-        if (ischar(parsed.Color)||size(parsed.Color,1))
+        if (ischar(parsed.Color)||size(parsed.Color,1)==1)
             scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color, 'filled');
         else
             scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color(i,:), 'filled');
         end
     else
-        if (ischar(parsed.Color)||size(parsed.Color,1))
+        if (ischar(parsed.Color)||size(parsed.Color,1)==1)
             scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color);
         else
             scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color(i,:));
