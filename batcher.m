@@ -26,11 +26,7 @@ function bas = batcher(varargin)
 			bas = []; % Not used
 			return;
 		case "age"
-			args = p.Results.args;
-			if ~isfield(args, 'index')
-				args.index = 14; % Age
-			end
-			bas = getIndexMatchedBatches(p.Results.iter, sampleFraction, p.Results.file, args.index);
+			bas = getAgeMatchedBatches(p.Results.iter, sampleFraction, p.Results.file);
 		case "misc"
 			bas = getMiscSeekerBatches(p.Results.iter, sampleFraction, p.Results.file);
 		case "var"
