@@ -270,10 +270,9 @@ end
 
 ax = gca;
 ax.XTick = 1:length(groups);
-if (islogical(parsed.Labels) && ~parsed.Labels)
-    ax.XTickLabel = group_names;
-else
-    ax.XTickLabel = parsed.Labels;
+if (~islogical(parsed.Labels) || parsed.Labels)
+    group_names = parsed.Labels;
 end
+ax.XTickLabel = group_names;
 
 end
