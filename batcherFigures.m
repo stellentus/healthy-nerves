@@ -104,6 +104,20 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'vs-legs', 'Comparisons with Leg Data');
 	end
 
+	if plotAll || strcmp(figToPlot, 'two-countries')
+		fprintf('\n\nComparisons Between Two Countries\n\n');
+
+		bas = [
+			BatchAnalyzer("JA and PO", 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("CA and PO", 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("CA and JA", 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
+		];
+		for i = 1:length(bas)
+			calculateBatch(bas(i));
+		end
+		plotBas(bas, 'two-countries', 'Comparisons Between Two Countries');
+	end
+
 	if strcmp(figToPlot, 'vs-sci')
 		fprintf('\n\nComparisons with SCI Data\n\n');
 
