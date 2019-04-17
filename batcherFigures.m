@@ -36,6 +36,42 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'norm-rand', 'Normative Data vs Random Data');
 	end
 
+	% Find the excitability variables that most strongly contribute to the clustering algorithm. The ones that batch a lot are batching because the clustering is very dependent on them, so they're correlated with clustering.
+	if strcmp(figToPlot, 'cluster-contributers')
+		addpath import;
+		names = canonicalNamesNoTE20();
+
+		fprintf('\n\nTesting Cluster Contributions 1:10\n\n');
+
+		bas = [];
+		for i=1:10
+			ba = baForSplit([canValues; japValues; porValues], 3, i, names, iters, sampleFraction);
+			calculateBatch(ba);
+			bas = [bas; ba];
+		end
+		plotBas([baNorm; bas], 'cluster-contributers-01-10', 'Testing Cluster Contributions 10');
+
+		fprintf('\n\nTesting Cluster Contributions 11:20\n\n');
+
+		bas = [];
+		for i=11:20
+			ba = baForSplit([canValues; japValues; porValues], 3, i, names, iters, sampleFraction)
+			calculateBatch(ba);
+			bas = [bas; ba];
+		end
+		plotBas([baNorm; bas], 'cluster-contributers-11-20', 'Testing Cluster Contributions 11:20');
+
+		fprintf('\n\nTesting Cluster Contributions 21:31\n\n');
+
+		bas = [];
+		for i=21:31
+			ba = baForSplit([canValues; japValues; porValues], 3, i, names, iters, sampleFraction)
+			calculateBatch(ba);
+			bas = [bas; ba];
+		end
+		plotBas([baNorm; bas], 'cluster-contributers-21-30', 'Testing Cluster Contributions 21:31');
+	end
+
 	if plotAll || strcmp(figToPlot, 'country-splits')
 		fprintf('\n\nImpact of Splitting Within-Group Data\n\n');
 		% The purpose of this plot is to see if within each country the VOI matches the random expectation for groups of those sizes.
@@ -333,6 +369,11 @@ function [ba] = baForAgeSplit(values, ageThresholds, iters, sampleFraction)
 	rmpath lib;
 	addpath batches;
 	ba = BatchAnalyzer(printVector("", ageThresholds), length(ageThresholds)+1, values, ageLabels, 'iters', iters, 'sampleFraction', sampleFraction);
+end
+
+function [ba] = baForSplit(values, splits, index, names, iters, sampleFraction)
+	[~,~,bins]= histcounts(values(:, index), splits);
+	ba = BatchAnalyzer(names(index), splits, values, bins, 'iters', iters, 'sampleFraction', sampleFraction);
 end
 
 function str = printVector(str, vec)
