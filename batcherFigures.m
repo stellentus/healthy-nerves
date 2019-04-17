@@ -92,6 +92,24 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'vs-countries', 'One Country vs Two');
 	end
 
+	if strcmp(figToPlot, 'age-matched')
+		fprintf('\n\nAge-Matched Populations\n\n');
+
+		% Drop some rows so the histograms are more balanced by age
+		[canAgeMatValues, japAgeMatValues, porAgeMatValues] = matchAges(canValues, japValues, porValues);
+
+		bas = [
+			BatchAnalyzer("Age-matched data", 3, [canAgeMatValues; japAgeMatValues; porAgeMatValues], [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("No CA", 2, [japAgeMatValues; porAgeMatValues], [ones(japNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("No JA", 2, [canAgeMatValues; porAgeMatValues], [ones(canNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("No PO", 2, [canAgeMatValues; japAgeMatValues], [ones(canNum, 1); ones(japNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
+		];
+		for i = 1:length(bas)
+			calculateBatch(bas(i));
+		end
+		plotBas(bas, 'age-matched', 'Age-Matched Populations');
+	end
+
 	if plotAll || strcmp(figToPlot, 'vs-legs')
 		fprintf('\n\nComparisons with Leg Data\n\n');
 
