@@ -42,10 +42,11 @@ end
 function plotTwo(data1, data2, labels, colors, titlename, filename, paired)
 	figure('rend', 'painters', 'pos', [10 10 450 600]);
 	addpath lib/CategoricalScatterplot;
-	CategoricalScatterplot(padcat(data1, data2), labels, colors, 'MarkerSize', 132, 'LadderLines', paired, 'MedianColor', 'k');
+	CategoricalScatterplot(padcat(data1, data2), labels, colors, 'MarkerSize', 196, 'LadderLines', paired, 'MedianColor', 'k', 'WhiskerLineWidth', 4, 'MedianLineWidth', 4);
 	rmpath lib/CategoricalScatterplot;
 	set(gca,'FontSize', 32);
 	set(gca,'FontWeight','bold');
+	set(gca,'linewidth',6);
 	if strcmp(titlename, 'Superexcitability at 5 ms (%)')
 		title('Superexcitability, 5ms(%)', 'FontSize', 28);
 	else
