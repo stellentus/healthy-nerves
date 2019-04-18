@@ -203,28 +203,6 @@ for i = 1:length(groups)
         'EdgeColor', parsed.BoxEdgeColor, ...
         'LineStyle', parsed.BoxLineStyle, 'LineWidth', parsed.BoxLineWidth);
 
-    % Draw points
-    if parsed.FillMarker
-        if (ischar(parsed.Color)||size(parsed.Color,1)==1)
-            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color, 'filled');
-        else
-            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color(i,:), 'filled');
-        end
-    else
-        if (ischar(parsed.Color)||size(parsed.Color,1)==1)
-            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color);
-        else
-            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color(i,:));
-        end
-    end
-
-    % Draw ladder lines, if necessary
-    if parsed.LadderLines && mod(i,2)==0
-        ladderColor = parsed.Color;
-        ladderColor(4) = 0.2;
-        plot([new_data{i-1,2}'; new_data{i,2}'], [new_data{i-1,1}'; new_data{i,1}'], 'Color', ladderColor);
-    end
-
     % Draw median
     plot([i-boxWidth/2, i+boxWidth/2], ...
         [imp_quantiles(2), imp_quantiles(2)], ...
@@ -266,6 +244,27 @@ for i = 1:length(groups)
         'LineWidth', parsed.WhiskerLineWidth);
     end
 
+    % Draw points
+    if parsed.FillMarker
+        if (ischar(parsed.Color)||size(parsed.Color,1)==1)
+            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color, 'filled');
+        else
+            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color(i,:), 'filled');
+        end
+    else
+        if (ischar(parsed.Color)||size(parsed.Color,1)==1)
+            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color);
+        else
+            scatter(new_data{i,2}, new_data{i,1}, parsed.MarkerSize, parsed.Color(i,:));
+        end
+    end
+
+    % Draw ladder lines, if necessary
+    if parsed.LadderLines && mod(i,2)==0
+        ladderColor = parsed.Color;
+        ladderColor(4) = 0.2;
+        plot([new_data{i-1,2}'; new_data{i,2}'], [new_data{i-1,1}'; new_data{i,1}'], 'Color', ladderColor);
+    end
 end
 
 ax = gca;
