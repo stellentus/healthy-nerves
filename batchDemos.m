@@ -17,6 +17,8 @@ function batchDemos()
 	padLen = 4;
 	printHeader(padLen);
 
+	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 480 600]);
+
 	addpath batches;
 	plotWithRange(1, data1, data2, 500, 0, 0, 500, 30, "A");
 	plotWithRange(2, data1, data2, 400, 0, 100, 500, 30, "B");
@@ -24,8 +26,13 @@ function batchDemos()
 	plotWithRange(4, data1, data2, 0, 500, 0, 500, 30, "D");
 	plotWithRange(5, data1, data3, 500, 0, 0, 500, 30, "E");
 	plotWithRange(6, data1, data3, 63, 0, 63, 126, 30, "F");
-	% plotWithRange(0, data1, data3, 250, 0, 250, 500, 300, "G");
+	plotWithRange(0, data1, data3, 250, 0, 250, 500, 300, "G");
 	rmpath batches;
+
+	pathstr = sprintf('img/batch/bvi-comparison-%d-%d-%d-%d%d%2.0f', clock);
+	savefig(fig, strcat(pathstr, '.fig', 'compact'));
+	saveas(fig, strcat(pathstr, '.png'));
+	copyfile(strcat(pathstr, '.png'), 'img/batch/bvi-comparison.png'); % Also save without timestamp
 end
 
 function plotWithRange(plotId, data1, data2, n1a, n2a, n1b, n2b, iters, letterLabel)
@@ -42,36 +49,44 @@ function plotWithRange(plotId, data1, data2, n1a, n2a, n1b, n2b, iters, letterLa
 	padLen = 4;
 	disp(BAString(ba, padLen));
 
+	par = [
+		.01 .60;
+		.49 .60;
+		.01 .31;
+		.49 .31;
+		.01 .02;
+		.49 .02;
+	];
+
 	if plotId ~= 0
-		subplot(3, 4, plotId*2-1);
+		pos = [par(plotId, 1) par(plotId, 2) .31 .27];
+		sb = subplot('Position', pos, 'Units', 'normalized');
+		set(sb, 'YTick', [], 'XTick', []);
 		hold on;
-		plot(d1(:,1), d1(:,2), '+');
+		plot(d1(:,1), d1(:,2), 'o');
 		plot(d2(:,1), d2(:,2), 'x');
-		title(letterLabel);
-		subplot(3, 4, plotId*2);
-		plotBA(ba, letterLabel);
+	    text(0.05, 0.95, letterLabel, 'fontweight', 'bold', 'HorizontalAlignment', 'left', 'VerticalAlignment', 'cap', 'Units', 'normalized');
+		pos(1) = pos(1) + 0.315;
+		pos(3) = 0.12;
+		subplot('Position', pos, 'Units', 'normalized');
+		plotBA(ba);
+		if mod(plotId, 2) == 0
+			ylabel('Homogeneity (%)');
+		end
 	end
 end
 
-% plotBA is used to print a table and plot an array of BatchAnalyzer
-function plotBA(ba, figtitle)
+% plotBA is used to print a table and one BatchAnalyzer
+function plotBA(ba)
 	scores = [ba.Score'/ba.BaselineScore_mean ba.BaselineScore'/ba.BaselineScore_mean];
-	plotBoxes(figtitle, scores, 'Homogeneity (%)', ["norm(BVI)", "norm(E[BVI_{max}])"]);
+	plotBoxes(scores, ["BVI", "max"]);
+	ylim([0 1.15])
 
-	yl = ylim;
-	if yl(1) > 0
-		yl(1) = 0;
-	end
-	if yl(2) < 1
-		yl(2) = 1;
-	end
-	ylim(yl)
-
-    textLabel = sprintf("%2.0f%% Homogeneity\np=%s", ba.Homogeneity_mean*100, PString(ba));
+    textLabel = sprintf("%2.0f%%\nHomog.\n\np=%s", ba.Homogeneity_mean*100, PString(ba));
 	x = 1.5;
-	y = 0.3;
-	if ba.Homogeneity_mean > 0.85
-		y = 0.6;
+	y = 0.6;
+	if ba.Homogeneity_mean < 0.50 && ba.Homogeneity_mean > .1
+		y = 0.9;
 	end
     text(x, y, textLabel, 'HorizontalAlignment', 'center', 'VerticalAlignment', 'cap');
 end
@@ -82,12 +97,12 @@ function printHeader(padLen)
 	fprintf('%s , ------ , ----- , ------ , ----- , ----- , ------ \n', strrep(pad(" ", padLen), " ", "-"));
 end
 
-function plotBoxes(titleLabel, scores, scoreName, testNames)
+function plotBoxes(scores, testNames)
 	addpath lib/CategoricalScatterplot
 
 	CategoricalScatterplot(scores, testNames, 'MarkerSize', 50, 'BoxAlpha', .29, 'LadderLines', true);
-	title(titleLabel);
-	ylabel(scoreName);
+	set(gca, 'YAxisLocation', 'right');
+	set(gca,'FontSize', 8)
 
 	rmpath lib/CategoricalScatterplot
 end
