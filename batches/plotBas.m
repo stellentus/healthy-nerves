@@ -17,7 +17,7 @@ function plotBas(bas, filename, figtitle, args)
 	end
 
 	if args.plotBoxes
-		plotBoxes(figtitle, filename, scores, 'NVI', names);
+		plotBoxes(figtitle, filename, scores, 'Homogeneity (%)', names);
 		yl = ylim;
 		if yl(1) > 0
 			yl(1) = 0;
