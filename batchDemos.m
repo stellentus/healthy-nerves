@@ -26,7 +26,6 @@ function batchDemos()
 	plotWithRange(4, data1, data2, 0, 500, 0, 500, 30, "D");
 	plotWithRange(5, data1, data3, 500, 0, 0, 500, 30, "E");
 	plotWithRange(6, data1, data3, 63, 0, 63, 126, 30, "F");
-	plotWithRange(0, data1, data3, 250, 0, 250, 500, 300, "G");
 	rmpath batches;
 
 	pathstr = sprintf('img/batch/bvi-comparison-%d-%d-%d-%d%d%2.0f', clock);
