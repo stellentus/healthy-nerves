@@ -120,19 +120,20 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 
 			obj.PValue = signrank(obj.Score, obj.BaselineScore);
 		end
-		function str = BAString(obj, padLen)
-			if nargin < 2
-				padLen = 0;
-			end
-
+		function pStr = PString(obj)
 			if obj.PValue < 0.001
 				pStr = sprintf('%.0e', obj.PValue);
 			else
 				pStr = sprintf('%.4f', obj.PValue);
 			end
+		end
+		function str = BAString(obj, padLen)
+			if nargin < 2
+				padLen = 0;
+			end
 
 			formatStr = '%s , % .3f , %.3f , % .3f , %.3f , %3.0f%%  , %s ';
-			str = sprintf(formatStr, pad(obj.Name, padLen), obj.Score_mean, obj.Score_std, obj.BaselineScore_mean, obj.BaselineScore_std, obj.Homogeneity_mean*100, pStr);
+			str = sprintf(formatStr, pad(obj.Name, padLen), obj.Score_mean, obj.Score_std, obj.BaselineScore_mean, obj.BaselineScore_std, obj.Homogeneity_mean*100, PString(obj));
 		end
 	end
 end
