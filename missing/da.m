@@ -12,7 +12,7 @@
 % cvEst: estimated covariance matrix (averaging DAcv(1).co, ..., DAcv(nChains).co)
 % Y:    X with imputation made
 %
-function [DAmn, DAcv, mnEst, cvEst, Y] = mi(X, nChains, chainLength)
+function [DAmn, DAcv, mnEst, cvEst, Y] = da(X, nChains, chainLength)
 	[n, nFeat] = size(X);
 	mis = isnan(X);           % mis are the positions of the md in X
 	r = ~mis;
