@@ -225,16 +225,16 @@ function batcherFigures(figToPlot)
 			baNorm;
 
 			BACopyWithValues(baNorm, "CA shift right", [shiftRightRC(canValues); japValues; porValues]);
-			BACopyWithValues(baNorm, "JA shift right", [canValues; shiftRightRC(japValues); porValues]);
-			BACopyWithValues(baNorm, "PO shift right", [canValues; japValues; shiftRightRC(porValues)]);
+			% BACopyWithValues(baNorm, "JA shift right", [canValues; shiftRightRC(japValues); porValues]);
+			% BACopyWithValues(baNorm, "PO shift right", [canValues; japValues; shiftRightRC(porValues)]);
 
-			BACopyWithValues(baNorm, "CA shift left", [shiftLeftRC(canValues); japValues; porValues]);
-			BACopyWithValues(baNorm, "JA shift left", [canValues; shiftLeftRC(japValues); porValues]);
+			% BACopyWithValues(baNorm, "CA shift left", [shiftLeftRC(canValues); japValues; porValues]);
+			% BACopyWithValues(baNorm, "JA shift left", [canValues; shiftLeftRC(japValues); porValues]);
 			BACopyWithValues(baNorm, "PO shift left", [canValues; japValues; shiftLeftRC(porValues)]);
 
-			BACopyWithValues(baNorm, "CA shrink", [shrinkRC(canValues); japValues; porValues]);
+			% BACopyWithValues(baNorm, "CA shrink", [shrinkRC(canValues); japValues; porValues]);
 			BACopyWithValues(baNorm, "JA shrink", [canValues; shrinkRC(japValues); porValues]);
-			BACopyWithValues(baNorm, "PO shrink", [canValues; japValues; shrinkRC(porValues)]);
+			% BACopyWithValues(baNorm, "PO shrink", [canValues; japValues; shrinkRC(porValues)]);
 		];
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
