@@ -3,102 +3,109 @@
 % 	Abel Folch-Fortuny, Francisco Arteaga, Alberto Ferrer (2015). PCA model building with missing data: new proposals and a comparative study. Chemometrics and Intelligent Laboratory Systems 146, pp. 77–88.
 
 % X is a data matrix with NaN in the missing data
-% M is the number of independent chains (we use M = 10)
+% nChains is the number of independent chains (we use nChains = 10)
 % chainLength is the len of each chain (we use chainLength = 100)
 %
-% DAm:  estim. means for the M chains in M rows
-% DAS:  estim. Cov. matrices for the M chains DAS(1).co, ..., DAS(M).co
-% mest: estimated means (mest = mean(DAm))
-% Sest: estimated covariance matrix (averaging DAS(1).co, ..., DAS(M).co)
+% DAmn:  estim. means for the nChains chains in nChains rows
+% DAcv:  estim. Cov. matrices for the nChains chains DAcv(1).co, ..., DAcv(nChains).co
+% mest: estimated means (mest = mean(DAmn))
+% Sest: estimated covariance matrix (averaging DAcv(1).co, ..., DAcv(nChains).co)
 % Y:    X with imputation made
 %
-function [DAm, DAS, mest, Sest, Y] = mi(X, M, chainLength)
-	[n, p] = size(X);
+function [DAmn, DAcv, mest, Sest, Y] = mi(X, nChains, chainLength)
+	[n, nFeat] = size(X);
 	mis = isnan(X);           % mis are the positions of the md in X
 	r = ~mis;
 
 	for i = n:-1:1
-		% pat(i).O: the nO observed variables (subset of {1, 2, ..., p})
-		pat(i).O = find(r(i, :) == 1);
-		% pat(i).M: the nM missing variables (subset of {1, 2, ..., p})
-		pat(i).M = find(r(i, :) == 0);
-		% pat(i).nO and pat(i).nM are the size of pat(i).O and pat(i).M
-		pat(i).nO = size(pat(i).O, 2); % #{pat(i).O}
-		pat(i).nM = size(pat(i).M, 2); % #{pat(i).M}
+		% pat(i).Obs: the observed variables (subset of {1, 2, ..., nFeat})
+		pat(i).Obs = find(r(i, :) == 1);
+		% pat(i).Mis: the missing variables (subset of {1, 2, ..., nFeat})
+		pat(i).Mis = find(r(i, :) == 0);
+		% pat(i).nObs and pat(i).nMis are the size of pat(i).Obs and pat(i).Mis
+		% pat(i).nObs = size(pat(i).Obs, 2); % #{pat(i).Obs}
+		pat(i).nMis = size(pat(i).Mis, 2); % #{pat(i).Mis}
 	end
 
-	[r, c] = find(isnan(X));   % r and c store the row and column for all the md
-	X(mis) = 0;               % fill in the md with 0's
-	meanc = sum(X)./(n-sum(mis)); % average of the known values for each column
-	for k = 1:length(r)
-		X(r(k), c(k)) = meanc(c(k)); % fill in each md with the mean of its column
+	% Fill missing values with their column mean.
+	[row, col] = find(isnan(X));
+	X(mis) = 0;
+	meanc = sum(X)./(n-sum(mis));
+	for k = 1:length(row)
+		X(row(k), col(k)) = meanc(col(k));
 	end
 
-	mini = mean(X); % initial mean vector
-	Sini = cov(X);  % initial covariance matrix
-	DAm = zeros(M, p); % contendrá las M medias en M filas
-	for run = 1:M,
-		S = Sini;
-		m = mini;
-		for itr=1:chainLength
-			for row = 1:n                   % for each row
-				if pat(row).nM>0            % if there are missing values
-					m1 = m(1, pat(row).O)';             % nOx1
-					m2 = m(1, pat(row).M)';             % nMx1
-					S11 = S(pat(row).O, pat(row).O);    % nOxnO
-					S12 = S(pat(row).O, pat(row).M);    % nOx1
-					z1 = X(row, pat(row).O)';           % nOx1
-					z2 = m2 + S12' * pinv(S11) * (z1-m1); % nMx1
-					X(row, pat(row).M) = z2';           % 1xp
+	startMean = mean(X);
+	startCov = cov(X);
+	DAmn = zeros(nChains, nFeat);
+	for chainIter = 1:nChains
+		cv = startCov;
+		mn = startMean;
+		for itr = 1:chainLength
+			% Do something to update the missing values in each row of X (I think based in PCA).
+			for row = 1:n
+				if pat(row).nMis > 0
+					mn1 = mn(pat(row).Obs)';                  % nObs x 1
+					mn2 = mn(pat(row).Mis)';                  % nMis x 1
+					cv11 = cv(pat(row).Obs, pat(row).Obs);    % nObs x nObs
+					cv12 = cv(pat(row).Obs, pat(row).Mis);    % nObs x nMis
+					z1 = X(row, pat(row).Obs)';               % nObs x 1
+					z2 = mn2 + cv12' * pinv(cv11) * (z1-mn1); % nMis x 1
+					X(row, pat(row).Mis) = z2';               % 1 x nMis
 				end
 			end
-			m = mean(X);
-			S = cov(X);
-			[m, S] = DrawPost(m, S, 10*n*n);
+
+			% Now update the mean based on the above loop.
+			mn = mean(X);
+			cv = cov(X);
+
+			% Now update the mean based on the values just used.
+			[mn, cv] = DrawPost(mn, cv, 10*n*n);
 		end
-		DAm(run, :) = m;
-		DAS(run).co = S;
+		DAmn(chainIter, :) = mn;
+		DAcv(chainIter).co = cv;
 	end
 
-	mest = mean(DAm);
-	Sest = zeros(p, p);
-	for k = 1:M,
-		Sest = Sest + DAS(k).co;
+	mest = mean(DAmn);
+	Sest = zeros(nFeat, nFeat);
+	for k = 1:nChains,
+		Sest = Sest + DAcv(k).co;
 	end
-	Sest = Sest / M;
+	Sest = Sest / nChains;
 
 	% Applies stochastic regression with the posterior of the mean (mest)
 	% and the covariance matrix (Sest)
 	for i = 1:n             % for each row
-		if pat(i).nM > 0    % if there are missing values
-			m1 = mest(1, pat(i).O)';          % nOx1
-			m2 = mest(1, pat(i).M)';          % nMx1
-			S11 = Sest(pat(i).O, pat(i).O);   % nOxnO
-			S12 = Sest(pat(i).O, pat(i).M);   % nOxnM
-			z1 = X(i, pat(i).O)';             % nOx1
-			z2 = m2 + S12' * pinv(S11) * (z1-m1);  %nMx1
-			X(i, pat(i).M) = z2';  % fill in the md positions of row i
+		if pat(i).nMis > 0    % if there are missing values
+			m1 = mest(1, pat(i).Obs)';          % nObs x 1
+			m2 = mest(1, pat(i).Mis)';          % nMis x 1
+			S11 = Sest(pat(i).Obs, pat(i).Obs);   % nObs x nObs
+			S12 = Sest(pat(i).Obs, pat(i).Mis);   % nObs x nMis
+			z1 = X(i, pat(i).Obs)';             % nObs x 1
+			z2 = m2 + S12' * pinv(S11) * (z1-m1);  %nMis x 1
+			X(i, pat(i).Mis) = z2';  % fill in the md positions of row i
 		end
 	end
 
 	Y = X;
 end
 
-function [mpost, Spost] = DrawPost(m, S, n)
-	d = chol(S / n);
-	p = size(S, 1);
-	if n <= 81 + p,
-		x = randn(n-1, p)*d;
+function [mnPost, cvPost] = DrawPost(mn, cv, n)
+	diagCov = chol(cv / n);
+	nFeat = size(cv, 1);
+	if n <= 81 + nFeat
+		% If there are very, very few samples relative to the number of features.
+		x = randn(n-1, nFeat) * diagCov;
 	else
-		a = diag(sqrt(chi2rnd(n-(0:p-1))));
-		for i = 1:p-1
-			for j = i+1:p
+		a = diag(sqrt(chi2rnd(n-(0:nFeat-1)))) + triu(randn(nFeat, nFeat), 1);
+		for i = 1:nFeat-1
+			for j = i+1:nFeat
 				a(i, j) = randn(1, 1);
 			end
 		end
-		x = a * d;
+		x = a * diagCov;
 	end
 
-	Spost = x' * x;
-	mpost = (m' + chol(Spost/(n-1))*randn(size(S, 1), 1))';
+	cvPost = x' * x;
+	mnPost = (mn' + chol(cvPost/(n-1))*randn(size(cv, 1), 1))';
 end
