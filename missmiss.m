@@ -212,7 +212,10 @@ function plotBoxes(verrs, cerrs, algNames)
 	ax.YColor = greenColor;
 	ax.XColor = greenColor;
 	CategoricalScatterplot(verrs, vAlgNames, 'MarkerSize', 50, 'WhiskerColor', 'k', 'MedianColor', 'k', 'BoxColor', yellowColor, 'BoxAlpha', .29);
-	ylim([0 30]);
+	yl = ylim;
+	if yl(2) > 10000
+		ylim([0 30]);
+	end
 	title('Error in Filled Data', 'Color', greenColor);
 	% xlabel('Method', 'Color', greenColor);
 	ylabel('Error', 'Color', greenColor);
@@ -224,7 +227,10 @@ function plotBoxes(verrs, cerrs, algNames)
 	ax.YColor = greenColor;
 	ax.XColor = greenColor;
 	CategoricalScatterplot(cerrs, algNames, 'MarkerSize', 50, 'WhiskerColor', 'k', 'MedianColor', 'k', 'BoxColor', yellowColor, 'BoxAlpha', .29);
-	ylim([0 30]);
+	yl = ylim;
+	if yl(2) > 10000
+		ylim([0 30]);
+	end
 	title('Error in Covariance', 'Color', greenColor);
 	% xlabel('Method', 'Color', greenColor);
 	ylabel('Error', 'Color', greenColor);
