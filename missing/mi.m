@@ -98,11 +98,6 @@ function [mnPost, cvPost] = DrawPost(mn, cv, n)
 		x = randn(n-1, nFeat) * diagCov;
 	else
 		a = diag(sqrt(chi2rnd(n-(0:nFeat-1)))) + triu(randn(nFeat, nFeat), 1);
-		for i = 1:nFeat-1
-			for j = i+1:nFeat
-				a(i, j) = randn(1, 1);
-			end
-		end
 		x = a * diagCov;
 	end
 
