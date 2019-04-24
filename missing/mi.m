@@ -8,11 +8,11 @@
 %
 % DAmn:  estim. means for the nChains chains in nChains rows
 % DAcv:  estim. Cov. matrices for the nChains chains DAcv(1).co, ..., DAcv(nChains).co
-% mest: estimated means (mest = mean(DAmn))
-% Sest: estimated covariance matrix (averaging DAcv(1).co, ..., DAcv(nChains).co)
+% mnEst: estimated means (mnEst = mean(DAmn))
+% cvEst: estimated covariance matrix (averaging DAcv(1).co, ..., DAcv(nChains).co)
 % Y:    X with imputation made
 %
-function [DAmn, DAcv, mest, Sest, Y] = mi(X, nChains, chainLength)
+function [DAmn, DAcv, mnEst, cvEst, Y] = mi(X, nChains, chainLength)
 	[n, nFeat] = size(X);
 	mis = isnan(X);           % mis are the positions of the md in X
 	r = ~mis;
@@ -66,24 +66,24 @@ function [DAmn, DAcv, mest, Sest, Y] = mi(X, nChains, chainLength)
 		DAcv(chainIter).co = cv;
 	end
 
-	mest = mean(DAmn);
-	Sest = zeros(nFeat, nFeat);
+	mnEst = mean(DAmn);
+	cvEst = zeros(nFeat, nFeat);
 	for k = 1:nChains,
-		Sest = Sest + DAcv(k).co;
+		cvEst = cvEst + DAcv(k).co;
 	end
-	Sest = Sest / nChains;
+	cvEst = cvEst / nChains;
 
-	% Applies stochastic regression with the posterior of the mean (mest)
-	% and the covariance matrix (Sest)
-	for i = 1:n             % for each row
-		if pat(i).nMis > 0    % if there are missing values
-			m1 = mest(1, pat(i).Obs)';          % nObs x 1
-			m2 = mest(1, pat(i).Mis)';          % nMis x 1
-			S11 = Sest(pat(i).Obs, pat(i).Obs);   % nObs x nObs
-			S12 = Sest(pat(i).Obs, pat(i).Mis);   % nObs x nMis
-			z1 = X(i, pat(i).Obs)';             % nObs x 1
-			z2 = m2 + S12' * pinv(S11) * (z1-m1);  %nMis x 1
-			X(i, pat(i).Mis) = z2';  % fill in the md positions of row i
+	% Applies stochastic regression with the posterior of the mean (mnEst)
+	% and the covariance matrix (cvEst)
+	for row = 1:n
+		if pat(row).nMis > 0    % if there are missing values
+			m1 = mnEst(1, pat(row).Obs)';            % nObs x 1
+			m2 = mnEst(1, pat(row).Mis)';            % nMis x 1
+			cv11 = cvEst(pat(row).Obs, pat(row).Obs);   % nObs x nObs
+			cv12 = cvEst(pat(row).Obs, pat(row).Mis);   % nObs x nMis
+			z1 = X(row, pat(row).Obs)';             % nObs x 1
+			z2 = m2 + cv12' * pinv(cv11) * (z1-m1);  %nMis x 1
+			X(row, pat(row).Mis) = z2';  % fill in the md positions of row i
 		end
 	end
 
@@ -102,5 +102,5 @@ function [mnPost, cvPost] = DrawPost(mn, cv, n)
 	end
 
 	cvPost = x' * x;
-	mnPost = (mn' + chol(cvPost/(n-1))*randn(size(cv, 1), 1))';
+	mnPost = (mn' + chol(cvPost/(n-1)) * randn(nFeat, 1))';
 end
