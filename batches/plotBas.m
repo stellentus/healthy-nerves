@@ -8,24 +8,33 @@ function plotBas(bas, filename, figtitle, args)
 
 	padLen = printHeader(bas);
 	scores = zeros(length(bas(1).Score), length(bas)*2); % only used by plotBoxes
-	names = [];
 	for i = 1:length(bas)
 		disp(BAString(bas(i), padLen));
 		scores(:, 2*i-1) = (bas(i).Score'/bas(i).BaselineScore_mean);
 		scores(:, 2*i) = (bas(i).BaselineScore'/bas(i).BaselineScore_mean);
-		names = [names; bas(i).Name; bas(i).Name + " RAND"];
 	end
 
 	if args.plotBoxes
-		plotBoxes(figtitle, filename, scores, 'Homogeneity (%)', names);
-		yl = ylim;
-		if yl(1) > 0
-			yl(1) = 0;
+		% plotNames = repmat(["BVI", "max"], 1, length(bas));
+		plotBoxes(figtitle, filename, scores, 'Homogeneity (%)', []);
+		ylim([0 1.15])
+		% set(gca, 'xaxisLocation', 'top');
+
+		for i = 1:length(bas)
+			% Add a label with the homogeneity score.
+			textLabel = sprintf("%2.0f%%\nHomogeneous\n\np=%s", bas(i).Homogeneity_mean*100, PString(bas(i)));
+			x = 2*i - 0.5;
+			y = 0.6;
+			if bas(i).Homogeneity_mean < 0.50 && bas(i).Homogeneity_mean > .1
+				y = 0.9;
+			end
+			text(x, y, textLabel, 'HorizontalAlignment', 'center', 'VerticalAlignment', 'cap', 'FontSize', 18);
+
+			% Add a label with the name of this element.
+			pos = get(gca, 'Position');
+			namePos = [(x -0.9 + abs(min(xlim)))/diff(xlim) * pos(3) + pos(1), (0 - min(ylim))/diff(ylim) * pos(4) + pos(2), 1.8/diff(xlim) * pos(3), 0];
+			ta1 = annotation('textbox', namePos, 'string', bas(i).Name, 'HorizontalAlignment', 'center', 'VerticalAlignment', 'cap', 'FontSize', 18);
 		end
-		if yl(2) < 1
-			yl(2) = 1;
-		end
-		ylim(yl)
 	end
 end
 
@@ -74,17 +83,9 @@ function plotBoxes(titleLabel, filename, scores, scoreName, testNames)
 	title(titleLabel);
 	ylabel(scoreName);
 
-	ax = gca;
-    labels = string(ax.XAxis.TickLabels);
-    labels(2:2:end) = nan; % ensure every other one is unset
-    names = labels(1:2:end-1);
-    labels(1:2:end-1) = [strcat(repmat("                 ", size(names,1), 1), names)]; % set the others (with extra spaces in front)
-    ax.XAxis.TickLabels = labels;
-
 	savefig(fig, strcat(pathstr, '.fig', 'compact'));
 	saveas(fig, strcat(pathstr, '.png'));
 	copyfile(strcat(pathstr, '.png'), strcat('img/batch/', filename, '.png')); % Also save without timestamp
-
 
 	rmpath lib/CategoricalScatterplot
 end
