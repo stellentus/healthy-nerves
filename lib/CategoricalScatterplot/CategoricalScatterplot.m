@@ -149,11 +149,11 @@ else
         data{i,1} = X(~isnan(X(:,i)),i);
         data{i,2} = i*ones(size(data{i,1}));
 
-        if (Xmin > floor(min(data{i,1})))
+        if (Xmin > floor(min(data{i,1})) && ~isnan(ceil(max(data{i,1}))) && ceil(max(data{i,1}))~=Inf)
             Xmin = floor(min(data{i,1}));
         end
 
-        if (Xmax < ceil(max(data{i,1})))
+        if (Xmax < ceil(max(data{i,1})) && ~isnan(ceil(max(data{i,1}))) && ceil(max(data{i,1}))~=Inf)
             Xmax = ceil(max(data{i,1}));
         end
     end
