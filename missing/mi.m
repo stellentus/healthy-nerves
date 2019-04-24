@@ -42,18 +42,7 @@ function [DAmn, DAcv, mnEst, cvEst, Y] = mi(X, nChains, chainLength)
 		cv = startCov;
 		mn = startMean;
 		for itr = 1:chainLength
-			% Do something to update the missing values in each row of X (I think based in PCA).
-			for row = 1:n
-				if pat(row).nMis > 0
-					mn1 = mn(pat(row).Obs)';                  % nObs x 1
-					mn2 = mn(pat(row).Mis)';                  % nMis x 1
-					cv11 = cv(pat(row).Obs, pat(row).Obs);    % nObs x nObs
-					cv12 = cv(pat(row).Obs, pat(row).Mis);    % nObs x nMis
-					z1 = X(row, pat(row).Obs)';               % nObs x 1
-					z2 = mn2 + cv12' * pinv(cv11) * (z1-mn1); % nMis x 1
-					X(row, pat(row).Mis) = z2';               % 1 x nMis
-				end
-			end
+			X = fillMissingX(X, mn, cv, n, pat);
 
 			% Now update the mean based on the above loop.
 			mn = mean(X);
@@ -75,19 +64,22 @@ function [DAmn, DAcv, mnEst, cvEst, Y] = mi(X, nChains, chainLength)
 
 	% Applies stochastic regression with the posterior of the mean (mnEst)
 	% and the covariance matrix (cvEst)
+	Y = fillMissingX(X, mnEst, cvEst, n, pat);
+end
+
+% fillMissingX does something to update the missing values in each row of X (I think based in PCA).
+function [X] = fillMissingX(X, mn, cv, n, pat)
 	for row = 1:n
-		if pat(row).nMis > 0    % if there are missing values
-			m1 = mnEst(1, pat(row).Obs)';            % nObs x 1
-			m2 = mnEst(1, pat(row).Mis)';            % nMis x 1
-			cv11 = cvEst(pat(row).Obs, pat(row).Obs);   % nObs x nObs
-			cv12 = cvEst(pat(row).Obs, pat(row).Mis);   % nObs x nMis
-			z1 = X(row, pat(row).Obs)';             % nObs x 1
-			z2 = m2 + cv12' * pinv(cv11) * (z1-m1);  %nMis x 1
-			X(row, pat(row).Mis) = z2';  % fill in the md positions of row i
+		if pat(row).nMis > 0
+			mn1 = mn(pat(row).Obs)';                  % nObs x 1
+			mn2 = mn(pat(row).Mis)';                  % nMis x 1
+			cv11 = cv(pat(row).Obs, pat(row).Obs);    % nObs x nObs
+			cv12 = cv(pat(row).Obs, pat(row).Mis);    % nObs x nMis
+			z1 = X(row, pat(row).Obs)';               % nObs x 1
+			z2 = mn2 + cv12' * pinv(cv11) * (z1-mn1); % nMis x 1
+			X(row, pat(row).Mis) = z2';
 		end
 	end
-
-	Y = X;
 end
 
 function [mnPost, cvPost] = DrawPost(mn, cv, n)
