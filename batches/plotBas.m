@@ -15,26 +15,7 @@ function plotBas(bas, filename, figtitle, args)
 	end
 
 	if args.plotBoxes
-		% plotNames = repmat(["BVI", "max"], 1, length(bas));
-		plotBoxes(figtitle, filename, scores, 'Homogeneity (%)', []);
-		ylim([0 1.15])
-		% set(gca, 'xaxisLocation', 'top');
-
-		for i = 1:length(bas)
-			% Add a label with the homogeneity score.
-			textLabel = sprintf("%2.0f%%\nHomogeneous\n\np=%s", bas(i).Homogeneity_mean*100, PString(bas(i)));
-			x = 2*i - 0.5;
-			y = 0.6;
-			if bas(i).Homogeneity_mean < 0.50 && bas(i).Homogeneity_mean > .1
-				y = 0.9;
-			end
-			text(x, y, textLabel, 'HorizontalAlignment', 'center', 'VerticalAlignment', 'cap', 'FontSize', 18);
-
-			% Add a label with the name of this element.
-			pos = get(gca, 'Position');
-			namePos = [(x -0.9 + abs(min(xlim)))/diff(xlim) * pos(3) + pos(1), (0 - min(ylim))/diff(ylim) * pos(4) + pos(2), 1.8/diff(xlim) * pos(3), 0];
-			ta1 = annotation('textbox', namePos, 'string', bas(i).Name, 'HorizontalAlignment', 'center', 'VerticalAlignment', 'cap', 'FontSize', 18);
-		end
+		plotBoxes(figtitle, filename, scores, 'Homogeneity (%)', bas);
 	end
 end
 
@@ -72,16 +53,29 @@ function padLen = printHeader(bas)
 	fprintf('%s , ------ , ----- , ------ , ----- , ----- , ------ \n', strrep(pad(" ", padLen), " ", "-"));
 end
 
-function plotBoxes(titleLabel, filename, scores, scoreName, testNames)
+function plotBoxes(titleLabel, filename, scores, scoreName, bas)
 	addpath lib/CategoricalScatterplot
 
 	pathstr = sprintf('img/batch/%s-%d-%d-%d-%d%d%2.0f', filename, clock);
 
 	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
 
-	CategoricalScatterplot(scores, testNames, 'MarkerSize', 50, 'BoxAlpha', .29, 'LadderLines', true);
+	CategoricalScatterplot(scores, [], 'MarkerSize', 50, 'BoxAlpha', .29, 'LadderLines', true);
 	title(titleLabel);
 	ylabel(scoreName);
+	ylim([0 1.15])
+
+	for i = 1:length(bas)
+		% Add a label with the homogeneity score.
+		textLabel = sprintf("%2.0f%% Homog.\np=%s", bas(i).Homogeneity_mean*100, PString(bas(i)));
+		x = 2*i - 0.5;
+		text(x, 0.2, textLabel, 'HorizontalAlignment', 'center', 'VerticalAlignment', 'cap', 'FontSize', 16);
+
+		% Add a label with the name of this element.
+		pos = get(gca, 'Position');
+		namePos = [(x -0.9 + abs(min(xlim)))/diff(xlim) * pos(3) + pos(1), (0 - min(ylim))/diff(ylim) * pos(4) + pos(2), 1.8/diff(xlim) * pos(3), 0];
+		ta1 = annotation('textbox', namePos, 'string', bas(i).Name, 'HorizontalAlignment', 'center', 'VerticalAlignment', 'cap', 'FontSize', 18);
+	end
 
 	savefig(fig, strcat(pathstr, '.fig', 'compact'));
 	saveas(fig, strcat(pathstr, '.png'));
