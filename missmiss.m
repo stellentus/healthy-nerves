@@ -1,5 +1,8 @@
 % missmiss loads missing data and does stuff with it
-function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed, displayPlot, includeCheats)
+function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed, displayPlot, includeCheats, numToUse)
+	if nargin < 6
+		numToUse = 0; % Zero means all
+	end
 	if nargin < 5
 		includeCheats = false;
 	end
@@ -53,13 +56,13 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 		disp('Running parallel iterations...')
 		parfor i = 1:iters
 			rng(seed+i*31);
-			[verrs(i, :), cerrs(i, :)] = testFuncs(algs, X, covr, includeCheats, parallelize);
+			[verrs(i, :), cerrs(i, :)] = testFuncs(algs, X, covr, includeCheats, parallelize, numToUse);
 		end
 	else
 		for i = 1:iters
 			rng(seed+i*31);
 			fprintf('Iter %d of %d...', i, iters);
-			[verrs(i, :), cerrs(i, :)] = testFuncs(algs, X, covr, includeCheats, parallelize);
+			[verrs(i, :), cerrs(i, :)] = testFuncs(algs, X, covr, includeCheats, parallelize, numToUse);
 		end
 	end
 	fprintf('\n');
@@ -111,8 +114,9 @@ function [X] = loadMEF()
 	% TEd40 = [armTEd40'; legTEd40']; % Currently unused
 end
 
-function [verr, cerr] = testFuncs(algs, X, originalCov, includeCheats, parallelize)
+function [verr, cerr] = testFuncs(algs, X, originalCov, includeCheats, parallelize, numToUse)
 	parallelPrint('Load...', parallelize);
+	X = selectSubset(X, numToUse);
 	[missingX, completeX, ~, originalMissingX, missingMask] = deleteProportional(X);
 
 	verr = [];
@@ -145,15 +149,20 @@ function [ve, ce, filledX] = testFunc(alg, seed, originalCov, missingX, complete
 	parallelPrint(strcat(alg.name, '...'), parallelize);
 	rng(seed); % Seed each algorithm with the exact same random numbers
 
-	switch nargout(alg.func)
-		case 1
-			% If the function only has one output argument, it doesn't do anything special to calculate covariance
-			filledX = alg.func(missingX, completeX, missingMask, alg.args);
-			filledX = updateKnownValues(filledX, missingX, missingMask); % Add originalMissingX as a fourth argument to print debug
-			covr = cov([completeX; filledX]);
-		otherwise
-			[filledX, covr] = alg.func(missingX, completeX, missingMask, alg.args);
-			filledX = updateKnownValues(filledX, missingX, missingMask); % Add originalMissingX as a fourth argument to print debug
+	try
+		switch nargout(alg.func)
+			case 1
+				% If the function only has one output argument, it doesn't do anything special to calculate covariance
+				filledX = alg.func(missingX, completeX, missingMask, alg.args);
+				filledX = updateKnownValues(filledX, missingX, missingMask); % Add originalMissingX as a fourth argument to print debug
+				covr = cov([completeX; filledX]);
+			otherwise
+				[filledX, covr] = alg.func(missingX, completeX, missingMask, alg.args);
+				filledX = updateKnownValues(filledX, missingX, missingMask); % Add originalMissingX as a fourth argument to print debug
+		end
+	catch
+		filledX = missingX;    % Nothing is filled due to the error...
+		covr = cov(completeX); % ...so covariance is only based on complete rows.
 	end
 
 	ve = mean(mean(((originalMissingX - filledX) .* ~missingMask) .^ 2));
@@ -230,5 +239,13 @@ function parallelPrint(str, parallelize)
 		fprintf(str);
 	else
 		fprintf('.')
+	end
+end
+
+function [X] = selectSubset(X, numToUse)
+	num = size(X, 1);
+
+	if numToUse > 0
+		X = X(randsample(num, numToUse), :); % Sample without replacement
 	end
 end
