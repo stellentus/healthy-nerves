@@ -18,13 +18,13 @@ function [DAmn, DAcv, mnEst, cvEst, Y] = mi(X, nChains, chainLength)
 	r = ~mis;
 
 	for i = n:-1:1
-		% pat(i).Obs: the observed variables (subset of {1, 2, ..., nFeat})
-		pat(i).Obs = find(r(i, :) == 1);
-		% pat(i).Mis: the missing variables (subset of {1, 2, ..., nFeat})
-		pat(i).Mis = find(r(i, :) == 0);
-		% pat(i).nObs and pat(i).nMis are the size of pat(i).Obs and pat(i).Mis
-		% pat(i).nObs = size(pat(i).Obs, 2); % #{pat(i).Obs}
-		pat(i).nMis = size(pat(i).Mis, 2); % #{pat(i).Mis}
+		% missInfo(i).Obs: the observed variables (subset of {1, 2, ..., nFeat})
+		missInfo(i).Obs = find(r(i, :) == 1);
+		% missInfo(i).Mis: the missing variables (subset of {1, 2, ..., nFeat})
+		missInfo(i).Mis = find(r(i, :) == 0);
+		% missInfo(i).nObs and missInfo(i).nMis are the size of missInfo(i).Obs and missInfo(i).Mis
+		% missInfo(i).nObs = size(missInfo(i).Obs, 2); % #{missInfo(i).Obs}
+		missInfo(i).nMis = size(missInfo(i).Mis, 2); % #{missInfo(i).Mis}
 	end
 
 	% Fill missing values with their column mean.
@@ -42,7 +42,7 @@ function [DAmn, DAcv, mnEst, cvEst, Y] = mi(X, nChains, chainLength)
 		cv = startCov;
 		mn = startMean;
 		for itr = 1:chainLength
-			X = fillMissingX(X, mn, cv, n, pat);
+			X = fillMissingX(X, mn, cv, n, missInfo);
 
 			% Now update the mean based on the above loop.
 			mn = mean(X);
@@ -64,20 +64,20 @@ function [DAmn, DAcv, mnEst, cvEst, Y] = mi(X, nChains, chainLength)
 
 	% Applies stochastic regression with the posterior of the mean (mnEst)
 	% and the covariance matrix (cvEst)
-	Y = fillMissingX(X, mnEst, cvEst, n, pat);
+	Y = fillMissingX(X, mnEst, cvEst, n, missInfo);
 end
 
 % fillMissingX does something to update the missing values in each row of X (I think based in PCA).
-function [X] = fillMissingX(X, mn, cv, n, pat)
+function [X] = fillMissingX(X, mn, cv, n, missInfo)
 	for row = 1:n
-		if pat(row).nMis > 0
-			mn1 = mn(pat(row).Obs)';                  % nObs x 1
-			mn2 = mn(pat(row).Mis)';                  % nMis x 1
-			cv11 = cv(pat(row).Obs, pat(row).Obs);    % nObs x nObs
-			cv12 = cv(pat(row).Obs, pat(row).Mis);    % nObs x nMis
-			z1 = X(row, pat(row).Obs)';               % nObs x 1
+		if missInfo(row).nMis > 0
+			mn1 = mn(missInfo(row).Obs)';                  % nObs x 1
+			mn2 = mn(missInfo(row).Mis)';                  % nMis x 1
+			cv11 = cv(missInfo(row).Obs, missInfo(row).Obs);    % nObs x nObs
+			cv12 = cv(missInfo(row).Obs, missInfo(row).Mis);    % nObs x nMis
+			z1 = X(row, missInfo(row).Obs)';               % nObs x 1
 			z2 = mn2 + cv12' * pinv(cv11) * (z1-mn1); % nMis x 1
-			X(row, pat(row).Mis) = z2';
+			X(row, missInfo(row).Mis) = z2';
 		end
 	end
 end
