@@ -94,7 +94,10 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 		end
 
 		% Plot values
-		plotBoxes(verrs, cerrs, algNames);
+		if numToUse <= 0
+			numToUse = size(X, 1);
+		end
+		plotBoxes(verrs, cerrs, algNames, numToUse);
 	end
 
 	rmpath missing
@@ -186,14 +189,14 @@ function calcStats(data, name, algNames)
 	end
 end
 
-function plotBoxes(verrs, cerrs, algNames)
+function plotBoxes(verrs, cerrs, algNames, numSamples)
 	vAlgNames = algNames;
 	if (all(isnan(verrs(:, 1))))
 		verrs = verrs(:, 2:end);
 		vAlgNames = algNames(2:end);
 	end
 
-	pathstr = sprintf('img/missmiss/%d-%d-%d-%d%d%2.0f', clock);
+	pathstr = sprintf('img/missmiss/%d-%d-%d-%d%d%2.0f (%d samples)', clock, numSamples);
 
 	valfig = plotOne('Filled Data', 'value', verrs, vAlgNames, pathstr);
 	covfig = plotOne('Covariance', 'covar', cerrs, algNames, pathstr);
