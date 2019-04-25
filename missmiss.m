@@ -232,6 +232,7 @@ function plotBoxes(verrs, cerrs, algNames)
 	ylabel('Error', 'Color', greenColor);
 	savefig(covfig, strcat('covar-', pathstr, '.fig', 'compact'));
 	saveas(covfig, strcat('covar-', pathstr, '.png'));
+	close(covfig);
 
 	rmpath lib/CategoricalScatterplot
 end
