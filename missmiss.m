@@ -193,50 +193,39 @@ function plotBoxes(verrs, cerrs, algNames)
 		vAlgNames = algNames(2:end);
 	end
 
+	pathstr = sprintf('img/missmiss/%d-%d-%d-%d%d%2.0f', clock);
+
+	valfig = plotOne('Filled Data', 'value', verrs, vAlgNames, pathstr);
+	covfig = plotOne('Covariance', 'covar', cerrs, algNames, pathstr);
+	close(covfig);
+end
+
+function [handle] = plotOne(figname, prefix, vals, names, pathstr)
 	% Replace NaN and Inf with a really big number. This prevents errors in plotting.
-	verrs(isnan(verrs)) = realmax;
-	cerrs(isnan(cerrs)) = realmax;
-	verrs(isinf(verrs)) = realmax;
-	cerrs(isinf(cerrs)) = realmax;
+	vals(isnan(vals)) = realmax;
+	vals(isinf(vals)) = realmax;
 
 	greenColor = [0.03529411764705882353, 0.38039215686274509804, 0.2];
 	redColor = [1 0.1490196078431372549 0];
 	yellowColor = [0.98039215686274509804 0.8509803921568627451 0.25882352941176470588];
 
+	handle = figure('DefaultAxesFontSize', 18);
+	ax = gca;
+	ax.YColor = greenColor;
+	ax.XColor = greenColor;
+
 	addpath lib/CategoricalScatterplot
-
-	pathstr = sprintf('img/missmiss/%d-%d-%d-%d%d%2.0f', clock);
-
-	valfig = figure('DefaultAxesFontSize', 18);
-	ax = gca;
-	ax.YColor = greenColor;
-	ax.XColor = greenColor;
-	CategoricalScatterplot(verrs, vAlgNames, 'MarkerSize', 50, 'WhiskerColor', 'k', 'MedianColor', 'k', 'BoxColor', yellowColor, 'BoxAlpha', .29);
-	yl = ylim;
-	if yl(2) > 10000
-		ylim([0 30]);
-	end
-	title('Error in Filled Data', 'Color', greenColor);
-	ylabel('Error', 'Color', greenColor);
-	savefig(valfig, strcat('value-', pathstr, '.fig', 'compact'));
-	saveas(valfig, strcat('value-', pathstr, '.png'));
-
-	covfig = figure('DefaultAxesFontSize', 18);
-	ax = gca;
-	ax.YColor = greenColor;
-	ax.XColor = greenColor;
-	CategoricalScatterplot(cerrs, algNames, 'MarkerSize', 50, 'WhiskerColor', 'k', 'MedianColor', 'k', 'BoxColor', yellowColor, 'BoxAlpha', .29);
-	yl = ylim;
-	if yl(2) > 10000
-		ylim([0 30]);
-	end
-	title('Error in Covariance', 'Color', greenColor);
-	ylabel('Error', 'Color', greenColor);
-	savefig(covfig, strcat('covar-', pathstr, '.fig', 'compact'));
-	saveas(covfig, strcat('covar-', pathstr, '.png'));
-	close(covfig);
-
+	CategoricalScatterplot(vals, names, 'MarkerSize', 50, 'WhiskerColor', 'k', 'MedianColor', 'k', 'BoxColor', yellowColor, 'BoxAlpha', .29);
 	rmpath lib/CategoricalScatterplot
+
+	yl = ylim;
+	if yl(2) > 10000
+		ylim([0 30]);
+	end
+	title(strcat('Error in ', figname), 'Color', greenColor);
+	ylabel('Error', 'Color', greenColor);
+	savefig(handle, strcat(prefix, '-', pathstr, '.fig', 'compact'));
+	saveas(handle, strcat(prefix, '-', pathstr, '.png'));
 end
 
 function parallelPrint(str, parallelize)
