@@ -70,8 +70,8 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 	save('bin/vars.mat', 'X', 'covr', 'verrs', 'cerrs', 'algs');
 
 	% Print table of values
-	fprintf(' Algorithm | Value Error (std) | Covariance Error (std) | Runtime, ms (std) | n (of %d) \n', iters);
-	fprintf('-----------+-------------------+------------------------+-------------------+-----------\n');
+	fprintf(' Algorithm | Value Error (std) | Covariance Error (std) | Time, ms (std) | n (of %d) \n', iters);
+	fprintf('-----------+-------------------+------------------------+----------------+-----------\n');
 	for i = 1:length(algs)
 		printTableRow(algs(i).name, verrs, cerrs, runtimes, i);
 		if includeCheats
@@ -112,7 +112,7 @@ function printTableRow(name, verrs, cerrs, runtimes, offset)
 	rmn = truncateLargeValue(mean(runtimes(:, offset), 'omitnan'));
 	rst = truncateLargeValue(std(runtimes(:, offset), 'omitnan'));
 	num = sum(~isnan(verrs(:, offset)));
-	fprintf('%10s | %10s (%4s) | %10s (%4s)    | %9s (%4s) | %d\n', name, num2str(vmn, '%.1f'), num2str(vst, '%.1f'), num2str(cmn, '%.1f'), num2str(cst, '%.1f'), num2str(rmn, '%.1f'), num2str(rst, '%.1f'), num);
+	fprintf('%10s | %10s (%5s) | %10s (%5s)    | %7s (%4s) | %d\n', name, num2str(vmn, '%.1f'), num2str(vst, '%.1f'), num2str(cmn, '%.1f'), num2str(cst, '%.1f'), num2str(rmn, '%.1f'), num2str(rst, '%.0f'), num);
 end
 
 function [val] = truncateLargeValue(val)
