@@ -70,13 +70,13 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 	save('bin/vars.mat', 'X', 'covr', 'verrs', 'cerrs', 'algs');
 
 	% Print table of values
-	fprintf(' Algorithm | Value Error (std dev) | Covariance Error (std dev)\n');
-	fprintf('-----------+-----------------------+----------------------------\n');
+	fprintf(' Algorithm | Value Error (std dev) | Covariance Error (std dev) | n (of %d) \n', iters);
+	fprintf('-----------+-----------------------+----------------------------+-----------\n');
 	for i = 1:length(algs)
-		fprintf('%10s | %11s (%5s)   | %11s (%5s)\n', algs(i).name, num2str(mean(verrs(:, i), 'omitnan'), '%.2f'), num2str(std(verrs(:, i)), '%.2f'), num2str(mean(cerrs(:, i), 'omitnan'), '%.2f'), num2str(std(cerrs(:, i)), '%.2f'));
+		fprintf('%10s | %11s (%5s)   | %11s (%5s)       | %d\n', algs(i).name, num2str(mean(verrs(:, i), 'omitnan'), '%.2f'), num2str(std(verrs(:, i), 'omitnan'), '%.2f'), num2str(mean(cerrs(:, i), 'omitnan'), '%.2f'), num2str(std(cerrs(:, i), 'omitnan'), '%.2f'), sum(~isnan(verrs(:, i))));
 		if includeCheats
 			offset = length(algs);
-			fprintf('%10s | %11s (%5s)   | %11s (%5s)\n', strcat(algs(i).name, '_X'), num2str(mean(verrs(:, offset+i), 'omitnan'), '%.2f'), num2str(std(verrs(:, offset+i)), '%.2f'), num2str(mean(cerrs(:, offset+i), 'omitnan'), '%.2f'), num2str(std(cerrs(:, offset+i)), '%.2f'));
+			fprintf('%10s | %11s (%5s)   | %11s (%5s)       | %d\n', strcat(algs(i).name, '_X'), num2str(mean(verrs(:, offset+i), 'omitnan'), '%.2f'), num2str(std(verrs(:, offset+i), 'omitnan'), '%.2f'), num2str(mean(cerrs(:, offset+i), 'omitnan'), '%.2f'), num2str(std(cerrs(:, offset+i), 'omitnan'), '%.2f'), sum(~isnan(verrs(:, offset+i))));
 		end
 	end
 
