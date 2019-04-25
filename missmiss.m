@@ -1,6 +1,7 @@
 % missmiss loads missing data and does stuff with it
 function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 	p = inputParser;
+	addOptional(p, 'algList', "small-n", @(x) any(validatestring(x, {'small-n'})));
 	addOptional(p, 'iters', 3, @(x) isnumeric(x) && x>0);
 	addParameter(p, 'numToUse', 0, @(x) isnumeric(x) && x>=0); % Zero means all
 	addParameter(p, 'parallelize', false, @islogical);
@@ -22,20 +23,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 
 	covr = cov(X);
 
-	% Set up functions to iterate through
-	algs = [];
-	algs = [algs; struct('func', @fillCCA, 'name', 'CCA', 'args', struct())];
-	algs = [algs; struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true))];
-	algs = [algs; struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 10, 'length', 100))];
-	algs = [algs; struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', size(X, 2)))];
-	algs = [algs; struct('func', @fillPCA, 'name', 'PCA', 'args', struct('k', 6, 'VariableWeights', 'variance'))];
-	algs = [algs; struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'))];
-	algs = [algs; struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean'))];
-	algs = [algs; struct('func', @fillCascadeAuto, 'name', 'Casc', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500))];
-	algs = [algs; struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 6, 'VariableWeights', 'variance', 'algorithm', 'eig')))];
-	algs = [algs; struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()))];
-	algs = [algs; struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'args', struct('nh', 6, 'trainMissingRows', true)))];
-	% algs = [algs; struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)))];
+	algs = getAlgList(p.Results.algList, size(X, 2));
 
 	% Calculate errors
 	verrs = zeros(p.Results.iters, length(algs));
@@ -254,5 +242,27 @@ function [X] = selectSubset(X, numToUse)
 
 	if numToUse > 0
 		X = X(randsample(num, numToUse), :); % Sample without replacement
+	end
+end
+
+function [algs] = getAlgList(algList, sizeX)
+	switch algList
+		case 'small-n'
+			algs = [
+				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
+				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 10, 'length', 100));
+				struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', sizeX));
+				struct('func', @fillPCA, 'name', 'PCA', 'args', struct('k', 6, 'VariableWeights', 'variance'));
+				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
+				struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean'));
+				struct('func', @fillCascadeAuto, 'name', 'Casc', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
+				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 6, 'VariableWeights', 'variance', 'algorithm', 'eig')));
+				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
+				struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'args', struct('nh', 6, 'trainMissingRows', true)));
+				% struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
+			];
+		otherwise
+			error("No algorithm list name was provided.")
 	end
 end
