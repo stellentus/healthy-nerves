@@ -1,7 +1,7 @@
 % missmiss loads missing data and does stuff with it
 function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 	p = inputParser;
-	addOptional(p, 'algList', "quick", @(x) any(validatestring(x, {'small-n', 'quick', 'all'})));
+	addOptional(p, 'algList', "quick", @(x) any(validatestring(x, {'small-n', 'quick', 'all', 'standard'})));
 	addOptional(p, 'iters', 3, @(x) isnumeric(x) && x>0);
 	addParameter(p, 'numToUse', 0, @(x) isnumeric(x) && x>=0); % Zero means all
 	addParameter(p, 'parallelize', false, @islogical);
@@ -253,11 +253,19 @@ function [algs] = getAlgList(algList, sizeX)
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
 				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
 			];
-		case 'small-n'
+		case 'standard'
 			algs = [
 				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
 				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 10, 'length', 100));
+				struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', sizeX));
+				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
+				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
+			];
+		case 'small-n'
+			algs = [
+				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
+				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
 				struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', sizeX));
 				struct('func', @fillPCA, 'name', 'PCA', 'args', struct('k', 6, 'VariableWeights', 'variance'));
 				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
