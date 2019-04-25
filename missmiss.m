@@ -84,10 +84,11 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 		end
 
 		% Plot values
-		if p.Results.numToUse <= 0
-			p.Results.numToUse = size(X, 1);
+		numSamples = p.Results.numToUse;
+		if numSamples <= 0
+			numSamples = size(X, 1);
 		end
-		plotBoxes(verrs, cerrs, runtimes, algNames, p.Results.numToUse);
+		plotBoxes(verrs, cerrs, runtimes, algNames, numSamples);
 	end
 
 	rmpath missing
