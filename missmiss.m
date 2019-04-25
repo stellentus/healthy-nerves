@@ -92,13 +92,15 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 			calcStats(verrs, 'value', algNames)
 			fprintf("\nCovariance Errors\n");
 			calcStats(cerrs, 'covariance', algNames)
+			fprintf("\nRuntimes\n");
+			calcStats(runtimes, 'runtime', algNames)
 		end
 
 		% Plot values
 		if numToUse <= 0
 			numToUse = size(X, 1);
 		end
-		plotBoxes(verrs, cerrs, algNames, numToUse);
+		plotBoxes(verrs, cerrs, runtimes, algNames, numToUse);
 	end
 
 	rmpath missing
@@ -212,7 +214,7 @@ function calcStats(data, name, algNames)
 	end
 end
 
-function plotBoxes(verrs, cerrs, algNames, numSamples)
+function plotBoxes(verrs, cerrs, runtimes, algNames, numSamples)
 	vAlgNames = algNames;
 	if (all(isnan(verrs(:, 1))))
 		verrs = verrs(:, 2:end);
@@ -221,12 +223,13 @@ function plotBoxes(verrs, cerrs, algNames, numSamples)
 
 	pathstr = sprintf('img/missmiss/%d-%d-%d-%d%d%02.0f (%d samples)', clock, numSamples);
 
-	valfig = plotOne('Filled Data', 'value', verrs, vAlgNames, pathstr);
-	covfig = plotOne('Covariance', 'covar', cerrs, algNames, pathstr);
+	valfig = plotOne('Error in Filled Data', 'Error', 'value', verrs, vAlgNames, pathstr);
+	covfig = plotOne('Error in Covariance', 'Error', 'covar', cerrs, algNames, pathstr);
+	runfig = plotOne('Runtimes', 'Time (ms)', 'times', runtimes, algNames, pathstr);
 	close(covfig);
 end
 
-function [handle] = plotOne(figname, prefix, vals, names, pathstr)
+function [handle] = plotOne(figname, label, prefix, vals, names, pathstr)
 	% Replace NaN and Inf with a really big number. This prevents errors in plotting.
 	vals(isnan(vals)) = realmax;
 	vals(isinf(vals)) = realmax;
@@ -249,8 +252,8 @@ function [handle] = plotOne(figname, prefix, vals, names, pathstr)
 		ymax = max(vals(vals~=realmax));
 		ylim([0 ymax]);
 	end
-	title(strcat("Error in ", figname), 'Color', greenColor);
-	ylabel('Error', 'Color', greenColor);
+	title(figname, 'Color', greenColor);
+	ylabel(label, 'Color', greenColor);
 	savefig(handle, strcat(pathstr, '-', prefix,  '.fig'), 'compact');
 	saveas(handle, strcat(pathstr, '-', prefix,  '.png'));
 end
