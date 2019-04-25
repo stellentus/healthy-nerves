@@ -56,6 +56,7 @@ end
 function plotBoxes(titleLabel, filename, scores, scoreName, bas)
 	addpath lib/CategoricalScatterplot
 
+	[~,~] = mkdir('img/batch'); % Read and ignore returns to suppress warning if dir exists.
 	pathstr = sprintf('img/batch/%s-%d-%d-%d-%d%d%2.0f', filename, clock);
 
 	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);

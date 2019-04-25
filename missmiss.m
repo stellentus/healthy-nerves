@@ -221,6 +221,7 @@ function plotBoxes(verrs, cerrs, runtimes, algNames, numSamples)
 		vAlgNames = algNames(2:end);
 	end
 
+	[~,~] = mkdir('img/missmiss'); % Read and ignore returns to suppress warning if dir exists.
 	pathstr = sprintf('img/missmiss/%d-%d-%d-%d%d%02.0f (%d samples)', clock, numSamples);
 
 	valfig = plotOne('Error in Filled Data', 'Error', 'value', verrs, vAlgNames, pathstr);

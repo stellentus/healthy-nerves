@@ -28,6 +28,7 @@ function batchDemos()
 	plotWithRange(6, data1, data3, 63, 0, 63, 126, 30, "F");
 	rmpath batches;
 
+	[~,~] = mkdir('img/batch'); % Read and ignore returns to suppress warning if dir exists.
 	pathstr = sprintf('img/batch/bvi-comparison-%d-%d-%d-%d%d%2.0f', clock);
 	savefig(fig, strcat(pathstr, '.fig'), 'compact');
 	saveas(fig, strcat(pathstr, '.png'));

@@ -41,14 +41,15 @@ function displayMeasure(index, measures, comb, can, jap, por)
 
 	addpath lib/CategoricalScatterplot;
 
-	pathstr = sprintf('img/norm-var-idx%02d-%d-%d-%d-%d%d%2.0f', index, clock);
+	[~,~] = mkdir('img/variance'); % Read and ignore returns to suppress warning if dir exists.
+	pathstr = sprintf('img/variance/norm-var-idx%02d-%d-%d-%d-%d%d%2.0f', index, clock);
 
 	fig = figure('DefaultAxesFontSize', 18);
 	CategoricalScatterplot(vals, [{'All'} {'Canada'} {'Japan'} {'Portugal'}]);
 	title(['Comparison of' measures(index)]);
 	savefig(fig, strcat(pathstr, '.fig'), 'compact');
 	saveas(fig, strcat(pathstr, '.png'));
-	saveas(fig, sprintf('img/variance-%02d.png',index)); % No timestamp so it's possible to keep the same image open
+	saveas(fig, sprintf('img/variance/variance-%02d.png',index)); % No timestamp so it's possible to keep the same image open
 
 	rmpath lib/CategoricalScatterplot;
 end
