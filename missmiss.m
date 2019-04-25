@@ -73,10 +73,9 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 	fprintf(' Algorithm | Value Error (std) | Covariance Error (std) | Runtime, ms (std) | n (of %d) \n', iters);
 	fprintf('-----------+-------------------+------------------------+-------------------+-----------\n');
 	for i = 1:length(algs)
-		fprintf('%10s | %10s (%4s) | %10s (%4s)    | %9s (%4s) | %d\n', algs(i).name, num2str(mean(verrs(:, i), 'omitnan'), '%.1f'), num2str(std(verrs(:, i), 'omitnan'), '%.1f'), num2str(mean(cerrs(:, i), 'omitnan'), '%.1f'), num2str(std(cerrs(:, i), 'omitnan'), '%.1f'), num2str(mean(runtimes(:, i), 'omitnan'), '%.1f'), num2str(std(runtimes(:, i), 'omitnan'), '%.1f'), sum(~isnan(verrs(:, i))));
+		printTableRow(algs(i).name, verrs, cerrs, runtimes, i);
 		if includeCheats
-			offset = length(algs);
-			fprintf('%10s | %10s (%4s) | %10s (%4s)    | %9s (%4s) | %d\n', strcat(algs(i).name, '_X'), num2str(mean(verrs(:, offset+i), 'omitnan'), '%.1f'), num2str(std(verrs(:, offset+i), 'omitnan'), '%.1f'), num2str(mean(cerrs(:, offset+i), 'omitnan'), '%.1f'), num2str(std(cerrs(:, offset+i), 'omitnan'), '%.1f'), num2str(mean(runtimes(:, offset+i), 'omitnan'), '%.1f'), num2str(std(runtimes(:, offset+i), 'omitnan'), '%.1f'), sum(~isnan(verrs(:, offset+i))));
+			printTableRow(algs(i).name, verrs, cerrs, runtimes, length(algs)+i);
 		end
 	end
 
@@ -103,6 +102,17 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 	end
 
 	rmpath missing
+end
+
+function printTableRow(name, verrs, cerrs, runtimes, offset)
+	vmn = mean(verrs(:, i), 'omitnan');
+	vst = std(verrs(:, i), 'omitnan');
+	cmn = mean(cerrs(:, i), 'omitnan');
+	cst = std(cerrs(:, i), 'omitnan');
+	rmn = mean(runtimes(:, i), 'omitnan');
+	rst = std(runtimes(:, i), 'omitnan');
+	num = sum(~isnan(verrs(:, i)));
+	fprintf('%10s | %10s (%4s) | %10s (%4s)    | %9s (%4s) | %d\n', name, num2str(vmn, '%.1f'), num2str(vst, '%.1f'), num2str(cmn, '%.1f'), num2str(cst, '%.1f'), num2str(rmn, '%.1f'), num2str(rst, '%.1f'), num);
 end
 
 function [values] = loadMEF()
