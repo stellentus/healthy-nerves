@@ -205,7 +205,7 @@ function plotBoxes(verrs, cerrs, algNames)
 
 	addpath lib/CategoricalScatterplot
 
-	pathstr = sprintf('img/missmiss-%d-%d-%d-%d%d%2.0f', clock);
+	pathstr = sprintf('img/missmiss/%d-%d-%d-%d%d%2.0f', clock);
 
 	valfig = figure('DefaultAxesFontSize', 18);
 	ax = gca;
