@@ -29,7 +29,7 @@ function batchDemos()
 	rmpath batches;
 
 	pathstr = sprintf('img/batch/bvi-comparison-%d-%d-%d-%d%d%2.0f', clock);
-	savefig(fig, strcat(pathstr, '.fig', 'compact'));
+	savefig(fig, strcat(pathstr, '.fig'), 'compact');
 	saveas(fig, strcat(pathstr, '.png'));
 	copyfile(strcat(pathstr, '.png'), 'img/batch/bvi-comparison.png'); % Also save without timestamp
 end

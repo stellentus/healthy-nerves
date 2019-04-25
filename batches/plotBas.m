@@ -77,7 +77,7 @@ function plotBoxes(titleLabel, filename, scores, scoreName, bas)
 		ta1 = annotation('textbox', namePos, 'string', bas(i).Name, 'HorizontalAlignment', 'center', 'VerticalAlignment', 'cap', 'FontSize', 18);
 	end
 
-	savefig(fig, strcat(pathstr, '.fig', 'compact'));
+	savefig(fig, strcat(pathstr, '.fig'), 'compact');
 	saveas(fig, strcat(pathstr, '.png'));
 	copyfile(strcat(pathstr, '.png'), strcat('img/batch/', filename, '.png')); % Also save without timestamp
 

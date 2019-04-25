@@ -227,7 +227,7 @@ function [handle] = plotOne(figname, prefix, vals, names, pathstr)
 	end
 	title(strcat("Error in ", figname), 'Color', greenColor);
 	ylabel('Error', 'Color', greenColor);
-	savefig(handle, strcat(pathstr, '-', prefix,  '.fig', 'compact'));
+	savefig(handle, strcat(pathstr, '-', prefix,  '.fig'), 'compact');
 	saveas(handle, strcat(pathstr, '-', prefix,  '.png'));
 end
 

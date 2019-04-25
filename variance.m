@@ -46,7 +46,7 @@ function displayMeasure(index, measures, comb, can, jap, por)
 	fig = figure('DefaultAxesFontSize', 18);
 	CategoricalScatterplot(vals, [{'All'} {'Canada'} {'Japan'} {'Portugal'}]);
 	title(['Comparison of' measures(index)]);
-	savefig(fig, strcat(pathstr, '.fig', 'compact'));
+	savefig(fig, strcat(pathstr, '.fig'), 'compact');
 	saveas(fig, strcat(pathstr, '.png'));
 	saveas(fig, sprintf('img/variance-%02d.png',index)); % No timestamp so it's possible to keep the same image open
 
