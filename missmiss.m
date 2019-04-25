@@ -1,7 +1,7 @@
 % missmiss loads missing data and does stuff with it
 function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 	p = inputParser;
-	addOptional(p, 'algList', "quick", @(x) any(validatestring(x, {'small-n', 'quick', 'all', 'standard'})));
+	addOptional(p, 'algList', "quick", @(x) any(validatestring(x, {'smalln', 'quick', 'all', 'standard', 'PCA', 'TSR', 'AE', 'cascade', 'DA'})));
 	addOptional(p, 'iters', 3, @(x) isnumeric(x) && x>0);
 	addParameter(p, 'numToUse', 0, @(x) isnumeric(x) && x>=0); % Zero means all
 	addParameter(p, 'parallelize', false, @islogical);
@@ -48,8 +48,8 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 	save('bin/missmiss/vars.mat', 'X', 'covr', 'verrs', 'cerrs', 'algs');
 
 	% Print table of values
-	fprintf(' Algorithm | Value Error (std) | Covariance Error (std) | Time (std)     | n (of %d) \n', p.Results.iters);
-	fprintf('-----------+-------------------+------------------------+----------------+-----------\n');
+	fprintf(' Algorithm | Value Error (std)  | Covar Error (std)  | Time (std)     | n (of %d) \n', p.Results.iters);
+	fprintf('-----------+--------------------+--------------------+----------------+-----------\n');
 	for i = 1:length(algs)
 		printTableRow(algs(i).name, verrs, cerrs, runtimes, i);
 		if p.Results.includeCheats
@@ -76,7 +76,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 		if numSamples <= 0
 			numSamples = size(X, 1);
 		end
-		plotBoxes(verrs, cerrs, runtimes, algNames, numSamples);
+		plotBoxes(verrs, cerrs, runtimes, algNames, numSamples, p.Results.algList);
 	end
 
 	rmpath missing
@@ -90,7 +90,7 @@ function printTableRow(name, verrs, cerrs, runtimes, offset)
 	rmn = truncateLargeValue(mean(runtimes(:, offset), 'omitnan'));
 	rst = truncateLargeValue(std(runtimes(:, offset), 'omitnan'));
 	num = sum(~isnan(verrs(:, offset)));
-	fprintf('%10s | %10s (%5s) | %10s (%5s)    | %14s | %d \n', name, num2str(vmn, '%.1f'), num2str(vst, '%.1f'), num2str(cmn, '%.1f'), num2str(cst, '%.1f'), displayTime(rmn, rst), num);
+	fprintf('%10s | %10s (%5s) | %10s (%5s) | %14s | %d \n', name, num2str(vmn, '%.1f'), num2str(vst, '%.1f'), num2str(cmn, '%.1f'), num2str(cst, '%.1f'), displayTime(rmn, rst), num);
 end
 
 function [str] = displayTime(mn, st)
@@ -106,11 +106,11 @@ function [str] = displayTime(mn, st)
 	end
 
 	if mn < 10
-		str = sprintf("%.2f (%.2f) %s", mn, st, units);
+		str = sprintf("%.2f (%.2f) %2s", mn, st, units);
 	elseif mn < 100
-		str = sprintf("%.1f (%.1f) %s", mn, st, units);
+		str = sprintf("%.1f (%.1f) %2s", mn, st, units);
 	else
-		str = sprintf("%.0f (%.0f) %s", mn, st, units);
+		str = sprintf("%.0f (%.0f) %2s", mn, st, units);
 	end
 end
 
@@ -212,7 +212,7 @@ function calcStats(data, name, algNames)
 	end
 end
 
-function plotBoxes(verrs, cerrs, runtimes, algNames, numSamples)
+function plotBoxes(verrs, cerrs, runtimes, algNames, numSamples, algList)
 	vAlgNames = algNames;
 	if (all(isnan(verrs(:, 1))))
 		verrs = verrs(:, 2:end);
@@ -220,7 +220,7 @@ function plotBoxes(verrs, cerrs, runtimes, algNames, numSamples)
 	end
 
 	[~,~] = mkdir('img/missmiss'); % Read and ignore returns to suppress warning if dir exists.
-	pathstr = sprintf('img/missmiss/%d-%d-%d-%d%d%02.0f (%d samples)', clock, numSamples);
+	pathstr = sprintf('img/missmiss/%d-%d-%d-%d%d%02.0f (%d-%s)', clock, numSamples, algList);
 
 	valfig = plotOne('Error in Filled Data', 'Error', 'value', verrs, vAlgNames, pathstr, numSamples);
 	covfig = plotOne('Error in Covariance', 'Error', 'covar', cerrs, algNames, pathstr, numSamples);
@@ -239,6 +239,9 @@ function [handle] = plotOne(figname, label, prefix, vals, names, pathstr, numSam
 	CategoricalScatterplot(vals, names, 'MarkerSize', 50);
 	rmpath lib/CategoricalScatterplot
 
+	if length(names) > 6
+		xtickangle(45);
+	end
 	yl = ylim;
 	if yl(2) > 10000
 		ymax = max(vals(vals<10000));
@@ -283,7 +286,7 @@ function [algs] = getAlgList(algList, sizeX)
 				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
 				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
 			];
-		case 'small-n'
+		case 'smalln'
 			algs = [
 				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
@@ -302,18 +305,51 @@ function [algs] = getAlgList(algList, sizeX)
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
 				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 10, 'length', 100));
 				struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', sizeX));
-				struct('func', @fillTSR, 'name', 'TSR/2', 'args', struct('k', round(sizeX/2)));
 				struct('func', @fillPCA, 'name', 'PCA6', 'args', struct('k', 6, 'VariableWeights', 'variance'));
 				struct('func', @fillPCA, 'name', 'PCA13', 'args', struct('k', 13, 'VariableWeights', 'variance'));
 				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
-				struct('func', @fillAutoencoder, 'name', 'AE6', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean'));
+				struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean'));
 				struct('func', @fillCascadeAuto, 'name', 'Casc6', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
-				struct('func', @fillAutoencoder, 'name', 'AE13', 'args', struct('nh', 13, 'trainMissingRows', true, 'handleNaN', 'mean'));
 				struct('func', @fillCascadeAuto, 'name', 'Casc13', 'args', struct('nh', 13, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
 				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 6, 'VariableWeights', 'variance', 'algorithm', 'eig')));
 				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
 				struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'args', struct('nh', 6, 'trainMissingRows', true)));
 				struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
+			];
+		case 'PCA'
+			algs = [];
+			for i=1:3:21
+				algs = [algs; struct('func', @fillPCA, 'name', sprintf('P%02d', i), 'args', struct('k', i, 'VariableWeights', 'variance'));];
+			end
+		case 'TSR'
+			algs = [];
+			for i=1:sizeX
+				algs = [algs; struct('func', @fillTSR, 'name', sprintf('T%02d', i), 'args', struct('k', i));];
+			end
+		case 'AE'
+			algs = [];
+			for i=1:sizeX
+				algs = [algs; struct('func', @fillAutoencoder, 'name', sprintf('A%02d', i), 'args', struct('nh', i, 'trainMissingRows', true, 'handleNaN', 'mean'));];
+			end
+		case 'cascade'
+			algs = [];
+			for i=1:sizeX
+				algs = [algs; struct('func', @fillCascadeAuto, 'name', sprintf('C%02d', i), 'args', struct('nh', i, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));];
+			end
+		case 'DA'
+			algs = [
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 5, 'length', 50));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 10, 'length', 50));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 20, 'length', 50));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 50, 'length', 50));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 5, 'length', 100));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 10, 'length', 100));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 20, 'length', 100));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 50, 'length', 100));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 5, 'length', 200));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 10, 'length', 200));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 20, 'length', 200));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 50, 'length', 200));
 			];
 		otherwise
 			error("No algorithm list name was provided.")
