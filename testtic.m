@@ -1,10 +1,10 @@
 % testtic shows that tic/toc works within parfor. It would be nice to do this a bit better with t-tests.
 
-% with threads=50 and actionsPerThread=50:
+% with threads=50 and actionsPerThread=50 , this took 2m35.323s to run remotely on my VM on Matthias's computer:
 % 	Average error per test (para): 0.000239 (0.000755) with mean 0.060208 and fraction 0.3969% (1.2537).
 % 	Average error per test (sing): 0.000215 (0.000041) with mean 0.060208 and fraction 0.3960% (0.0763).
 
-% with threads=100 and actionsPerThread=200:
+% with threads=100 and actionsPerThread=200, this took 20m35.903s to run remotely on my VM on Matthias's computer:
 % 	Average error per test (para): 0.000211 (0.000094) with mean 0.062459 and fraction 0.34% (0.15).
 % 	Average error per test (sing): 0.000217 (0.000054) with mean 0.062459 and fraction 0.39% (0.10).
 function testtic
