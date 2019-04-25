@@ -222,10 +222,10 @@ function [handle] = plotOne(figname, prefix, vals, names, pathstr)
 	if yl(2) > 10000
 		ylim([0 30]);
 	end
-	title(strcat('Error in ', figname), 'Color', greenColor);
+	title(strcat("Error in ", figname), 'Color', greenColor);
 	ylabel('Error', 'Color', greenColor);
-	savefig(handle, strcat(prefix, '-', pathstr, '.fig', 'compact'));
-	saveas(handle, strcat(prefix, '-', pathstr, '.png'));
+	savefig(handle, strcat(pathstr, '-', prefix,  '.fig', 'compact'));
+	saveas(handle, strcat(pathstr, '-', prefix,  '.png'));
 end
 
 function parallelPrint(str, parallelize)
