@@ -291,11 +291,11 @@ function [algs] = getAlgList(algList, sizeX)
 				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
 				struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', sizeX));
-				struct('func', @fillPCA, 'name', 'PCA', 'args', struct('k', 6, 'VariableWeights', 'variance'));
+				struct('func', @fillPCA, 'name', 'PCA', 'args', struct('k', 7, 'VariableWeights', 'variance'));
 				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
 				struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean'));
 				struct('func', @fillCascadeAuto, 'name', 'Casc', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
-				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 6, 'VariableWeights', 'variance', 'algorithm', 'eig')));
+				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 7, 'VariableWeights', 'variance', 'algorithm', 'eig')));
 				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
 				struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'args', struct('nh', 6, 'trainMissingRows', true)));
 			];
@@ -311,12 +311,20 @@ function [algs] = getAlgList(algList, sizeX)
 				struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean'));
 				struct('func', @fillCascadeAuto, 'name', 'Casc6', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
 				struct('func', @fillCascadeAuto, 'name', 'Casc13', 'args', struct('nh', 13, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
-				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 6, 'VariableWeights', 'variance', 'algorithm', 'eig')));
+				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 7, 'VariableWeights', 'variance', 'algorithm', 'eig')));
 				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
 				struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'args', struct('nh', 6, 'trainMissingRows', true)));
 				struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
 			];
 		case 'PCA'
+			% For numToUse=40 and iters=14 with 3 different seeds:
+			%	* k>20 results in very large errors. The minimum error appears to be around 1<k<13, though there's not much difference in that range. At k=4 there is an odd jump in runtimes.
+			%	* Errors were all 2-3x higher than the first test. Runtime was lowest for 1 and 16, with maximums at 10 and 19.
+			%	* Errors between the previous two, again lowest approximately around 7 (u-shaped function of k). Runtime was lowest at 1, 7, 19; highest at 4 and especially 13.
+			% For numToUse=277 (all) and iters=14 with 3 different seeds:
+			%	* Results are similar to above, but optimal error might be closer to 13-16. (Error magnitude is obviously lower.) Runtime is lowest at 1, 4, 13; highest at 4, 7, and especially 16+.
+			% 	* Values are minimal at 10 and rise on either side (barely). Runtimes peak at 7 and fall off to either side.
+			% 	* Values are lowest at 7 or 16, roughly U with a middle bump. Runtimes peak at 7 and 16 and are minimal everywhere else.
 			algs = [];
 			for i=1:3:21
 				algs = [algs; struct('func', @fillPCA, 'name', sprintf('P%02d', i), 'args', struct('k', i, 'VariableWeights', 'variance'));];
