@@ -34,18 +34,19 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 
 	% Set up functions to iterate through
 	algs = [];
-	algs = [algs; struct('func', @fillCCA, 'name', 'CCA', 'args', struct())];
+	% algs = [algs; struct('func', @fillCCA, 'name', 'CCA', 'args', struct())];
 	algs = [algs; struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true))];
 	algs = [algs; struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 10, 'length', 100))];
 	algs = [algs; struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', size(X, 2)))];
-	algs = [algs; struct('func', @fillPCA, 'name', 'PCA', 'args', struct('k', 6, 'VariableWeights', 'variance'))];
+	% algs = [algs; struct('func', @fillPCA, 'name', 'PCA', 'args', struct('k', 6, 'VariableWeights', 'variance'))];
 	algs = [algs; struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'))];
-	algs = [algs; struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean'))];
+	% algs = [algs; struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean'))];
 	algs = [algs; struct('func', @fillCascadeAuto, 'name', 'Casc', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500))];
 	% algs = [algs; struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 6, 'VariableWeights', 'variance', 'algorithm', 'eig')))];
 	algs = [algs; struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()))];
 	% algs = [algs; struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'args', struct('nh', 6, 'trainMissingRows', true)))];
 	algs = [algs; struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)))];
+	algs = [algs; struct('func', @fillIterate, 'name', 'iCasc10', 'args', struct('method', @fillCascadeAuto, 'iterations', 10, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)))];
 
 	% Calculate errors
 	verrs = [[]];
@@ -198,7 +199,7 @@ function plotBoxes(verrs, cerrs, algNames, numSamples)
 		vAlgNames = algNames(2:end);
 	end
 
-	pathstr = sprintf('img/missmiss/%d-%d-%d-%d%d%2.0f (%d samples)', clock, numSamples);
+	pathstr = sprintf('img/missmiss/%d-%d-%d-%d%d%02.0f (%d samples)', clock, numSamples);
 
 	valfig = plotOne('Filled Data', 'value', verrs, vAlgNames, pathstr);
 	covfig = plotOne('Covariance', 'covar', cerrs, algNames, pathstr);
