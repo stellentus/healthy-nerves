@@ -1,7 +1,7 @@
 % missmiss loads missing data and does stuff with it
 function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 	p = inputParser;
-	addOptional(p, 'algList', "small-n", @(x) any(validatestring(x, {'small-n'})));
+	addOptional(p, 'algList', "quick", @(x) any(validatestring(x, {'small-n', 'quick', 'all'})));
 	addOptional(p, 'iters', 3, @(x) isnumeric(x) && x>0);
 	addParameter(p, 'numToUse', 0, @(x) isnumeric(x) && x>=0); % Zero means all
 	addParameter(p, 'parallelize', false, @islogical);
@@ -247,6 +247,12 @@ end
 
 function [algs] = getAlgList(algList, sizeX)
 	switch algList
+		case 'quick'
+			algs = [
+				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
+				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
+				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
+			];
 		case 'small-n'
 			algs = [
 				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
@@ -260,7 +266,25 @@ function [algs] = getAlgList(algList, sizeX)
 				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 6, 'VariableWeights', 'variance', 'algorithm', 'eig')));
 				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
 				struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'args', struct('nh', 6, 'trainMissingRows', true)));
-				% struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
+			];
+		case 'all'
+			algs = [
+				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
+				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 10, 'length', 100));
+				struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', sizeX));
+				struct('func', @fillTSR, 'name', 'TSR/2', 'args', struct('k', round(sizeX/2)));
+				struct('func', @fillPCA, 'name', 'PCA6', 'args', struct('k', 6, 'VariableWeights', 'variance'));
+				struct('func', @fillPCA, 'name', 'PCA13', 'args', struct('k', 13, 'VariableWeights', 'variance'));
+				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
+				struct('func', @fillAutoencoder, 'name', 'AE6', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean'));
+				struct('func', @fillCascadeAuto, 'name', 'Casc6', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
+				struct('func', @fillAutoencoder, 'name', 'AE13', 'args', struct('nh', 13, 'trainMissingRows', true, 'handleNaN', 'mean'));
+				struct('func', @fillCascadeAuto, 'name', 'Casc13', 'args', struct('nh', 13, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
+				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 6, 'VariableWeights', 'variance', 'algorithm', 'eig')));
+				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
+				struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'args', struct('nh', 6, 'trainMissingRows', true)));
+				struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
 			];
 		otherwise
 			error("No algorithm list name was provided.")
