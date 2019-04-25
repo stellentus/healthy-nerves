@@ -49,8 +49,6 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 	algs = [algs; struct('func', @fillIterate, 'name', 'iCasc10', 'args', struct('method', @fillCascadeAuto, 'iterations', 10, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)))];
 
 	% Calculate errors
-	verrs = [[]];
-	cerrs = [[]];
 	verrs = zeros(iters, length(algs));
 	cerrs = zeros(iters, length(algs));
 	if parallelize
