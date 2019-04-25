@@ -48,7 +48,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 	save('bin/missmiss/vars.mat', 'X', 'covr', 'verrs', 'cerrs', 'algs');
 
 	% Print table of values
-	fprintf(' Algorithm | Value Error (std) | Covariance Error (std) | Time, ms (std) | n (of %d) \n', p.Results.iters);
+	fprintf(' Algorithm | Value Error (std) | Covariance Error (std) | Time (std)     | n (of %d) \n', p.Results.iters);
 	fprintf('-----------+-------------------+------------------------+----------------+-----------\n');
 	for i = 1:length(algs)
 		printTableRow(algs(i).name, verrs, cerrs, runtimes, i);
@@ -90,7 +90,28 @@ function printTableRow(name, verrs, cerrs, runtimes, offset)
 	rmn = truncateLargeValue(mean(runtimes(:, offset), 'omitnan'));
 	rst = truncateLargeValue(std(runtimes(:, offset), 'omitnan'));
 	num = sum(~isnan(verrs(:, offset)));
-	fprintf('%10s | %10s (%5s) | %10s (%5s)    | %7s (%4s) | %d\n', name, num2str(vmn, '%.1f'), num2str(vst, '%.1f'), num2str(cmn, '%.1f'), num2str(cst, '%.1f'), num2str(rmn, '%.1f'), num2str(rst, '%.0f'), num);
+	fprintf('%10s | %10s (%5s) | %10s (%5s)    | %14s | %d \n', name, num2str(vmn, '%.1f'), num2str(vst, '%.1f'), num2str(cmn, '%.1f'), num2str(cst, '%.1f'), displayTime(rmn, rst), num);
+end
+
+function [str] = displayTime(mn, st)
+	units = "s";
+	if mn < 0.1 || st < 0.1
+		mn = mn*1000;
+		st = st*1000;
+		units = "ms";
+	elseif mn >= 10000 || st >= 10000
+		mn = mn/1000;
+		st = st/1000;
+		units = "ks";
+	end
+
+	if mn < 10
+		str = sprintf("%.2f (%.2f) %s", mn, st, units);
+	elseif mn < 100
+		str = sprintf("%.1f (%.1f) %s", mn, st, units);
+	else
+		str = sprintf("%.0f (%.0f) %s", mn, st, units);
+	end
 end
 
 function [val] = truncateLargeValue(val)
@@ -126,7 +147,7 @@ function [verr, cerr, runtime] = testFuncs(algs, X, originalCov, includeCheats, 
 	for i = 1:length(algs)
 		tic;
 		[ve, ce] = testFunc(algs(i), seed, originalCov, missingX, completeX, originalMissingX, missingMask, parallelize);
-		runtime = [runtime toc*1000];
+		runtime = [runtime toc];
 
 		verr = [verr ve];
 		cerr = [cerr ce];
@@ -138,7 +159,7 @@ function [verr, cerr, runtime] = testFuncs(algs, X, originalCov, includeCheats, 
 		for i = 1:length(algs)
 			tic;
 			[ve, ce] = testFunc(algs(i), seed, originalCov, originalMissingX, completeX, originalMissingX, missingMask, parallelize);
-			runtime = [runtime toc*1000];
+			runtime = [runtime toc];
 
 			verr = [verr ve];
 			cerr = [cerr ce];
