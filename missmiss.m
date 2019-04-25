@@ -212,13 +212,13 @@ function plotBoxes(verrs, cerrs, runtimes, algNames, numSamples)
 	[~,~] = mkdir('img/missmiss'); % Read and ignore returns to suppress warning if dir exists.
 	pathstr = sprintf('img/missmiss/%d-%d-%d-%d%d%02.0f (%d samples)', clock, numSamples);
 
-	valfig = plotOne('Error in Filled Data', 'Error', 'value', verrs, vAlgNames, pathstr);
-	covfig = plotOne('Error in Covariance', 'Error', 'covar', cerrs, algNames, pathstr);
-	runfig = plotOne('Runtimes', 'Time (ms)', 'times', runtimes, algNames, pathstr);
+	valfig = plotOne('Error in Filled Data', 'Error', 'value', verrs, vAlgNames, pathstr, numSamples);
+	covfig = plotOne('Error in Covariance', 'Error', 'covar', cerrs, algNames, pathstr, numSamples);
+	runfig = plotOne('Runtimes', 'Time (ms)', 'times', runtimes, algNames, pathstr, numSamples);
 	close(covfig);
 end
 
-function [handle] = plotOne(figname, label, prefix, vals, names, pathstr)
+function [handle] = plotOne(figname, label, prefix, vals, names, pathstr, numSamples)
 	% Replace NaN and Inf with a really big number. This prevents errors in plotting.
 	vals(isnan(vals)) = realmax;
 	vals(isinf(vals)) = realmax;
@@ -241,7 +241,7 @@ function [handle] = plotOne(figname, label, prefix, vals, names, pathstr)
 		ymax = max(vals(vals<10000));
 		ylim([0 ymax]);
 	end
-	title(figname, 'Color', greenColor);
+	title(sprintf("%s (%d samples)", figname, numSamples), 'Color', greenColor);
 	ylabel(label, 'Color', greenColor);
 	savefig(handle, strcat(pathstr, '-', prefix,  '.fig'), 'compact');
 	saveas(handle, strcat(pathstr, '-', prefix,  '.png'));
