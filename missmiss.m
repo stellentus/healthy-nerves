@@ -78,12 +78,9 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 
 		if p.Results.iters ~= 1
 			% Calculate statistical significance
-			fprintf("\nValue Errors\n");
-			calcStats(verrs, 'value', algNames)
-			fprintf("\nCovariance Errors\n");
-			calcStats(cerrs, 'covariance', algNames)
-			fprintf("\nRuntimes\n");
-			calcStats(runtimes, 'runtime', algNames)
+			calcStats(verrs, 'Value Errors', algNames)
+			calcStats(cerrs, 'Covariance Errors', algNames)
+			calcStats(runtimes, 'Runtimes', algNames)
 		end
 
 		% Plot values
@@ -186,6 +183,7 @@ function [ve, ce, filledX] = testFunc(alg, seed, originalCov, missingX, complete
 end
 
 function calcStats(data, name, algNames)
+	fprintf("\n%s\n", name);
 	for i = 1:size(data, 2)
 		for j = i+1:size(data, 2)
 			[h, p] = ttest(data(:, i), data(:, j));
