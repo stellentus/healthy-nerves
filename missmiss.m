@@ -193,9 +193,11 @@ function plotBoxes(verrs, cerrs, algNames)
 		vAlgNames = algNames(2:end);
 	end
 
-	% Replace NaN with a really big number. This prevents errors in plotting.
+	% Replace NaN and Inf with a really big number. This prevents errors in plotting.
 	verrs(isnan(verrs)) = realmax;
 	cerrs(isnan(cerrs)) = realmax;
+	verrs(isinf(verrs)) = realmax;
+	cerrs(isinf(cerrs)) = realmax;
 
 	greenColor = [0.03529411764705882353, 0.38039215686274509804, 0.2];
 	redColor = [1 0.1490196078431372549 0];
