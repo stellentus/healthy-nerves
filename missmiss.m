@@ -223,17 +223,10 @@ function [handle] = plotOne(figname, label, prefix, vals, names, pathstr, numSam
 	vals(isnan(vals)) = realmax;
 	vals(isinf(vals)) = realmax;
 
-	greenColor = [0.03529411764705882353, 0.38039215686274509804, 0.2];
-	redColor = [1 0.1490196078431372549 0];
-	yellowColor = [0.98039215686274509804 0.8509803921568627451 0.25882352941176470588];
-
 	handle = figure('DefaultAxesFontSize', 18);
-	ax = gca;
-	ax.YColor = greenColor;
-	ax.XColor = greenColor;
 
 	addpath lib/CategoricalScatterplot
-	CategoricalScatterplot(vals, names, 'MarkerSize', 50, 'WhiskerColor', 'k', 'MedianColor', 'k', 'BoxColor', yellowColor, 'BoxAlpha', .29);
+	CategoricalScatterplot(vals, names, 'MarkerSize', 50);
 	rmpath lib/CategoricalScatterplot
 
 	yl = ylim;
@@ -241,8 +234,8 @@ function [handle] = plotOne(figname, label, prefix, vals, names, pathstr, numSam
 		ymax = max(vals(vals<10000));
 		ylim([0 ymax]);
 	end
-	title(sprintf("%s (%d samples)", figname, numSamples), 'Color', greenColor);
-	ylabel(label, 'Color', greenColor);
+	title(sprintf("%s (%d samples)", figname, numSamples));
+	ylabel(label);
 	savefig(handle, strcat(pathstr, '-', prefix,  '.fig'), 'compact');
 	saveas(handle, strcat(pathstr, '-', prefix,  '.png'));
 end
