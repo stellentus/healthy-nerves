@@ -89,7 +89,9 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 
 		if iters ~= 1
 			% Calculate statistical significance
+			fprintf("\nValue Errors\n");
 			calcStats(verrs, 'value', algNames)
+			fprintf("\nCovariance Errors\n");
 			calcStats(cerrs, 'covariance', algNames)
 		end
 
