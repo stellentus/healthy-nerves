@@ -51,17 +51,18 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 	% Calculate errors
 	verrs = zeros(iters, length(algs));
 	cerrs = zeros(iters, length(algs));
+	runtimes = zeros(iters, length(algs));
 	if parallelize
 		disp('Running parallel iterations...')
 		parfor i = 1:iters
 			rng(seed+i*31);
-			[verrs(i, :), cerrs(i, :)] = testFuncs(algs, X, covr, includeCheats, parallelize, numToUse);
+			[verrs(i, :), cerrs(i, :), runtimes(i, :)] = testFuncs(algs, X, covr, includeCheats, parallelize, numToUse);
 		end
 	else
 		for i = 1:iters
 			rng(seed+i*31);
 			fprintf('Iter %d of %d...', i, iters);
-			[verrs(i, :), cerrs(i, :)] = testFuncs(algs, X, covr, includeCheats, parallelize, numToUse);
+			[verrs(i, :), cerrs(i, :), runtimes(i, :)] = testFuncs(algs, X, covr, includeCheats, parallelize, numToUse);
 		end
 	end
 	fprintf('\n');
@@ -69,13 +70,13 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 	save('bin/vars.mat', 'X', 'covr', 'verrs', 'cerrs', 'algs');
 
 	% Print table of values
-	fprintf(' Algorithm | Value Error (std dev) | Covariance Error (std dev) | n (of %d) \n', iters);
-	fprintf('-----------+-----------------------+----------------------------+-----------\n');
+	fprintf(' Algorithm | Value Error (std) | Covariance Error (std) | Runtime, ms (std) | n (of %d) \n', iters);
+	fprintf('-----------+-------------------+------------------------+-------------------+-----------\n');
 	for i = 1:length(algs)
-		fprintf('%10s | %11s (%5s)   | %11s (%5s)       | %d\n', algs(i).name, num2str(mean(verrs(:, i), 'omitnan'), '%.2f'), num2str(std(verrs(:, i), 'omitnan'), '%.2f'), num2str(mean(cerrs(:, i), 'omitnan'), '%.2f'), num2str(std(cerrs(:, i), 'omitnan'), '%.2f'), sum(~isnan(verrs(:, i))));
+		fprintf('%10s | %10s (%4s) | %10s (%4s)    | %9s (%4s) | %d\n', algs(i).name, num2str(mean(verrs(:, i), 'omitnan'), '%.1f'), num2str(std(verrs(:, i), 'omitnan'), '%.1f'), num2str(mean(cerrs(:, i), 'omitnan'), '%.1f'), num2str(std(cerrs(:, i), 'omitnan'), '%.1f'), num2str(mean(runtimes(:, i), 'omitnan'), '%.1f'), num2str(std(runtimes(:, i), 'omitnan'), '%.1f'), sum(~isnan(verrs(:, i))));
 		if includeCheats
 			offset = length(algs);
-			fprintf('%10s | %11s (%5s)   | %11s (%5s)       | %d\n', strcat(algs(i).name, '_X'), num2str(mean(verrs(:, offset+i), 'omitnan'), '%.2f'), num2str(std(verrs(:, offset+i), 'omitnan'), '%.2f'), num2str(mean(cerrs(:, offset+i), 'omitnan'), '%.2f'), num2str(std(cerrs(:, offset+i), 'omitnan'), '%.2f'), sum(~isnan(verrs(:, offset+i))));
+			fprintf('%10s | %10s (%4s) | %10s (%4s)    | %9s (%4s) | %d\n', strcat(algs(i).name, '_X'), num2str(mean(verrs(:, offset+i), 'omitnan'), '%.1f'), num2str(std(verrs(:, offset+i), 'omitnan'), '%.1f'), num2str(mean(cerrs(:, offset+i), 'omitnan'), '%.1f'), num2str(std(cerrs(:, offset+i), 'omitnan'), '%.1f'), num2str(mean(runtimes(:, offset+i), 'omitnan'), '%.1f'), num2str(std(runtimes(:, offset+i), 'omitnan'), '%.1f'), sum(~isnan(verrs(:, offset+i))));
 		end
 	end
 
@@ -116,19 +117,22 @@ function [values] = loadMEF()
 	rmpath import;
 end
 
-function [verr, cerr] = testFuncs(algs, X, originalCov, includeCheats, parallelize, numToUse)
+function [verr, cerr, runtime] = testFuncs(algs, X, originalCov, includeCheats, parallelize, numToUse)
 	parallelPrint('Load...', parallelize);
 	X = selectSubset(X, numToUse);
 	[missingX, completeX, ~, originalMissingX, missingMask] = deleteProportional(X);
 
 	verr = [];
 	cerr = [];
+	runtime = [];
 
 	seed = randi(2^32-1); % Generate a new seed randomly, but save it
 
 	parallelPrint('Run ', parallelize);
 	for i = 1:length(algs)
+		tic;
 		[ve, ce] = testFunc(algs(i), seed, originalCov, missingX, completeX, originalMissingX, missingMask, parallelize);
+		runtime = [runtime toc*1000];
 
 		verr = [verr ve];
 		cerr = [cerr ce];
@@ -138,7 +142,9 @@ function [verr, cerr] = testFuncs(algs, X, originalCov, includeCheats, paralleli
 	if includeCheats
 		parallelPrint('\tCheat with ', parallelize);
 		for i = 1:length(algs)
+			tic;
 			[ve, ce] = testFunc(algs(i), seed, originalCov, originalMissingX, completeX, originalMissingX, missingMask, parallelize);
+			runtime = [runtime toc*1000];
 
 			verr = [verr ve];
 			cerr = [cerr ce];
