@@ -67,7 +67,8 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 	end
 	fprintf('\n');
 
-	save('bin/vars.mat', 'X', 'covr', 'verrs', 'cerrs', 'algs');
+	[~,~] = mkdir('bin/missmiss'); % Read and ignore returns to suppress warning if dir exists.
+	save('bin/missmiss/vars.mat', 'X', 'covr', 'verrs', 'cerrs', 'algs');
 
 	% Print table of values
 	fprintf(' Algorithm | Value Error (std) | Covariance Error (std) | Time, ms (std) | n (of %d) \n', iters);
