@@ -281,12 +281,13 @@ function [algs] = getAlgList(algList, sizeX)
 			algs = [
 				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
-				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 10, 'length', 100));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 2, 'length', 2));
 				struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', sizeX));
 				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
 				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
 			];
-		case 'smalln'
+		case 'smalln' % Designed for numToUse=40.
+			% DA cannot handle such small n.
 			algs = [
 				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
@@ -303,7 +304,7 @@ function [algs] = getAlgList(algList, sizeX)
 			algs = [
 				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
-				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 10, 'length', 100));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 2, 'length', 2));
 				struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', sizeX));
 				struct('func', @fillPCA, 'name', 'PCA6', 'args', struct('k', 6, 'VariableWeights', 'variance'));
 				struct('func', @fillPCA, 'name', 'PCA13', 'args', struct('k', 13, 'VariableWeights', 'variance'));
@@ -345,7 +346,12 @@ function [algs] = getAlgList(algList, sizeX)
 				algs = [algs; struct('func', @fillCascadeAuto, 'name', sprintf('C%02d', i), 'args', struct('nh', i, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));];
 			end
 		case 'DA'
+			% For numToUse=277 (all), number=1 gives NaN. Otherwise, performance is COMPLETELY insensitive to these parameters, except length=1 is a bit worse.
+			% I also tested missmiss('DA', 'parallelize', true, 'iters', 140, 'fixedSeed', false, 'numToUse', 100). It gave similar results.
+			% Conclusion: pick number=2 and length=2 for speed.
 			algs = [
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 2, 'length', 2));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 5, 'length', 5));
 				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 5, 'length', 50));
 				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 10, 'length', 50));
 				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 20, 'length', 50));
