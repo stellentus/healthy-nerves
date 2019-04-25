@@ -215,10 +215,9 @@ function plotBoxes(verrs, cerrs, algNames)
 		ylim([0 30]);
 	end
 	title('Error in Filled Data', 'Color', greenColor);
-	% xlabel('Method', 'Color', greenColor);
 	ylabel('Error', 'Color', greenColor);
-	savefig(valfig, strcat(pathstr, ' Value.fig', 'compact'));
-	saveas(valfig, strcat(pathstr, ' Value.png'));
+	savefig(valfig, strcat('value-', pathstr, '.fig', 'compact'));
+	saveas(valfig, strcat('value-', pathstr, '.png'));
 
 	covfig = figure('DefaultAxesFontSize', 18);
 	ax = gca;
@@ -230,10 +229,9 @@ function plotBoxes(verrs, cerrs, algNames)
 		ylim([0 30]);
 	end
 	title('Error in Covariance', 'Color', greenColor);
-	% xlabel('Method', 'Color', greenColor);
 	ylabel('Error', 'Color', greenColor);
-	savefig(covfig, strcat(pathstr, ' Covariance.fig', 'compact'));
-	saveas(covfig, strcat(pathstr, ' Covariance.png'));
+	savefig(covfig, strcat('covar-', pathstr, '.fig', 'compact'));
+	saveas(covfig, strcat('covar-', pathstr, '.png'));
 
 	rmpath lib/CategoricalScatterplot
 end
