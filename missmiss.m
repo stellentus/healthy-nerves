@@ -251,7 +251,7 @@ function [handle] = plotOne(figname, label, prefix, vals, names, pathstr)
 
 	yl = ylim;
 	if yl(2) > 10000
-		ymax = max(vals(vals~=realmax));
+		ymax = max(vals(vals<10000));
 		ylim([0 ymax]);
 	end
 	title(figname, 'Color', greenColor);
