@@ -223,7 +223,8 @@ function [handle] = plotOne(figname, prefix, vals, names, pathstr)
 
 	yl = ylim;
 	if yl(2) > 10000
-		ylim([0 30]);
+		ymax = max(vals(vals~=realmax));
+		ylim([0 ymax]);
 	end
 	title(strcat("Error in ", figname), 'Color', greenColor);
 	ylabel('Error', 'Color', greenColor);
