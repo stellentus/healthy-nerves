@@ -1,25 +1,15 @@
 % missmiss loads missing data and does stuff with it
-function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed, displayPlot, includeCheats, numToUse)
-	if nargin < 6
-		numToUse = 0; % Zero means all
-	end
-	if nargin < 5
-		includeCheats = false;
-	end
-	if nargin < 4
-		displayPlot = true;
-	end
-	if nargin < 3
-		fixedSeed = false;
-	end
-	if nargin < 2
-		parallelize = false;
-	end
-	if nargin < 1
-		iters = 1;
-	end
+function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
+	p = inputParser;
+	addOptional(p, 'iters', 3, @(x) isnumeric(x) && x>0);
+	addParameter(p, 'numToUse', 0, @(x) isnumeric(x) && x>=0); % Zero means all
+	addParameter(p, 'parallelize', false, @islogical);
+	addParameter(p, 'includeCheats', false, @islogical);
+	addParameter(p, 'fixedSeed', true, @islogical);
+	addParameter(p, 'displayPlot', true, @islogical);
+	parse(p, varargin{:});
 
-	if fixedSeed
+	if p.Results.fixedSeed
 		seed = 7738;
 	else
 		s = rng('shuffle');
@@ -48,20 +38,20 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 	% algs = [algs; struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)))];
 
 	% Calculate errors
-	verrs = zeros(iters, length(algs));
-	cerrs = zeros(iters, length(algs));
-	runtimes = zeros(iters, length(algs));
-	if parallelize
+	verrs = zeros(p.Results.iters, length(algs));
+	cerrs = zeros(p.Results.iters, length(algs));
+	runtimes = zeros(p.Results.iters, length(algs));
+	if p.Results.parallelize
 		disp('Running parallel iterations...')
-		parfor i = 1:iters
+		parfor i = 1:p.Results.iters
 			rng(seed+i*31);
-			[verrs(i, :), cerrs(i, :), runtimes(i, :)] = testFuncs(algs, X, covr, includeCheats, parallelize, numToUse);
+			[verrs(i, :), cerrs(i, :), runtimes(i, :)] = testFuncs(algs, X, covr, p.Results.includeCheats, p.Results.parallelize, p.Results.numToUse);
 		end
 	else
-		for i = 1:iters
+		for i = 1:p.Results.iters
 			rng(seed+i*31);
-			fprintf('Iter %d of %d...', i, iters);
-			[verrs(i, :), cerrs(i, :), runtimes(i, :)] = testFuncs(algs, X, covr, includeCheats, parallelize, numToUse);
+			fprintf('Iter %d of %d...', i, p.Results.iters);
+			[verrs(i, :), cerrs(i, :), runtimes(i, :)] = testFuncs(algs, X, covr, p.Results.includeCheats, p.Results.parallelize, p.Results.numToUse);
 		end
 	end
 	fprintf('\n');
@@ -70,23 +60,23 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 	save('bin/missmiss/vars.mat', 'X', 'covr', 'verrs', 'cerrs', 'algs');
 
 	% Print table of values
-	fprintf(' Algorithm | Value Error (std) | Covariance Error (std) | Time, ms (std) | n (of %d) \n', iters);
+	fprintf(' Algorithm | Value Error (std) | Covariance Error (std) | Time, ms (std) | n (of %d) \n', p.Results.iters);
 	fprintf('-----------+-------------------+------------------------+----------------+-----------\n');
 	for i = 1:length(algs)
 		printTableRow(algs(i).name, verrs, cerrs, runtimes, i);
-		if includeCheats
+		if p.Results.includeCheats
 			printTableRow(algs(i).name, verrs, cerrs, runtimes, length(algs)+i);
 		end
 	end
 
-	if displayPlot
-		if includeCheats
+	if p.Results.displayPlot
+		if p.Results.includeCheats
 			algNames = [{algs.name}, strcat({algs.name}, '_X')];
 		else
 			algNames = {algs.name};
 		end
 
-		if iters ~= 1
+		if p.Results.iters ~= 1
 			% Calculate statistical significance
 			fprintf("\nValue Errors\n");
 			calcStats(verrs, 'value', algNames)
@@ -97,10 +87,10 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 		end
 
 		% Plot values
-		if numToUse <= 0
-			numToUse = size(X, 1);
+		if p.Results.numToUse <= 0
+			p.Results.numToUse = size(X, 1);
 		end
-		plotBoxes(verrs, cerrs, runtimes, algNames, numToUse);
+		plotBoxes(verrs, cerrs, runtimes, algNames, p.Results.numToUse);
 	end
 
 	rmpath missing
