@@ -53,7 +53,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 	cerrs = zeros(iters, length(algs));
 	runtimes = zeros(iters, length(algs));
 	if parallelize
-		disp('Running parallel iterations...')
+		disp('Running parallel iterations (note runtimes will be incorrect)...')
 		parfor i = 1:iters
 			rng(seed+i*31);
 			[verrs(i, :), cerrs(i, :), runtimes(i, :)] = testFuncs(algs, X, covr, includeCheats, parallelize, numToUse);
