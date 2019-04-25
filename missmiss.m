@@ -105,13 +105,13 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 end
 
 function printTableRow(name, verrs, cerrs, runtimes, offset)
-	vmn = truncateLargeValue(mean(verrs(:, i), 'omitnan'));
-	vst = truncateLargeValue(std(verrs(:, i), 'omitnan'));
-	cmn = truncateLargeValue(mean(cerrs(:, i), 'omitnan'));
-	cst = truncateLargeValue(std(cerrs(:, i), 'omitnan'));
-	rmn = truncateLargeValue(mean(runtimes(:, i), 'omitnan'));
-	rst = truncateLargeValue(std(runtimes(:, i), 'omitnan'));
-	num = sum(~isnan(verrs(:, i)));
+	vmn = truncateLargeValue(mean(verrs(:, offset), 'omitnan'));
+	vst = truncateLargeValue(std(verrs(:, offset), 'omitnan'));
+	cmn = truncateLargeValue(mean(cerrs(:, offset), 'omitnan'));
+	cst = truncateLargeValue(std(cerrs(:, offset), 'omitnan'));
+	rmn = truncateLargeValue(mean(runtimes(:, offset), 'omitnan'));
+	rst = truncateLargeValue(std(runtimes(:, offset), 'omitnan'));
+	num = sum(~isnan(verrs(:, offset)));
 	fprintf('%10s | %10s (%4s) | %10s (%4s)    | %9s (%4s) | %d\n', name, num2str(vmn, '%.1f'), num2str(vst, '%.1f'), num2str(cmn, '%.1f'), num2str(cst, '%.1f'), num2str(rmn, '%.1f'), num2str(rst, '%.1f'), num);
 end
 
