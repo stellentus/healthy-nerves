@@ -105,14 +105,20 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 end
 
 function printTableRow(name, verrs, cerrs, runtimes, offset)
-	vmn = mean(verrs(:, i), 'omitnan');
-	vst = std(verrs(:, i), 'omitnan');
-	cmn = mean(cerrs(:, i), 'omitnan');
-	cst = std(cerrs(:, i), 'omitnan');
-	rmn = mean(runtimes(:, i), 'omitnan');
-	rst = std(runtimes(:, i), 'omitnan');
+	vmn = truncateLargeValue(mean(verrs(:, i), 'omitnan'));
+	vst = truncateLargeValue(std(verrs(:, i), 'omitnan'));
+	cmn = truncateLargeValue(mean(cerrs(:, i), 'omitnan'));
+	cst = truncateLargeValue(std(cerrs(:, i), 'omitnan'));
+	rmn = truncateLargeValue(mean(runtimes(:, i), 'omitnan'));
+	rst = truncateLargeValue(std(runtimes(:, i), 'omitnan'));
 	num = sum(~isnan(verrs(:, i)));
 	fprintf('%10s | %10s (%4s) | %10s (%4s)    | %9s (%4s) | %d\n', name, num2str(vmn, '%.1f'), num2str(vst, '%.1f'), num2str(cmn, '%.1f'), num2str(cst, '%.1f'), num2str(rmn, '%.1f'), num2str(rst, '%.1f'), num);
+end
+
+function [val] = truncateLargeValue(val)
+	if val > 1e70
+		val = Inf;
+	end
 end
 
 function [values] = loadMEF()
