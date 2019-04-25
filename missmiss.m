@@ -100,18 +100,16 @@ function [X, covr, verrs, cerrs, algs] = missmiss(iters, parallelize, fixedSeed,
 	rmpath missing
 end
 
-function [X] = loadMEF()
+function [values] = loadMEF()
+	filepath = "bin/batch-normative.mat";
+	load(filepath);
+	values = [canValues; japValues; porValues];
+	participants = [canParticipants; japParticipants; porParticipants];
+
+	% Delete NaN, since we want to test on the full rows.
 	addpath import;
-	[armValues, armParticipants] = mefimport(pathFor('arm'), true);
-	[legValues, legParticipants] = mefimport(pathFor('leg'), true);
-
-	% [armDelayTEd40, armDelayTEh40, ~, ~, armTEd40, armTEh40, ~, ~] = mefTEimport(pathFor('arm'), armParticipants);
-	% [legDelayTEd40, legDelayTEh40, ~, ~, legTEd40, legTEh40, ~, ~] = mefTEimport(pathFor('leg'), legParticipants);
+	[participants, values] = deleteNaN(participants, values);
 	rmpath import;
-
-	X = [armValues; legValues]; % Store all samples as X
-	% delayTEd40 = armDelayTEd40'; % Currently unused
-	% TEd40 = [armTEd40'; legTEd40']; % Currently unused
 end
 
 function [verr, cerr] = testFuncs(algs, X, originalCov, includeCheats, parallelize, numToUse)
