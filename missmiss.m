@@ -172,6 +172,24 @@ function [ve, ce, filledX] = testFunc(alg, seed, originalCov, missingX, complete
 	parallelPrint(strcat(alg.name, '...'), parallelize);
 	rng(seed); % Seed each algorithm with the exact same random numbers
 
+	if ~isfield(alg.args, 'zmuv')
+		alg.args.zmuv = false;
+	end
+	if ~isfield(alg.args, 'zmuvFromComplete')
+		alg.args.zmuvFromComplete = false;
+	end
+	if alg.args.zmuvFromComplete
+		mn = mean(completeX);
+		st = std(completeX);
+		completeX = (completeX - mn) ./ st;
+		missingX = (missingX - mn) ./ st;
+	elseif alg.args.zmuv
+		mn = mean([completeX; missingX], 'omitnan');
+		st = std([completeX; missingX], 'omitnan');
+		completeX = (completeX - mn) ./ st;
+		missingX = (missingX - mn) ./ st;
+	end
+
 	try
 		switch nargout(alg.func)
 			case 1
@@ -186,6 +204,11 @@ function [ve, ce, filledX] = testFunc(alg, seed, originalCov, missingX, complete
 	catch
 		filledX = missingX;    % Nothing is filled due to the error...
 		covr = cov(completeX); % ...so covariance is only based on complete rows.
+	end
+
+	if alg.args.zmuv || alg.args.zmuvFromComplete
+		filledX = (filledX .* st) + mn;
+		covr = covr.*st.*st';
 	end
 
 	ve = ((originalMissingX - filledX) ./ std(completeX)) .^ 2; % First calculate the squared error for the entire matrix (which will be zero in many cases). It should be normalized by the standard deviation to equally weight the features.
