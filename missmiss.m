@@ -172,6 +172,8 @@ function [ve, ce, filledX] = testFunc(alg, seed, originalCov, missingX, complete
 	parallelPrint(strcat(alg.name, '...'), parallelize);
 	rng(seed); % Seed each algorithm with the exact same random numbers
 
+	originalCompleteX = completeX;
+
 	if ~isfield(alg.args, 'zmuv')
 		alg.args.zmuv = false;
 	end
@@ -211,7 +213,7 @@ function [ve, ce, filledX] = testFunc(alg, seed, originalCov, missingX, complete
 		covr = covr.*st.*st';
 	end
 
-	ve = ((originalMissingX - filledX) ./ std(completeX)) .^ 2; % First calculate the squared error for the entire matrix (which will be zero in many cases). It should be normalized by the standard deviation to equally weight the features.
+	ve = ((originalMissingX - filledX) ./ std(originalCompleteX)) .^ 2; % First calculate the squared error for the entire matrix (which will be zero in many cases). It should be normalized by the standard deviation to equally weight the features.
 	ve = sum(sum(ve(~missingMask)))/sum(sum(~missingMask));     % Now sum the squared error (but only for missing elements) and divide by the number of missing elements, giving the MSE.
 	ce = mean(mean((originalCov - covr) .^ 2));
 end
