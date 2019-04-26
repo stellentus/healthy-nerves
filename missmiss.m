@@ -300,29 +300,32 @@ function [algs] = getAlgList(algList, sizeX)
 				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
 				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
+				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
 			];
 		case 'standard'
 			algs = [
 				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
-				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 2, 'length', 2));
-				struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', sizeX));
 				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
 				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 2, 'length', 2));
+				struct('func', @fillCascadeAuto, 'name', 'Casc', 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
+				struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', sizeX));
 			];
 		case 'smalln' % Designed for numToUse=40.
 			% DA cannot handle such small n.
 			algs = [
-				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
-				struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', sizeX));
 				struct('func', @fillPCA, 'name', 'PCA', 'args', struct('k', 7, 'VariableWeights', 'variance'));
-				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
 				struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean'));
-				struct('func', @fillCascadeAuto, 'name', 'Casc', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
+				struct('func', @fillCascadeAuto, 'name', 'Casc1', 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
+				struct('func', @fillCascadeAuto, 'name', 'Casc6', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
 				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 7, 'VariableWeights', 'variance', 'algorithm', 'eig')));
-				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
 				struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'args', struct('nh', 6, 'trainMissingRows', true)));
+				struct('func', @fillIterate, 'name', 'iCasc2-1', 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
+				struct('func', @fillIterate, 'name', 'iCasc2-6', 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
+				struct('func', @fillIterate, 'name', 'iCasc5-1', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
+				struct('func', @fillIterate, 'name', 'iCasc5-6', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
 			];
 		case 'all'
 			% Mean, Regr, AE, iAE and iCasc aren't useful at any numToUse.
@@ -340,7 +343,7 @@ function [algs] = getAlgList(algList, sizeX)
 			% numToUse=40
 			%	DA is TERRIBLE and TSR is pretty bad. They both have HUGE variance, so you never know if they're working well. (I'm curious if there's a way to test if they're working on a specific small dataset, and using that to pick an algorithm.)
 			%	Casc really stands out as good, though PCA and iPCA do well, too.
-			%	Oddly Mean, AE, and Regr do the best with the covariance matrix. But all of these are being compared to the n=277 covariance matrix, not the covariance matrix of the seen data, so they're all expected to be bad.
+			%	Mean, AE, and Regr do the best with the covariance matrix. But all of these are being compared to the n=277 covariance matrix, not the covariance matrix of the seen data, so they're all expected to be bad.
 			%	Even covariance elements between complete features will be different in this case, which just emphasizes that I shouldn't be using the covariance error for any decisions.
 			%	Most algorithms stay the same or get faster, but PCA is slower. This doesn't change the relative ranking by speed except that TSR is now faster than PCA.
 			algs = [
