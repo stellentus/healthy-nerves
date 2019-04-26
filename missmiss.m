@@ -362,11 +362,12 @@ function [algs] = getAlgList(algList, sizeX)
 				algs = [algs; struct('func', @fillAutoencoder, 'name', sprintf('A%02d', i), 'args', struct('nh', i, 'trainMissingRows', true, 'handleNaN', 'mean'));];
 			end
 		case 'cascade'
+			% For numToUse=40, it appears that C01 performs much better than Casc8, 15, 22, and 29. (They get worse with higher nh.)
+			% However, iCasc performance is independent of nh. iCasc with 2 iterations is better than 7 iterations.
 			algs = [];
-			for i=1:7:sizeX
+			for i=1:8
 				algs = [algs; struct('func', @fillCascadeAuto, 'name', sprintf('C%02d', i), 'args', struct('nh', i, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));];
 				algs = [algs; struct('func', @fillIterate, 'name', sprintf('i2C%02d', i), 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)))];
-				algs = [algs; struct('func', @fillIterate, 'name', sprintf('i7C%02d', i), 'args', struct('method', @fillCascadeAuto, 'iterations', 7, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)))];
 			end
 		case 'DA'
 			% For numToUse=277 (all), number=1 gives NaN. Otherwise, performance is COMPLETELY insensitive to these parameters, except length=1 is a bit worse.
