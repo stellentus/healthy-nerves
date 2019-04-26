@@ -66,9 +66,9 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 
 		if p.Results.iters ~= 1
 			% Calculate statistical significance
-			calcStats(verrs, 'Value Errors', algNames)
-			calcStats(cerrs, 'Covariance Errors', algNames)
-			calcStats(runtimes, 'Runtimes', algNames)
+			calcStats(verrs, 'Value Errors', algNames);
+			calcStats(cerrs, 'Covariance Errors', algNames); % Note this compares to the original, true covariance matrix. If numToUse>0, a prophetic data-filling algorithm would do poorly here because even covariance elements between complete features will be different (since they're calculated on a subset of the data).
+			calcStats(runtimes, 'Runtimes', algNames);
 		end
 
 		% Plot values
@@ -316,7 +316,8 @@ function [algs] = getAlgList(algList, sizeX)
 			% numToUse=40
 			%	DA is TERRIBLE and TSR is pretty bad. They both have HUGE variance, so you never know if they're working well. (I'm curious if there's a way to test if they're working on a specific small dataset, and using that to pick an algorithm.)
 			%	Casc really stands out as good, though PCA and iPCA do well, too.
-			%	Oddly Mean, AE, and Regr do the best with the covariance matrix. This doesn't leave me confident that the imputations are very good.
+			%	Oddly Mean, AE, and Regr do the best with the covariance matrix. But all of these are being compared to the n=277 covariance matrix, not the covariance matrix of the seen data, so they're all expected to be bad.
+			%	Even covariance elements between complete features will be different in this case, which just emphasizes that I shouldn't be using the covariance error for any decisions.
 			%	Most algorithms stay the same or get faster, but PCA is slower. This doesn't change the relative ranking by speed except that TSR is now faster than PCA.
 			algs = [
 				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
