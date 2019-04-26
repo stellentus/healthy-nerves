@@ -324,8 +324,6 @@ function [algs] = getAlgList(algList, sizeX)
 				struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'args', struct('nh', 6, 'trainMissingRows', true)));
 				struct('func', @fillIterate, 'name', 'iCasc2-1', 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
 				struct('func', @fillIterate, 'name', 'iCasc2-6', 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
-				struct('func', @fillIterate, 'name', 'iCasc5-1', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
-				struct('func', @fillIterate, 'name', 'iCasc5-6', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
 			];
 		case 'all'
 			% Mean, Regr, AE, iAE and iCasc aren't useful at any numToUse.
@@ -355,12 +353,12 @@ function [algs] = getAlgList(algList, sizeX)
 				struct('func', @fillPCA, 'name', 'PCA13', 'args', struct('k', 13, 'VariableWeights', 'variance'));
 				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
 				struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean'));
+				struct('func', @fillCascadeAuto, 'name', 'Casc1', 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
 				struct('func', @fillCascadeAuto, 'name', 'Casc6', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
-				struct('func', @fillCascadeAuto, 'name', 'Casc13', 'args', struct('nh', 13, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
 				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 7, 'VariableWeights', 'variance', 'algorithm', 'eig')));
 				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
 				struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'args', struct('nh', 6, 'trainMissingRows', true)));
-				struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
+				struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
 			];
 		case 'PCA'
 			% For numToUse=40 and iters=14 with 3 different seeds:
@@ -388,8 +386,9 @@ function [algs] = getAlgList(algList, sizeX)
 				algs = [algs; struct('func', @fillAutoencoder, 'name', sprintf('A%02d', i), 'args', struct('nh', i, 'trainMissingRows', true, 'handleNaN', 'mean'));];
 			end
 		case 'cascade'
-			% For numToUse=40, it appears that C01 performs much better than Casc8, 15, 22, and 29. (They get worse with higher nh.)
+			% For numToUse=40, it appears that C01 performs much better than Casc8, 15, 22, and 29. (They get worse with higher nh.) 1 is also better than 2-7.
 			% However, iCasc performance is independent of nh. iCasc with 2 iterations is better than 7 iterations.
+			% This is also true for numToUse=0 (i.e. 277), tested nh=1-8 and iter=1,2.
 			algs = [];
 			for i=1:8
 				algs = [algs; struct('func', @fillCascadeAuto, 'name', sprintf('C%02d', i), 'args', struct('nh', i, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));];
