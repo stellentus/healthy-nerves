@@ -21,15 +21,6 @@ function [filledX] = fillAutoencoder(missingX, completeX, missingMask, arg)
 		trainData = completeX;             % complete data
 	end
 
-	if ~isfield(arg, 'zmuv')
-		arg.zmuv = false;
-	end
-	if arg.zmuv
-		mn = mean(trainData, 'omitnan');
-		st = std(trainData, 'omitnan');
-		trainData = (trainData - mn) ./ st;
-	end
-
 	addpath ./algorithm
 
 	% Train
@@ -42,8 +33,4 @@ function [filledX] = fillAutoencoder(missingX, completeX, missingMask, arg)
 	filledX = model.Y;
 
 	rmpath ./algorithm
-
-	if arg.zmuv
-		filledX = (filledX .* st) + mn;
-	end
 end

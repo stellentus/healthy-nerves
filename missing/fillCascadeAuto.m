@@ -11,22 +11,6 @@ function [filledX] = fillCascadeAuto(missingX, completeX, missingMask, arg)
 	trainData = [completeX; missingX];
 	trainMask = [ones(size(completeX)); missingMask];
 
-	if ~isfield(arg, 'zmuv')
-		arg.zmuv = false;
-	end
-	if ~isfield(arg, 'zmuvFromComplete')
-		arg.zmuvFromComplete = false;
-	end
-	if arg.zmuvFromComplete
-		mn = mean(completeX, 'omitnan');
-		st = std(completeX, 'omitnan');
-		completeX = (completeX - mn) ./ st;
-	elseif arg.zmuv
-		mn = mean(trainData, 'omitnan');
-		st = std(trainData, 'omitnan');
-		trainData = (trainData - mn) ./ st;
-	end
-
 	% Train
 	model.params = arg;
 	model = reset(model);
@@ -37,10 +21,6 @@ function [filledX] = fillCascadeAuto(missingX, completeX, missingMask, arg)
 
 	filledX = missingX;
 	filledX(:, missIndices) = missY(:, 1:length(missIndices)); % Predict the missing value.
-
-	if arg.zmuv || arg.zmuvFromComplete
-		filledX = (filledX .* st) + mn;
-	end
 end
 
 function [self] = reset(self)

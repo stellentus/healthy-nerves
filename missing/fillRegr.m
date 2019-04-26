@@ -6,22 +6,6 @@ function [filledX] = fillRegr(missingX, completeX, missingMask, arg)
 
 	X = [missingX; completeX];
 
-	if ~isfield(arg, 'zmuv')
-		arg.zmuv = false;
-	end
-	if ~isfield(arg, 'zmuvFromComplete')
-		arg.zmuvFromComplete = false;
-	end
-	if arg.zmuvFromComplete
-		mn = mean(completeX, 'omitnan');
-		st = std(completeX, 'omitnan');
-		completeX = (completeX - mn) ./ st;
-	elseif arg.zmuv
-		mn = mean(X, 'omitnan');
-		st = std(X, 'omitnan');
-		X = (X - mn) ./ st;
-	end
-
 	filledX = missingX;
 	[numSamplesMissing, numFeatures] = size(missingX);
 	for j = 1:numFeatures
@@ -41,9 +25,5 @@ function [filledX] = fillRegr(missingX, completeX, missingMask, arg)
 		thisX(isnan(thisX)) = 0;
 
 		filledX(:, j) = thisX(1:size(missingX, 1), :) * b; % Predict the missing value.
-	end
-
-	if arg.zmuv || arg.zmuvFromComplete
-		filledX = (filledX .* st) + mn;
 	end
 end
