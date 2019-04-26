@@ -332,8 +332,10 @@ function [algs] = getAlgList(algList, sizeX)
 			end
 		case 'TSR'
 			algs = [];
-			for i=1:sizeX
-				algs = [algs; struct('func', @fillTSR, 'name', sprintf('T%02d', i), 'args', struct('k', i));];
+			for k=1:3:sizeX
+				for con=[1e-10 1e-7 1e-4]
+					algs = [algs; struct('func', @fillTSR, 'name', sprintf('T%02d', i), 'args', struct('k', k, 'conv', con));];
+				end
 			end
 		case 'AE'
 			algs = [];

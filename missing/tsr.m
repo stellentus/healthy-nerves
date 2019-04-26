@@ -11,7 +11,10 @@
 % It: number of iterations.
 % Xrec: PCA reconstruction of X with A components.
 
-function [X,m,S,It,Xrec]=pcambtsr(X,A)
+function [X,m,S,It,Xrec]=pcambtsr(X,A,conv)
+	if nargin<3
+		conv=1.0e-10;
+	end
 	[n,p]=size(X);
 	for i=n:-1:1
 		r=~isnan(X(i,:));
@@ -28,7 +31,6 @@ function [X,m,S,It,Xrec]=pcambtsr(X,A)
 		X(r(k),c(k))=meanc(c(k));
 	end
 	maxiter=5000;
-	conv=1.0e-10;
 	diff=100;
 	It=0;
 	while It<maxiter & diff>conv
