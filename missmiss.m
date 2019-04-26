@@ -8,6 +8,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 	addParameter(p, 'includeCheats', false, @islogical);
 	addParameter(p, 'fixedSeed', true, @islogical);
 	addParameter(p, 'displayPlot', true, @islogical);
+	addParameter(p, 'zmuvFromComplete', false, @islogical);
 	parse(p, varargin{:});
 
 	if p.Results.fixedSeed
@@ -24,6 +25,20 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 	covr = cov(X);
 
 	algs = getAlgList(p.Results.algList, size(X, 2));
+
+	if p.Results.zmuvFromComplete
+		len = length(algs);
+		for i=1:len
+			al = algs(i);
+			b = struct();
+			for fn = fieldnames(al)'
+				b.(fn{1}) = al.(fn{1});
+			end
+			b.args.zmuvFromComplete = true;
+			b.name = char(strcat(b.name, " ZM"));
+			algs = [algs; b];
+		end
+	end
 
 	% Calculate errors
 	verrs = zeros(p.Results.iters, length(algs));
