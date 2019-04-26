@@ -188,7 +188,8 @@ function [ve, ce, filledX] = testFunc(alg, seed, originalCov, missingX, complete
 		covr = cov(completeX); % ...so covariance is only based on complete rows.
 	end
 
-	ve = mean(mean(((originalMissingX - filledX) .* ~missingMask) .^ 2));
+	ve = (originalMissingX - filledX) .^ 2;                 % First calculate the squared error for the entire matrix (which will be zero in many cases).
+	ve = sum(sum(ve(~missingMask)))/sum(sum(~missingMask)); % Now sum the squared error (but only for missing elements) and divide by the number of missing elements, giving the MSE.
 	ce = mean(mean((originalCov - covr) .^ 2));
 end
 
