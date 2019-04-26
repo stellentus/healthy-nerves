@@ -225,7 +225,7 @@ function plotBoxes(verrs, cerrs, runtimes, algNames, numSamples, algList)
 
 	valfig = plotOne('Error in Filled Data', 'Error', 'value', verrs, vAlgNames, pathstr, numSamples);
 	covfig = plotOne('Error in Covariance', 'Error', 'covar', cerrs, algNames, pathstr, numSamples);
-	runfig = plotOne('Runtimes', 'Time (ms)', 'times', runtimes, algNames, pathstr, numSamples);
+	runfig = plotOne('Runtimes', 'Time (s)', 'times', runtimes, algNames, pathstr, numSamples);
 	close(covfig);
 end
 
