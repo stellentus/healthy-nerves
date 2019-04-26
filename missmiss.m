@@ -301,6 +301,23 @@ function [algs] = getAlgList(algList, sizeX)
 				struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'args', struct('nh', 6, 'trainMissingRows', true)));
 			];
 		case 'all'
+			% Mean, Regr, AE, iAE and iCasc aren't useful at any numToUse.
+			% numToUse=277 (all)
+			%	TSR error is better than DA (p=.020) but takes 1000x to run.
+			%	PCA and iPCA aren't great for error.
+			%	Error comparisons between TSR, DA, iRegr, and Casc are all p>.05 (except TSR-DA as noted above).
+			%	Covariance errors are the same as value errors, except DA (the MI method) performs poorly. It overestimates the true correlation.
+			%	TSR runtime is TERRIBLE (95s). PCA, AE, and Casc are also slow (>1s). All other methods are in the ms range (<30ms except DA at 112ms).
+			%	iRegr, which is tied for lowest error, is also extremely fast, so it's recommended for numToUse=277.
+			% numToUse=100
+			%	Compared to 277, there aren't many differences. iPCA begins to perform well. Casc begins to outperform others, but the difference is not significant (except compared to iPCA). DA is now okay.
+			%	Covariance errors are mostly not significantly different, even for the poor performers.
+			%	Runtimes are mostly cut in half, with the poor performers especially benefiting. TSR runtime is better but still slow (20s).
+			% numToUse=40
+			%	DA is TERRIBLE and TSR is pretty bad. They both have HUGE variance, so you never know if they're working well. (I'm curious if there's a way to test if they're working on a specific small dataset, and using that to pick an algorithm.)
+			%	Casc really stands out as good, though PCA and iPCA do well, too.
+			%	Oddly Mean, AE, and Regr do the best with the covariance matrix. This doesn't leave me confident that the imputations are very good.
+			%	Most algorithms stay the same or get faster, but PCA is slower. This doesn't change the relative ranking by speed except that TSR is now faster than PCA.
 			algs = [
 				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
