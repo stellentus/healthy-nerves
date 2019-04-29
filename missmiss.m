@@ -325,7 +325,7 @@ function [algs] = getAlgList(algList, sizeX)
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
 				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
 				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
-				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 2, 'length', 2, struct('zmuv', true)));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 2, 'length', 2, 'zmuv', true));
 				struct('func', @fillCascadeAuto, 'name', 'Casc1', 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
 				struct('func', @fillCascadeAuto, 'name', 'Casc6', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
 				struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', sizeX));
