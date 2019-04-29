@@ -105,7 +105,7 @@ function printTableRow(name, verrs, cerrs, runtimes, offset)
 	rmn = truncateLargeValue(mean(runtimes(:, offset), 'omitnan'));
 	rst = truncateLargeValue(std(runtimes(:, offset), 'omitnan'));
 	num = sum(~isnan(verrs(:, offset)));
-	fprintf('%10s | %10s (%5s) | %10s (%5s) | %14s | %d \n', name, num2str(vmn, '%.1f'), num2str(vst, '%.1f'), num2str(cmn, '%.1f'), num2str(cst, '%.1f'), displayTime(rmn, rst), num);
+	fprintf('%10s | %9s (%6s) | %9s (%6s) | %14s | %d \n', name, num2str(vmn, '%.4f'), num2str(vst, '%.3f'), num2str(cmn, '%.2f'), num2str(cst, '%.2f'), displayTime(rmn, rst), num);
 end
 
 function [str] = displayTime(mn, st)
