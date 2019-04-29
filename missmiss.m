@@ -325,22 +325,22 @@ function [algs] = getAlgList(algList, sizeX)
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
 				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
 				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
-				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 2, 'length', 2));
-				struct('func', @fillCascadeAuto, 'name', 'Casc', 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 2, 'length', 2, struct('zmuv', true)));
+				struct('func', @fillCascadeAuto, 'name', 'Casc1', 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
+				struct('func', @fillCascadeAuto, 'name', 'Casc6', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
 				struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', sizeX));
 			];
 		case 'smalln' % Designed for numToUse=40.
-			% DA cannot handle such small n.
+			% DA cannot handle such small n. BUT maybe it works better with ZMUV.
 			algs = [
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
 				struct('func', @fillPCA, 'name', 'PCA', 'args', struct('k', 7, 'VariableWeights', 'variance'));
-				struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean'));
-				struct('func', @fillCascadeAuto, 'name', 'Casc1', 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
-				struct('func', @fillCascadeAuto, 'name', 'Casc6', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 2, 'length', 2, 'zmuv', true));
+				struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean', 'zmuv', true));
+				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'zmuv', true, 'args', struct()));
 				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 7, 'VariableWeights', 'variance', 'algorithm', 'eig')));
-				struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'args', struct('nh', 6, 'trainMissingRows', true)));
-				struct('func', @fillIterate, 'name', 'iCasc2-1', 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
-				struct('func', @fillIterate, 'name', 'iCasc2-6', 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
+				struct('func', @fillCascadeAuto, 'name', 'Casc', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
+				struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'zmuv', true, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
 			];
 		case 'all'
 			% Mean, Regr, AE, iAE and iCasc aren't useful at any numToUse.
@@ -364,7 +364,7 @@ function [algs] = getAlgList(algList, sizeX)
 			algs = [
 				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
-				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 2, 'length', 2));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 2, 'length', 2, struct('zmuv', true)));
 				struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', sizeX));
 				struct('func', @fillPCA, 'name', 'PCA6', 'args', struct('k', 6, 'VariableWeights', 'variance'));
 				struct('func', @fillPCA, 'name', 'PCA13', 'args', struct('k', 13, 'VariableWeights', 'variance'));
@@ -406,11 +406,40 @@ function [algs] = getAlgList(algList, sizeX)
 			% For numToUse=40, it appears that C01 performs much better than Casc8, 15, 22, and 29. (They get worse with higher nh.) 1 is also better than 2-7.
 			% However, iCasc performance is independent of nh. iCasc with 2 iterations is better than 7 iterations.
 			% This is also true for numToUse=0 (i.e. 277), tested nh=1-8 and iter=1,2.
+
+			% Once ZMUV is turned on, results are very different...
+			% For numToUse=40, increasing from 1 to 8 causes improvements, and 5 iterations is better than 1.
+			% When I'm an idiot and forget to actually set nh, for 2 iterations and ZMUV(C), it appears performance is independent of nh (tested at [6, 11, 16, 21] and also at [1, 16, 31]). The data points appear at the *exact* same spots (p=NaN).
+			% ZMUV performs slightly better than ZMUV(C).
+			% 3 iterations might do slightly better than 2 iterations in rare cases, but usually there is NO change. Likewise 7.
+			% nh 4 through 9 are practically identical.
 			algs = [];
-			for i=1:8
+			for i=4:9
 				algs = [algs; struct('func', @fillCascadeAuto, 'name', sprintf('C%02d', i), 'args', struct('nh', i, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));];
-				algs = [algs; struct('func', @fillIterate, 'name', sprintf('i2C%02d', i), 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)))];
+				algs = [algs; struct('func', @fillIterate, 'name', sprintf('i2C%02d', i), 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'args', struct('nh', i, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)))];
+				algs = [algs; struct('func', @fillIterate, 'name', sprintf('i3C%02d', i), 'args', struct('method', @fillCascadeAuto, 'iterations', 3, 'args', struct('nh', i, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)))];
+				algs = [algs; struct('func', @fillIterate, 'name', sprintf('i3C%02d', i), 'args', struct('method', @fillCascadeAuto, 'iterations', 7, 'args', struct('nh', i, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)))];
 			end
+			len = length(algs);
+			a2 = [];
+			for i=1:len
+				al = algs(i);
+				b = struct();
+				for fn = fieldnames(al)'
+					b.(fn{1}) = al.(fn{1});
+				end
+				b.args.zmuvFromComplete = true;
+				b.name = char(strcat(b.name, " ZMC"));
+				a2 = [a2; b];
+				b = struct();
+				for fn = fieldnames(al)'
+					b.(fn{1}) = al.(fn{1});
+				end
+				b.args.zmuv = true;
+				b.name = char(strcat(b.name, " ZM"));
+				a2 = [a2; b];
+			end
+			algs = a2;
 		case 'DA'
 			% For numToUse=277 (all), number=1 gives NaN. Otherwise, performance is COMPLETELY insensitive to these parameters, except length=1 is a bit worse.
 			% I also tested missmiss('DA', 'parallelize', true, 'iters', 140, 'fixedSeed', false, 'numToUse', 100). It gave similar results.
