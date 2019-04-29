@@ -39,7 +39,7 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = delete(X, 
 	maskNaN = mask;
 	maskNaN(mask == 0) = NaN;
 
-	missingIndices = find(nanPercent ~= 0);
+	missingIndices = find(sum(isnan(maskNaN), 2) > 0);
 	completeIndices = setxor(missingIndices, [1:TOTAL_COUNT]);
 
 	Xdel = X .* maskNaN;
