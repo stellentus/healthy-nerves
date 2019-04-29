@@ -340,6 +340,7 @@ function [algs] = getAlgList(algList, sizeX)
 				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'zmuv', true, 'args', struct()));
 				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 7, 'VariableWeights', 'variance', 'algorithm', 'eig')));
 				struct('func', @fillCascadeAuto, 'name', 'Casc', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
+				struct('func', @fillCascadeAuto, 'name', 'CascK', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 1000, 'zmuv', true));
 				struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'zmuv', true, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
 			];
 		case 'all'
