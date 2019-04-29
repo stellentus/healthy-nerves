@@ -22,17 +22,17 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = delete(X, 
 		end
 
 		% Get indices of values to delete
-		if i == 26
-			% Refractoriness at 2.5ms can only be set if 2.0 is also set.
-			delRef2 = find(mask(:, 29) == 0);
-			delIdx = delRef2(randi(length(delRef2), round(nanPercent(i)*TOTAL_COUNT), 1));
-		else
-			delIdx = randi(TOTAL_COUNT, round(nanPercent(i)*TOTAL_COUNT), 1);
-		end
+		delIdx = randi(TOTAL_COUNT, round(nanPercent(i)*TOTAL_COUNT), 1);
 
 		% Create mask
 		mask(delIdx, i) = 0;
 	end
+
+	% Refractoriness at 2.5ms can only be set if 2.0 is also set.
+	mask(:, 26) = ones(size(X, 1), 1); % Reset this row
+	delRef2 = find(mask(:, 29) == 0); % Look up the 2.5ms
+	delRef25 = delRef2(randi(length(delRef2), round(nanPercent(26)*TOTAL_COUNT), 1));
+	mask(delRef25, 26) = 0;
 
 	% Create NaN mask
 	maskNaN = mask;
