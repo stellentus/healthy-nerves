@@ -414,29 +414,28 @@ function [algs] = getAlgList(algList, sizeX)
 			% 3 iterations might do slightly better than 2 iterations in rare cases, but usually there is NO change. Likewise 7.
 			% nh 4 through 9 are practically identical.
 			algs = [];
-			for i=4:9
+			for i=6
 				algs = [algs; struct('func', @fillCascadeAuto, 'name', sprintf('C%02d', i), 'args', struct('nh', i, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));];
-				algs = [algs; struct('func', @fillIterate, 'name', sprintf('i2C%02d', i), 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'args', struct('nh', i, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)))];
-				algs = [algs; struct('func', @fillIterate, 'name', sprintf('i3C%02d', i), 'args', struct('method', @fillCascadeAuto, 'iterations', 3, 'args', struct('nh', i, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)))];
-				algs = [algs; struct('func', @fillIterate, 'name', sprintf('i3C%02d', i), 'args', struct('method', @fillCascadeAuto, 'iterations', 7, 'args', struct('nh', i, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)))];
+				algs = [algs; struct('func', @fillIterate, 'name', sprintf('i1C%02dk', i), 'args', struct('method', @fillCascadeAuto, 'iterations', 3, 'args', struct('nh', i, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 1000)))];
+				algs = [algs; struct('func', @fillIterate, 'name', sprintf('i2C%02d', i), 'args', struct('method', @fillCascadeAuto, 'iterations', 7, 'args', struct('nh', i, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)))];
 			end
 			len = length(algs);
 			a2 = [];
 			for i=1:len
 				al = algs(i);
-				b = struct();
-				for fn = fieldnames(al)'
-					b.(fn{1}) = al.(fn{1});
-				end
-				b.args.zmuvFromComplete = true;
-				b.name = char(strcat(b.name, " ZMC"));
-				a2 = [a2; b];
+				% b = struct();
+				% for fn = fieldnames(al)'
+				% 	b.(fn{1}) = al.(fn{1});
+				% end
+				% b.args.zmuvFromComplete = true;
+				% b.name = char(strcat(b.name, " ZMC"));
+				% a2 = [a2; b];
 				b = struct();
 				for fn = fieldnames(al)'
 					b.(fn{1}) = al.(fn{1});
 				end
 				b.args.zmuv = true;
-				b.name = char(strcat(b.name, " ZM"));
+				% b.name = char(strcat(b.name, " ZM"));
 				a2 = [a2; b];
 			end
 			algs = a2;
