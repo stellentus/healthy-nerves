@@ -17,12 +17,13 @@ function [missingX, completeX, mask, originalMissingX, missingMask] = delete(X, 
 	mask = ones(size(X));
 
 	for i=1:length(nanPercent)
-		if nanPercent(i) == 0
+		numToDelete = round(nanPercent(i)*TOTAL_COUNT);
+		if numToDelete == 0
 			continue;
 		end
 
 		% Get indices of values to delete
-		delIdx = randi(TOTAL_COUNT, round(nanPercent(i)*TOTAL_COUNT), 1);
+		delIdx = randi(TOTAL_COUNT, numToDelete, 1);
 
 		% Create mask
 		mask(delIdx, i) = 0;
