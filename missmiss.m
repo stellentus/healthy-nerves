@@ -277,7 +277,7 @@ function [handle] = plotOne(figname, label, prefix, vals, names, pathstr, numSam
 	handle = figure('DefaultAxesFontSize', 18);
 
 	addpath lib/CategoricalScatterplot
-	CategoricalScatterplot(vals, names, 'MarkerSize', 50);
+	CategoricalScatterplot(vals, names, 'MarkerSize', 20);
 	rmpath lib/CategoricalScatterplot
 
 	if length(names) > 6
