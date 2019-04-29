@@ -1,5 +1,5 @@
 % saveNormative loads multiple datasets and confirms they can be concatenated.
-function saveNormative(pathPrefix, nanMethod)
+function saveNormative(savefilepath, pathPrefix, nanMethod)
 	if nargin < 3
 		nanMethod = 'IterateRegr';
 		if nargin < 2
