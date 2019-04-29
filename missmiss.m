@@ -136,7 +136,7 @@ function [val] = truncateLargeValue(val)
 end
 
 function [values] = loadMEF()
-	filepath = "bin/batch-normative.mat";
+	filepath = "bin/missing-normative.mat";
 	load(filepath);
 	values = [canValues; japValues; porValues];
 	participants = [canParticipants; japParticipants; porParticipants];
