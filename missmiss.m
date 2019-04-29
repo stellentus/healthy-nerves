@@ -44,23 +44,26 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 	verrs = zeros(p.Results.iters, length(algs));
 	cerrs = zeros(p.Results.iters, length(algs));
 	runtimes = zeros(p.Results.iters, length(algs));
+	nMissing = zeros(p.Results.iters, 1);
 	if p.Results.parallelize
 		disp('Running parallel iterations...')
 		parfor i = 1:p.Results.iters
 			rng(seed+i*31);
-			[verrs(i, :), cerrs(i, :), runtimes(i, :)] = testFuncs(algs, X, covr, p.Results.includeCheats, p.Results.parallelize, p.Results.numToUse);
+			[verrs(i, :), cerrs(i, :), runtimes(i, :), nMissing(i)] = testFuncs(algs, X, covr, p.Results.includeCheats, p.Results.parallelize, p.Results.numToUse);
 		end
 	else
 		for i = 1:p.Results.iters
 			rng(seed+i*31);
 			fprintf('Iter %d of %d...', i, p.Results.iters);
-			[verrs(i, :), cerrs(i, :), runtimes(i, :)] = testFuncs(algs, X, covr, p.Results.includeCheats, p.Results.parallelize, p.Results.numToUse);
+			[verrs(i, :), cerrs(i, :), runtimes(i, :), nMissing(i)] = testFuncs(algs, X, covr, p.Results.includeCheats, p.Results.parallelize, p.Results.numToUse);
 		end
 	end
 	fprintf('\n');
 
 	[~,~] = mkdir('bin/missmiss'); % Read and ignore returns to suppress warning if dir exists.
 	save('bin/missmiss/vars.mat', 'X', 'covr', 'verrs', 'cerrs', 'algs');
+
+	fprintf("There were an average of %.1f (%.2f) missing and %.1f complete.\n\n", mean(nMissing), std(nMissing), size(X, 1) - mean(nMissing));
 
 	% Print table of values
 	fprintf(' Algorithm | Value Error (std)  | Covar Error (std)  | Time (std)     | n (of %d) \n', p.Results.iters);
@@ -147,10 +150,11 @@ function [values] = loadMEF()
 	rmpath import;
 end
 
-function [verr, cerr, runtime] = testFuncs(algs, X, originalCov, includeCheats, parallelize, numToUse)
+function [verr, cerr, runtime, nMissing] = testFuncs(algs, X, originalCov, includeCheats, parallelize, numToUse)
 	parallelPrint('Load...', parallelize);
 	X = selectSubset(X, numToUse);
 	[missingX, completeX, ~, originalMissingX, missingMask] = deleteProportional(X);
+	nMissing = size(missingX, 1);
 
 	verr = [];
 	cerr = [];
