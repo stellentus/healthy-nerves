@@ -11,8 +11,8 @@ function [names] = canonicalNamesNoTE20()
 		"RRP (ms)",
 		"TEh(90-100ms)",                % 10
 		"TEd(10-20ms)",                 % 11
-		"Superexcitability (%)",
-		"Subexcitability (%)",
+		"Superexcitability (%)",        % 12
+		"Subexcitability (%)",          % 13
 		"Age (years)",                  % 14
 		"Sex (M=1, F=2)",               % 15
 		"Latency (ms)",
