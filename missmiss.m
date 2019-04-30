@@ -336,6 +336,7 @@ function [algs] = getAlgList(algList, sizeX)
 			];
 		case 'smalln' % Designed for numToUse=40.
 			% DA cannot handle such small n. BUT maybe it works better with ZMUV.
+			% Casc with 1000 iterations instead of 500 is not significantly better (999 runs, p=0.103).
 			algs = [
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
 				struct('func', @fillPCA, 'name', 'PCA', 'args', struct('k', 7, 'VariableWeights', 'variance'));
@@ -344,7 +345,6 @@ function [algs] = getAlgList(algList, sizeX)
 				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'zmuv', true, 'args', struct()));
 				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 7, 'VariableWeights', 'variance', 'algorithm', 'eig')));
 				struct('func', @fillCascadeAuto, 'name', 'Casc', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
-				struct('func', @fillCascadeAuto, 'name', 'CascK', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 1000, 'zmuv', true));
 				struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'zmuv', true, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
 			];
 		case 'all'
