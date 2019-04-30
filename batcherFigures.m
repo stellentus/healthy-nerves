@@ -326,9 +326,8 @@ end
 function [shiftedValues] = shiftRightRC(vals)
 	shiftedValues = vals;
 	shiftedValues(:, 9) = shiftedValues(:, 9) * 1.2;  % Shift RRP right by 20%
-	shiftedValues(:, 26) = shiftedValues(:, 26) * 1.3;  % Shift Ref@2.5 right by increasing value by 30%.
-	shiftedValues(shiftedValues(:, 26)<0, 26) = 0;  % However, this might be <0, so set those to 0.
-	shiftedValues(:, 29) = shiftedValues(:, 29) * 1.4;  % Shift Ref@2.0 right by increasing value by 40%
+	shiftedValues(:, 26) = shiftedValues(:, 29);  % Shift Ref@2.5 right by setting to Ref@2.0ms
+	shiftedValues(:, 29) = shiftedValues(:, 29) * 1.66;  % Shift Ref@2.0 right by increasing value by 66%
 	shiftedValues(:, 30) = shiftedValues(:, 31);  % Shift Super@7 to equal the Super@5 value
 	shiftedValues(:, 30) = shiftedValues(:, 30) * 0.9;  % Shifting here will usually just result in a smaller value. Swapping 5 and 7 would probably have a similar effect.
 end
@@ -345,7 +344,9 @@ end
 
 function [shiftedValues] = shrinkRC(vals)
 	shiftedValues = vals;
-	shiftedValues(:, 9) = shiftedValues(:, 9) * .5;
+	% shiftedValues(:, 9) = shiftedValues(:, 9) * .5; % It's implausible to shift this.
+	shiftedValues(:, 12) = shiftedValues(:, 12) * .5;
+	shiftedValues(:, 13) = shiftedValues(:, 13) * .5;
 	shiftedValues(:, 26) = shiftedValues(:, 26) * .5;
 	shiftedValues(:, 29) = shiftedValues(:, 29) * .5;
 	shiftedValues(:, 30) = shiftedValues(:, 30) * .5;
