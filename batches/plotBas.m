@@ -40,7 +40,7 @@ end
 
 function padLen = printHeader(bas)
 	% Get length of longest string for padding purposes
-	padLen = max(strlength(bas.Name));
+	padLen = max(strlength([bas.Name]));
 
 	% Print the table header
 	fprintf('%s , Score  ,  std  , Base   ,  std  , Homog ,  PVal  \n', pad("Name", padLen));
