@@ -369,18 +369,20 @@ function [algs] = getAlgList(algList, sizeX)
 			algs = [
 				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
-				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 2, 'length', 2, struct('zmuv', true)));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 2, 'length', 2, 'zmuv', true));
 				struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', sizeX));
 				struct('func', @fillPCA, 'name', 'PCA6', 'args', struct('k', 6, 'VariableWeights', 'variance'));
-				struct('func', @fillPCA, 'name', 'PCA13', 'args', struct('k', 13, 'VariableWeights', 'variance'));
+				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 7, 'VariableWeights', 'variance', 'algorithm', 'eig')));
+				struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean', 'zmuv', true));
+				struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'args', struct('nh', 6, 'trainMissingRows', true, 'zmuv', true)));
 				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
-				struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean'));
+				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
 				struct('func', @fillCascadeAuto, 'name', 'Casc1', 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
 				struct('func', @fillCascadeAuto, 'name', 'Casc6', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
-				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 7, 'VariableWeights', 'variance', 'algorithm', 'eig')));
-				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
-				struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'args', struct('nh', 6, 'trainMissingRows', true)));
 				struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
+				struct('func', @fillCascadeAuto, 'name', 'Casc1Z', 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
+				struct('func', @fillCascadeAuto, 'name', 'Casc6Z', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
+				struct('func', @fillIterate, 'name', 'iCascZ', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true)));
 			];
 		case 'PCA'
 			% For numToUse=40 and iters=14 with 3 different seeds:
