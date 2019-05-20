@@ -21,8 +21,20 @@ end
 
 % setArgs sets any missing arguments. It might cause issues if the incoming 'args' is read-only.
 function [args] = setArgs(args)
+	if ~isfield(args, 'printPercent')
+		args.printPercent = 100;
+	end
+	if ~isfield(args, 'sort')
+		args.sort = false;
+	end
+	if ~isfield(args, 'sortOrder')
+		args.sortOrder = 'ascend';
+	end
 	if ~isfield(args, 'plotBoxes')
 		args.plotBoxes = true;
+	end
+	if ~isfield(args, 'LadderLines')
+		args.LadderLines = false;
 	end
 end
 
