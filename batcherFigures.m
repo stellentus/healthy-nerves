@@ -320,6 +320,21 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'age-batches', 'Age Batches');
 	end
 
+	if strcmp(figToPlot, 'poster')
+		fprintf('\n\nBatch Effects in Normative Data\n\n');
+
+		bas = [
+			baNorm;
+			BatchAnalyzer("Add Legs", 4, [values; legValues], [labels; repmat(4, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Add Rats", 4, [values; ratValues], [labels; repmat(4, ratNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BACopyWithValues(baNorm, "CA shift RC", [shiftRightRC(canValues); japValues; porValues]);
+		];
+		for i = 2:length(bas)
+			calculateBatch(bas(i));
+		end
+		plotBas(bas, 'poster', 'Batch Effects in Normative Data');
+	end
+
 	rmpath batches;
 end
 
