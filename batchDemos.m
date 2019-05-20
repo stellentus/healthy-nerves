@@ -21,7 +21,19 @@ function batchDemos()
 
 	addpath batches;
 	makePaperPlot("bvi-comparison", data1, data2, data3);
+	makePosterPlot("bvi-poster", data1, data2, data3);
 	rmpath batches;
+end
+
+function makePosterPlot(name, data1, data2, data3)
+	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 480 600]);
+
+	plotWithRange(1, data1, data2, 500, 0, 0, 500, 30, "A");
+	plotWithRange(2, data1, data2, 0, 500, 0, 500, 30, "B");
+	plotWithRange(3, data1, data2, 400, 0, 100, 500, 30, "C");
+	plotWithRange(4, data1, data3, 500, 0, 0, 500, 30, "D");
+
+	saveFigureToBatchDir(name, fig);
 end
 
 function makePaperPlot(name, data1, data2, data3)
