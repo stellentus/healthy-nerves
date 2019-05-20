@@ -6,9 +6,6 @@ function bas = batcher(varargin)
 	addParameter(p, 'sampleFraction', 0.8, @isnumeric);
 	addParameter(p, 'plotImportantIndices', false, @islogical); % This only works with 'action'=='del'
 	addParameter(p, 'args', struct(), @isstruct); % Passed to other functions; not always used
-	addParameter(p, 'printPercent', 100, @(x) isnumeric(x) && x>0 && x<=100); % Percent of results to print
-	addParameter(p, 'sortOrder', "ascend", @(x) any(validatestring(x, {'ascend', 'descend'})));
-	addParameter(p, 'sort', false, @islogical);
 	addParameter(p, 'plotBoxes', true, @islogical);
 	addParameter(p, 'file', "bin/batch-normative.mat", @isstring);
 	parse(p, varargin{:});
