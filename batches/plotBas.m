@@ -43,7 +43,7 @@ function plotBoxes(titleLabel, filename, scores, scoreName, bas)
 
 	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
 
-	CategoricalScatterplot(scores, [], 'MarkerSize', 50, 'BoxAlpha', .29, 'LadderLines', true);
+	CategoricalScatterplot(scores, [], 'MarkerSize', 50, 'BoxAlpha', .29, 'LadderLines', true, 'MedianColor', [193,27,36]/255);
 	title(titleLabel);
 	ylabel(scoreName);
 	ylim([0 1.15])
