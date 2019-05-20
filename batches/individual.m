@@ -34,3 +34,54 @@ function individual()
 
 	plotBas(bas, 'individuals', 'Effects in Individual Measures');
 end
+
+%%%%%%%%%%%%%%%%%%%% RESULTS %%%%%%%%%%%%%%%%%%%%
+
+% ## thresholdElectrotonus
+
+% TEd(10–20ms)
+% TEd(90–100ms)
+% TEd(peak)
+% TEh(10–20ms)
+% TEd(undershoot)
+% TEh(90–100ms)
+% TEh(20–40ms)
+% TEh(slope 101–140ms)
+% Accommodation half-time (ms)
+% TEd(40–60ms)
+% TEh(overshoot)
+% S2 accommodation
+
+% ## recoveryCycle
+
+% Refractoriness at 2 ms (%)
+% Refractoriness at 2.5ms (%)
+% RRP (ms)
+% Subexcitability (%)
+% Superexcitability at 5 ms (%)
+% Superexcitability (%)
+% Superexcitability at 7 ms (%)
+
+% ## chargeDuration
+
+% Rheobase (mA)
+% Strength-duration time constant (ms)
+
+% ## thresholdIV
+
+% Resting I/V slope
+% Hyperpolarization I/V slope
+% Minimum I/V slope
+
+% ## stimulusResponse
+
+% Peak response (mV)
+% Stimulus (mA) for 50% max response
+% Stimulus-response slope
+
+% ## other
+
+% Temperature (C)
+% Age (years)
+% Latency (ms)
+% Sex
