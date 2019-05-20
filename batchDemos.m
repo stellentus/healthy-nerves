@@ -17,22 +17,31 @@ function batchDemos()
 	padLen = 4;
 	printHeader(padLen);
 
-	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 480 600]);
+	[~,~] = mkdir('img/batch'); % Read and ignore returns to suppress warning if dir exists.
 
 	addpath batches;
+	makePaperPlot("bvi-comparison", data1, data2, data3);
+	rmpath batches;
+end
+
+function makePaperPlot(name, data1, data2, data3)
+	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 480 600]);
+
 	plotWithRange(1, data1, data2, 500, 0, 0, 500, 30, "A");
 	plotWithRange(2, data1, data2, 400, 0, 100, 500, 30, "B");
 	plotWithRange(3, data1, data2, 50, 450, 0, 500, 30, "C");
 	plotWithRange(4, data1, data2, 0, 500, 0, 500, 30, "D");
 	plotWithRange(5, data1, data3, 500, 0, 0, 500, 30, "E");
 	plotWithRange(6, data1, data3, 63, 0, 63, 126, 30, "F");
-	rmpath batches;
 
-	[~,~] = mkdir('img/batch'); % Read and ignore returns to suppress warning if dir exists.
-	pathstr = sprintf('img/batch/bvi-comparison-%d-%d-%d-%d%d%2.0f', clock);
+	saveFigureToBatchDir(name, fig);
+end
+
+function saveFigureToBatchDir(name, fig)
+	pathstr = sprintf('img/batch/%s-%d-%d-%d-%d%d%2.0f',name,  clock);
 	savefig(fig, strcat(pathstr, '.fig'), 'compact');
 	saveas(fig, strcat(pathstr, '.png'));
-	copyfile(strcat(pathstr, '.png'), 'img/batch/bvi-comparison.png'); % Also save without timestamp
+	copyfile(strcat(pathstr, '.png'), strcat('img/batch/', name, '.png')); % Also save without timestamp
 end
 
 function plotWithRange(plotId, data1, data2, n1a, n2a, n1b, n2b, iters, letterLabel)
