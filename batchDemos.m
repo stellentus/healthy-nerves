@@ -84,8 +84,8 @@ function plotWithRange(plotId, data1, data2, n1a, n2a, n1b, n2b, iters, letterLa
 		sb = subplot('Position', pos, 'Units', 'normalized');
 		set(sb, 'YTick', [], 'XTick', []);
 		hold on;
-		plot(d1(:,1), d1(:,2), 'o');
-		plot(d2(:,1), d2(:,2), 'x');
+		plot(d1(:,1), d1(:,2), 'o', 'color', [0,73,137]/255);
+		plot(d2(:,1), d2(:,2), 'x', 'color', [43,111,0]/255);
 	    text(0.05, 0.95, letterLabel, 'fontweight', 'bold', 'HorizontalAlignment', 'left', 'VerticalAlignment', 'cap', 'Units', 'normalized');
 		pos(1) = pos(1) + 0.315;
 		pos(3) = 0.12;
