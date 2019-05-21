@@ -1,5 +1,5 @@
 function plotBatches()
-	load('bin/missing-normative.mat');
+	load('bin/batch-normative.mat');
 	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
 	values = [canValues; japValues; porValues];
 
