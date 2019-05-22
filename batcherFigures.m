@@ -321,7 +321,7 @@ function batcherFigures(figToPlot)
 	end
 
 	if strcmp(figToPlot, 'poster')
-		fprintf('\n\nBatch Effects in Normative Data\n\n');
+		fprintf('\n\nSite-Specific Differences\n\n');
 
 		bas = [
 			baNorm;
@@ -332,7 +332,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'poster', 'Batch Effects in Normative Data');
+		plotBas(bas, 'poster', 'Site-Specific Differences');
 	end
 
 	rmpath batches;
