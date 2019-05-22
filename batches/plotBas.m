@@ -15,7 +15,7 @@ function plotBas(bas, filename, figtitle, args)
 	end
 
 	if args.plotBoxes
-		plotBoxes(figtitle, filename, scores, 'Homogeneity (%)', bas);
+		plotBoxes(figtitle, filename, scores, 'Homogeneity (%)', bas, args.fontSize);
 	end
 end
 
@@ -23,6 +23,9 @@ end
 function [args] = setArgs(args)
 	if ~isfield(args, 'plotBoxes')
 		args.plotBoxes = true;
+	end
+	if ~isfield(args, 'fontSize')
+		args.fontSize = 18;
 	end
 end
 
@@ -35,13 +38,13 @@ function padLen = printHeader(bas)
 	fprintf('%s , ------ , ----- , ------ , ----- , ----- , ------ \n', strrep(pad(" ", padLen), " ", "-"));
 end
 
-function plotBoxes(titleLabel, filename, scores, scoreName, bas)
+function plotBoxes(titleLabel, filename, scores, scoreName, bas, fontSize)
 	addpath lib/CategoricalScatterplot
 
 	[~,~] = mkdir('img/batch'); % Read and ignore returns to suppress warning if dir exists.
 	pathstr = sprintf('img/batch/%s-%d-%d-%d-%d%d%2.0f', filename, clock);
 
-	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
+	fig = figure('DefaultAxesFontSize', fontSize, 'Position', [10 10 900 600]);
 
 	CategoricalScatterplot(scores, [], 'MarkerSize', 50, 'BoxAlpha', .29, 'LadderLines', true, 'MedianColor', [193,27,36]/255);
 	title(titleLabel);
@@ -52,12 +55,12 @@ function plotBoxes(titleLabel, filename, scores, scoreName, bas)
 		% Add a label with the homogeneity score.
 		textLabel = sprintf("%2.0f%% Homog.\np=%s", bas(i).Homogeneity_mean*100, PString(bas(i)));
 		x = 2*i - 0.5;
-		text(x, 0.2, textLabel, 'HorizontalAlignment', 'center', 'VerticalAlignment', 'cap', 'FontSize', 16);
+		text(x, 0.2, textLabel, 'HorizontalAlignment', 'center', 'VerticalAlignment', 'cap', 'FontSize', fontSize-2);
 
 		% Add a label with the name of this element.
 		pos = get(gca, 'Position');
 		namePos = [(x -0.9 + abs(min(xlim)))/diff(xlim) * pos(3) + pos(1), (0 - min(ylim))/diff(ylim) * pos(4) + pos(2), 1.8/diff(xlim) * pos(3), 0];
-		ta1 = annotation('textbox', namePos, 'string', bas(i).Name, 'HorizontalAlignment', 'center', 'VerticalAlignment', 'cap', 'FontSize', 18);
+		ta1 = annotation('textbox', namePos, 'string', bas(i).Name, 'HorizontalAlignment', 'center', 'VerticalAlignment', 'cap', 'FontSize', fontSize);
 	end
 
 	savefig(fig, strcat(pathstr, '.fig'), 'compact');
