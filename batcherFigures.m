@@ -332,7 +332,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'poster', 'Site-Specific Differences');
+		plotBas(bas, 'poster', 'Site-Specific Differences', struct('fontSize', 24));
 	end
 
 	rmpath batches;
