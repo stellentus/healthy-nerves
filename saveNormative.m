@@ -28,32 +28,11 @@ function saveNormative(savefilepath, pathPrefix, nanMethod)
 	[japValues, japParticipants] = flattenStructs(japValues, japParticipants);
 	[porValues, porParticipants] = flattenStructs(porValues, porParticipants);
 
-	% Delete people who have no sex
-	[canValues, canParticipants] = deleteNoSex(canValues, canParticipants);
-	[legValues, legParticipants] = deleteNoSex(legValues, legParticipants);
-	[japValues, japParticipants] = deleteNoSex(japValues, japParticipants);
-	[porValues, porParticipants] = deleteNoSex(porValues, porParticipants);
-
-	% Delete duplicate records
-	[canValues, canParticipants] = deduplicate(canValues, canParticipants);
-	[legValues, legParticipants] = deduplicate(legValues, legParticipants);
-	[japValues, japParticipants] = deduplicate(japValues, japParticipants);
-	[porValues, porParticipants] = deduplicate(porValues, porParticipants);
-
-	rmpath import;
-
-	% Fill missing data
-	addpath missing;
-	canValues = fillWithMethod(canValues, nanMethod, true);
-	legValues = fillWithMethod(legValues, nanMethod, true);
-	japValues = fillWithMethod(japValues, nanMethod, true);
-	porValues = fillWithMethod(porValues, nanMethod, true);
-	rmpath missing;
-
-	canNum = size(canValues, 1);
-	japNum = size(japValues, 1);
-	porNum = size(porValues, 1);
-	legNum = size(legValues, 1);
+	% Delete certain participants and fill missing data
+	[canValues, canParticipants, canNum] = cleanData(canValues, canParticipants, nanMethod);
+	[legValues, legParticipants, legNum] = cleanData(legValues, legParticipants, nanMethod);
+	[japValues, japParticipants, japNum] = cleanData(japValues, japParticipants, nanMethod);
+	[porValues, porParticipants, porNum] = cleanData(porValues, porParticipants, nanMethod);
 
 	save(savefilepath, 'canValues', 'canParticipants', 'canNum', 'japValues', 'japParticipants', 'japNum', 'porValues', 'porParticipants', 'porNum', 'legValues', 'legParticipants', 'legNum', 'measures', 'nanMethod')
 end

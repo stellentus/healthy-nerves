@@ -32,56 +32,17 @@ function saveNonNormative(nanMethod, savefilepath)
 	% Flatten SCI data
 	[sciValues, sciParticipants] = flattenStructs(sciValues, sciParticipants);
 
-	% Delete people who have no sex
-	[sciValues, sciParticipants] = deleteNoSex(sciValues, sciParticipants);
-	[ratTASPValues, ratTASPParticipants] = deleteNoSex(ratTASPValues, ratTASPParticipants);
-	[ratTAKXValues, ratTAKXParticipants] = deleteNoSex(ratTAKXValues, ratTAKXParticipants);
-	[ratSLSPValues, ratSLSPParticipants] = deleteNoSex(ratSLSPValues, ratSLSPParticipants);
-	[ratSLKXValues, ratSLKXParticipants] = deleteNoSex(ratSLKXValues, ratSLKXParticipants);
-	[ratTAValues, ratTAParticipants] = deleteNoSex(ratTAValues, ratTAParticipants);
-	[ratSLValues, ratSLParticipants] = deleteNoSex(ratSLValues, ratSLParticipants);
-	[ratSPValues, ratSPParticipants] = deleteNoSex(ratSPValues, ratSPParticipants);
-	[ratKXValues, ratKXParticipants] = deleteNoSex(ratKXValues, ratKXParticipants);
-	[ratValues, ratParticipants] = deleteNoSex(ratValues, ratParticipants);
-
-	% Delete duplicate records
-	[sciValues, sciParticipants] = deduplicate(sciValues, sciParticipants);
-	[ratTASPValues, ratTASPParticipants] = deduplicate(ratTASPValues, ratTASPParticipants);
-	[ratTAKXValues, ratTAKXParticipants] = deduplicate(ratTAKXValues, ratTAKXParticipants);
-	[ratSLSPValues, ratSLSPParticipants] = deduplicate(ratSLSPValues, ratSLSPParticipants);
-	[ratSLKXValues, ratSLKXParticipants] = deduplicate(ratSLKXValues, ratSLKXParticipants);
-	[ratTAValues, ratTAParticipants] = deduplicate(ratTAValues, ratTAParticipants);
-	[ratSLValues, ratSLParticipants] = deduplicate(ratSLValues, ratSLParticipants);
-	[ratSPValues, ratSPParticipants] = deduplicate(ratSPValues, ratSPParticipants);
-	[ratKXValues, ratKXParticipants] = deduplicate(ratKXValues, ratKXParticipants);
-	[ratValues, ratParticipants] = deduplicate(ratValues, ratParticipants);
-
-	rmpath import;
-
-	% Fill missing data
-	addpath missing;
-	sciValues = fillWithMethod(sciValues, nanMethod, true);
-	ratTASPValues = fillWithMethod(ratTASPValues, nanMethod, true);
-	ratTAKXValues = fillWithMethod(ratTAKXValues, nanMethod, true);
-	ratSLSPValues = fillWithMethod(ratSLSPValues, nanMethod, true);
-	ratSLKXValues = fillWithMethod(ratSLKXValues, nanMethod, true);
-	ratTAValues = fillWithMethod(ratTAValues, nanMethod, true);
-	ratSLValues = fillWithMethod(ratSLValues, nanMethod, true);
-	ratSPValues = fillWithMethod(ratSPValues, nanMethod, true);
-	ratKXValues = fillWithMethod(ratKXValues, nanMethod, true);
-	ratValues = fillWithMethod(ratValues, nanMethod, true);
-	rmpath missing;
-
-	sciNum = size(sciValues, 1);
-	ratTASPNum = size(ratTASPValues, 1);
-	ratTAKXNum = size(ratTAKXValues, 1);
-	ratSLSPNum = size(ratSLSPValues, 1);
-	ratSLKXNum = size(ratSLKXValues, 1);
-	ratTANum = size(ratTAValues, 1);
-	ratSLNum = size(ratSLValues, 1);
-	ratSPNum = size(ratSPValues, 1);
-	ratKXNum = size(ratKXValues, 1);
-	ratNum = size(ratValues, 1);
+	% Delete certain participants and fill missing data
+	[sciValues, sciParticipants, sciNum] = cleanData(sciValues, sciParticipants, nanMethod);
+	[ratTASPValues, ratTASPParticipants, ratTASPNum] = cleanData(ratTASPValues, ratTASPParticipants, nanMethod);
+	[ratTAKXValues, ratTAKXParticipants, ratTAKXNum] = cleanData(ratTAKXValues, ratTAKXParticipants, nanMethod);
+	[ratSLSPValues, ratSLSPParticipants, ratSLSPNum] = cleanData(ratSLSPValues, ratSLSPParticipants, nanMethod);
+	[ratSLKXValues, ratSLKXParticipants, ratSLKXNum] = cleanData(ratSLKXValues, ratSLKXParticipants, nanMethod);
+	[ratTAValues, ratTAParticipants, ratTANum] = cleanData(ratTAValues, ratTAParticipants, nanMethod);
+	[ratSLValues, ratSLParticipants, ratSLNum] = cleanData(ratSLValues, ratSLParticipants, nanMethod);
+	[ratSPValues, ratSPParticipants, ratSPNum] = cleanData(ratSPValues, ratSPParticipants, nanMethod);
+	[ratKXValues, ratKXParticipants, ratKXNum] = cleanData(ratKXValues, ratKXParticipants, nanMethod);
+	[ratValues, ratParticipants, ratNum] = cleanData(ratValues, ratParticipants, nanMethod);
 
 	save(savefilepath, 'sciValues', 'sciParticipants', 'sciNum', 'ratTASPValues', 'ratTASPParticipants', 'ratTASPNum', 'ratTAKXValues', 'ratTAKXParticipants', 'ratTAKXNum', 'ratSLSPValues', 'ratSLSPParticipants', 'ratSLSPNum', 'ratSLKXValues', 'ratSLKXParticipants', 'ratSLKXNum', 'ratTAValues', 'ratTAParticipants', 'ratTANum', 'ratSLValues', 'ratSLParticipants', 'ratSLNum', 'ratSPValues', 'ratSPParticipants', 'ratSPNum', 'ratKXValues', 'ratKXParticipants', 'ratKXNum', 'ratValues', 'ratParticipants', 'ratNum', 'measures', 'nanMethod');
 end
