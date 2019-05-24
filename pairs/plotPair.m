@@ -7,7 +7,7 @@ function plotPair(name, values, labels, measures, idx1, idx2, newFig)
 		filename = sprintf("scatter-%d-%d", idx1, idx2);
 
 		[~,~] = mkdir('img/pairs'); % Read and ignore returns to suppress warning if dir exists.
-		pathstr = sprintf('img/pairs/%s-%d-%d-%d-%d%d%2.0f', filename, clock);
+		pathstr = sprintf('img/pairs/%s-%02d-%02d-%02d-%02d-%02d-%02.0f', filename, clock);
 
 		fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
 		markSize = 30;

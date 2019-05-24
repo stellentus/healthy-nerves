@@ -50,7 +50,7 @@ function makePaperPlot(name, data1, data2, data3)
 end
 
 function saveFigureToBatchDir(name, fig)
-	pathstr = sprintf('img/batch/%s-%d-%d-%d-%d%d%2.0f',name,  clock);
+	pathstr = sprintf('img/batch/%s-%02d-%02d-%02d-%02d-%02d-%02.0f',name,  clock);
 	savefig(fig, strcat(pathstr, '.fig'), 'compact');
 	saveas(fig, strcat(pathstr, '.png'));
 	copyfile(strcat(pathstr, '.png'), strcat('img/batch/', name, '.png')); % Also save without timestamp

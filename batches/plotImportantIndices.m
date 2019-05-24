@@ -26,7 +26,7 @@ function plotImportantIndices(bas, measures)
 	ylabel("Average change to CRI when index is removed")
 
 	[~,~] = mkdir('img/batch'); % Read and ignore returns to suppress warning if dir exists.
-	pathstr = sprintf('img/batch/impind-%d-%d-%d-%d%d%2.0f', clock);
+	pathstr = sprintf('img/batch/impind-%02d-%02d-%02d-%02d-%02d-%02.0f', clock);
 	savefig(figref, strcat(pathstr, '.fig'), 'compact');
 	saveas(figref, strcat(pathstr, '.png'));
 end
