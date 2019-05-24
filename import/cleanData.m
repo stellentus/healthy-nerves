@@ -1,6 +1,7 @@
 function [values, participants, num] = cleanData(values, participants, nanMethod)
 	[values, participants] = deleteNoSex(values, participants);
 	[values, participants] = deduplicate(values, participants);
+	[values, participants] = removeExcessivelyMissing(values, participants);
 	if nargin >= 3
 		addpath ./missing;
 		values = fillWithMethod(values, nanMethod, true);
@@ -26,4 +27,19 @@ function [dedupVals, dedupParts] = deduplicate(vals, parts)
 	if length(dedupParts) ~= orig
 		fprintf('Deleted %d duplicates\n', orig-length(dedupParts));
 	end
+end
+
+% removeExcessivelyMissing removes rows with more than 10 missing values
+function [vals, parts] = removeExcessivelyMissing(vals, parts, maxMissing)
+	if nargin < 3
+		maxMissing = 10;
+	end
+
+	numMissing = sum(isnan(vals), 2);
+	excessiveMissing = numMissing>maxMissing;
+	if sum(excessiveMissing) > 0
+		fprintf('Deleting excessively missing %s.\n', parts(excessiveMissing));
+	end
+	vals = vals(~excessiveMissing, :);
+	parts = parts(~excessiveMissing);
 end
