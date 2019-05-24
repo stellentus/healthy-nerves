@@ -34,8 +34,8 @@ function padLen = printHeader(bas)
 	padLen = max(strlength([bas.Name]));
 
 	% Print the table header
-	fprintf('%s , Score  ,  std  , Base   ,  std  , Homog ,  PVal  \n', pad("Name", padLen));
-	fprintf('%s , ------ , ----- , ------ , ----- , ----- , ------ \n', strrep(pad(" ", padLen), " ", "-"));
+	fprintf('%s , Score  ,  std  , Base   ,  std  , Homog ,  PVal    \n', pad("Name", padLen));
+	fprintf('%s , ------ , ----- , ------ , ----- , ----- , -------- \n', strrep(pad(" ", padLen), " ", "-"));
 end
 
 function plotBoxes(titleLabel, filename, scores, scoreName, bas, fontSize)

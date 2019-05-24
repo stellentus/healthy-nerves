@@ -121,8 +121,8 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 			obj.PValue = signrank(obj.Score, obj.BaselineScore);
 		end
 		function pStr = PString(obj)
-			if obj.PValue < 0.001
-				pStr = sprintf('%.0e', obj.PValue);
+			if obj.PValue < 0.0001
+				pStr = '<0.0001';
 			else
 				pStr = sprintf('%.4f', obj.PValue);
 			end
