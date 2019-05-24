@@ -20,6 +20,17 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 
 	X = loadMEF();
 
+	numSamples = p.Results.numToUse;
+	if numSamples <= 0
+		numSamples = size(X, 1);
+	end
+
+	% Log all output to a file
+	[~,~] = mkdir('img/missmiss'); % Read and ignore returns to suppress warning if dir exists.
+	nameStr = sprintf('%02d-%02d-%02d-%02d-%02d-%02.0f (%d-%s)', clock, numSamples, p.Results.algList);
+	diary(strcat('img/missmiss/', nameStr, '.txt'));
+	diary on;
+
 	addpath missing
 
 	covr = cov(X);
@@ -90,14 +101,12 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 		end
 
 		% Plot values
-		numSamples = p.Results.numToUse;
-		if numSamples <= 0
-			numSamples = size(X, 1);
-		end
-		plotBoxes(verrs, cerrs, runtimes, algNames, numSamples, p.Results.algList);
+		plotBoxes(verrs, cerrs, runtimes, algNames, numSamples, nameStr);
 	end
 
-	rmpath missing
+	rmpath missing;
+
+	diary off;
 end
 
 function printTableRow(name, verrs, cerrs, runtimes, offset)
@@ -257,15 +266,14 @@ function calcStats(data, name, algNames)
 	end
 end
 
-function plotBoxes(verrs, cerrs, runtimes, algNames, numSamples, algList)
+function plotBoxes(verrs, cerrs, runtimes, algNames, numSamples, nameStr)
 	vAlgNames = algNames;
 	if (all(isnan(verrs(:, 1))))
 		verrs = verrs(:, 2:end);
 		vAlgNames = algNames(2:end);
 	end
 
-	[~,~] = mkdir('img/missmiss'); % Read and ignore returns to suppress warning if dir exists.
-	pathstr = sprintf('img/missmiss/%d-%d-%d-%d%d%02.0f (%d-%s)', clock, numSamples, algList);
+	pathstr = strcat('img/missmiss/', nameStr);
 
 	valfig = plotOne('Error in Filled Data', 'Error', 'value', verrs, vAlgNames, pathstr, numSamples);
 	covfig = plotOne('Error in Covariance', 'Error', 'covar', cerrs, algNames, pathstr, numSamples);
