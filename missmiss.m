@@ -30,6 +30,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 	nameStr = sprintf('%02d-%02d-%02d-%02d-%02d-%02.0f (%d-%s)', clock, numSamples, p.Results.algList);
 	diary(strcat('img/missmiss/', nameStr, '.txt'));
 	diary on;
+	disp(p.Results);
 
 	addpath missing
 
