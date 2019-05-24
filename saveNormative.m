@@ -10,13 +10,13 @@ function saveNormative(savefilepath, pathPrefix, nanMethod)
 		end
 	end
 
-	% Load the data
 	addpath import;
+
+	% Load the data
 	[canValues, canParticipants, canMeasures] = mefimport(strcat(pathPrefix, 'human/FESmedianAPB_Concatenated.xlsx'), false, false, canonicalNamesNoTE20());
 	[legValues, legParticipants, legMeasures] = mefimport(strcat(pathPrefix, 'human/CPrepeatedmeasures.xlsx'), false, false, canonicalNamesNoTE20()); % I'm not using the full set because QTRAC chokes on Excel import after around 130 rows
 	[japValues, japParticipants, japMeasures] = importAllXLSX('none', strcat(pathPrefix, 'Japan'));
 	[porValues, porParticipants, porMeasures] = importAllXLSX('none', strcat(pathPrefix, 'Portugal'));
-	rmpath import;
 
 	% Ensure all datasets have the desired measures
 	assert(isequal(canMeasures, legMeasures), 'Canadian arm and leg measures are not the same');
@@ -40,6 +40,8 @@ function saveNormative(savefilepath, pathPrefix, nanMethod)
 	[japValues, japParticipants] = deduplicate(japValues, japParticipants);
 	[porValues, porParticipants] = deduplicate(porValues, porParticipants);
 
+	rmpath import;
+
 	% Fill missing data
 	addpath missing;
 	canValues = fillWithMethod(canValues, nanMethod, true);
@@ -54,40 +56,4 @@ function saveNormative(savefilepath, pathPrefix, nanMethod)
 	legNum = size(legValues, 1);
 
 	save(savefilepath, 'canValues', 'canParticipants', 'canNum', 'japValues', 'japParticipants', 'japNum', 'porValues', 'porParticipants', 'porNum', 'legValues', 'legParticipants', 'legNum', 'measures', 'nanMethod')
-end
-
-function [flatVals, flatParts] = flattenStructs(structVals, structParts)
-	flatVals = [];
-	flatParts = [];
-	fields = fieldnames(structVals);
-	for i = 1:numel(fields)
-		thisParts = structParts.(fields{i});
-		thisVals = structVals.(fields{i});
-		for j = 1:length(thisParts)
-			% Only add the data if the participant hasn't already been added
-			if length(flatParts) < 2 || sum(ismember(flatParts, thisParts(j))) == 0
-				flatVals = [flatVals; thisVals(j, :)];
-				flatParts = [flatParts; thisParts(j)];
-			end
-		end
-	end
-end
-
-function [vals, parts] = deleteNoSex(vals, parts)
-	hasSex = ismember(vals(:, 15), [2.0 1.0]);
-	if sum(~hasSex) > 0
-		fprintf('Deleting sexless %s.\n', parts(~hasSex));
-	end
-	vals = vals(hasSex, :);
-	parts = parts(hasSex);
-end
-
-function [dedupVals, dedupParts] = deduplicate(vals, parts)
-	orig = length(parts);
-	[~, indices] = unique(parts, 'first');
-	dedupParts = parts(sort(indices));
-	dedupVals = vals(sort(indices), :);
-	if length(dedupParts) ~= orig
-		fprintf('Deleted %d duplicates\n', orig-length(dedupParts));
-	end
 end

@@ -7,14 +7,14 @@ function saveNonNormative(nanMethod, savefilepath)
 		end
 	end
 
-	% Load the data
 	addpath import;
+
+	% Load the data
 	[sciValues, sciParticipants, sciMeasures] = importAllXLSX('none', 'data/MEM/SCI/Cross Sectional Data/MEM+MEF data');
 	[ratTASPValues, ratTASPParticipants, ratTASPMeasures] = mefimport('data/rat/TA-SP.xlsx', false, false, canonicalNamesNoTE20());
 	[ratTAKXValues, ratTAKXParticipants, ratTAKXMeasures] = mefimport('data/rat/TA-KX.xlsx', false, false, canonicalNamesNoTE20());
 	[ratSLSPValues, ratSLSPParticipants, ratSLSPMeasures] = mefimport('data/rat/SOL-SP.xlsx', false, false, canonicalNamesNoTE20());
 	[ratSLKXValues, ratSLKXParticipants, ratSLKXMeasures] = mefimport('data/rat/SOL-KX.xlsx', false, false, canonicalNamesNoTE20());
-	rmpath import;
 
 	% Combine pairs of rat data
 	[ratTAValues, ratTAParticipants, ratTAMeasures] = combine(ratTASPValues, ratTASPParticipants, ratTASPMeasures, ratTAKXValues, ratTAKXParticipants, ratTAKXMeasures);
@@ -56,6 +56,8 @@ function saveNonNormative(nanMethod, savefilepath)
 	[ratKXValues, ratKXParticipants] = deduplicate(ratKXValues, ratKXParticipants);
 	[ratValues, ratParticipants] = deduplicate(ratValues, ratParticipants);
 
+	rmpath import;
+
 	% Fill missing data
 	addpath missing;
 	sciValues = fillWithMethod(sciValues, nanMethod, true);
@@ -82,42 +84,6 @@ function saveNonNormative(nanMethod, savefilepath)
 	ratNum = size(ratValues, 1);
 
 	save(savefilepath, 'sciValues', 'sciParticipants', 'sciNum', 'ratTASPValues', 'ratTASPParticipants', 'ratTASPNum', 'ratTAKXValues', 'ratTAKXParticipants', 'ratTAKXNum', 'ratSLSPValues', 'ratSLSPParticipants', 'ratSLSPNum', 'ratSLKXValues', 'ratSLKXParticipants', 'ratSLKXNum', 'ratTAValues', 'ratTAParticipants', 'ratTANum', 'ratSLValues', 'ratSLParticipants', 'ratSLNum', 'ratSPValues', 'ratSPParticipants', 'ratSPNum', 'ratKXValues', 'ratKXParticipants', 'ratKXNum', 'ratValues', 'ratParticipants', 'ratNum', 'measures', 'nanMethod');
-end
-
-function [flatVals, flatParts] = flattenStructs(structVals, structParts)
-	flatVals = [];
-	flatParts = [];
-	fields = fieldnames(structVals);
-	for i = 1:numel(fields)
-		thisParts = structParts.(fields{i});
-		thisVals = structVals.(fields{i});
-		for j = 1:length(thisParts)
-			% Only add the data if the participant hasn't already been added
-			if length(flatParts) < 2 || sum(ismember(flatParts, thisParts(j))) == 0
-				flatVals = [flatVals; thisVals(j, :)];
-				flatParts = [flatParts; thisParts(j)];
-			end
-		end
-	end
-end
-
-function [vals, parts] = deleteNoSex(vals, parts)
-	hasSex = ismember(vals(:, 15), [2.0 1.0]);
-	if sum(~hasSex) > 0
-		fprintf('Deleting sexless %s.\n', parts(~hasSex));
-	end
-	vals = vals(hasSex, :);
-	parts = parts(hasSex);
-end
-
-function [dedupVals, dedupParts] = deduplicate(vals, parts)
-	orig = length(parts);
-	[~, indices] = unique(parts, 'first');
-	dedupParts = parts(sort(indices));
-	dedupVals = vals(sort(indices), :);
-	if length(dedupParts) ~= orig
-		fprintf('Deleted %d duplicates\n', orig-length(dedupParts));
-	end
 end
 
 function [val, part, meas1] = combine(val1, part1, meas1, val2, part2, meas2)
