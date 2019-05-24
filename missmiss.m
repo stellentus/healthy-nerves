@@ -133,9 +133,9 @@ function [str] = displayTime(mn, st)
 		units = "ks";
 	end
 
-	if mn < 10
+	if mn < 10 && st < 10
 		str = sprintf("%.2f (%.2f) %2s", mn, st, units);
-	elseif mn < 100
+	elseif mn < 100 && st < 100
 		str = sprintf("%.1f (%.1f) %2s", mn, st, units);
 	else
 		str = sprintf("%.0f (%.0f) %2s", mn, st, units);
