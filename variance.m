@@ -42,7 +42,7 @@ function displayMeasure(index, measures, comb, can, jap, por)
 	addpath lib/CategoricalScatterplot;
 
 	[~,~] = mkdir('img/variance'); % Read and ignore returns to suppress warning if dir exists.
-	pathstr = sprintf('img/variance/norm-var-idx%02d-%d-%d-%d-%d%d%2.0f', index, clock);
+	pathstr = sprintf('img/variance/norm-var-idx%02d-%02d-%02d-%02d-%02d-%02d-%02.0f', index, clock);
 
 	fig = figure('DefaultAxesFontSize', 18);
 	CategoricalScatterplot(vals, [{'All'} {'Canada'} {'Japan'} {'Portugal'}]);

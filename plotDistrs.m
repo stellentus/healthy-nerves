@@ -8,6 +8,6 @@ function plotDistrs()
 		fig = figure('DefaultAxesFontSize', 18);
 		histogram(values(:, i), 100);
 		title(measures(i));
-		% saveas(fig, sprintf('img/plotDistrs%02d-%02d-%02d-%02d-%02d%02d%2.0f.png', clock));
+		% saveas(fig, sprintf('img/plotDistrs%02d-%02d-%02d-%02d-%02d-%02.0f.png', clock));
 	end
 end
