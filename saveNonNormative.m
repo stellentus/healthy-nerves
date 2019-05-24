@@ -9,12 +9,14 @@ function saveNonNormative(nanMethod, savefilepath)
 
 	addpath import;
 
+	measures = canonicalNamesNoTE20();
+
 	% Load the data
-	[sciValues, sciParticipants, sciMeasures] = importAllXLSX('none', 'data/MEM/SCI/Cross Sectional Data/MEM+MEF data');
-	[ratTASPValues, ratTASPParticipants, ratTASPMeasures] = mefimport('data/rat/TA-SP.xlsx', false, false, canonicalNamesNoTE20());
-	[ratTAKXValues, ratTAKXParticipants, ratTAKXMeasures] = mefimport('data/rat/TA-KX.xlsx', false, false, canonicalNamesNoTE20());
-	[ratSLSPValues, ratSLSPParticipants, ratSLSPMeasures] = mefimport('data/rat/SOL-SP.xlsx', false, false, canonicalNamesNoTE20());
-	[ratSLKXValues, ratSLKXParticipants, ratSLKXMeasures] = mefimport('data/rat/SOL-KX.xlsx', false, false, canonicalNamesNoTE20());
+	[sciValues, sciParticipants, sciNum] = importCleanMEF('data/MEM/SCI/Cross Sectional Data/MEM+MEF data', measures, nanMethod);
+	[ratTASPValues, ratTASPParticipants, ratTASPMeasures] = mefimport('data/rat/TA-SP.xlsx', false, false, measures);
+	[ratTAKXValues, ratTAKXParticipants, ratTAKXMeasures] = mefimport('data/rat/TA-KX.xlsx', false, false, measures);
+	[ratSLSPValues, ratSLSPParticipants, ratSLSPMeasures] = mefimport('data/rat/SOL-SP.xlsx', false, false, measures);
+	[ratSLKXValues, ratSLKXParticipants, ratSLKXMeasures] = mefimport('data/rat/SOL-KX.xlsx', false, false, measures);
 
 	% Combine pairs of rat data
 	[ratTAValues, ratTAParticipants, ratTAMeasures] = combine(ratTASPValues, ratTASPParticipants, ratTASPMeasures, ratTAKXValues, ratTAKXParticipants, ratTAKXMeasures);
@@ -23,17 +25,7 @@ function saveNonNormative(nanMethod, savefilepath)
 	[ratKXValues, ratKXParticipants, ratKXMeasures] = combine(ratTAKXValues, ratTAKXParticipants, ratTAKXMeasures, ratSLKXValues, ratSLKXParticipants, ratSLKXMeasures);
 	[ratValues, ratParticipants, ratMeasures] = combine(ratSPValues, ratSPParticipants, ratSPMeasures, ratKXValues, ratKXParticipants, ratKXMeasures);
 
-	% Ensure all datasets have the desired measures
-	assert(isequal(sciMeasures, ratTAMeasures), 'SCI and rat TA measures are not the same');
-	assert(isequal(sciMeasures, ratSLMeasures), 'SCI and rat SL measures are not the same');
-	assert(isequal(sciMeasures, ratMeasures), 'SCI and rat all measures are not the same');
-	measures = sciMeasures;
-
-	% Flatten SCI data
-	[sciValues, sciParticipants] = flattenStructs(sciValues, sciParticipants);
-
 	% Delete certain participants and fill missing data
-	[sciValues, sciParticipants, sciNum] = cleanData(sciValues, sciParticipants, nanMethod);
 	[ratTASPValues, ratTASPParticipants, ratTASPNum] = cleanData(ratTASPValues, ratTASPParticipants, nanMethod);
 	[ratTAKXValues, ratTAKXParticipants, ratTAKXNum] = cleanData(ratTAKXValues, ratTAKXParticipants, nanMethod);
 	[ratSLSPValues, ratSLSPParticipants, ratSLSPNum] = cleanData(ratSLSPValues, ratSLSPParticipants, nanMethod);
