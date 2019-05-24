@@ -6,7 +6,10 @@ function plotBas(bas, filename, figtitle, args)
 	args = setArgs(args);
 	iter = bas(1).Iters;
 
-	padLen = printHeader(bas);
+	% Get length of longest string for padding purposes
+	padLen = max(strlength([bas.Name]));
+	BatchAnalyzer.printHeader(padLen);
+
 	scores = zeros(length(bas(1).Score), length(bas)*2); % only used by plotBoxes
 	for i = 1:length(bas)
 		disp(BAString(bas(i), padLen));
@@ -27,15 +30,6 @@ function [args] = setArgs(args)
 	if ~isfield(args, 'fontSize')
 		args.fontSize = 18;
 	end
-end
-
-function padLen = printHeader(bas)
-	% Get length of longest string for padding purposes
-	padLen = max(strlength([bas.Name]));
-
-	% Print the table header
-	fprintf('%s , Score  ,  std  , Base   ,  std  , Homog ,  PVal    \n', pad("Name", padLen));
-	fprintf('%s , ------ , ----- , ------ , ----- , ----- , -------- \n', strrep(pad(" ", padLen), " ", "-"));
 end
 
 function plotBoxes(titleLabel, filename, scores, scoreName, bas, fontSize)

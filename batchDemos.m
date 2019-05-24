@@ -14,13 +14,15 @@ function batchDemos()
 	data2 = mvnrnd(mu2, sigma2, 5000);
 	data3 = mvnrnd(mu3, sigma2, 5000);
 
-	padLen = 4;
-	printHeader(padLen);
-
 	[~,~] = mkdir('img/batch'); % Read and ignore returns to suppress warning if dir exists.
 
 	addpath batches;
+
+	padLen = 4;
+	BatchAnalyzer.printHeader(padLen);
 	makePaperPlot("bvi-comparison", data1, data2, data3);
+
+	BatchAnalyzer.printDivider(padLen);
 	makePosterPlot("bvi-poster", data1, data2, data3);
 	rmpath batches;
 end
@@ -110,12 +112,6 @@ function plotBA(ba)
 		y = 0.9;
 	end
     text(x, y, textLabel, 'HorizontalAlignment', 'center', 'VerticalAlignment', 'cap');
-end
-
-function printHeader(padLen)
-	% Print the table header
-	fprintf('%s , Score  ,  std  , Base   ,  std  , Homog ,  PVal    \n', pad("Name", padLen));
-	fprintf('%s , ------ , ----- , ------ , ----- , ----- , -------- \n', strrep(pad(" ", padLen), " ", "-"));
 end
 
 function plotBoxes(scores, testNames)

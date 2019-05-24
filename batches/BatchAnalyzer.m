@@ -22,6 +22,16 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		Homogeneity_std
 		PValue
 	end
+	methods(Static)
+		function printHeader(padLen)
+			% Print the table header
+			fprintf('%s , Score  ,  std  , Base   ,  std  , Homog ,  PVal    \n', pad("Name", padLen));
+			BatchAnalyzer.printDivider(padLen);
+		end
+		function printDivider(padLen)
+			fprintf('%s , ------ , ----- , ------ , ----- , ----- , -------- \n', strrep(pad(" ", padLen), " ", "-"));
+		end
+	end
 	methods
 		function obj = BatchAnalyzer(name, numGroups, values, labels, varargin)
 			p = inputParser;
