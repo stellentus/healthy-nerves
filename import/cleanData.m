@@ -6,7 +6,7 @@ function [values, participants, num] = cleanData(values, participants, nanMethod
 		values = fillWithMethod(values, nanMethod, true);
 		rmpath ./missing;
 	end
-	canNum = size(values, 1);
+	num = size(values, 1);
 end
 
 function [vals, parts] = deleteNoSex(vals, parts)
