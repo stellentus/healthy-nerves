@@ -1,4 +1,4 @@
-% List indices in order of lowest to highest BVI.
+% List indices in order of lowest to highest homogeneity.
 function individual()
 	plotAll = false;
 	if nargin < 1

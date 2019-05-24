@@ -1,4 +1,4 @@
-% batchDemos creates some demo plots for BVI.
+% batchDemos creates some demo plots for batch effect VI homogeneity.
 function batchDemos()
 	rng('default')  % For reproducibility
 
@@ -100,7 +100,7 @@ end
 % plotBA is used to print a table and one BatchAnalyzer
 function plotBA(ba)
 	scores = [ba.Score'/ba.BaselineScore_mean ba.BaselineScore'/ba.BaselineScore_mean];
-	plotBoxes(scores, ["BVI", "max"]);
+	plotBoxes(scores, ["Homog.", "|Max|"]);
 	ylim([0 1.15])
 
     textLabel = sprintf("%2.0f%%\nHomog.\n\np=%s", ba.Homogeneity_mean*100, PString(ba));
