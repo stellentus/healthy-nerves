@@ -357,24 +357,34 @@ function [algs] = getAlgList(algList, sizeX)
 				struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 2, 'zmuv', true, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
 			];
 		case 'all'
-			% Mean, Regr, AE, iAE and iCasc aren't useful at any numToUse.
-			% numToUse=277 (all)
-			%	TSR error is better than DA (p=.020) but takes 1000x to run.
-			%	PCA and iPCA aren't great for error.
-			%	Error comparisons between TSR, DA, iRegr, and Casc are all p>.05 (except TSR-DA as noted above).
-			%	Covariance errors are the same as value errors, except DA (the MI method) performs poorly. It overestimates the true correlation.
-			%	TSR runtime is TERRIBLE (95s). PCA, AE, and Casc are also slow (>1s). All other methods are in the ms range (<30ms except DA at 112ms).
-			%	iRegr, which is tied for lowest error, is also extremely fast, so it's recommended for numToUse=277.
+			% Mean, Regr, AE, iAE and iCasc aren't that good at any numToUse.
+			% I want to find one that works well at any numToUse because it's good to be insenstive to it.
+			% Sadly, different algorithms are best at different numbers. But some are good at all numbers and best at others.
+			% I might eventually want to plot performance as a function of numToUse (with a 95% CI of all of my runs).
+			% 	Overall best is Casc6Z. It's tied for small n, slightly better than others for medium, and tied for second with full n.
+			% 	However, iRegr outperforms it for the full dataset.
+			%	iCasc and iCascZ are oddly identical (and worse than iCascZZ), while Casc1 and Casc1Z are not. (True for all 3 tests.)
+			% numToUse=244 (all)
+			% 	Terrible: iAE, Casc1, Casc6, iCasc, and iCascZ.
+			% 	Pretty bad: Mean.
+			% 	Best: DA, TSR, and iRegr (mean variant). iRegr is significantly worse than other two.
+			% 	Second-best: Casc6Z, Casc1Z, and iCascZZ (significant, in order).
+			%	iCasc and iCascZ are oddly identical (and worse than iCascZZ), while Casc1 and Casc1Z are not.
+			%	Runtimes: iRegr (65ms); DA and TSR (100ms); Casc1Z and Casc6Z (55s); and iCascZZ (110s).
 			% numToUse=100
-			%	Compared to 277, there aren't many differences. iPCA begins to perform well. Casc begins to outperform others, but the difference is not significant (except compared to iPCA). DA is now okay.
-			%	Covariance errors are mostly not significantly different, even for the poor performers.
-			%	Runtimes are mostly cut in half, with the poor performers especially benefiting. TSR runtime is better but still slow (20s).
+			% 	Terrible: iAE and Casc6.
+			% 	Pretty bad: Casc1, iCasc, iCascZ.
+			% 	Best: DA, TSR, iRegr, Casc1Z, Casc6Z, iCascZZ. The only significant difference is that Casc6Z is best.
+			%	iCasc and iCascZ are oddly identical (and worse than iCascZZ), while Casc1 and Casc1Z are not.
+			% 	Runtimes: iRegr (20ms); DA (50ms); TSR (20s); Casc1Z and Casc6Z (13s); and iCascZZ (24s).
 			% numToUse=40
-			%	DA is TERRIBLE and TSR is pretty bad. They both have HUGE variance, so you never know if they're working well. (I'm curious if there's a way to test if they're working on a specific small dataset, and using that to pick an algorithm.)
-			%	Casc really stands out as good, though PCA and iPCA do well, too.
-			%	Mean, AE, and Regr do the best with the covariance matrix. But all of these are being compared to the n=277 covariance matrix, not the covariance matrix of the seen data, so they're all expected to be bad.
-			%	Even covariance elements between complete features will be different in this case, which just emphasizes that I shouldn't be using the covariance error for any decisions.
-			%	Most algorithms stay the same or get faster, but PCA is slower. This doesn't change the relative ranking by speed except that TSR is now faster than PCA.
+			%	Terrible: iAE and Casc6.
+			%	Pretty bad: DA, TSR, Casc1, iCasc1, and iCascZ.
+			%	Single outlier: PCA6.
+			%	Best: iPCA, AE, Casc1Z, Casc6Z, and iCascZZ.
+			%	None of the best are identical, but they are effectively indistinguishable.
+			%	iCasc and iCascZ are oddly identical, while Casc1 and Casc1Z are not.
+			%	Runtimes: iPCA (30ms), AE (0.8s), CascXZ (4s), and iCascZZ (7s).
 			algs = [
 				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
@@ -392,6 +402,7 @@ function [algs] = getAlgList(algList, sizeX)
 				struct('func', @fillCascadeAuto, 'name', 'Casc1Z', 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
 				struct('func', @fillCascadeAuto, 'name', 'Casc6Z', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
 				struct('func', @fillIterate, 'name', 'iCascZ', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true)));
+				struct('func', @fillIterate, 'name', 'iCasc-ZZ', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'zmuv', true, 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
 			];
 		case 'PCA'
 			% For numToUse=40 and iters=14 with 3 different seeds:
