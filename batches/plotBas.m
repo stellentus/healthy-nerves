@@ -47,7 +47,11 @@ function plotBoxes(titleLabel, filename, scores, scoreName, bas, fontSize)
 
 	for i = 1:length(bas)
 		% Add a label with the homogeneity score.
-		textLabel = sprintf("%2.0f%% Homog.\np=%s", bas(i).Homogeneity_mean*100, PString(bas(i)));
+		pStr = PString(bas(i));
+		if pStr(1)~='<'
+			pStr = strcat('=', pStr);
+		end
+		textLabel = sprintf("%2.0f%% Homog.\np%s", bas(i).Homogeneity_mean*100, pStr);
 		x = 2*i - 0.5;
 		text(x, 0.2, textLabel, 'HorizontalAlignment', 'center', 'VerticalAlignment', 'cap', 'FontSize', fontSize-2);
 
