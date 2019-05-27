@@ -334,14 +334,16 @@ function [algs] = getAlgList(algList, sizeX)
 			];
 		case 'standard'
 			algs = [
-				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
+				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 2, 'length', 2, 'zmuv', true));
+				struct('func', @fillPCA, 'name', 'PCA', 'args', struct('k', 6, 'VariableWeights', 'variance'));
+				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 7, 'VariableWeights', 'variance', 'algorithm', 'eig')));
+				struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean', 'zmuv', true));
+				struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'zmuv', true, 'args', struct('nh', 6, 'trainMissingRows', true)));
 				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
 				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
-				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 2, 'length', 2, 'zmuv', true));
-				struct('func', @fillCascadeAuto, 'name', 'Casc1', 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
-				struct('func', @fillCascadeAuto, 'name', 'Casc6', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
-				struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', sizeX));
+				struct('func', @fillCascadeAuto, 'name', 'Casc', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
+				struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'zmuv', true, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
 			];
 		case 'smalln' % Designed for numToUse=40.
 			% DA cannot handle such small n. BUT maybe it works better with ZMUV.
@@ -363,47 +365,39 @@ function [algs] = getAlgList(algList, sizeX)
 			% I might eventually want to plot performance as a function of numToUse (with a 95% CI of all of my runs).
 			% 	Overall best is Casc6Z. It's tied for small n, slightly better than others for medium, and tied for second with full n.
 			% 	However, iRegr outperforms it for the full dataset.
-			%	iCasc and iCascZ are oddly identical (and worse than iCascZZ), while Casc1 and Casc1Z are not. (True for all 3 tests.)
-			% 	iAE was terrible without zmuv, but afterward it performs in line with all of the others.
+			%	iCasc with and without zmuv are oddly identical when zmuv is done inside each iteration (but zmuv outside iterations is better), while Casc behavior is much better with zmuv. (True for all 3 tests.)
+			% 	iAE was terrible without zmuv, but with zmuv it performs in line with all of the others.
+			% 	All of the below results are with zmuv except Regr, CCA, Mean, TSR, and PCA. (But PCA has built-in zmuv.)
+			% 	iCasc with 2 or 5 iterations gives almost identical performance for 244 samples. Perhaps it's converging?
+			% 	At lower numbers of samples, TSR performs a lot better (though still not among the best) when k is decreased.
 			% numToUse=244 (all)
-			% 	Terrible: Casc1, Casc6, iCasc, and iCascZ.
 			% 	Pretty bad: Mean.
+			% 	Second-best: iAE, Casc (nh 6 or 1), and iCasc (nh 6 or 1). Differences are not significant between Casc and iCasc.
 			% 	Best: DA, TSR, and iRegr (mean variant). iRegr is significantly worse than other two.
-			% 	Second-best: Casc6Z, Casc1Z, and iCascZZ (significant, in order).
-			%	iCasc and iCascZ are oddly identical (and worse than iCascZZ), while Casc1 and Casc1Z are not.
-			%	Runtimes: iRegr (65ms); DA and TSR (100ms); Casc1Z and Casc6Z (55s); and iCascZZ (110s).
+			%	Runtimes: iRegr (65ms); DA and TSR (100ms); Casc (55s); and iCasc (110s).
 			% numToUse=100
-			% 	Terrible: Casc6.
-			% 	Pretty bad: Casc1, iCasc, iCascZ.
-			% 	Best: DA, TSR, iRegr, Casc1Z, Casc6Z, iCascZZ. The only significant difference is that Casc6Z is best.
-			%	iCasc and iCascZ are oddly identical (and worse than iCascZZ), while Casc1 and Casc1Z are not.
-			% 	Runtimes: iRegr (20ms); DA (50ms); TSR (20s); Casc1Z and Casc6Z (13s); and iCascZZ (24s).
+			% 	Good: DA, TSR (all or 6), iAE, iRegr, Casc, iCasc.
+			% 	Best: Casc and iCasc (both with nh 6) are significantly better.
+			% 	Runtimes: iRegr (20ms); DA (50ms); TSR (20s); Casc (13s); and iCasc (24s).
 			% numToUse=40
-			%	Terrible: Casc6.
-			%	Pretty bad: DA, TSR, Casc1, iCasc1, and iCascZ.
+			%	Pretty bad: DA, TSR.
 			%	Single outlier: PCA6.
-			%	Best: iPCA, AE, Casc1Z, Casc6Z, and iCascZZ.
-			%	None of the best are identical, but they are effectively indistinguishable.
-			%	iCasc and iCascZ are oddly identical, while Casc1 and Casc1Z are not.
-			%	Runtimes: iPCA (30ms), AE (0.8s), CascXZ (4s), and iCascZZ (7s).
+			%	Best: iPCA, AE, iAE, Casc (nh 1 and 6), and iCasc. iCasc beats Casc.
+			%	None of the best are identical, but they are effectively indistinguishable at 99 iterations.
+			%	Runtimes: iPCA (30ms), AE (0.8s), Casc (4s), and iCasc (7s).
 			algs = [
 				struct('func', @fillCCA, 'name', 'CCA', 'args', struct());
 				struct('func', @fillNaive, 'name', 'Mean', 'args', struct('handleNaN', 'mean', 'useMissingMaskForNaNFill', true));
 				struct('func', @fillDA, 'name', 'DA', 'args', struct('number', 2, 'length', 2, 'zmuv', true));
 				struct('func', @fillTSR, 'name', 'TSR', 'args', struct('k', sizeX));
-				struct('func', @fillPCA, 'name', 'PCA6', 'args', struct('k', 6, 'VariableWeights', 'variance'));
+				struct('func', @fillPCA, 'name', 'PCA', 'args', struct('k', 6, 'VariableWeights', 'variance'));
 				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 7, 'VariableWeights', 'variance', 'algorithm', 'eig')));
 				struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean', 'zmuv', true));
 				struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'zmuv', true, 'args', struct('nh', 6, 'trainMissingRows', true)));
 				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
 				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
-				struct('func', @fillCascadeAuto, 'name', 'Casc1', 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
-				struct('func', @fillCascadeAuto, 'name', 'Casc6', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
-				struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
-				struct('func', @fillCascadeAuto, 'name', 'Casc1Z', 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
-				struct('func', @fillCascadeAuto, 'name', 'Casc6Z', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
-				struct('func', @fillIterate, 'name', 'iCascZ', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true)));
-				struct('func', @fillIterate, 'name', 'iCasc-ZZ', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'zmuv', true, 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
+				struct('func', @fillCascadeAuto, 'name', 'Casc', 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
+				struct('func', @fillIterate, 'name', 'iCasc', 'args', struct('method', @fillCascadeAuto, 'iterations', 5, 'zmuv', true, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
 			];
 		case 'PCA'
 			% For numToUse=40 and iters=14 with 3 different seeds:
