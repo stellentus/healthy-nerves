@@ -1,9 +1,9 @@
 % saveNonNormative loads multiple datasets and saves them as a Matlab file.
-function saveNonNormative(nanMethod, savefilepath)
+function saveNonNormative(savefilepath, nanMethod)
 	if nargin < 2
-		savefilepath = 'bin/non-normative.mat';
+		nanMethod = 'Mean';
 		if nargin < 1
-			nanMethod = 'Mean';
+			savefilepath = 'bin/non-normative.mat';
 		end
 	end
 
