@@ -12,7 +12,7 @@ function saveNormative(savefilepath, nanMethod)
 	measures = canonicalNamesNoTE20();
 
 	% Load the data
-	[canValues, canParticipants, canNum, measures] = importCleanMEF('data/human/FESmedianAPB_Concatenated.xlsx', measures, nanMethod);
+	[canValues, canParticipants, canNum] = importCleanMEF('data/human/FESmedianAPB_Concatenated.xlsx', measures, nanMethod);
 	[legValues, legParticipants, legNum] = importCleanMEF('data/human/CPrepeatedmeasures.xlsx', measures, nanMethod); % I'm not using the full set because QTRAC chokes on Excel import after around 130 rows
 	[japValues, japParticipants, japNum] = importCleanMEF('data/Japan', measures, nanMethod);
 	[porValues, porParticipants, porNum] = importCleanMEF('data/Portugal', measures, nanMethod);
