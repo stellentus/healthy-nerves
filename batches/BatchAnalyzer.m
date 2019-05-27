@@ -133,6 +133,8 @@ classdef BatchAnalyzer < matlab.mixin.Copyable
 		function pStr = PString(obj)
 			if obj.PValue < 0.0001
 				pStr = '<0.0001';
+			elseif obj.PValue < 0.001
+				pStr = '<0.001';
 			else
 				pStr = sprintf('%.4f', obj.PValue);
 			end
