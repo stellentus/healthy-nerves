@@ -364,21 +364,22 @@ function [algs] = getAlgList(algList, sizeX)
 			% 	Overall best is Casc6Z. It's tied for small n, slightly better than others for medium, and tied for second with full n.
 			% 	However, iRegr outperforms it for the full dataset.
 			%	iCasc and iCascZ are oddly identical (and worse than iCascZZ), while Casc1 and Casc1Z are not. (True for all 3 tests.)
+			% 	iAE was terrible without zmuv, but afterward it performs in line with all of the others.
 			% numToUse=244 (all)
-			% 	Terrible: iAE, Casc1, Casc6, iCasc, and iCascZ.
+			% 	Terrible: Casc1, Casc6, iCasc, and iCascZ.
 			% 	Pretty bad: Mean.
 			% 	Best: DA, TSR, and iRegr (mean variant). iRegr is significantly worse than other two.
 			% 	Second-best: Casc6Z, Casc1Z, and iCascZZ (significant, in order).
 			%	iCasc and iCascZ are oddly identical (and worse than iCascZZ), while Casc1 and Casc1Z are not.
 			%	Runtimes: iRegr (65ms); DA and TSR (100ms); Casc1Z and Casc6Z (55s); and iCascZZ (110s).
 			% numToUse=100
-			% 	Terrible: iAE and Casc6.
+			% 	Terrible: Casc6.
 			% 	Pretty bad: Casc1, iCasc, iCascZ.
 			% 	Best: DA, TSR, iRegr, Casc1Z, Casc6Z, iCascZZ. The only significant difference is that Casc6Z is best.
 			%	iCasc and iCascZ are oddly identical (and worse than iCascZZ), while Casc1 and Casc1Z are not.
 			% 	Runtimes: iRegr (20ms); DA (50ms); TSR (20s); Casc1Z and Casc6Z (13s); and iCascZZ (24s).
 			% numToUse=40
-			%	Terrible: iAE and Casc6.
+			%	Terrible: Casc6.
 			%	Pretty bad: DA, TSR, Casc1, iCasc1, and iCascZ.
 			%	Single outlier: PCA6.
 			%	Best: iPCA, AE, Casc1Z, Casc6Z, and iCascZZ.
@@ -393,7 +394,7 @@ function [algs] = getAlgList(algList, sizeX)
 				struct('func', @fillPCA, 'name', 'PCA6', 'args', struct('k', 6, 'VariableWeights', 'variance'));
 				struct('func', @fillIterate, 'name', 'iPCA', 'args', struct('method', @fillPCA, 'handleNaN', 'mean', 'iterations', 20, 'args', struct('k', 7, 'VariableWeights', 'variance', 'algorithm', 'eig')));
 				struct('func', @fillAutoencoder, 'name', 'AE', 'args', struct('nh', 6, 'trainMissingRows', true, 'handleNaN', 'mean', 'zmuv', true));
-				struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'args', struct('nh', 6, 'trainMissingRows', true, 'zmuv', true)));
+				struct('func', @fillIterate, 'name', 'iAE', 'args', struct('method', @fillAutoencoder, 'handleNaN', 'mean', 'iterations', 5, 'zmuv', true, 'args', struct('nh', 6, 'trainMissingRows', true)));
 				struct('func', @fillRegr, 'name', 'Regr', 'args', struct('handleNaN', 'mean'));
 				struct('func', @fillIterate, 'name', 'iRegr', 'args', struct('method', @fillRegr, 'handleNaN', 'mean', 'iterations', 20, 'args', struct()));
 				struct('func', @fillCascadeAuto, 'name', 'Casc1', 'args', struct('nh', 1, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500));
