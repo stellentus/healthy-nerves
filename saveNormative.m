@@ -1,7 +1,7 @@
 % saveNormative loads multiple datasets and confirms they can be concatenated.
 function saveNormative(savefilepath, nanMethod)
 	if nargin < 2
-		nanMethod = 'IterateRegr';
+		nanMethod = 'CascadeAuto';
 		if nargin < 1
 			savefilepath = 'bin/batch-normative.mat';
 		end
