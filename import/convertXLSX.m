@@ -39,7 +39,7 @@ function writeHeader(fileID, filepath, name, age, sex, temperature)
 end
 
 function writeRC(fileID, rcDelay, rcVal)
-	fprintf(fileID, "   RECOVERY CYCLE DATA\n\n");
+	fprintf(fileID, "\n   RECOVERY CYCLE DATA\n\n");
 	fprintf(fileID, "                     	Interval (ms)       	  Threshold change (%%)\n");
 
 	for i=1:length(rcDelay)
