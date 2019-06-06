@@ -2,29 +2,25 @@
 function convertXLSX(filepath)
 	[data, participants, measureNames, ~, age, sex, temperature] = mefimport(filepath);
 
-	dirpath = fileparts(filepath);
+	[dirpath, fileName] = fileparts(filepath);
 	[~,~] = mkdir(strcat(dirpath, "/convMEM")); % Read and ignore returns to suppress warning if dir exists.
 
 	for i = 1:length(participants)
-		writeParticipant(filepath, participants(i), age(i), sex(i), temperature(i));
+		fileID = fopen(strcat(dirpath, "/convMEM/", participants(i), ".MEM"),'w');
+
+		writeHeader(fileID, filepath, participants(i), age(i), sex(i), temperature(i));
+
+		fclose(fileID);
 	end
 end
 
-function writeParticipant(excelPath, participantName, age, sex, temperature)
-	[dirpath, fileName] = fileparts(excelPath);
-	fileID = fopen(strcat(dirpath, "/convMEM/", participantName, ".MEM"),'w');
-
+function writeHeader(fileID, filepath, name, age, sex, temperature)
 	if sex == 1
 		sex = "M";
 	else
 		sex = "F";
 	end
-	writeHeader(fileID, excelPath, participantName, age, sex, temperature);
 
-	fclose(fileID);
-end
-
-function writeHeader(fileID, filepath, name, age, sex, temperature)
 	fprintf(fileID, " File:              	%s\n", filepath);
 	fprintf(fileID, " Name:              	%s\n", name);
 	fprintf(fileID, " Protocol:          	\n"); % TODO figure this out
