@@ -65,7 +65,8 @@ end
 
 function compare(names, expected, actual, statName)
 	for i = 1:length(actual)
-		if abs(actual(i)-expected(i)) > 1e4*eps(min(abs(actual(i)),abs(expected(i)))) || isnan(actual(i)) || isnan(expected(i))
+		% If the values are too different or if we calculated NaN but the file has something else, it's a problem.
+		if abs(actual(i)-expected(i)) > 1e4*eps(min(abs(actual(i)),abs(expected(i)))) || (isnan(actual(i)) && ~isnan(expected(i)))
 			fprintf('"%s" has %s of %d instead of %d.\n', names(i), statName, actual(i), expected(i));
 		end
 	end
