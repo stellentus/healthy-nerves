@@ -1,6 +1,7 @@
 % convertXLSX imports the Excel file at the given path and outputs it as MEM files
 function convertXLSX(filepath)
 	[exInds, participants, measureNames, ~, age, sex, temperature] = mefimport(filepath, false, false);
+	[srPercent, srVal, maxCmaps] = mefSRimport(filepath, participants);
 	[rcDelay, rcVal] = mefRCimport(filepath, participants);
 	[teDelays, teValues] = mefTEimport(filepath, participants);
 
@@ -11,6 +12,7 @@ function convertXLSX(filepath)
 		fileID = fopen(strcat(dirpath, "/convMEM/", participants(pIdx), ".MEM"),'w');
 
 		writeHeader(fileID, filepath, participants(pIdx,:), age(:,pIdx), sex(:,pIdx), temperature(:,pIdx));
+		writeSR(fileID, maxCmaps(:,pIdx), srPercent, srVal(:,pIdx));
 		writeRC(fileID, rcDelay, rcVal(:,pIdx));
 		writeTE(fileID, teDelays, teValues, pIdx);
 
@@ -37,6 +39,18 @@ function writeHeader(fileID, filepath, name, age, sex, temperature)
 	fprintf(fileID, " NC/disease:        	\n");
 	fprintf(fileID, " Operator:          	\n");
 	fprintf(fileID, " Comments:          	this MEM file was created from an Excel file\n");
+	fprintf(fileID, "\n");
+end
+
+function writeSR(fileID, maxCmap, srPercent, srVal)
+	fprintf(fileID, "\n STIMULUS-RESPONSE DATA\n\n");
+	fprintf(fileID, "Values are from Excel\n\n");
+	fprintf(fileID, " Max CMAP  1 ms =  %f mV\n\n", maxCmap);
+	fprintf(fileID, "                     	%% Max               	Stimulus\n");
+
+	for i=1:length(srPercent)
+		fprintf(fileID, "SR.%d                	 %d                  	 %f\n", i, srPercent(i), srVal(i));
+	end
 	fprintf(fileID, "\n");
 end
 
