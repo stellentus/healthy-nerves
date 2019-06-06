@@ -1,5 +1,5 @@
 % mefimport imports the provided MEF file
-function [data, participantNames, measureNames, stats, age, sex] = mefimport(filepath, shouldDeleteNaN, displayWarnings, expectedNames)
+function [data, participantNames, measureNames, stats, age, sex, temperature] = mefimport(filepath, shouldDeleteNaN, displayWarnings, expectedNames)
 	if nargin < 4
 		expectedNames = canonicalNames();
 		if nargin < 3
@@ -17,7 +17,7 @@ function [data, participantNames, measureNames, stats, age, sex] = mefimport(fil
 	measureNames = string(raw(:, 2));
 	[includedRows, measureNames] = includedMeasuresByName(measureNames, expectedNames);
 	stripped = raw(includedRows, [2,4:7,9:end]);
-	stripped(strcmp(stripped, '#N/A')) = {NaN}; % Change any N/A to zero.
+	stripped(strcmp(stripped, '#N/A')) = {NaN}; % Change any N/A to NaN.
 
 	% Import the columns we care about
 	averages = cell2mat(stripped(:, 2));
@@ -36,6 +36,7 @@ function [data, participantNames, measureNames, stats, age, sex] = mefimport(fil
 	% Now grab age and sex
 	age = cell2mat(raw(19, [9:end]));
 	sex = cell2mat(raw(20, [9:end]));
+	temperature = cell2mat(raw(11, [9:end]));
 	clear raw;
 
 	if displayWarnings
@@ -51,6 +52,7 @@ function [data, participantNames, measureNames, stats, age, sex] = mefimport(fil
 		[participantNames, data, ~, indices] = deleteNaN(participantNames, data);
 		age = age(indices);
 		sex = sex(indices);
+		temperature = temperature(indices);
 	end
 end
 
