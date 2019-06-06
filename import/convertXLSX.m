@@ -1,6 +1,6 @@
 % convertXLSX imports the Excel file at the given path and outputs it as MEM files
 function convertXLSX(filepath)
-	[data, participants, measureNames, ~, age, sex, temperature] = mefimport(filepath);
+	[data, participants, measureNames, ~, age, sex, temperature] = mefimport(filepath, false, false);
 	[rcDelay, rcVal] = mefRCimport(filepath, participants);
 
 	[dirpath, fileName] = fileparts(filepath);
