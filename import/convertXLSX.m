@@ -2,6 +2,7 @@
 function convertXLSX(filepath)
 	[data, participants, measureNames, ~, age, sex, temperature] = mefimport(filepath, false, false);
 	[rcDelay, rcVal] = mefRCimport(filepath, participants);
+	[teDelays, teValues] = mefTEimport(filepath, participants);
 
 	[dirpath, fileName] = fileparts(filepath);
 	[~,~] = mkdir(strcat(dirpath, "/convMEM")); % Read and ignore returns to suppress warning if dir exists.
@@ -11,6 +12,7 @@ function convertXLSX(filepath)
 
 		writeHeader(fileID, filepath, participants(i), age(i), sex(i), temperature(i));
 		writeRC(fileID, rcDelay, rcVal);
+		writeTE(fileID, teDelays, teValues);
 
 		fclose(fileID);
 	end
@@ -46,4 +48,44 @@ function writeRC(fileID, rcDelay, rcVal)
 		fprintf(fileID, "RC1.%d               	 %f                	%f\n", i, rcDelay(i), rcVal(i));
 	end
 	fprintf(fileID, "\n");
+end
+
+function writeTE(fileID, teDelays, teValues)
+	fprintf(fileID, "\n   THRESHOLD ELECTROTONUS DATA\n\n");
+	fprintf(fileID, "                     	Delay (ms)          	Current (%%)         	Thresh redn. (%%)\n");
+
+	if isfield(teDelays, 'h40')
+		fprintf(fileID, "\n");
+		for i=1:length(teDelays.h40)
+			fprintf(fileID, "TE1.%d               	 %d                  	%d                   	%f\n", i, teDelays.h40(i), teCurForDelay(teDelays.h40(i), 40), teValues.h40(i));
+		end
+	end
+	if isfield(teDelays, 'd40')
+		fprintf(fileID, "\n");
+		for i=1:length(teDelays.d40)
+			fprintf(fileID, "TE2.%d               	 %d                  	%d                   	%f\n", i, teDelays.d40(i), teCurForDelay(teDelays.d40(i), -40), teValues.d40(i));
+		end
+	end
+	if isfield(teDelays, 'h20')
+		fprintf(fileID, "\n");
+		for i=1:length(teDelays.h20)
+			fprintf(fileID, "TE3.%d               	 %d                  	%d                   	%f\n", i, teDelays.h20(i), teCurForDelay(teDelays.h20(i), 20), teValues.h20(i));
+		end
+	end
+	if isfield(teDelays, 'd20')
+		fprintf(fileID, "\n");
+		for i=1:length(teDelays.d20)
+			fprintf(fileID, "TE4.%d               	 %d                  	%d                   	%f\n", i, teDelays.d20(i), teCurForDelay(teDelays.d20(i), -20), teValues.d20(i));
+		end
+	end
+
+	fprintf(fileID, "\n");
+end
+
+function cur = teCurForDelay(delay, current)
+	if delay >= 10 && delay <= 109
+		cur = current;
+	else
+		cur = 0;
+	end
 end
