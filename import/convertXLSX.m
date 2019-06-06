@@ -33,4 +33,5 @@ function writeHeader(fileID, filepath, name, age, sex, temperature)
 	fprintf(fileID, " NC/disease:        	\n");
 	fprintf(fileID, " Operator:          	\n");
 	fprintf(fileID, " Comments:          	this MEM file was created from an Excel file\n");
+	fprintf(fileID, "\n");
 end
