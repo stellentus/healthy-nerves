@@ -2,8 +2,8 @@
 function convertXLSX(filepath)
 	[exInds, participants, measureNames, ~, age, sex, temperature] = mefimport(filepath, false, false);
 	[srPercent, srVal, maxCmaps] = mefSRimport(filepath, participants);
-	[rcDelay, rcVal] = mefRCimport(filepath, participants);
 	[teDelays, teValues] = mefTEimport(filepath, participants);
+	[rcDelay, rcVal] = mefRCimport(filepath, participants);
 
 	[dirpath, fileName] = fileparts(filepath);
 	[~,~] = mkdir(strcat(dirpath, "/convMEM")); % Read and ignore returns to suppress warning if dir exists.
@@ -13,8 +13,8 @@ function convertXLSX(filepath)
 
 		writeHeader(fileID, filepath, participants(pIdx,:), age(:,pIdx), sex(:,pIdx), temperature(:,pIdx));
 		writeSR(fileID, maxCmaps(:,pIdx), srPercent, srVal(:,pIdx));
-		writeRC(fileID, rcDelay, rcVal(:,pIdx));
 		writeTE(fileID, teDelays, teValues, pIdx);
+		writeRC(fileID, rcDelay, rcVal(:,pIdx));
 
 		fclose(fileID);
 	end
@@ -54,16 +54,6 @@ function writeSR(fileID, maxCmap, srPercent, srVal)
 	fprintf(fileID, "\n");
 end
 
-function writeRC(fileID, rcDelay, rcVal)
-	fprintf(fileID, "\n   RECOVERY CYCLE DATA\n\n");
-	fprintf(fileID, "                     	Interval (ms)       	  Threshold change (%%)\n");
-
-	for i=1:length(rcDelay)
-		fprintf(fileID, "RC1.%d               	 %f                	%f\n", i, rcDelay(i), rcVal(i));
-	end
-	fprintf(fileID, "\n");
-end
-
 function writeTE(fileID, teDelays, teValues, pIdx)
 	fprintf(fileID, "\n   THRESHOLD ELECTROTONUS DATA\n\n");
 	fprintf(fileID, "                     	Delay (ms)          	Current (%%)         	Thresh redn. (%%)\n");
@@ -93,6 +83,16 @@ function writeTE(fileID, teDelays, teValues, pIdx)
 		end
 	end
 
+	fprintf(fileID, "\n");
+end
+
+function writeRC(fileID, rcDelay, rcVal)
+	fprintf(fileID, "\n   RECOVERY CYCLE DATA\n\n");
+	fprintf(fileID, "                     	Interval (ms)       	  Threshold change (%%)\n");
+
+	for i=1:length(rcDelay)
+		fprintf(fileID, "RC1.%d               	 %f                	%f\n", i, rcDelay(i), rcVal(i));
+	end
 	fprintf(fileID, "\n");
 end
 
