@@ -1,6 +1,6 @@
 % convertXLSX imports the Excel file at the given path and outputs it as MEM files
 function convertXLSX(filepath)
-	[exInds, participants, measureNames, ~, age, sex, temperature] = mefimport(filepath, false, false);
+	[exVars, participants, measureNames, ~, age, sex, temperature, varNums] = mefimport(filepath, false, false);
 	[srPercent, srVal, maxCmaps] = mefSRimport(filepath, participants);
 	[cdDuration, cdThreshold] = mefCDimport(filepath, participants);
 	[teDelays, teValues] = mefTEimport(filepath, participants);
@@ -19,6 +19,7 @@ function convertXLSX(filepath)
 		writeTE(fileID, teDelays, teValues, pIdx);
 		writeRC(fileID, rcDelay, rcVal(:,pIdx));
 		writeIV(fileID, ivCurrent, ivThreshold(:,pIdx));
+		writeExVars(fileID, measureNames, exVars(pIdx,:), varNums);
 
 		fclose(fileID);
 	end
@@ -134,6 +135,41 @@ function writeIV(fileID, ivCurrent, ivThreshold)
 		fprintf(fileID, "IV1.%d               	 %d                 	%f\n", i, ivCurrent(i), ivThreshold(i));
 	end
 	fprintf(fileID, "\n");
+end
+
+function writeExVars(fileID, names, exVars, varNums)
+	if length(names) == 0
+		return
+	end
+
+	fprintf(fileID, "\n  DERIVED EXCITABILITY VARIABLES\n\n");
+	fprintf(fileID, "Program = QTrac Unknown (from Excel)\n\n");
+
+	hasExtra = false;
+	for i=1:length(names)
+		if isnan(exVars(i))
+			continue;
+		end
+		if varNums(i) <= 35
+			fprintf(fileID, " %d.                 	%f               	%s\n", varNums(i), exVars(i), names(i));
+		else
+			hasExtra = true;
+		end
+	end
+	fprintf(fileID, "\n");
+
+	if hasExtra
+		fprintf(fileID, "  EXTRA VARIABLES (add here as required, e.g. Potassium = 4.5)\n\n");
+		for i=1:length(names)
+			if isnan(exVars(i))
+				continue;
+			end
+			if varNums(i) > 35
+				fprintf(fileID, "%s = %f\n", names(i), exVars(i));
+			end
+		end
+		fprintf(fileID, "\n");
+	end
 end
 
 function cur = teCurForDelay(delay, current)

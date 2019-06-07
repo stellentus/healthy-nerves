@@ -1,5 +1,5 @@
 % mefimport imports the provided MEF file
-function [data, participantNames, measureNames, stats, age, sex, temperature] = mefimport(filepath, shouldDeleteNaN, displayWarnings, expectedNames)
+function [data, participantNames, measureNames, stats, age, sex, temperature, varNums] = mefimport(filepath, shouldDeleteNaN, displayWarnings, expectedNames)
 	if nargin < 4
 		expectedNames = canonicalNames();
 		if nargin < 3
@@ -17,6 +17,7 @@ function [data, participantNames, measureNames, stats, age, sex, temperature] = 
 	measureNames = string(raw(:, 2));
 	[includedRows, measureNames] = includedMeasuresByName(measureNames, expectedNames);
 	stripped = raw(includedRows, [2,4:7,9:end]);
+	varNums = cell2mat(raw(includedRows, 1));
 	stripped(strcmp(stripped, '#N/A')) = {NaN}; % Change any N/A to NaN.
 
 	% Import the columns we care about
