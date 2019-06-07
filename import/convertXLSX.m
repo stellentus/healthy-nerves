@@ -5,6 +5,7 @@ function convertXLSX(filepath)
 	[cdDuration, cdThreshold] = mefCDimport(filepath, participants);
 	[teDelays, teValues] = mefTEimport(filepath, participants);
 	[rcDelay, rcVal] = mefRCimport(filepath, participants);
+	[ivCurrent, ivThreshold] = mefIVimport(filepath, participants);
 
 	[dirpath, fileName] = fileparts(filepath);
 	[~,~] = mkdir(strcat(dirpath, "/convMEM")); % Read and ignore returns to suppress warning if dir exists.
@@ -17,6 +18,7 @@ function convertXLSX(filepath)
 		writeCD(fileID, cdDuration, cdThreshold(:,pIdx));
 		writeTE(fileID, teDelays, teValues, pIdx);
 		writeRC(fileID, rcDelay, rcVal(:,pIdx));
+		writeIV(fileID, ivCurrent, ivThreshold(:,pIdx));
 
 		fclose(fileID);
 	end
@@ -116,6 +118,20 @@ function writeRC(fileID, rcDelay, rcVal)
 
 	for i=1:length(rcDelay)
 		fprintf(fileID, "RC1.%d               	 %f                	%f\n", i, rcDelay(i), rcVal(i));
+	end
+	fprintf(fileID, "\n");
+end
+
+function writeIV(fileID, ivCurrent, ivThreshold)
+	if length(ivCurrent) == 0
+		return
+	end
+
+	fprintf(fileID, "\n  THRESHOLD I/V DATA\n\n");
+	fprintf(fileID, "                    	Current (%%)         	  Threshold redn. (%%)\n");
+
+	for i=1:length(ivCurrent)
+		fprintf(fileID, "IV1.%d               	 %d                 	%f\n", i, ivCurrent(i), ivThreshold(i));
 	end
 	fprintf(fileID, "\n");
 end
