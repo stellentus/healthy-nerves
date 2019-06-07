@@ -2,6 +2,7 @@
 function convertXLSX(filepath)
 	[exInds, participants, measureNames, ~, age, sex, temperature] = mefimport(filepath, false, false);
 	[srPercent, srVal, maxCmaps] = mefSRimport(filepath, participants);
+	[cdDuration, cdThreshold] = mefCDimport(filepath, participants);
 	[teDelays, teValues] = mefTEimport(filepath, participants);
 	[rcDelay, rcVal] = mefRCimport(filepath, participants);
 
@@ -13,6 +14,7 @@ function convertXLSX(filepath)
 
 		writeHeader(fileID, filepath, participants(pIdx,:), age(:,pIdx), sex(:,pIdx), temperature(:,pIdx));
 		writeSR(fileID, maxCmaps(:,pIdx), srPercent, srVal(:,pIdx));
+		writeCD(fileID, cdDuration, cdThreshold(:,pIdx));
 		writeTE(fileID, teDelays, teValues, pIdx);
 		writeRC(fileID, rcDelay, rcVal(:,pIdx));
 
@@ -50,6 +52,16 @@ function writeSR(fileID, maxCmap, srPercent, srVal)
 
 	for i=1:length(srPercent)
 		fprintf(fileID, "SR.%d                	 %d                  	 %f\n", i, srPercent(i), srVal(i));
+	end
+	fprintf(fileID, "\n");
+end
+
+function writeCD(fileID, cdDuration, cdThreshold)
+	fprintf(fileID, "\n   CHARGE DURATION DATA\n\n");
+	fprintf(fileID, "                     	Duration (ms)       	 Threshold (mA)     	  Threshold charge (mA.mS)\n");
+
+	for i=1:length(cdDuration)
+		fprintf(fileID, " QT.%d                	 %.1f                 	 %f           	 %f\n", i, cdDuration(i), cdThreshold(i), cdDuration(i)*cdThreshold(i));
 	end
 	fprintf(fileID, "\n");
 end
