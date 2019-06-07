@@ -58,6 +58,9 @@ function writeSR(fileID, maxCmap, srPercent, srVal)
 	fprintf(fileID, "                     	%% Max               	Stimulus\n");
 
 	for i=1:length(srPercent)
+		if isnan(srVal(i))
+			continue;
+		end
 		fprintf(fileID, "SR.%d                	 %d                  	 %f\n", i, srPercent(i), srVal(i));
 	end
 	fprintf(fileID, "\n");
@@ -72,6 +75,9 @@ function writeCD(fileID, cdDuration, cdThreshold)
 	fprintf(fileID, "                     	Duration (ms)       	 Threshold (mA)     	  Threshold charge (mA.mS)\n");
 
 	for i=1:length(cdDuration)
+		if isnan(cdThreshold(i))
+			continue;
+		end
 		fprintf(fileID, " QT.%d                	 %.1f                 	 %f           	 %f\n", i, cdDuration(i), cdThreshold(i), cdDuration(i)*cdThreshold(i));
 	end
 	fprintf(fileID, "\n");
@@ -84,24 +90,36 @@ function writeTE(fileID, teDelays, teValues, pIdx)
 	if isfield(teDelays, 'h40')
 		fprintf(fileID, "\n");
 		for i=1:length(teDelays.h40)
+			if isnan(teValues.h40(i, pIdx))
+				continue;
+			end
 			fprintf(fileID, "TE1.%d               	 %d                  	%d                   	%f\n", i, teDelays.h40(i), teCurForDelay(teDelays.h40(i), 40), teValues.h40(i, pIdx));
 		end
 	end
 	if isfield(teDelays, 'd40')
 		fprintf(fileID, "\n");
 		for i=1:length(teDelays.d40)
+			if isnan(teValues.d40(i, pIdx))
+				continue;
+			end
 			fprintf(fileID, "TE2.%d               	 %d                  	%d                   	%f\n", i, teDelays.d40(i), teCurForDelay(teDelays.d40(i), -40), teValues.d40(i, pIdx));
 		end
 	end
 	if isfield(teDelays, 'h20')
 		fprintf(fileID, "\n");
 		for i=1:length(teDelays.h20)
+			if isnan(teValues.h20(i, pIdx))
+				continue;
+			end
 			fprintf(fileID, "TE3.%d               	 %d                  	%d                   	%f\n", i, teDelays.h20(i), teCurForDelay(teDelays.h20(i), 20), teValues.h20(i, pIdx));
 		end
 	end
 	if isfield(teDelays, 'd20')
 		fprintf(fileID, "\n");
 		for i=1:length(teDelays.d20)
+			if isnan(teValues.d20(i, pIdx))
+				continue;
+			end
 			fprintf(fileID, "TE4.%d               	 %d                  	%d                   	%f\n", i, teDelays.d20(i), teCurForDelay(teDelays.d20(i), -20), teValues.d20(i, pIdx));
 		end
 	end
@@ -118,6 +136,9 @@ function writeRC(fileID, rcDelay, rcVal)
 	fprintf(fileID, "                     	Interval (ms)       	  Threshold change (%%)\n");
 
 	for i=1:length(rcDelay)
+		if isnan(rcVal(i))
+			continue;
+		end
 		fprintf(fileID, "RC1.%d               	 %f                	%f\n", i, rcDelay(i), rcVal(i));
 	end
 	fprintf(fileID, "\n");
@@ -132,6 +153,9 @@ function writeIV(fileID, ivCurrent, ivThreshold)
 	fprintf(fileID, "                    	Current (%%)         	  Threshold redn. (%%)\n");
 
 	for i=1:length(ivCurrent)
+		if isnan(ivThreshold(i))
+			continue;
+		end
 		fprintf(fileID, "IV1.%d               	 %d                 	%f\n", i, ivCurrent(i), ivThreshold(i));
 	end
 	fprintf(fileID, "\n");
