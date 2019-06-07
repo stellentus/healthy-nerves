@@ -59,7 +59,7 @@ function [X] = getColumns(raw, participants)
 end
 
 function name = nameForTE(vals)
-	if vals(2, :) == 0
+	if vals(2, 1) == 0
 		firstVal = nanmean(nanmean(vals(3:4, :)));
 	else
 		firstVal = nanmean(nanmean(vals(2:3, :)));
