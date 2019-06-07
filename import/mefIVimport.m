@@ -1,11 +1,11 @@
-% mefRCimport imports RC from the provided MEF file, only loading the provided participants, in order.
-function [delay, rc] = mefRCimport(filepath, participants)
+% mefIVimport imports IV from the provided MEF file, only loading the provided participants, in order.
+function [current, threshold] = mefIVimport(filepath, participants)
 	% Import the raw data
 	try
-		[~, ~, raw] = xlsread(filepath, 'RC');
+		[~, ~, raw] = xlsread(filepath, 'IV');
 	catch ex
-		delay = [];
-		rc = zeros(1, length(participants));
+		current = [];
+		threshold = zeros(1, length(participants));
 		return
 	end
 
@@ -21,8 +21,8 @@ function [delay, rc] = mefRCimport(filepath, participants)
 
 	lastParticipant = size(X, 2);
 
-	delay = cell2mat(X(3:20, 1));
-	rc = cell2mat(X(3:20, 2:lastParticipant));
+	current = cell2mat(X(3:end, 1));
+	threshold = cell2mat(X(3:end, 2:lastParticipant));
 end
 
 function [X] = getColumns(raw, participants)
