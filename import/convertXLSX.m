@@ -39,7 +39,11 @@ function writeHeader(fileID, filepath, name, age, sex, temperature)
 	fprintf(fileID, " Start time:        	\n");
 	fprintf(fileID, " Age:               	%d\n", age);
 	fprintf(fileID, " Sex:               	%s\n", sex);
-	fprintf(fileID, " Temperature:       	%.1f\n", temperature);
+	if isnan(temperature)
+		fprintf(fileID, " Temperature:       	\n");
+	else
+		fprintf(fileID, " Temperature:       	%.1f\n", temperature);
+	end
 	fprintf(fileID, " S/R sites:         	median\n");
 	fprintf(fileID, " NC/disease:        	\n");
 	fprintf(fileID, " Operator:          	\n");
