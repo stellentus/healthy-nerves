@@ -1,7 +1,13 @@
 % mefCDimport imports CD from the provided MEF file, only loading the provided participants, in order.
 function [duration, threshold] = mefCDimport(filepath, participants)
 	% Import the raw data
-	[~, ~, raw] = xlsread(filepath, 'QT');
+	try
+		[~, ~, raw] = xlsread(filepath, 'QT');
+	catch ex
+		duration = [];
+		threshold = zeros(1, length(participants));
+		return
+	end
 
 	if nargin > 1
 		X = getColumns(raw, participants);

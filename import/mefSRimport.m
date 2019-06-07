@@ -1,7 +1,13 @@
 % mefSRimport imports SR from the provided MEF file, only loading the provided participants, in order.
 function [percent, sr, maxCmaps] = mefSRimport(filepath, participants)
 	% Import the raw data
-	[~, ~, raw] = xlsread(filepath, 'SR');
+	try
+		[~, ~, raw] = xlsread(filepath, 'SR');
+	catch ex
+		sr = [];
+		maxCmaps = zeros(1, length(participants));
+		return
+	end
 
 	% Chop out the y-values and any extra readings
 	[~, ncol] = size(raw);

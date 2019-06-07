@@ -1,7 +1,13 @@
 % mefTEimport imports TE from the provided MEF file, only loading the provided participants, in order.
 function [delays, values] = mefTEimport(filepath, participants)
 	% Import the raw data
-	[~, ~, raw] = xlsread(filepath, 'TE');
+	try
+		[~, ~, raw] = xlsread(filepath, 'TE');
+	catch ex
+		delays = struct();
+		values = struct();
+		return
+	end
 
 	X = getColumns(raw, participants);
 	extractedParticipants = string(X(1, 2:size(X, 2)));

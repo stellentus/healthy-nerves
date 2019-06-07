@@ -45,6 +45,10 @@ function writeHeader(fileID, filepath, name, age, sex, temperature)
 end
 
 function writeSR(fileID, maxCmap, srPercent, srVal)
+	if length(srPercent) == 0
+		return
+	end
+
 	fprintf(fileID, "\n STIMULUS-RESPONSE DATA\n\n");
 	fprintf(fileID, "Values are from Excel\n\n");
 	fprintf(fileID, " Max CMAP  1 ms =  %f mV\n\n", maxCmap);
@@ -57,6 +61,10 @@ function writeSR(fileID, maxCmap, srPercent, srVal)
 end
 
 function writeCD(fileID, cdDuration, cdThreshold)
+	if length(cdDuration) == 0
+		return
+	end
+
 	fprintf(fileID, "\n   CHARGE DURATION DATA\n\n");
 	fprintf(fileID, "                     	Duration (ms)       	 Threshold (mA)     	  Threshold charge (mA.mS)\n");
 
@@ -99,6 +107,10 @@ function writeTE(fileID, teDelays, teValues, pIdx)
 end
 
 function writeRC(fileID, rcDelay, rcVal)
+	if length(rcDelay) == 0
+		return
+	end
+
 	fprintf(fileID, "\n   RECOVERY CYCLE DATA\n\n");
 	fprintf(fileID, "                     	Interval (ms)       	  Threshold change (%%)\n");
 

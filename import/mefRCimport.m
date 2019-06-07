@@ -1,7 +1,13 @@
 % mefRCimport imports RC from the provided MEF file, only loading the provided participants, in order.
 function [delay, rc] = mefRCimport(filepath, participants)
 	% Import the raw data
-	[~, ~, raw] = xlsread(filepath, 'RC');
+	try
+		[~, ~, raw] = xlsread(filepath, 'RC');
+	catch ex
+		delay = [];
+		rc = zeros(1, length(participants));
+		return
+	end
 
 	if nargin > 1
 		X = getColumns(raw, participants);
