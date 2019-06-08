@@ -47,7 +47,13 @@ end
 function [delays, values] = loadOneTE(delays, values, delay, X, startInd, endInd)
 	vals = cell2mat(X(startInd:endInd, :));
 	name = nameForTE(vals);
-	delays.(name) = delay(startInd:endInd, :);
+	del = delay(startInd:endInd, :);
+	if del(1) ~= 0
+		% The first measurement at 0 is always zero, so go ahead and insert it
+		del = [0; del];
+		vals = [zeros(1, size(vals, 2)); vals];
+	end
+	delays.(name) = del;
 	values.(name) = vals;
 end
 
