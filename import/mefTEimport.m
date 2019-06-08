@@ -22,6 +22,10 @@ function [delays, values] = mefTEimport(filepath, participants)
 	numTE = 1;
 	delays = struct();
 	values = struct();
+
+	% Remove delay from X
+	X = X(:, 2:end);
+
 	for i=2:length(delay)
 		if startInd == 0
 			if ~isnan(delay(i))
@@ -29,21 +33,28 @@ function [delays, values] = mefTEimport(filepath, participants)
 			end
 		else
 			if isnan(delay(i))
-				vals = cell2mat(X(startInd:i-1, 2:lastParticipant));
-				name = nameForTE(vals);
-				delays.(name) = delay(startInd:i-1, :);
-				values.(name) = vals;
+				[delays, values] = loadOneTE(delays, values, delay, X, startInd, i-1);
 				startInd = 0;
 			end
 		end
 	end
 
 	if startInd ~= 0
-		vals = cell2mat(X(startInd:length(delay), 2:lastParticipant));
-		name = nameForTE(vals);
-		delays.(name) = delay(startInd:length(delay), :);
-		values.(name) = vals;
+		[delays, values] = loadOneTE(delays, values, delay, X, startInd, length(delay));
 	end
+end
+
+function [delays, values] = loadOneTE(delays, values, delay, X, startInd, endInd)
+	vals = cell2mat(X(startInd:endInd, :));
+	name = nameForTE(vals);
+	del = delay(startInd:endInd, :);
+	if del(1) ~= 0
+		% The first measurement at 0 is always zero, so go ahead and insert it
+		del = [0; del];
+		vals = [zeros(1, size(vals, 2)); vals];
+	end
+	delays.(name) = del;
+	values.(name) = vals;
 end
 
 function [X] = getColumns(raw, participants)
