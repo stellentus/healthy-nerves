@@ -33,21 +33,22 @@ function [delays, values] = mefTEimport(filepath, participants)
 			end
 		else
 			if isnan(delay(i))
-				vals = cell2mat(X(startInd:i-1, :));
-				name = nameForTE(vals);
-				delays.(name) = delay(startInd:i-1, :);
-				values.(name) = vals;
+				[delays, values] = loadOneTE(delays, values, delay, X, startInd, i-1);
 				startInd = 0;
 			end
 		end
 	end
 
 	if startInd ~= 0
-		vals = cell2mat(X(startInd:length(delay), :));
-		name = nameForTE(vals);
-		delays.(name) = delay(startInd:length(delay), :);
-		values.(name) = vals;
+		[delays, values] = loadOneTE(delays, values, delay, X, startInd, length(delay));
 	end
+end
+
+function [delays, values] = loadOneTE(delays, values, delay, X, startInd, endInd)
+	vals = cell2mat(X(startInd:endInd, :));
+	name = nameForTE(vals);
+	delays.(name) = delay(startInd:endInd, :);
+	values.(name) = vals;
 end
 
 function [X] = getColumns(raw, participants)
