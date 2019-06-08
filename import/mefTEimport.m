@@ -22,6 +22,10 @@ function [delays, values] = mefTEimport(filepath, participants)
 	numTE = 1;
 	delays = struct();
 	values = struct();
+
+	% Remove delay from X
+	X = X(:, 2:end);
+
 	for i=2:length(delay)
 		if startInd == 0
 			if ~isnan(delay(i))
@@ -29,7 +33,7 @@ function [delays, values] = mefTEimport(filepath, participants)
 			end
 		else
 			if isnan(delay(i))
-				vals = cell2mat(X(startInd:i-1, 2:lastParticipant));
+				vals = cell2mat(X(startInd:i-1, :));
 				name = nameForTE(vals);
 				delays.(name) = delay(startInd:i-1, :);
 				values.(name) = vals;
@@ -39,7 +43,7 @@ function [delays, values] = mefTEimport(filepath, participants)
 	end
 
 	if startInd ~= 0
-		vals = cell2mat(X(startInd:length(delay), 2:lastParticipant));
+		vals = cell2mat(X(startInd:length(delay), :));
 		name = nameForTE(vals);
 		delays.(name) = delay(startInd:length(delay), :);
 		values.(name) = vals;
