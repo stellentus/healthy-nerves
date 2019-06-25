@@ -1,7 +1,8 @@
 % saveNormative loads multiple datasets and confirms they can be concatenated.
+% saveNormative('bin/missing-normative.mat', 'none') will save the normative data with missing values.
 function saveNormative(savefilepath, nanMethod)
 	if nargin < 2
-		nanMethod = 'CascadeAuto';
+		nanMethod = 'IterateCascadeAuto';
 		if nargin < 1
 			savefilepath = 'bin/batch-normative.mat';
 		end

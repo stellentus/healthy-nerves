@@ -61,7 +61,7 @@ function [values] = fillVals(values, method, args)
 			args = mergeArgs(args, struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500, 'zmuv', true));
 		case 'IterateCascadeAuto'
 			func = @fillIterate;
-			args = mergeArgs(args, struct('method', @fillCascadeAuto, 'iterations', 2, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
+			args = mergeArgs(args, struct('method', @fillCascadeAuto, 'iterations', 5, 'zmuv', true, 'args', struct('nh', 6, 'rho', 0.99, 'epsilon', 1e-7, 'epochs', 500)));
 		case 'delete'
 			values = completeX;
 			return
