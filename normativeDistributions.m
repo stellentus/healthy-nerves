@@ -37,7 +37,7 @@
 % 30: OK				LIN (0.159 vs 0.001; skew 0.290 vs -5.724) for Superexcitability at 7 ms (%)
 % 31: OK				LIN (0.221 vs 0.001; skew 0.454 vs -3.378) for Superexcitability at 5 ms (%)
 
-function normativeDistributions()
+function [isLin, isLog] = normativeDistributions()
 	load("bin/batch-normative.mat");
 
 	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
@@ -49,29 +49,36 @@ function normativeDistributions()
 	% TODO instead of adtest I should possibly use Pearson's sample skewness, since it's important to test for skew before doing t-test.
 	% See https://stats.stackexchange.com/questions/25738/is-a-log-transformation-a-valid-technique-for-t-testing-non-normal-data
 
-	for i=1:length(measures)
-		figure();
-		subplot(1,2,1);
-		histogram(values(:,i), 30);
-		title("Linear "+measures(i));
+	numMeasures = length(measures);
+	isLin = zeros(1, numMeasures);
+	isLog = zeros(1, numMeasures);
+
+	for i=1:numMeasures
 		[hlin, plin] = adtest(values(:,i));
-		isLin = ~hlin;
+		isLin(i) = ~hlin;
 
 		logVals = log(abs(values(:,i)));
-		subplot(1,2,2);
-		histogram(logVals, 30);
-		title("Log "+measures(i));
 		[hlog, plog] = adtest(logVals);
-		isLog = ~hlog;
+		isLog(i) = ~hlog;
 
-		distrType = "NON";
-		if isLin
-			% It might be both, but then we still pick linear.
-			distrType = "LIN";
-		elseif isLog
-			distrType = "LOG";
+		if nargout == 0
+			distrType = "NON";
+			if isLin(i)
+				% It might be both, but then we still pick linear.
+				distrType = "LIN";
+			elseif isLog(i)
+				distrType = "LOG";
+			end
+
+			fprintf("%2d: %s (%.3f vs %.3f; skew %.3f vs %.3f) for %s\n", i, distrType, plin, plog, skewness(values(:,i)), skewness(logVals), measures(i));
+
+			figure();
+			subplot(1,2,1);
+			histogram(values(:,i), 30);
+			title("Linear "+measures(i));
+			subplot(1,2,2);
+			histogram(logVals, 30);
+			title("Log "+measures(i));
 		end
-
-		fprintf("%2d: %s (%.3f vs %.3f; skew %.3f vs %.3f) for %s\n", i, distrType, plin, plog, skewness(values(:,i)), skewness(logVals), measures(i));
 	end
 end
