@@ -37,13 +37,19 @@
 % 30: OK				LIN (0.159 vs 0.001; skew 0.290 vs -5.724) for Superexcitability at 7 ms (%)
 % 31: OK				LIN (0.221 vs 0.001; skew 0.454 vs -3.378) for Superexcitability at 5 ms (%)
 
-function [isLin, isLog] = normativeDistributions()
-	load("bin/batch-normative.mat");
+function [isLin, isLog] = normativeDistributions(values, measures)
+	if nargin ~=2 && nargin ~=0
+		error("Exactly 0 or 2 arguments are required for normativeDistributions");
+	end
+	if nargin == 0
+		load("bin/batch-normative.mat");
+		values = [canValues; japValues; porValues];
+	end
 
-	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
-	values = [canValues; japValues; porValues];
+	if nargout == 0
+		close all;
+	end
 
-	close all;
 	warning('off', 'stats:adtest:OutOfRangePLow'); % I think this isn't important in this context.
 
 	% TODO instead of adtest I should possibly use Pearson's sample skewness, since it's important to test for skew before doing t-test.
