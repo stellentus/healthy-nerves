@@ -25,10 +25,10 @@ function normativeMultiRegress(values)
 		fprintf("-- | ------------------ | ------------------ | ------------------ | ------------------------------------\n");
 	end
 
-	for i=1:length(measures)
-		if i == sexIndex || i == ageIndex || i == tempIndex
-			continue;
-		end
+	measures = altNames();
+	for i=altInds()
+		thisMeas = measures(1);
+		measures = measures(2:end);
 
 		thisCol = values(:, i);
 		% It might be both linear and log, in which case we use linear, not this if statement.
@@ -40,7 +40,7 @@ function normativeMultiRegress(values)
 		strAge = dispCoeff(b(1), modelp(1), inmodel(1));
 		strSex = dispCoeff(b(2), modelp(2), inmodel(2));
 		strTemp = dispCoeff(b(3), modelp(3), inmodel(3));
-		fprintf("%02d | %18s | %18s | %18s | %s\n", i, strAge, strSex, strTemp, measures(i))
+		fprintf("%02d | %18s | %18s | %18s | %s\n", i, strAge, strSex, strTemp, thisMeas);
 	end
 end
 
@@ -75,4 +75,12 @@ function [str] = dispCoeff(coeff, pval, inmodel)
 	end
 
 	str = sprintf(coeffStr + " %9s", coeff, pStr);
+end
+
+function [str] = altNames()
+	str = ["Latency","Max CMAP","Stim at 50\%","SR slope","Rheobase","SDTC","TEd (90--100ms)","TEh (90--100ms)","TEd peak","TEd undershoot","Accom half-time","TEh(10--20ms)","TEh overshoot","TEh(20--40ms)","TEd(10--20ms)","TEd (40--60ms)","TEh(slope, 140ms)","S2 accom.","Hyper. I/V slope","Min. I/V slope","Resting I/V slope","Superexcitable","Late subexcitable","Refractoriness 2.5","RRP","Refractoriness 2","Superex. at 5 ms","Superex. at 7 ms"];
+end
+
+function [ids] = altInds()
+	ids = [16,5,1,4,3,2,18,10,22,20,24,19,21,27,11,17,28,23,25,7,6,12,13,26,9,29,31,30];
 end
