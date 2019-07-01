@@ -15,6 +15,9 @@ function [mMean, fMean, pvals] = normativeSex(values)
 		error("Could not split males and females")
 	end
 
+	addpath lib
+	close all;
+
 	numMeasures = length(measures);
 	pvals = zeros(1, numMeasures);
 	mAvg = zeros(1, numMeasures);
@@ -72,7 +75,14 @@ function [mMean, fMean, pvals] = normativeSex(values)
 				effectType = "MAYBE";
 			end
 
-			fprintf("%2d: (%s p=%.3f) %s %.3f (%.3f) vs %.3f (%.3f) for %s\n", i, effectType, pv, distrType, mAvg(i), mStd(i), fAvg(i), fStd(i), measures(i));
+			label = sprintf("%2d: (%s p=%.3f) %s %.3f (%.3f) vs %.3f (%.3f) for %s", i, effectType, pv, distrType, mAvg(i), mStd(i), fAvg(i), fStd(i), measures(i));
+			fprintf("%s\n", label);
+
+			fig = figure('Position', [10 10 900 600]);
+			violin({mVal, fVal});
+			title(label);
 		end
 	end
+
+	rmpath lib
 end
