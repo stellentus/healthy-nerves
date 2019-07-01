@@ -21,8 +21,8 @@ function normativeMultiRegress(values)
 	astCols = values(:,[sexIndex, ageIndex, tempIndex]);
 
 	if nargout == 0
-		fprintf("ID | Sex Coeff (p)      | Age Coeff (p)      | Temp Coeff (p)     | Measure Name\n");
-		fprintf("-- | ------------------ | ------------------ | ------------------ | ------------------------------------\n");
+		fprintf(" Measure Name        & Sex Coeff (p)      & Age Coeff (p)      & Temp Coeff (p)    \n");
+		fprintf("-------------------- & ------------------ & ------------------ & ------------------\n");
 	end
 
 	measures = altNames();
@@ -45,7 +45,7 @@ function normativeMultiRegress(values)
 		strAge = dispCoeff(b(1), modelp(1), inmodel(1));
 		strSex = dispCoeff(b(2), modelp(2), inmodel(2));
 		strTemp = dispCoeff(b(3), modelp(3), inmodel(3));
-		fprintf("%02d | %18s | %18s | %18s | %s\n", i, strAge, strSex, strTemp, thisMeas);
+		fprintf("%20s & %18s & %18s & %18s \n", thisMeas, strAge, strSex, strTemp);
 	end
 
 	fprintf("\nInsignificant measures:\n")
