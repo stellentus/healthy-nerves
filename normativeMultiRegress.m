@@ -36,7 +36,7 @@ function normativeMultiRegress(values)
 			thisCol = log(abs(thisCol));
 		end
 
-		[b, ~, modelp, inmodel] = stepwisefit(astCols, thisCol, 'penter', 0.05, 'premove', 0.10, 'display', 'off');
+		[b, ~, modelp, inmodel] = stepwisefit(astCols, thisCol, 'penter', 0.002, 'premove', 0.01, 'display', 'off');
 		strAge = dispCoeff(b(1), modelp(1), inmodel(1));
 		strSex = dispCoeff(b(2), modelp(2), inmodel(2));
 		strTemp = dispCoeff(b(3), modelp(3), inmodel(3));
