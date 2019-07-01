@@ -1,8 +1,11 @@
 %% normativeSex: Determine sex effects in normative data.
-function [mMean, fMean, pvals] = normativeSex(values)
-	if nargin == 0
+function [mMean, fMean, pvals] = normativeSex(plotFigs, values)
+	if nargin < 2
 		load("bin/batch-normative.mat");
 		values = [canValues; japValues; porValues];
+	end
+	if nargin < 1
+		plotFigs = false;
 	end
 
 	sexIndex = 15;
@@ -79,9 +82,11 @@ function [mMean, fMean, pvals] = normativeSex(values)
 			fprintf("%02d | %d %d %d | %d %d %d | %.3f %.3f %.3f | %+.3f %+.3f %+.3f | %s %s effect | %.3f | %s\n", i, isLinM(i), isLinF(i), isLin(i), isLogM(i), isLogF(i), isLog(i), adValM(i), adValF(i), adVal(i), skewM(i), skewF(i), skew(i), distrType, effectType, pv, measures(i))
 			% fprintf("\\textbf{%s} & HYPOTH & %d & %.5f & %s & %.3f, %.3f & %.3f, %.3f \\\\\n", measures(i), fAvg(i) > mAvg(i), pv, distrType, adValM(i), adValF(i), skewM(i), skewF(i)) % This is for printing into LaTeX
 
-			fig = figure('Position', [10 10 900 600]);
-			violin({mVal, fVal});
-			title(sprintf("%d: %s %s effect\np=%.3f, assuming %s distribution (AD %.3f and skew %.3f)", i, measures(i), effectType, pv, distrType, adVal(i), skew(i)));
+			if plotFigs
+				fig = figure('Position', [10 10 900 600]);
+				violin({mVal, fVal});
+				title(sprintf("%d: %s %s effect\np=%.3f, assuming %s distribution (AD %.3f and skew %.3f)", i, measures(i), effectType, pv, distrType, adVal(i), skew(i)));
+			end
 		end
 	end
 
