@@ -28,8 +28,12 @@ function [mMean, fMean, pvals] = normativeSex(plotFigs, values)
 	fAvg = zeros(1, numMeasures);
 	mStd = zeros(1, numMeasures);
 	fStd = zeros(1, numMeasures);
-	fprintf("ID | isLin | isLog | Anderson-Darling  | Skewness (M/F/Both)  | Distr. Type and Effect Size | p-val | Measure Name\n");
-	fprintf("-- | ----- | ----- | ----------------- | -------------------- | --------------------------- | ----- | ------------------------------------\n");
+
+	if nargout == 0
+		fprintf("ID | isLin | isLog | Anderson-Darling  | Skewness (M/F/Both)  | Distr. Type and Effect Size | p-val | Measure Name\n");
+		fprintf("-- | ----- | ----- | ----------------- | -------------------- | --------------------------- | ----- | ------------------------------------\n");
+	end
+
 	for i=1:numMeasures
 		if i == sexIndex
 			continue;
