@@ -77,6 +77,7 @@ function [mMean, fMean, pvals] = normativeSex(values)
 			end
 
 			fprintf("%02d | %d %d %d | %d %d %d | %.3f %.3f %.3f | %+.3f %+.3f %+.3f | %s %s effect | %.3f | %s\n", i, isLinM(i), isLinF(i), isLin(i), isLogM(i), isLogF(i), isLog(i), adValM(i), adValF(i), adVal(i), skewM(i), skewF(i), skew(i), distrType, effectType, pv, measures(i))
+			% fprintf("\\textbf{%s} & HYPOTH & %d & %.5f & %s & %.3f, %.3f & %.3f, %.3f \\\\\n", measures(i), fAvg(i) > mAvg(i), pv, distrType, adValM(i), adValF(i), skewM(i), skewF(i)) % This is for printing into LaTeX
 
 			fig = figure('Position', [10 10 900 600]);
 			violin({mVal, fVal});
