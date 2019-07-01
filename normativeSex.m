@@ -26,15 +26,18 @@ function [mMean, fMean, pvals] = normativeSex(values)
 			continue;
 		end
 
+		mVal = males(:, i);
+		fVal = females(:, i);
+
 		if isLin(i)
-			[~,pv] = ttest2(males(:, i), females(:, i));
-			mAvg(i) = mean(males(:, i));
-			fAvg(i) = mean(females(:, i));
-			mStd(i) = std(males(:, i));
-			fStd(i) = std(females(:, i));
+			[~,pv] = ttest2(mVal, fVal);
+			mAvg(i) = mean(mVal);
+			fAvg(i) = mean(fVal);
+			mStd(i) = std(mVal);
+			fStd(i) = std(fVal);
 		elseif isLog(i)
-			maleLog = log(abs(males(:, i)));
-			femaleLog = log(abs(females(:, i)));
+			maleLog = log(abs(mVal));
+			femaleLog = log(abs(fVal));
 			[~,pv] = ttest2(maleLog, femaleLog);
 			mAvg(i) = 10^mean(maleLog);
 			fAvg(i) = 10^mean(femaleLog);
@@ -45,9 +48,9 @@ function [mMean, fMean, pvals] = normativeSex(values)
 				fAvg(i) = -fAvg(i);
 			end
 		else
-			[~,pv] = ranksum(males(:, i), females(:, i));
-			mAvg(i) = median(males(:, i));
-			fAvg(i) = median(females(:, i));
+			[~,pv] = ranksum(mVal, fVal);
+			mAvg(i) = median(mVal);
+			fAvg(i) = median(fVal);
 		end
 		pvals(i) = pv;
 
