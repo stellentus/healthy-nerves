@@ -70,13 +70,14 @@ function [mMean, fMean, pvals] = normativeSex(plotFigs, values)
 		pvals(i) = pv;
 
 		if nargout == 0
-			effectType =     "has no sig.";
 			if pv < 0.001
 				effectType = "has a large";
 			elseif pv < 0.01
 				effectType = "has a small";
 			elseif pv < 0.05
 				effectType = "may have an";
+			else
+				effectType = "has no sig.";
 			end
 
 			fprintf("%02d | %d %d %d | %d %d %d | %.3f %.3f %.3f | %+.3f %+.3f %+.3f | %s %s effect | %.3f | %s\n", i, isLinM(i), isLinF(i), isLin(i), isLogM(i), isLogF(i), isLog(i), adValM(i), adValF(i), adVal(i), skewM(i), skewF(i), skew(i), distrType, effectType, pv, measures(i))
@@ -92,3 +93,5 @@ function [mMean, fMean, pvals] = normativeSex(plotFigs, values)
 
 	rmpath lib
 end
+
+3, 24, 21,
