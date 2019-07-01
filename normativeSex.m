@@ -7,7 +7,7 @@ function [mMean, fMean, pvals] = normativeSex(values)
 
 	sexIndex = 15;
 
-	[isLin, isLog] = normativeDistributions(values, measures);
+	[isLin, isLog, adVal, skew] = normativeDistributions(values, measures);
 
 	males = values(values(:,sexIndex) == 1, :);
 	females = values(values(:,sexIndex) == 2, :);
@@ -58,29 +58,29 @@ function [mMean, fMean, pvals] = normativeSex(values)
 		pvals(i) = pv;
 
 		if nargout == 0
-			distrType = "NON";
+			distrType =     "non-para";
 			if isLin(i)
-				% It might be both, but then we still pick linear.
-				distrType = "LIN";
+				% It might be both, but then we still pick linear/gaussian.
+				distrType = "gaussian";
 			elseif isLog(i)
-				distrType = "LOG";
+				distrType = "log-norm";
 			end
 
-			effectType = "NONE ";
+			effectType =     "has no sig.";
 			if pv < 0.001
-				effectType = "LARGE";
+				effectType = "has a large";
 			elseif pv < 0.01
-				effectType = "SMALL";
+				effectType = "has a small";
 			elseif pv < 0.05
-				effectType = "MAYBE";
+				effectType = "may have an";
 			end
 
-			label = sprintf("%2d: (%s p=%.3f) %s %.3f (%.3f) vs %.3f (%.3f) for %s", i, effectType, pv, distrType, mAvg(i), mStd(i), fAvg(i), fStd(i), measures(i));
+			label = sprintf("%2d: (%s effect: p=%.3f) %s %.3f (%.3f) vs %.3f (%.3f) for %s", i, effectType, pv, distrType, mAvg(i), mStd(i), fAvg(i), fStd(i), measures(i));
 			fprintf("%s\n", label);
 
 			fig = figure('Position', [10 10 900 600]);
 			violin({mVal, fVal});
-			title(label);
+			title(sprintf("%d: %s %s effect\np=%.3f, assuming %s distribution (AD %.3f and skew %.3f)", i, measures(i), effectType, pv, distrType, adVal(i), skew(i)));
 		end
 	end
 
