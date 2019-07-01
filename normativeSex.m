@@ -8,16 +8,14 @@ function [mMean, fMean, pvals] = normativeSex(plotFigs, values)
 		plotFigs = false;
 	end
 
-	sexIndex = 15;
-
 	[isLin, isLog, adVal, skew] = normativeDistributions(values, measures);
 
+	sexIndex = 15;
 	males = values(values(:,sexIndex) == 1, :);
 	females = values(values(:,sexIndex) == 2, :);
 	if size(males, 1) + size(females, 1) ~= size(values, 1)
 		error("Could not split males and females")
 	end
-
 	[isLinM, isLogM, adValM, skewM] = normativeDistributions(males, measures);
 	[isLinF, isLogF, adValF, skewF] = normativeDistributions(females, measures);
 
