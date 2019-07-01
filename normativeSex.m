@@ -95,5 +95,3 @@ function [mMean, fMean, pvals] = normativeSex(plotFigs, values)
 
 	rmpath lib
 end
-
-3, 24, 21,
