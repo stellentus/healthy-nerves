@@ -37,7 +37,7 @@
 % 30: OK				LIN (0.159 vs 0.001; skew 0.290 vs -5.724) for Superexcitability at 7 ms (%)
 % 31: OK				LIN (0.221 vs 0.001; skew 0.454 vs -3.378) for Superexcitability at 5 ms (%)
 
-function [isLin, isLog] = normativeDistributions(values, measures)
+function [isLin, isLog, adVal, skew] = normativeDistributions(values, measures)
 	if nargin ~=2 && nargin ~=0
 		error("Exactly 0 or 2 arguments are required for normativeDistributions");
 	end
@@ -58,24 +58,32 @@ function [isLin, isLog] = normativeDistributions(values, measures)
 	numMeasures = length(measures);
 	isLin = zeros(1, numMeasures);
 	isLog = zeros(1, numMeasures);
+	adVal = zeros(1, numMeasures);
+	skew = zeros(1, numMeasures);
 
 	for i=1:numMeasures
 		[hlin, plin] = adtest(values(:,i));
+		sklin = skewness(values(:,i));
 		isLin(i) = ~hlin;
 
 		logVals = log(abs(values(:,i)));
 		[hlog, plog] = adtest(logVals);
+		sklog = skewness(logVals);
 		isLog(i) = ~hlog;
 
-		if nargout == 0
-			distrType = "NON";
-			if isLin(i)
-				% It might be both, but then we still pick linear.
-				distrType = "LIN";
-			elseif isLog(i)
-				distrType = "LOG";
-			end
+		distrType = "NON";
+		adVal(i) = plin;
+		skew(i) = sklin;
+		if isLin(i)
+			% It might be both, but then we still pick linear.
+			distrType = "LIN";
+		elseif isLog(i)
+			distrType = "LOG";
+			adVal(i) = plog;
+			skew(i) = sklog;
+		end
 
+		if nargout == 0
 			fprintf("%2d: %s (%.3f vs %.3f; skew %.3f vs %.3f) for %s\n", i, distrType, plin, plog, skewness(values(:,i)), skewness(logVals), measures(i));
 
 			figure();
