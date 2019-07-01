@@ -26,6 +26,7 @@ function normativeMultiRegress(values)
 	end
 
 	measures = altNames();
+	insigMeasures = [];
 	for i=altInds()
 		thisMeas = measures(1);
 		measures = measures(2:end);
@@ -37,11 +38,18 @@ function normativeMultiRegress(values)
 		end
 
 		[b, ~, modelp, inmodel] = stepwisefit(astCols, thisCol, 'penter', 0.002, 'premove', 0.01, 'display', 'off');
+		if ~inmodel(1) && ~inmodel(2) && ~inmodel(3)
+			insigMeasures = [insigMeasures, thisMeas];
+			continue;
+		end
 		strAge = dispCoeff(b(1), modelp(1), inmodel(1));
 		strSex = dispCoeff(b(2), modelp(2), inmodel(2));
 		strTemp = dispCoeff(b(3), modelp(3), inmodel(3));
 		fprintf("%02d | %18s | %18s | %18s | %s\n", i, strAge, strSex, strTemp, thisMeas);
 	end
+
+	fprintf("\nInsignificant measures:\n")
+	fprintf("\t%s\n", insigMeasures);
 end
 
 function [str] = dispCoeff(coeff, pval, inmodel)
