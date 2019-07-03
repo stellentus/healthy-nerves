@@ -97,7 +97,7 @@ function [ids] = altInds()
 end
 
 function [str] = stepWiseString(thisMeas, astCols, thisCol)
-	[b, ~, modelp, inmodel, ~, ~, history] = stepwisefit(astCols, thisCol, 'penter', 0.002, 'premove', 0.01, 'display', 'off');
+	[b, ~, modelp, inmodel, ~, ~, history] = stepwisefit(astCols, thisCol, 'penter', 0.05, 'premove', 0.1, 'display', 'off');
 
 	% Calculate r^2.
 	n = length(thisCol);
