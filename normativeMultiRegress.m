@@ -42,9 +42,9 @@ function normativeMultiRegress(values)
 			insigMeasures = [insigMeasures, thisMeas];
 			continue;
 		end
-		strAge = dispCoeff(b(1), modelp(1), inmodel(1));
-		strSex = dispCoeff(b(2), modelp(2), inmodel(2));
-		strTemp = dispCoeff(b(3), modelp(3), inmodel(3));
+		strAge = dispCoeff(b, modelp, inmodel, 1);
+		strSex = dispCoeff(b, modelp, inmodel, 2);
+		strTemp = dispCoeff(b, modelp, inmodel, 3);
 		fprintf("%20s & %18s & %18s & %18s \n", thisMeas, strAge, strSex, strTemp);
 	end
 
@@ -52,11 +52,14 @@ function normativeMultiRegress(values)
 	fprintf("\t%s\n", insigMeasures);
 end
 
-function [str] = dispCoeff(coeff, pval, inmodel)
-	if ~inmodel
+function [str] = dispCoeff(coeff, pval, inmodel, ind)
+	if ~inmodel(ind)
 		str = "       ---        ";
 		return;
 	end
+
+	coeff = coeff(ind);
+	pval = pval(ind);
 
 	coPre = " ";
 	if coeff < 0
