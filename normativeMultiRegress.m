@@ -49,8 +49,8 @@ function normativeMultiRegress(values)
 	fprintf("\t%s\n", insigMeasures);
 end
 
-function [str] = dispCoeff(coeff, pval, inmodel, rsq, ind)
-	if ~inmodel(ind)
+function [str] = dispCoeff(coeff, pval, rsq, ind)
+	if rsq(ind) == 0
 		str = "         ---          ";
 		return;
 	end
@@ -113,12 +113,13 @@ function [str] = stepWiseString(thisMeas, astCols, thisCol)
 	shiftHistory = history.in - [0 0 0; history.in(1:end-1,:)]; % history.in contains all indices at each point, but we just want the diff
 	[iR,iC]=find(shiftHistory); % Based on this diff, get the list of indices as they were added
 	sr = sortrows([iR,iC]);     % But now we need to sort it.
+	rsq = zeros(1,3);
 	rsq(sr(:,2)) = adjrsq;      % Finally, access based on these values.
 	clear shiftHistory iR iC sr;
 
-	strAge = dispCoeff(b, modelp, inmodel, rsq, 1);
-	strSex = dispCoeff(b, modelp, inmodel, rsq, 2);
-	strTemp = dispCoeff(b, modelp, inmodel, rsq, 3);
+	strAge = dispCoeff(b, modelp, rsq, 1);
+	strSex = dispCoeff(b, modelp, rsq, 2);
+	strTemp = dispCoeff(b, modelp, rsq, 3);
 
 	str = sprintf("%20s & %22s & %22s & %22s", thisMeas, strAge, strSex, strTemp);
 end
