@@ -49,8 +49,9 @@ function normativeMultiRegress(values)
 	fprintf("\t%s\n", insigMeasures);
 end
 
-function [str] = dispCoeff(coeff, pval, rsq, ind)
-	if rsq(ind) == 0
+function [str] = dispCoeff(coeff, pval, rsq, threshold, ind)
+	% Factors below the variance threshold aren't worth considering.
+	if rsq(ind) < threshold
 		str = "         ---          ";
 		return;
 	end
@@ -98,11 +99,6 @@ end
 function [str] = stepWiseString(thisMeas, astCols, thisCol)
 	[b, ~, modelp, inmodel, ~, ~, history] = stepwisefit(astCols, thisCol, 'penter', 0.002, 'premove', 0.01, 'display', 'off');
 
-	if ~inmodel(1) && ~inmodel(2) && ~inmodel(3)
-		str = "";
-		return
-	end
-
 	% Calculate r^2.
 	n = length(thisCol);
 	adjrsq = 1 - history.rmse.^2/var(thisCol);
@@ -117,9 +113,16 @@ function [str] = stepWiseString(thisMeas, astCols, thisCol)
 	rsq(sr(:,2)) = adjrsq;      % Finally, access based on these values.
 	clear shiftHistory iR iC sr;
 
-	strAge = dispCoeff(b, modelp, rsq, 1);
-	strSex = dispCoeff(b, modelp, rsq, 2);
-	strTemp = dispCoeff(b, modelp, rsq, 3);
+	% If none of the factors contain at least 5% variance, ignore them.
+	threshold = 0.05;
+	if sum(sum(rsq >= threshold)) == 0
+		str = "";
+		return
+	end
+
+	strAge = dispCoeff(b, modelp, rsq, threshold, 1);
+	strSex = dispCoeff(b, modelp, rsq, threshold, 2);
+	strTemp = dispCoeff(b, modelp, rsq, threshold, 3);
 
 	str = sprintf("%20s & %22s & %22s & %22s", thisMeas, strAge, strSex, strTemp);
 end
