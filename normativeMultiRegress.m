@@ -21,7 +21,7 @@ function normativeMultiRegress(values)
 	astCols = values(:,[sexIndex, ageIndex, tempIndex]);
 
 	if nargout == 0
-		fprintf(" Measure Name        & Sex Coeff (p,r)        & Age Coeff (p,r)        & Temp Coeff (p,r)      \n");
+		fprintf(" Measure Name        & Sex Coeff (p,r^2)      & Age Coeff (p,r^2)      & Temp Coeff (p,r^2)    \n");
 		fprintf("-------------------- & ---------------------- & ---------------------- & ----------------------\n");
 	end
 
