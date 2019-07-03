@@ -37,15 +37,12 @@ function normativeMultiRegress(values)
 			thisCol = log(abs(thisCol));
 		end
 
-		[b, ~, modelp, inmodel] = stepwisefit(astCols, thisCol, 'penter', 0.002, 'premove', 0.01, 'display', 'off');
-		if ~inmodel(1) && ~inmodel(2) && ~inmodel(3)
+		str = stepWiseString(thisMeas, astCols, thisCol);
+		if strlength(str) == 0
 			insigMeasures = [insigMeasures, thisMeas];
-			continue;
+		else
+			disp(str);
 		end
-		strAge = dispCoeff(b, modelp, inmodel, 1);
-		strSex = dispCoeff(b, modelp, inmodel, 2);
-		strTemp = dispCoeff(b, modelp, inmodel, 3);
-		fprintf("%20s & %18s & %18s & %18s \n", thisMeas, strAge, strSex, strTemp);
 	end
 
 	fprintf("\nInsignificant measures:\n")
@@ -94,4 +91,19 @@ end
 
 function [ids] = altInds()
 	ids = [16,5,1,4,3,2,18,10,22,20,24,19,21,27,11,17,28,23,25,7,6,12,13,26,9,29,31,30];
+end
+
+function [str] = stepWiseString(thisMeas, astCols, thisCol)
+	[b, ~, modelp, inmodel] = stepwisefit(astCols, thisCol, 'penter', 0.002, 'premove', 0.01, 'display', 'off');
+
+	if ~inmodel(1) && ~inmodel(2) && ~inmodel(3)
+		str = "";
+		return
+	end
+
+	strAge = dispCoeff(b, modelp, inmodel, 1);
+	strSex = dispCoeff(b, modelp, inmodel, 2);
+	strTemp = dispCoeff(b, modelp, inmodel, 3);
+
+	str = sprintf("%20s & %18s & %18s & %18s", thisMeas, strAge, strSex, strTemp);
 end
