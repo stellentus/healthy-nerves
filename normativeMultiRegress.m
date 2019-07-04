@@ -50,7 +50,8 @@ function normativeMultiRegress(values)
 		end
 	end
 
-	plotBarR2(rsqs, altInds(), altNames(), threshold);
+	plotBarR2('barr2-5', rsqs, altInds(), altNames(), threshold);
+	plotBarR2('barr2-0', rsqs, altInds(), altNames(), 0);
 
 	fprintf("\nInsignificant measures:\n")
 	fprintf("\t%s\n", insigMeasures);
@@ -133,7 +134,7 @@ function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold)
 	str = sprintf("%20s & %22s & %22s & %22s", thisMeas, strAge, strSex, strTemp);
 end
 
-function plotBarR2(rsqs, inds, measures, threshold)
+function plotBarR2(filename, rsqs, inds, measures, threshold)
 	rsqs = rsqs(inds, [3,1,2]); % Put in order temperature, age, sex. Only keep desired indicies.
 
 	rsqs(rsqs<threshold) = 0;
@@ -149,14 +150,17 @@ function plotBarR2(rsqs, inds, measures, threshold)
 	measures = measures(sums>0);
 	rsqs = rsqs(sums>0,:);
 
-	filename = 'barr2';
 	[~,~] = mkdir('img/stats'); % Read and ignore returns to suppress warning if dir exists.
 	pathstr = sprintf('img/stats/%s-%02d-%02d-%02d-%02d-%02d-%02.0f', filename, clock);
 
 	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
 
 	bar(rsqs, 'stacked');
-	title({"Contribution of Temperature, Age, and Sex to","Variance in Excitability Variables"});
+	titleStrings = {"Contribution of Temperature, Age, and Sex to","Variance in Excitability Variables"};
+	if threshold > 0
+		titleStrings{end+1} = sprintf('(minimum %d%% variance)', threshold*100);
+	end
+	title(titleStrings);
 	ylabel("r^2 (%)");
 	legend({'Temperature', 'Age', 'Sex'});
 
