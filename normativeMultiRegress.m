@@ -25,9 +25,13 @@ function normativeMultiRegress(values)
 		fprintf("-------------------- & ---------------------- & ---------------------- & ----------------------\n");
 	end
 
+	threshold = 0.05;
+
 	measures = altNames();
 	insigMeasures = [];
-	for i=altInds()
+	inds = altInds();
+	rsqs = zeros(length(measures), 3);
+	for i=inds
 		thisMeas = measures(1);
 		measures = measures(2:end);
 
@@ -37,13 +41,16 @@ function normativeMultiRegress(values)
 			thisCol = log(abs(thisCol));
 		end
 
-		str = stepWiseString(thisMeas, astCols, thisCol);
+		[str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold);
+		rsqs(i,:) = rsq;
 		if strlength(str) == 0
 			insigMeasures = [insigMeasures, thisMeas];
 		else
 			disp(str);
 		end
 	end
+
+	plotBarR2(rsqs, altInds(), altNames(), threshold);
 
 	fprintf("\nInsignificant measures:\n")
 	fprintf("\t%s\n", insigMeasures);
@@ -96,7 +103,7 @@ function [ids] = altInds()
 	ids = [16,5,1,4,3,2,18,10,22,20,24,19,21,27,11,17,28,23,25,7,6,12,13,26,9,29,31,30];
 end
 
-function [str] = stepWiseString(thisMeas, astCols, thisCol)
+function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold)
 	[b, ~, modelp, inmodel, ~, ~, history] = stepwisefit(astCols, thisCol, 'penter', 0.05, 'premove', 0.1, 'display', 'off');
 
 	% Calculate r^2.
@@ -114,7 +121,6 @@ function [str] = stepWiseString(thisMeas, astCols, thisCol)
 	clear shiftHistory iR iC sr;
 
 	% If none of the factors contain at least 5% variance, ignore them.
-	threshold = 0.05;
 	if sum(sum(rsq >= threshold)) == 0
 		str = "";
 		return
@@ -125,4 +131,40 @@ function [str] = stepWiseString(thisMeas, astCols, thisCol)
 	strTemp = dispCoeff(b, modelp, rsq, threshold, 3);
 
 	str = sprintf("%20s & %22s & %22s & %22s", thisMeas, strAge, strSex, strTemp);
+end
+
+function plotBarR2(rsqs, inds, measures, threshold)
+	rsqs = rsqs(inds, [3,1,2]); % Put in order temperature, age, sex. Only keep desired indicies.
+
+	rsqs(rsqs<threshold) = 0;
+
+	[rsqs, ind] = sortrows(rsqs, 3, 'descend'); % Sort sex
+	measures = measures(ind);
+	[rsqs, ind] = sortrows(rsqs, 2, 'descend'); % Sort age
+	measures = measures(ind);
+	[rsqs, ind] = sortrows(rsqs, 1, 'descend'); % Sort temperature
+	measures = measures(ind);
+
+	sums = sum(rsqs, 2);
+	measures = measures(sums>0);
+	rsqs = rsqs(sums>0,:);
+
+	filename = 'barr2';
+	[~,~] = mkdir('img/stats'); % Read and ignore returns to suppress warning if dir exists.
+	pathstr = sprintf('img/stats/%s-%02d-%02d-%02d-%02d-%02d-%02.0f', filename, clock);
+
+	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
+
+	bar(rsqs, 'stacked');
+	title({"Contribution of Temperature, Age, and Sex to","Variance in Excitability Variables"});
+	ylabel("r^2 (%)");
+	legend({'Temperature', 'Age', 'Sex'});
+
+	xtickangle(45);
+	set(gca,'xtick',1:length(measures));
+	set(gca, 'xticklabel', measures);
+
+	savefig(fig, strcat(pathstr, '.fig'), 'compact');
+	saveas(fig, strcat(pathstr, '.png'));
+	copyfile(strcat(pathstr, '.png'), strcat('img/stats/', filename, '.png')); % Also save without timestamp
 end
