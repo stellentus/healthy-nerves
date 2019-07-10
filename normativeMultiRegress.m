@@ -85,7 +85,7 @@ function [str] = dispCoeff(coeff, pval, rsq, threshold, ind)
 		coeffStr = coPre + "%1.2f";
 	end
 
-	parens = sprintf("(%.0f%%)", rsq*100);
+	parens = sprintf("(%.0f\\%%)", rsq*100);
 	str = sprintf(coeffStr + " %4s", coeff, parens);
 end
 
