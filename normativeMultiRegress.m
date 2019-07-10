@@ -21,8 +21,8 @@ function normativeMultiRegress(values)
 
 
 	if nargout == 0
-		fprintf(" Measure Name        & Age Coeff (p,r^2)      & Sex Coeff (p,r^2)      & Temp Coeff (p,r^2)    \n");
-		fprintf("-------------------- & ---------------------- & ---------------------- & ----------------------\n");
+		fprintf(" Measure Name        & Distribution & Age Coeff (p,r^2)      & Sex Coeff (p,r^2)      & Temp Coeff (p,r^2)    \n");
+		fprintf("-------------------- & ------------ & ---------------------- & ---------------------- & ----------------------\n");
 	end
 
 	threshold = 0.05;
@@ -37,11 +37,12 @@ function normativeMultiRegress(values)
 
 		thisCol = values(:, i);
 		% It might be both linear and log, in which case we use linear, not this if statement.
-		if ~(isLinM(i) && isLinF(i)) && isLogM(i) && isLogF(i)
+		isLog = ~(isLinM(i) && isLinF(i)) && isLogM(i) && isLogF(i);
+		if isLog
 			thisCol = log(abs(thisCol));
 		end
 
-		[str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold);
+		[str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, isLog);
 		rsqs(i,:) = rsq;
 		if strlength(str) == 0
 			insigMeasures = [insigMeasures, thisMeas];
@@ -104,7 +105,7 @@ function [ids] = altInds()
 	ids = [16,5,1,4,3,2,18,10,22,20,24,19,21,27,11,17,28,23,25,7,6,12,13,26,9,29,31,30];
 end
 
-function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold)
+function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, isLog)
 	[b, ~, modelp, inmodel, ~, ~, history] = stepwisefit(astCols, thisCol, 'penter', 0.05, 'premove', 0.1, 'display', 'off');
 
 	% Calculate r^2.
@@ -131,7 +132,12 @@ function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold)
 	strSex = dispCoeff(b, modelp, rsq, threshold, 2);
 	strTemp = dispCoeff(b, modelp, rsq, threshold, 3);
 
-	str = sprintf("%20s & %22s & %22s & %22s", thisMeas, strAge, strSex, strTemp);
+	logStr = "linear";
+	if isLog
+		logStr = "logarithmic";
+	end
+
+	str = sprintf("%20s & %12s & %22s & %22s & %22s", thisMeas, logStr, strAge, strSex, strTemp);
 end
 
 function plotBarR2(filename, rsqs, inds, measures, threshold)
