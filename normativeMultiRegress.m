@@ -6,8 +6,8 @@ function normativeMultiRegress(values)
 	end
 
 	sexColumn = values(:,15);
-	ageColumn = values(:,8);
-	tempColumn = values(:,14);
+	ageColumn = values(:,14);
+	tempColumn = values(:,8);
 	astCols = [ageColumn sexColumn tempColumn];
 
 	males = values(sexColumn == 1, :);
