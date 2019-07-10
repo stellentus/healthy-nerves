@@ -19,7 +19,6 @@ function normativeMultiRegress(values)
 	[isLinF, isLogF] = normativeDistributions(females, measures);
 	clear males, females;
 
-
 	if nargout == 0
 		fprintf(" Measure Name        & Distribution & Age Coeff (r^2) & Sex Coeff (r^2) & Temp Coeff (r^2)\n");
 		fprintf("-------------------- & ------------ & --------------- & --------------- & ---------------\n");
