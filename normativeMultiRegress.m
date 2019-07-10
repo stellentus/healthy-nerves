@@ -42,6 +42,8 @@ function normativeMultiRegress(values)
 			thisCol = log(abs(thisCol));
 		end
 
+		thisCol = thisCol./mean(thisCol); % Divide by feature mean, so the results are relative coefficients.
+
 		[str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, isLog);
 		rsqs(i,:) = rsq;
 		if strlength(str) == 0
@@ -74,11 +76,14 @@ function [str] = dispCoeff(coeff, pval, rsq, threshold, ind)
 		coPre = "-";
 		coeff = -coeff;
 	end
+	coeff = coeff * 100; % Display as a percent change
 
-	if coeff > 100 || coeff < 0.01
-		coeffStr = coPre + "%2.1e";
+	if coeff > 10
+		coeffStr = coPre + "%2.1f";
+	elseif coeff < 0.01
+		coeffStr = coPre + "%1.3f";
 	else
-		coeffStr = coPre + "%2.3f";
+		coeffStr = coPre + "%1.2f";
 	end
 
 	parens = sprintf("(%.0f%%)", rsq*100);
