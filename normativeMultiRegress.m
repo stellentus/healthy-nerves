@@ -5,9 +5,13 @@ function normativeMultiRegress(values)
 		values = [canValues; japValues; porValues];
 	end
 
-	sexIndex = 15;
-	males = values(values(:,sexIndex) == 1, :);
-	females = values(values(:,sexIndex) == 2, :);
+	sexColumn = values(:,15);
+	ageColumn = values(:,8);
+	tempColumn = values(:,14);
+	astCols = [sexColumn ageColumn tempColumn];
+
+	males = values(sexColumn == 1, :);
+	females = values(sexColumn == 2, :);
 	if size(males, 1) + size(females, 1) ~= size(values, 1)
 		error("Could not split males and females")
 	end
@@ -15,10 +19,6 @@ function normativeMultiRegress(values)
 	[isLinF, isLogF] = normativeDistributions(females, measures);
 	clear males, females;
 
-	ageIndex = 8;
-	tempIndex = 14;
-
-	astCols = values(:,[sexIndex, ageIndex, tempIndex]);
 
 	if nargout == 0
 		fprintf(" Measure Name        & Sex Coeff (p,r^2)      & Age Coeff (p,r^2)      & Temp Coeff (p,r^2)    \n");
