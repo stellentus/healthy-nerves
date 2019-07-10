@@ -21,8 +21,8 @@ function normativeMultiRegress(values)
 
 
 	if nargout == 0
-		fprintf(" Measure Name        & Distribution & Age Coeff (p,r^2)      & Sex Coeff (p,r^2)      & Temp Coeff (p,r^2)    \n");
-		fprintf("-------------------- & ------------ & ---------------------- & ---------------------- & ----------------------\n");
+		fprintf(" Measure Name        & Distribution & Age Coeff (r^2) & Sex Coeff (r^2) & Temp Coeff (r^2)\n");
+		fprintf("-------------------- & ------------ & --------------- & --------------- & ---------------\n");
 	end
 
 	threshold = 0.05;
@@ -61,7 +61,7 @@ end
 function [str] = dispCoeff(coeff, pval, rsq, threshold, ind)
 	% Factors below the variance threshold aren't worth considering.
 	if rsq(ind) < threshold
-		str = "         ---          ";
+		str = "      ---      ";
 		return;
 	end
 
@@ -81,20 +81,8 @@ function [str] = dispCoeff(coeff, pval, rsq, threshold, ind)
 		coeffStr = coPre + "%2.3f";
 	end
 
-	if pval < 0.0001
-		pStr = '<0.0001';
-	elseif pval < 0.001
-		pStr = '<0.001';
-	elseif pval < 0.01
-		pStr = sprintf('%.3f', pval);
-	elseif pval < 0.1
-		pStr = sprintf('%.3f', pval);
-	else
-		pStr = sprintf('%.2f', pval);
-	end
-
-	parens = sprintf("(%s, %.0f)", pStr, rsq*100);
-	str = sprintf(coeffStr + " %13s", coeff, parens);
+	parens = sprintf("(%.0f%%)", rsq*100);
+	str = sprintf(coeffStr + " %4s", coeff, parens);
 end
 
 function [str] = altNames()
@@ -137,7 +125,7 @@ function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, isLo
 		logStr = "logarithmic";
 	end
 
-	str = sprintf("%20s & %12s & %22s & %22s & %22s", thisMeas, logStr, strAge, strSex, strTemp);
+	str = sprintf("%20s & %12s & %15s & %15s & %15s", thisMeas, logStr, strAge, strSex, strTemp);
 end
 
 function plotBarR2(filename, rsqs, inds, measures, threshold)
