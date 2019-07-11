@@ -20,7 +20,7 @@ function normativeMultiRegress(values)
 	clear males, females;
 
 	if nargout == 0
-		fprintf(" Measure Name        & Distribution & Age Coeff (r^2) & Sex Coeff (r^2) & Temp Coeff (r^2)\n");
+		fprintf(" Measure Name        & Distribution & Age Coeff (r^2) & Temp Coeff (r^2) & Sex Coeff (r^2)\n");
 		fprintf("-------------------- & ------------ & --------------- & --------------- & ---------------\n");
 	end
 
@@ -129,19 +129,20 @@ function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, isLo
 		logStr = "logarithmic";
 	end
 
-	str = sprintf("%20s & %12s & %15s & %15s & %15s", thisMeas, logStr, strAge, strSex, strTemp);
+	str = sprintf("%20s & %12s & %15s & %15s & %15s", thisMeas, logStr, strAge, strTemp, strSex);
 end
 
 function plotBarR2(filename, rsqs, inds, measures, threshold)
-	rsqs = rsqs(inds, [3,1,2]); % Put in order temperature, age, sex. Only keep desired indicies.
+	rsqs = rsqs(inds, [1,3,2]); % Put in order age, temperature, sex. Only keep desired indicies.
 
 	rsqs(rsqs<threshold) = 0;
 
-	[rsqs, ind] = sortrows(rsqs, 3, 'descend'); % Sort sex
+	% Sort in reverse order
+	[rsqs, ind] = sortrows(rsqs, 3, 'descend');
 	measures = measures(ind);
-	[rsqs, ind] = sortrows(rsqs, 2, 'descend'); % Sort age
+	[rsqs, ind] = sortrows(rsqs, 2, 'descend');
 	measures = measures(ind);
-	[rsqs, ind] = sortrows(rsqs, 1, 'descend'); % Sort temperature
+	[rsqs, ind] = sortrows(rsqs, 1, 'descend');
 	measures = measures(ind);
 
 	sums = sum(rsqs, 2);
@@ -154,13 +155,13 @@ function plotBarR2(filename, rsqs, inds, measures, threshold)
 	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
 
 	bar(rsqs, 'stacked');
-	titleStrings = {"Contribution of Temperature, Age, and Sex to","Variance in Excitability Variables"};
+	titleStrings = {"Contribution of Age, Temperature, and Sex to","Variance in Excitability Variables"};
 	if threshold > 0
 		titleStrings{end+1} = sprintf('(minimum %d%% variance)', threshold*100);
 	end
 	title(titleStrings);
 	ylabel("r^2 (%)");
-	legend({'Temperature', 'Age', 'Sex'});
+	legend({'Age', 'Temperature', 'Sex'});
 
 	xtickangle(45);
 	set(gca,'xtick',1:length(measures));
