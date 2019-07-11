@@ -10,18 +10,9 @@ function normativeMultiRegress(values)
 	tempColumn = values(:,8);
 	astCols = [ageColumn sexColumn tempColumn];
 
-	males = values(sexColumn == 1, :);
-	females = values(sexColumn == 2, :);
-	if size(males, 1) + size(females, 1) ~= size(values, 1)
-		error("Could not split males and females")
-	end
-	[isLinM, isLogM] = normativeDistributions(males, measures);
-	[isLinF, isLogF] = normativeDistributions(females, measures);
-	clear males, females;
-
 	if nargout == 0
-		fprintf(" Measure Name        & Distribution & Age Coeff (r^2) & Temp Coeff (r^2) & Sex Coeff (r^2)\n");
-		fprintf("-------------------- & ------------ & --------------- & --------------- & ---------------\n");
+		fprintf(" Measure Name        & Age Coeff (r^2) & Temp Coeff (r^2) & Sex Coeff (r^2)\n");
+		fprintf("-------------------- & --------------- & --------------- & ---------------\n");
 	end
 
 	threshold = 0.05;
@@ -35,15 +26,9 @@ function normativeMultiRegress(values)
 		measures = measures(2:end);
 
 		thisCol = values(:, i);
-		% It might be both linear and log, in which case we use linear, not this if statement.
-		isLog = ~(isLinM(i) && isLinF(i)) && isLogM(i) && isLogF(i);
-		if isLog
-			thisCol = log(abs(thisCol));
-		end
-
 		thisCol = thisCol./mean(thisCol); % Divide by feature mean, so the results are relative coefficients.
 
-		[str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, isLog);
+		[str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold);
 		rsqs(i,:) = rsq;
 		if strlength(str) == 0
 			insigMeasures = [insigMeasures, thisMeas];
@@ -97,7 +82,7 @@ function [ids] = altInds()
 	ids = [16,5,1,4,3,2,18,10,22,20,24,19,21,27,11,17,28,23,25,7,6,12,13,26,9,29,31,30];
 end
 
-function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, isLog)
+function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold)
 	[b, ~, modelp, inmodel, ~, ~, history] = stepwisefit(astCols, thisCol, 'penter', 0.05, 'premove', 0.1, 'display', 'off');
 
 	% Calculate r^2.
@@ -124,12 +109,7 @@ function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, isLo
 	strSex = dispCoeff(b, modelp, rsq, threshold, 2);
 	strTemp = dispCoeff(b, modelp, rsq, threshold, 3);
 
-	logStr = "linear";
-	if isLog
-		logStr = "logarithmic";
-	end
-
-	str = sprintf("%20s & %12s & %15s & %15s & %15s", thisMeas, logStr, strAge, strTemp, strSex);
+	str = sprintf("%20s & %15s & %15s & %15s", thisMeas, strAge, strTemp, strSex);
 end
 
 function plotBarR2(filename, rsqs, inds, measures, threshold)
