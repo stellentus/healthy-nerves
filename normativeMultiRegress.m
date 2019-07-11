@@ -1,6 +1,9 @@
 %% normativeMultiRegress: Calculate sex/age/temperature regression in normative data.
-function normativeMultiRegress(values)
-	if nargin == 0
+function normativeMultiRegress(shouldNormalize, values)
+	if nargin < 1
+		shouldNormalize = true;
+	end
+	if nargin < 2
 		load("bin/batch-normative.mat");
 		values = [canValues; japValues; porValues];
 	end
@@ -25,7 +28,7 @@ function normativeMultiRegress(values)
 		thisMeas = measures(1);
 		measures = measures(2:end);
 
-		[str, rsq] = stepWiseString(thisMeas, astCols, values(:, i), threshold);
+		[str, rsq] = stepWiseString(thisMeas, astCols, values(:, i), threshold, shouldNormalize);
 		rsqs(i,:) = rsq;
 		if strlength(str) == 0
 			insigMeasures = [insigMeasures, thisMeas];
@@ -41,7 +44,7 @@ function normativeMultiRegress(values)
 	fprintf("\t%s\n", insigMeasures);
 end
 
-function [str] = dispCoeff(coeff, pval, rsq, threshold, ind)
+function [str] = dispCoeff(coeff, pval, rsq, threshold, ind, shouldNormalize)
 	% Factors below the variance threshold aren't worth considering.
 	if rsq(ind) < threshold
 		str = "      ---      ";
@@ -57,11 +60,15 @@ function [str] = dispCoeff(coeff, pval, rsq, threshold, ind)
 		coPre = "-";
 		coeff = -coeff;
 	end
-	coeff = coeff * 100; % Display as a percent change
+	if shouldNormalize
+		coeff = coeff * 100; % Display as a percent change
+	end
 
 	if coeff > 10
 		coeffStr = coPre + "%2.1f";
 	elseif coeff < 0.01
+		coeffStr = coPre + "%1.5f";
+	elseif coeff < 1
 		coeffStr = coPre + "%1.3f";
 	else
 		coeffStr = coPre + "%1.2f";
@@ -79,9 +86,11 @@ function [ids] = altInds()
 	ids = [16,5,1,4,3,2,18,10,22,20,24,19,21,27,11,17,28,23,25,7,6,12,13,26,9,29,31,30];
 end
 
-function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold)
-	% Divide by feature mean, so the results are relative coefficients.
-	thisCol = thisCol./mean(thisCol);
+function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, shouldNormalize)
+	if shouldNormalize
+		% Divide by feature mean, so the results are relative coefficients.
+		thisCol = thisCol./mean(thisCol);
+	end
 
 	[b, ~, modelp, inmodel, ~, ~, history] = stepwisefit(astCols, thisCol, 'penter', 0.05, 'premove', 0.1, 'display', 'off');
 
@@ -105,9 +114,9 @@ function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold)
 		return
 	end
 
-	strAge = dispCoeff(b, modelp, rsq, threshold, 1);
-	strSex = dispCoeff(b, modelp, rsq, threshold, 2);
-	strTemp = dispCoeff(b, modelp, rsq, threshold, 3);
+	strAge = dispCoeff(b, modelp, rsq, threshold, 1, shouldNormalize);
+	strSex = dispCoeff(b, modelp, rsq, threshold, 2, shouldNormalize);
+	strTemp = dispCoeff(b, modelp, rsq, threshold, 3, shouldNormalize);
 
 	str = sprintf("%20s & %15s & %15s & %15s", thisMeas, strAge, strTemp, strSex);
 end
