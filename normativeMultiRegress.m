@@ -25,10 +25,7 @@ function normativeMultiRegress(values)
 		thisMeas = measures(1);
 		measures = measures(2:end);
 
-		thisCol = values(:, i);
-		thisCol = thisCol./mean(thisCol); % Divide by feature mean, so the results are relative coefficients.
-
-		[str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold);
+		[str, rsq] = stepWiseString(thisMeas, astCols, values(:, i), threshold);
 		rsqs(i,:) = rsq;
 		if strlength(str) == 0
 			insigMeasures = [insigMeasures, thisMeas];
@@ -83,6 +80,9 @@ function [ids] = altInds()
 end
 
 function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold)
+	% Divide by feature mean, so the results are relative coefficients.
+	thisCol = thisCol./mean(thisCol);
+
 	[b, ~, modelp, inmodel, ~, ~, history] = stepwisefit(astCols, thisCol, 'penter', 0.05, 'premove', 0.1, 'display', 'off');
 
 	% Calculate r^2.
