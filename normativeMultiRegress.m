@@ -165,9 +165,14 @@ function plotBarR2(filename, rsqs, inds, measures, threshold)
 
 	xtickangle(45);
 	set(gca,'xtick',1:length(measures));
-	set(gca, 'xticklabel', measures);
+	set(gca, 'xticklabel', prettyMeasures(measures));
 
 	savefig(fig, strcat(pathstr, '.fig'), 'compact');
 	saveas(fig, strcat(pathstr, '.png'));
 	copyfile(strcat(pathstr, '.png'), strcat('img/stats/', filename, '.png')); % Also save without timestamp
+end
+
+function [measures] = prettyMeasures(measures)
+	measures = strrep(measures, '--', char(8211));
+	measures = strrep(measures, '\%', '%');
 end
