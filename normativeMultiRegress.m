@@ -15,7 +15,7 @@ function normativeMultiRegress(shouldNormalize, values)
 
 	if nargout == 0
 		if ~shouldNormalize
-			fprintf(" Measure Name        & Age Coeff (r^2) & Temp Coeff (r^2) & Sex Coeff (r^2) & Intercept\n");
+			fprintf(" Measure Name        & Age Coeff (r^2) & Temp Coeff (r^2)& Sex Coeff (r^2)  & Intercept\n");
 			fprintf("-------------------- & --------------- & --------------- & ---------------- & ---------\n");
 		else
 			fprintf(" Measure Name        & Age Coeff (r^2) & Temp Coeff (r^2) & Sex Coeff (r^2)\n");
@@ -23,7 +23,11 @@ function normativeMultiRegress(shouldNormalize, values)
 		end
 	end
 
-	threshold = 0.05;
+	if shouldNormalize
+		threshold = 0.05;
+	else
+		threshold = 0;
+	end
 
 	measures = altNames();
 	insigMeasures = [];
@@ -81,9 +85,7 @@ function [str] = dispCoeff(coeff, pval, rsq, threshold, ind, shouldNormalize)
 
 	parens = sprintf("(%.0f\\%%)", rsq*100);
 	str = sprintf(coeffStr, coeff);
-	if shouldNormalize
-		str = sprintf("%s %4s", str, parens);
-	end
+	str = sprintf("%s %4s", str, parens);
 end
 
 function [str] = altNames()
