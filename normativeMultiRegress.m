@@ -14,8 +14,13 @@ function normativeMultiRegress(shouldNormalize, values)
 	astCols = [ageColumn sexColumn tempColumn];
 
 	if nargout == 0
-		fprintf(" Measure Name        & Age Coeff (r^2) & Temp Coeff (r^2) & Sex Coeff (r^2)\n");
-		fprintf("-------------------- & --------------- & --------------- & ---------------\n");
+		if ~shouldNormalize
+			fprintf(" Measure Name        & Age Coeff (r^2) & Temp Coeff (r^2) & Sex Coeff (r^2) & Intercept\n");
+			fprintf("-------------------- & --------------- & --------------- & ---------------- & ---------\n");
+		else
+			fprintf(" Measure Name        & Age Coeff (r^2) & Temp Coeff (r^2) & Sex Coeff (r^2)\n");
+			fprintf("-------------------- & --------------- & --------------- & ---------------\n");
+		end
 	end
 
 	threshold = 0.05;
@@ -75,7 +80,10 @@ function [str] = dispCoeff(coeff, pval, rsq, threshold, ind, shouldNormalize)
 	end
 
 	parens = sprintf("(%.0f\\%%)", rsq*100);
-	str = sprintf(coeffStr + " %4s", coeff, parens);
+	str = sprintf(coeffStr, coeff);
+	if shouldNormalize
+		str = sprintf("%s %4s", str, parens);
+	end
 end
 
 function [str] = altNames()
@@ -92,7 +100,7 @@ function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, shou
 		thisCol = thisCol./mean(thisCol);
 	end
 
-	[b, ~, modelp, inmodel, ~, ~, history] = stepwisefit(astCols, thisCol, 'penter', 0.05, 'premove', 0.1, 'display', 'off');
+	[b, ~, modelp, ~, stats, ~, history] = stepwisefit(astCols, thisCol, 'penter', 0.05, 'premove', 0.1, 'display', 'off');
 
 	% Calculate r^2.
 	n = length(thisCol);
@@ -119,6 +127,9 @@ function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, shou
 	strTemp = dispCoeff(b, modelp, rsq, threshold, 3, shouldNormalize);
 
 	str = sprintf("%20s & %15s & %15s & %15s", thisMeas, strAge, strTemp, strSex);
+	if ~shouldNormalize
+		str = sprintf("%s  & %.3f", str, stats.intercept);
+	end
 end
 
 function plotBarR2(filename, rsqs, inds, measures, threshold)
