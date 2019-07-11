@@ -83,7 +83,14 @@ function [str] = dispCoeff(coeff, pval, rsq, threshold, ind, shouldNormalize)
 		coeffStr = coPre + "%1.2f";
 	end
 
-	parens = sprintf("(%.0f\\%%)", rsq*100);
+	if shouldNormalize
+		parens = sprintf("(%.0f\\%%)", rsq*100);
+	elseif pval < 0.05
+		parens = sprintf("(r^2=%.0f\\%%)", rsq*100);
+	else
+		parens = sprintf("(p=%.2f)", pval);
+	end
+
 	str = sprintf(coeffStr, coeff);
 	str = sprintf("%s %4s", str, parens);
 end
