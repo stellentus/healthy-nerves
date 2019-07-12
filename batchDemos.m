@@ -20,10 +20,10 @@ function batchDemos()
 
 	padLen = 4;
 	BatchAnalyzer.printHeader(padLen);
-	makePaperPlot("bvi-comparison", data1, data2, data3);
+	makePaperPlot("vi-comparison", data1, data2, data3);
 
 	BatchAnalyzer.printDivider(padLen);
-	makePosterPlot("bvi-poster", data1, data2, data3);
+	makePosterPlot("vi-poster", data1, data2, data3);
 	rmpath batches;
 end
 
@@ -42,9 +42,9 @@ function makePaperPlot(name, data1, data2, data3)
 	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 480 600]);
 
 	plotWithRange(1, data1, data2, 500, 0, 0, 500, 30, "A");
-	plotWithRange(2, data1, data2, 400, 0, 100, 500, 30, "B");
-	plotWithRange(3, data1, data2, 50, 450, 0, 500, 30, "C");
-	plotWithRange(4, data1, data2, 0, 500, 0, 500, 30, "D");
+	plotWithRange(2, data1, data2, 0, 500, 0, 500, 30, "B");
+	plotWithRange(3, data1, data2, 400, 0, 100, 500, 30, "C");
+	plotWithRange(4, data1, data2, 50, 450, 0, 500, 30, "D");
 	plotWithRange(5, data1, data3, 500, 0, 0, 500, 30, "E");
 	plotWithRange(6, data1, data3, 63, 0, 63, 126, 30, "F");
 
