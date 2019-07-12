@@ -18,7 +18,7 @@ function plotBas(bas, filename, figtitle, args)
 	end
 
 	if args.plotBoxes
-		plotBoxes(figtitle, filename, scores, 'Homogeneity (%)', bas, args.fontSize);
+		plotBoxes(figtitle, filename, scores, 'Homogeneity (%)', bas, args.fontSize, args.showTitle);
 	end
 end
 
@@ -30,9 +30,12 @@ function [args] = setArgs(args)
 	if ~isfield(args, 'fontSize')
 		args.fontSize = 18;
 	end
+	if ~isfield(args, 'showTitle')
+		args.showTitle = true;
+	end
 end
 
-function plotBoxes(titleLabel, filename, scores, scoreName, bas, fontSize)
+function plotBoxes(titleLabel, filename, scores, scoreName, bas, fontSize, showTitle)
 	addpath lib/CategoricalScatterplot
 
 	[~,~] = mkdir('img/batch'); % Read and ignore returns to suppress warning if dir exists.
@@ -41,7 +44,9 @@ function plotBoxes(titleLabel, filename, scores, scoreName, bas, fontSize)
 	fig = figure('DefaultAxesFontSize', fontSize, 'Position', [10 10 900 600]);
 
 	CategoricalScatterplot(scores, [], 'MarkerSize', 50, 'BoxAlpha', .29, 'LadderLines', true, 'MedianColor', [193,27,36]/255);
-	title(titleLabel);
+	if showTitle
+		title(titleLabel);
+	end
 	ylabel(scoreName);
 	ylim([0 1.15])
 

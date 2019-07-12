@@ -8,6 +8,7 @@ function batcherFigures(figToPlot)
 
 	iters = 30;
 	sampleFraction = 0.8;
+	showTitle = false;
 
 	% Load the data
 	filepath = "bin/batch-normative.mat";
@@ -33,7 +34,7 @@ function batcherFigures(figToPlot)
 		bas = [
 			baNorm;
 		];
-		plotBas(bas, 'norm-rand', 'Normative Data vs Random Data');
+		plotBas(bas, 'norm-rand', 'Normative Data vs Random Data', struct('showTitle', showTitle));
 	end
 
 	% Find the excitability variables that most strongly contribute to the clustering algorithm. The ones that batch a lot are batching because the clustering is very dependent on them, so they're correlated with clustering.
@@ -49,7 +50,7 @@ function batcherFigures(figToPlot)
 			calculateBatch(ba);
 			bas = [bas; ba];
 		end
-		plotBas([baNorm; bas], 'cluster-contributers-01-10', 'Testing Cluster Contributions 10');
+		plotBas([baNorm; bas], 'cluster-contributers-01-10', 'Testing Cluster Contributions 10', struct('showTitle', showTitle));
 
 		fprintf('\n\nTesting Cluster Contributions 11:20\n\n');
 
@@ -59,7 +60,7 @@ function batcherFigures(figToPlot)
 			calculateBatch(ba);
 			bas = [bas; ba];
 		end
-		plotBas([baNorm; bas], 'cluster-contributers-11-20', 'Testing Cluster Contributions 11:20');
+		plotBas([baNorm; bas], 'cluster-contributers-11-20', 'Testing Cluster Contributions 11:20', struct('showTitle', showTitle));
 
 		fprintf('\n\nTesting Cluster Contributions 21:31\n\n');
 
@@ -69,7 +70,7 @@ function batcherFigures(figToPlot)
 			calculateBatch(ba);
 			bas = [bas; ba];
 		end
-		plotBas([baNorm; bas], 'cluster-contributers-21-30', 'Testing Cluster Contributions 21:31');
+		plotBas([baNorm; bas], 'cluster-contributers-21-30', 'Testing Cluster Contributions 21:31', struct('showTitle', showTitle));
 	end
 
 	if plotAll || strcmp(figToPlot, 'country-splits')
@@ -108,7 +109,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'country-splits', 'Impact of Splitting Within-Group Data');
+		plotBas(bas, 'country-splits', 'Impact of Splitting Within-Group Data', struct('showTitle', showTitle));
 	end
 
 	if strcmp(figToPlot, 'vs-countries')
@@ -122,7 +123,7 @@ function batcherFigures(figToPlot)
 		for i = 1:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'vs-countries', 'One Country vs Two');
+		plotBas(bas, 'vs-countries', 'One Country vs Two', struct('showTitle', showTitle));
 	end
 
 	if strcmp(figToPlot, 'age-matched')
@@ -140,7 +141,7 @@ function batcherFigures(figToPlot)
 		for i = 1:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'age-matched', 'Age-Matched Populations');
+		plotBas(bas, 'age-matched', 'Age-Matched Populations', struct('showTitle', showTitle));
 	end
 
 	if plotAll || strcmp(figToPlot, 'vs-legs')
@@ -155,7 +156,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'vs-legs', 'Comparisons with Leg Data');
+		plotBas(bas, 'vs-legs', 'Comparisons with Leg Data', struct('showTitle', showTitle));
 	end
 
 	if plotAll || strcmp(figToPlot, 'two-countries')
@@ -169,7 +170,7 @@ function batcherFigures(figToPlot)
 		for i = 1:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'two-countries', 'Comparisons Between Two Countries');
+		plotBas(bas, 'two-countries', 'Comparisons Between Two Countries', struct('showTitle', showTitle));
 	end
 
 	if strcmp(figToPlot, 'vs-sci')
@@ -185,7 +186,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'vs-sci', 'Comparisons with SCI Data');
+		plotBas(bas, 'vs-sci', 'Comparisons with SCI Data', struct('showTitle', showTitle));
 	end
 
 	if strcmp(figToPlot, 'within-rats')
@@ -200,7 +201,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'within-rats', 'Comparisons with Non-Normative Data');
+		plotBas(bas, 'within-rats', 'Comparisons with Non-Normative Data', struct('showTitle', showTitle));
 	end
 
 	if plotAll || strcmp(figToPlot, 'vs-rats')
@@ -215,7 +216,7 @@ function batcherFigures(figToPlot)
 		for i = 1:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'vs-rats', 'Comparisons with Rat Data');
+		plotBas(bas, 'vs-rats', 'Comparisons with Rat Data', struct('showTitle', showTitle));
 	end
 
 	if plotAll || strcmp(figToPlot, 'rc')
@@ -239,7 +240,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'rc', 'Adjusting Recovery Cycle (RC)');
+		plotBas(bas, 'rc', 'Adjusting Recovery Cycle (RC)', struct('showTitle', showTitle));
 	end
 
 	if strcmp(figToPlot, 'variance')
@@ -259,7 +260,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'variance', 'Adjusting Variance');
+		plotBas(bas, 'variance', 'Adjusting Variance', struct('showTitle', showTitle));
 	end
 
 	if strcmp(figToPlot, 'delete-features')
@@ -271,7 +272,7 @@ function batcherFigures(figToPlot)
 		for i = 1:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(sortByMean(bas), 'delete-features', 'Impact of Deleting Each Feature');
+		plotBas(sortByMean(bas), 'delete-features', 'Impact of Deleting Each Feature', struct('showTitle', showTitle));
 	end
 
 	if strcmp(figToPlot, 'triple-deletion')
@@ -287,7 +288,7 @@ function batcherFigures(figToPlot)
 			baNorm;
 			bas(end-9:end);
 		];
-		plotBas(bas, 'triple-deletion', 'Most and Least Impactful Triple-Deletions');
+		plotBas(bas, 'triple-deletion', 'Most and Least Impactful Triple-Deletions', struct('showTitle', showTitle));
 	end
 
 	if strcmp(figToPlot, 'quintuple-deletion')
@@ -301,7 +302,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'quintuple-deletion', 'Assorted Quintuple-Deletions');
+		plotBas(bas, 'quintuple-deletion', 'Assorted Quintuple-Deletions', struct('showTitle', showTitle));
 	end
 
 	if strcmp(figToPlot, 'age-batches')
@@ -317,7 +318,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'age-batches', 'Age Batches');
+		plotBas(bas, 'age-batches', 'Age Batches', struct('showTitle', showTitle));
 	end
 
 	if strcmp(figToPlot, 'poster')
@@ -332,7 +333,7 @@ function batcherFigures(figToPlot)
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
 		end
-		plotBas(bas, 'poster', 'Site-Specific Differences', struct('fontSize', 24));
+		plotBas(bas, 'poster', 'Site-Specific Differences', struct('fontSize', 24, 'showTitle', showTitle));
 	end
 
 	rmpath batches;
