@@ -100,13 +100,11 @@ function batcherFigures(figToPlot)
 		por3 = porValues(porIdx((2*porSplitNum+1):(3*porSplitNum)), :);
 
 		bas = [
-			baNorm,
 			%%%%%%%%%%% Random Data (should be 0) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			BatchAnalyzer("Three-split CA", 3, [can1; can2; can3], [ones(canSplitNum, 1); repmat(2, canSplitNum, 1); repmat(3, canSplitNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("Three-split JA", 3, [jap1; jap2; jap3], [ones(japSplitNum, 1); repmat(2, japSplitNum, 1); repmat(3, japSplitNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 			BatchAnalyzer("Three-split PO", 3, [por1; por2; por3], [ones(porSplitNum, 1); repmat(2, porSplitNum, 1); repmat(3, porSplitNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
 		];
-		for i = 2:length(bas)
+		for i = 1:length(bas)
 			calculateBatch(bas(i));
 		end
 		plotBas(bas, 'country-splits', 'Impact of Splitting Within-Group Data', struct('showTitle', showTitle));
@@ -144,7 +142,22 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'age-matched', 'Age-Matched Populations', struct('showTitle', showTitle));
 	end
 
-	if plotAll || strcmp(figToPlot, 'vs-legs')
+	if plotAll || strcmp(figToPlot, 'vs-nonnorm')
+		fprintf('\n\nComparisons with Non-Normative Data\n\n');
+
+		bas = [
+			baNorm;
+			BatchAnalyzer("Add Legs", 4, [values; legValues], [labels; repmat(4, legNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Add Rats", 4, [values; ratValues], [labels; repmat(4, ratNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+			BatchAnalyzer("Human vs Rats", 2, [values; ratValues], [repmat(1, length(labels), 1); repmat(2, ratNum, 1)], 'iters', iters, 'sampleFraction', sampleFraction);
+		];
+		for i = 2:length(bas)
+			calculateBatch(bas(i));
+		end
+		plotBas(bas, 'vs-nonnorm', 'Comparisons with Non-Normative Data', struct('showTitle', showTitle));
+	end
+
+	if strcmp(figToPlot, 'vs-legs')
 		fprintf('\n\nComparisons with Leg Data\n\n');
 
 		bas = [
@@ -164,8 +177,6 @@ function batcherFigures(figToPlot)
 
 		bas = [
 			BatchAnalyzer("JA and PO", 2, [japValues; porValues], [ones(japNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("CA and PO", 2, [canValues; porValues], [ones(canNum, 1); ones(porNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
-			BatchAnalyzer("CA and JA", 2, [canValues; japValues], [ones(canNum, 1); ones(japNum, 1) * 2], 'iters', iters, 'sampleFraction', sampleFraction);
 		];
 		for i = 1:length(bas)
 			calculateBatch(bas(i));
@@ -204,7 +215,7 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'within-rats', 'Comparisons with Non-Normative Data', struct('showTitle', showTitle));
 	end
 
-	if plotAll || strcmp(figToPlot, 'vs-rats')
+	if strcmp(figToPlot, 'vs-rats')
 		fprintf('\n\nComparisons with Rat Data\n\n');
 
 		bas = [
