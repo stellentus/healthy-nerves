@@ -41,14 +41,15 @@ function plotBoxes(titleLabel, filename, scores, scoreName, bas, fontSize, showT
 	[~,~] = mkdir('img/batch'); % Read and ignore returns to suppress warning if dir exists.
 	pathstr = sprintf('img/batch/%s-%02d-%02d-%02d-%02d-%02d-%02.0f', filename, clock);
 
-	fig = figure('DefaultAxesFontSize', fontSize, 'Position', [10 10 900 600]);
+	fig = figure('DefaultAxesFontSize', fontSize, 'Position', [10 10 200*length(bas) 600]);
 
 	CategoricalScatterplot(scores, [], 'MarkerSize', 50, 'BoxAlpha', .29, 'LadderLines', true, 'MedianColor', [193,27,36]/255);
 	if showTitle
 		title(titleLabel);
 	end
 	ylabel(scoreName);
-	ylim([0 1.15])
+	ylim([0 1.15]);
+	xlim([0 2*length(bas)+1]);
 
 	for i = 1:length(bas)
 		% Add a label with the homogeneity score.
