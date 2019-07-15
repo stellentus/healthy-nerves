@@ -7,7 +7,7 @@ function [values, participants, num, measures] = importCleanMEF(filepath, expect
 		[values, participants] = flattenStructs(values, participants);
 	end
 
-	[values, participants, num] = cleanData(values, participants, nanMethod);
+	[values, participants, num] = cleanData(values, participants, nanMethod, expectedNames);
 end
 
 function [flatVals, flatParts] = flattenStructs(structVals, structParts)

@@ -26,15 +26,15 @@ function saveNonNormative(savefilepath, nanMethod)
 	[ratValues, ratParticipants, ratMeasures] = combine(ratSPValues, ratSPParticipants, ratSPMeasures, ratKXValues, ratKXParticipants, ratKXMeasures);
 
 	% Delete certain participants and fill missing data
-	[ratTASPValues, ratTASPParticipants, ratTASPNum] = cleanData(ratTASPValues, ratTASPParticipants, nanMethod);
-	[ratTAKXValues, ratTAKXParticipants, ratTAKXNum] = cleanData(ratTAKXValues, ratTAKXParticipants, nanMethod);
-	[ratSLSPValues, ratSLSPParticipants, ratSLSPNum] = cleanData(ratSLSPValues, ratSLSPParticipants, nanMethod);
-	[ratSLKXValues, ratSLKXParticipants, ratSLKXNum] = cleanData(ratSLKXValues, ratSLKXParticipants, nanMethod);
-	[ratTAValues, ratTAParticipants, ratTANum] = cleanData(ratTAValues, ratTAParticipants, nanMethod);
-	[ratSLValues, ratSLParticipants, ratSLNum] = cleanData(ratSLValues, ratSLParticipants, nanMethod);
-	[ratSPValues, ratSPParticipants, ratSPNum] = cleanData(ratSPValues, ratSPParticipants, nanMethod);
-	[ratKXValues, ratKXParticipants, ratKXNum] = cleanData(ratKXValues, ratKXParticipants, nanMethod);
-	[ratValues, ratParticipants, ratNum] = cleanData(ratValues, ratParticipants, nanMethod);
+	[ratTASPValues, ratTASPParticipants, ratTASPNum] = cleanData(ratTASPValues, ratTASPParticipants, nanMethod, measures);
+	[ratTAKXValues, ratTAKXParticipants, ratTAKXNum] = cleanData(ratTAKXValues, ratTAKXParticipants, nanMethod, measures);
+	[ratSLSPValues, ratSLSPParticipants, ratSLSPNum] = cleanData(ratSLSPValues, ratSLSPParticipants, nanMethod, measures);
+	[ratSLKXValues, ratSLKXParticipants, ratSLKXNum] = cleanData(ratSLKXValues, ratSLKXParticipants, nanMethod, measures);
+	[ratTAValues, ratTAParticipants, ratTANum] = cleanData(ratTAValues, ratTAParticipants, nanMethod, measures);
+	[ratSLValues, ratSLParticipants, ratSLNum] = cleanData(ratSLValues, ratSLParticipants, nanMethod, measures);
+	[ratSPValues, ratSPParticipants, ratSPNum] = cleanData(ratSPValues, ratSPParticipants, nanMethod, measures);
+	[ratKXValues, ratKXParticipants, ratKXNum] = cleanData(ratKXValues, ratKXParticipants, nanMethod, measures);
+	[ratValues, ratParticipants, ratNum] = cleanData(ratValues, ratParticipants, nanMethod, measures);
 
 	save(savefilepath, 'sciValues', 'sciParticipants', 'sciNum', 'ratTASPValues', 'ratTASPParticipants', 'ratTASPNum', 'ratTAKXValues', 'ratTAKXParticipants', 'ratTAKXNum', 'ratSLSPValues', 'ratSLSPParticipants', 'ratSLSPNum', 'ratSLKXValues', 'ratSLKXParticipants', 'ratSLKXNum', 'ratTAValues', 'ratTAParticipants', 'ratTANum', 'ratSLValues', 'ratSLParticipants', 'ratSLNum', 'ratSPValues', 'ratSPParticipants', 'ratSPNum', 'ratKXValues', 'ratKXParticipants', 'ratKXNum', 'ratValues', 'ratParticipants', 'ratNum', 'measures', 'nanMethod');
 end

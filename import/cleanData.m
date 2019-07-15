@@ -1,4 +1,4 @@
-function [values, participants, num] = cleanData(values, participants, nanMethod)
+function [values, participants, num] = cleanData(values, participants, nanMethod, measures)
 	[values, participants] = deleteNoSex(values, participants);
 	[values, participants] = deduplicate(values, participants);
 	[values, participants] = removeExcessivelyMissing(values, participants);
