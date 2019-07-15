@@ -1,5 +1,5 @@
 %% normativeSex: Determine sex effects in normative data.
-function [mMean, fMean, pvals] = normativeSex(plotFigs, values)
+function [mMean, fMean, pvals] = normativeSex(plotFigs, values, measures)
 	if nargin < 2
 		load("bin/batch-normative.mat");
 		values = [canValues; japValues; porValues];
