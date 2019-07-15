@@ -8,11 +8,11 @@ function neuroinformatics(newPath)
 	saveNormative('bin/missing-normative.mat', 'none');
 	saveNonNormative('bin/non-normative.mat', 'IterateCascadeAuto');
 
-	missmiss('standard', 'parallelize', true, 'iters', 30, 'fixedSeed', false, 'numToUse', 0, 'file', "bin/missing-normative.mat");
+	missmiss('standard', 'parallelize', true, 'iters', 100, 'fixedSeed', false, 'numToUse', 0, 'file', "bin/missing-normative.mat");
 	copyfile('img/missmiss/244-standard-value.png', strcat(newPath, 'missmiss-244-standard-value.png'));
 	copyfile('img/missmiss/244-standard-times.png', strcat(newPath, 'missmiss-244-standard-times.png'));
 
-	missmiss('standard', 'parallelize', true, 'iters', 30, 'fixedSeed', false, 'numToUse', 40, 'file', "bin/missing-normative.mat");
+	missmiss('standard', 'parallelize', true, 'iters', 100, 'fixedSeed', false, 'numToUse', 40, 'file', "bin/missing-normative.mat");
 	copyfile('img/missmiss/40-standard-value.png', strcat(newPath, 'missmiss-40-standard-value.png'));
 
 	batcherFigures('normfile', "bin/batch-normative.mat", 'nonnormfile', "bin/non-normative.mat");
