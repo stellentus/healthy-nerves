@@ -29,4 +29,8 @@ function neuroinformatics(newPath)
 	addpath batches;
 	printStats('bin/batch-normative.mat');
 	rmpath batches;
+
+	addpath missing;
+	countMissing('bin/missing-normative.mat');
+	rmpath missing;
 end
