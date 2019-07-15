@@ -13,7 +13,6 @@ function neuroinformatics(newPath)
 
 	missmiss('standard', 'parallelize', true, 'iters', 99, 'fixedSeed', false, 'numToUse', 40);
 	copyfile('img/missmiss/40-standard-value.png', strcat(newPath, 'missmiss-40-standard-value.png'));
-	copyfile('img/missmiss/40-standard-times.png', strcat(newPath, 'missmiss-40-standard-times.png'));
 
 	batcherFigures();
 	copyfile('img/batch/norm-rand.png', strcat(newPath, 'batch-norm-rand.png'));
