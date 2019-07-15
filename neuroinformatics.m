@@ -7,6 +7,10 @@ function neuroinformatics(newPath)
 	saveNormative();
 	saveNonNormative();
 
+	addpath batches;
+	printStats('bin/batch-normative.mat');
+	rmpath batches;
+
 	missmiss('standard', 'parallelize', true, 'iters', 30, 'fixedSeed', false, 'numToUse', 0);
 	copyfile('img/missmiss/244-standard-value.png', strcat(newPath, 'missmiss-244-standard-value.png'));
 	copyfile('img/missmiss/244-standard-times.png', strcat(newPath, 'missmiss-244-standard-times.png'));
