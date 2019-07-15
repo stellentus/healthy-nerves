@@ -230,7 +230,7 @@ function batcherFigures(figToPlot)
 		plotBas(bas, 'vs-rats', 'Comparisons with Rat Data', struct('showTitle', showTitle));
 	end
 
-	if plotAll || strcmp(figToPlot, 'rc')
+	if strcmp(figToPlot, 'rc')
 		fprintf('\n\nAdjusting Recovery Cycle (RC)\n\n');
 
 		bas = [

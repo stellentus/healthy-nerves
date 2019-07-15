@@ -20,7 +20,6 @@ function neuroinformatics(newPath)
 	copyfile('img/batch/country-splits.png', strcat(newPath, 'batch-country-splits.png'));
 	copyfile('img/batch/vs-nonnorm.png', strcat(newPath, 'batch-vs-nonnorm.png'));
 	copyfile('img/batch/two-countries.png', strcat(newPath, 'batch-two-countries.png'));
-	copyfile('img/batch/rc.png', strcat(newPath, 'batch-rc.png'));
 
 	batchDemos();
 	copyfile('img/batch/vi-comparison.png', strcat(newPath, 'vi-comparison.png'));
