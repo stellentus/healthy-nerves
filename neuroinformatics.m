@@ -2,7 +2,7 @@ function neuroinformatics(newPath)
 	if nargin < 1
 		newPath = 'img/neuroinformatics/';
 	end
-	mkdir(newPath);
+	[~,~] = mkdir(newPath); % Read and ignore returns to suppress warning if dir exists.
 
 	saveNormative('bin/batch-normative.mat', 'IterateCascadeAuto');
 	saveNormative('bin/missing-normative.mat', 'none');
