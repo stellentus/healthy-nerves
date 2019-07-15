@@ -9,6 +9,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 	addParameter(p, 'fixedSeed', true, @islogical);
 	addParameter(p, 'displayPlot', true, @islogical);
 	addParameter(p, 'zmuvFromComplete', false, @islogical);
+	addParameter(p, 'file', "bin/missing-normative.mat", @isstring);
 	parse(p, varargin{:});
 
 	if p.Results.fixedSeed
@@ -18,7 +19,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 		seed = s.Seed;
 	end
 
-	X = loadMEF();
+	X = loadMEF(p.Results.file);
 
 	numSamples = p.Results.numToUse;
 	if numSamples <= 0
@@ -150,8 +151,7 @@ function [val] = truncateLargeValue(val)
 	end
 end
 
-function [values] = loadMEF()
-	filepath = "bin/missing-normative.mat";
+function [values] = loadMEF(filepath)
 	load(filepath);
 	values = [canValues; japValues; porValues];
 	participants = [canParticipants; japParticipants; porParticipants];
