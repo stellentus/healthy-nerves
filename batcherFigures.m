@@ -1,7 +1,14 @@
 % batcherFigures plots figures for the preliminary batch effect analysis.
-function batcherFigures(figToPlot)
+function batcherFigures(varargin)
+	p = inputParser;
+	addOptional(p, 'figToPlot', "", @(x) any(validatestring(x, {'norm-rand', 'cluster-contributers', 'country-splits', 'vs-countries', 'age-matched', 'vs-nonnorm', 'vs-legs', 'two-countries', 'vs-sci', 'within-rats', 'vs-rats', 'rc', 'variance', 'delete-features', 'triple-deletion', 'quintuple-deletion', 'age-batches', 'poster'})));
+	addParameter(p, 'normfile', "bin/batch-normative.mat", @isstring);
+	addParameter(p, 'nonnormfile', "bin/non-normative.mat", @isstring);
+	parse(p, varargin{:});
+	figToPlot = p.Results.figToPlot;
+
 	plotAll = false;
-	if nargin < 1
+	if strcmp(figToPlot, "")
 		plotAll = true;
 		figToPlot = '';
 	end
@@ -11,10 +18,9 @@ function batcherFigures(figToPlot)
 	showTitle = false;
 
 	% Load the data
-	filepath = "bin/batch-normative.mat";
-	load(filepath);
+	load(p.Results.normfile);
 	normMeas = measures;
-	load("bin/non-normative.mat");
+	load(p.Results.nonnormfile);
 	assert(isequal(normMeas, measures), 'Measures for normative and non-normative are not the same');
 	clear normMeas nanMethod;
 
@@ -278,7 +284,7 @@ function batcherFigures(figToPlot)
 		fprintf('\n\nImpact of Deleting Each Feature\n\n');
 
 		bas = [
-			getDeletedFeatureBatches(iters, sampleFraction, filepath, struct('toDelete', 1));
+			getDeletedFeatureBatches(iters, sampleFraction, p.Results.normfile, struct('toDelete', 1));
 		];
 		for i = 1:length(bas)
 			calculateBatch(bas(i));
@@ -289,7 +295,7 @@ function batcherFigures(figToPlot)
 	if strcmp(figToPlot, 'triple-deletion')
 		fprintf('\n\nMost and Least Impactful Triple-Deletions\n\n');
 
-		bas = getDeletedFeatureBatches(iters, sampleFraction, filepath, struct('toDelete', 3));
+		bas = getDeletedFeatureBatches(iters, sampleFraction, p.Results.normfile, struct('toDelete', 3));
 		for i = 1:length(bas)
 			calculateBatch(bas(i));
 		end
@@ -308,7 +314,7 @@ function batcherFigures(figToPlot)
 		bas = [
 			baNorm;
 			BACopyWithValues(baNorm, 'Remove Best 5', values(:, setdiff(1:length(measures), [2, 25, 11, 18, 14])));
-			getDeletedFeatureBatches(iters, sampleFraction, filepath, struct('toDelete', 5, 'maxNum', 10));  % Choose 10 combinations of 5 indices at random
+			getDeletedFeatureBatches(iters, sampleFraction, p.Results.normfile, struct('toDelete', 5, 'maxNum', 10));  % Choose 10 combinations of 5 indices at random
 		];
 		for i = 2:length(bas)
 			calculateBatch(bas(i));
