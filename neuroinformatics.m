@@ -7,11 +7,11 @@ function neuroinformatics(newPath)
 	saveNormative();
 	saveNonNormative();
 
-	missmiss('standard', 'parallelize', true, 'iters', 99, 'fixedSeed', false, 'numToUse', 0);
+	missmiss('standard', 'parallelize', true, 'iters', 30, 'fixedSeed', false, 'numToUse', 0);
 	copyfile('img/missmiss/244-standard-value.png', strcat(newPath, 'missmiss-244-standard-value.png'));
 	copyfile('img/missmiss/244-standard-times.png', strcat(newPath, 'missmiss-244-standard-times.png'));
 
-	missmiss('standard', 'parallelize', true, 'iters', 99, 'fixedSeed', false, 'numToUse', 40);
+	missmiss('standard', 'parallelize', true, 'iters', 30, 'fixedSeed', false, 'numToUse', 40);
 	copyfile('img/missmiss/40-standard-value.png', strcat(newPath, 'missmiss-40-standard-value.png'));
 
 	batcherFigures();
@@ -22,4 +22,6 @@ function neuroinformatics(newPath)
 
 	batchDemos();
 	copyfile('img/batch/vi-comparison.png', strcat(newPath, 'vi-comparison.png'));
+
+	close all;
 end
