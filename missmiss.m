@@ -276,18 +276,24 @@ function plotBoxes(verrs, cerrs, runtimes, algNames, numSamples, nameStr)
 
 	pathstr = strcat('img/missmiss/', nameStr);
 
-	valfig = plotOne('Error in Filled Data', 'Error', 'value', verrs, vAlgNames, pathstr, numSamples);
-	covfig = plotOne('Error in Covariance', 'Error', 'covar', cerrs, algNames, pathstr, numSamples);
-	runfig = plotOne('Runtimes', 'Time (s)', 'times', runtimes, algNames, pathstr, numSamples);
+	valfig = plotOne('Error in Filled Data', 'Error', 'value', verrs, vAlgNames, pathstr, numSamples, false);
+	covfig = plotOne('Error in Covariance', 'Error', 'covar', cerrs, algNames, pathstr, numSamples, false);
+	runfig = plotOne('Runtimes', 'Time (s)', 'times', runtimes, algNames, pathstr, numSamples, true);
 	close(covfig);
 end
 
-function [handle] = plotOne(figname, label, prefix, vals, names, pathstr, numSamples)
+function [handle] = plotOne(figname, label, prefix, vals, names, pathstr, numSamples, isLog)
 	% Replace NaN and Inf with a really big number. This prevents errors in plotting.
 	vals(isnan(vals)) = realmax;
 	vals(isinf(vals)) = realmax;
 
 	handle = figure('DefaultAxesFontSize', 18);
+
+	if isLog
+		% This command just forces the plot to be logarithmic.
+		semilogy(vals(1));
+		hold on;
+	end
 
 	addpath lib/CategoricalScatterplot
 	CategoricalScatterplot(vals, names, 'MarkerSize', 20);
