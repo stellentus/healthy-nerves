@@ -1,5 +1,5 @@
 %% normativeMultiRegress: Calculate sex/age/temperature regression in normative data.
-function normativeMultiRegress(shouldNormalize, fixedSortOrder, values, filenameSuffix, titleString)
+function normativeMultiRegress(shouldNormalize, fixedSortOrder, values, titleString, filenameSuffix)
 	if nargin < 1
 		shouldNormalize = true;
 	end
@@ -11,11 +11,9 @@ function normativeMultiRegress(shouldNormalize, fixedSortOrder, values, filename
 		values = [canValues; japValues; porValues];
 	end
 	if nargin < 4
-		filenameSuffix = '';
-	end
-	if nargin < 5
 		titleString = "";
 	end
+	savePlot = nargin >= 5; % Save if a suffix was provided
 
 	sexColumn = values(:,15);
 	ageColumn = values(:,14);
@@ -55,8 +53,13 @@ function normativeMultiRegress(shouldNormalize, fixedSortOrder, values, filename
 		end
 	end
 
-	plotBarR2(strcat('barr2-5', filenameSuffix), rsqs, threshold, titleString, fixedSortOrder);
-	plotBarR2(strcat('barr2-0', filenameSuffix), rsqs, 0, titleString, fixedSortOrder);
+	if savePlot
+		plotAndSaveBarR2(strcat('barr2-5', filenameSuffix), rsqs, threshold, titleString, fixedSortOrder);
+		plotAndSaveBarR2(strcat('barr2-0', filenameSuffix), rsqs, 0, titleString, fixedSortOrder);
+	else
+		plotBarR2(rsqs, threshold, titleString, fixedSortOrder);
+		plotBarR2(rsqs, 0, titleString, fixedSortOrder);
+	end
 
 	fprintf("\nInsignificant measures:\n")
 	fprintf("\t%s\n", insigMeasures);
@@ -158,7 +161,20 @@ function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, shou
 	end
 end
 
-function plotBarR2(filename, rsqs, threshold, titleString, fixedSortOrder)
+function plotAndSaveBarR2(filename, rsqs, threshold, titleString, fixedSortOrder)
+	[~,~] = mkdir('img/stats'); % Read and ignore returns to suppress warning if dir exists.
+	pathstr = sprintf('img/stats/%s-%02d-%02d-%02d-%02d-%02d-%02.0f', filename, clock);
+
+	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
+
+	plotBarR2(rsqs, threshold, titleString, fixedSortOrder);
+
+	savefig(fig, strcat(pathstr, '.fig'), 'compact');
+	saveas(fig, strcat(pathstr, '.png'));
+	copyfile(strcat(pathstr, '.png'), strcat('img/stats/', filename, '.png')); % Also save without timestamp
+end
+
+function plotBarR2(rsqs, threshold, titleString, fixedSortOrder)
 	if fixedSortOrder
 		[measures, rsqs] = sortedInds(rsqs);
 		rsqs = rsqs(:, [1,3,2]); % Put in order age, temperature, sex.
@@ -184,11 +200,6 @@ function plotBarR2(filename, rsqs, threshold, titleString, fixedSortOrder)
 		rsqs = rsqs(sums>0,:);
 	end
 
-	[~,~] = mkdir('img/stats'); % Read and ignore returns to suppress warning if dir exists.
-	pathstr = sprintf('img/stats/%s-%02d-%02d-%02d-%02d-%02d-%02.0f', filename, clock);
-
-	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
-
 	bar(rsqs, 'stacked');
 	titleStrings = {"Contribution of Age, Temperature, and Sex to","Variance in Excitability Variables",titleString};
 	if threshold > 0
@@ -202,10 +213,6 @@ function plotBarR2(filename, rsqs, threshold, titleString, fixedSortOrder)
 	xtickangle(45);
 	set(gca,'xtick',1:length(measures));
 	set(gca, 'xticklabel', prettyMeasures(measures));
-
-	savefig(fig, strcat(pathstr, '.fig'), 'compact');
-	saveas(fig, strcat(pathstr, '.png'));
-	copyfile(strcat(pathstr, '.png'), strcat('img/stats/', filename, '.png')); % Also save without timestamp
 end
 
 function [measures] = prettyMeasures(measures)
