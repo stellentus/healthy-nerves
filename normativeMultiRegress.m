@@ -1,22 +1,5 @@
 %% normativeMultiRegress: Calculate sex/age/temperature regression in normative data.
 function normativeMultiRegress(threshold, shouldNormalize, fixedSortOrder, values, titleString)
-	if nargin < 1
-		threshold = 0.05;
-	end
-	if nargin < 2
-		shouldNormalize = true;
-	end
-	if nargin < 3
-		fixedSortOrder = false;
-	end
-	if nargin < 4
-		load("bin/batch-normative.mat");
-		values = [canValues; japValues; porValues];
-	end
-	if nargin < 5
-		titleString = "";
-	end
-
 	sexColumn = values(:,15);
 	ageColumn = values(:,14);
 	tempColumn = values(:,8);
