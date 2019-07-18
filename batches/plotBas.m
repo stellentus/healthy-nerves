@@ -67,6 +67,6 @@ function plotBoxes(titleLabel, filename, scores, scoreName, bas, fontSize, showT
 	rmpath lib/CategoricalScatterplot
 
 	addpath lib;
-	savePlot(fig, false, 'img/batch', filename);
+	savePlot(fig, true, 'img/batch', filename);
 	rmpath lib;
 end

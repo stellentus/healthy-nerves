@@ -310,7 +310,7 @@ function [handle] = plotOne(figname, label, suffix, vals, names, basepath, timeS
 	ylabel(label);
 
 	addpath lib;
-	savePlot(handle, false, basepath, nameStr, timeStr);
+	savePlot(handle, true, basepath, nameStr, timeStr);
 	rmpath lib;
 end
 
