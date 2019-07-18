@@ -1,11 +1,17 @@
 %% normativeMultiRegress: Calculate sex/age/temperature regression in normative data.
-function normativeMultiRegress(shouldNormalize, values)
+function normativeMultiRegress(shouldNormalize, values, filenameSuffix, titleString)
 	if nargin < 1
 		shouldNormalize = true;
 	end
 	if nargin < 2
 		load("bin/batch-normative.mat");
 		values = [canValues; japValues; porValues];
+	end
+	if nargin < 3
+		filenameSuffix = '';
+	end
+	if nargin < 4
+		titleString = "";
 	end
 
 	sexColumn = values(:,15);
@@ -46,8 +52,8 @@ function normativeMultiRegress(shouldNormalize, values)
 		end
 	end
 
-	plotBarR2('barr2-5', rsqs, altInds(), altNames(), threshold);
-	plotBarR2('barr2-0', rsqs, altInds(), altNames(), 0);
+	plotBarR2(strcat('barr2-5', filenameSuffix), rsqs, altInds(), altNames(), threshold, titleString);
+	plotBarR2(strcat('barr2-0', filenameSuffix), rsqs, altInds(), altNames(), 0, titleString);
 
 	fprintf("\nInsignificant measures:\n")
 	fprintf("\t%s\n", insigMeasures);
@@ -141,7 +147,8 @@ function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, shou
 	end
 end
 
-function plotBarR2(filename, rsqs, inds, measures, threshold)
+function plotBarR2(filename, rsqs, inds, measures, threshold, titleString)
+	disp(filename)
 	rsqs = rsqs(inds, [1,3,2]); % Put in order age, temperature, sex. Only keep desired indicies.
 
 	rsqs(rsqs<threshold) = 0;
@@ -164,7 +171,7 @@ function plotBarR2(filename, rsqs, inds, measures, threshold)
 	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
 
 	bar(rsqs, 'stacked');
-	titleStrings = {"Contribution of Age, Temperature, and Sex to","Variance in Excitability Variables"};
+	titleStrings = {"Contribution of Age, Temperature, and Sex to","Variance in Excitability Variables",titleString};
 	if threshold > 0
 		titleStrings{end+1} = sprintf('(minimum %d%% variance)', threshold*100);
 	end
