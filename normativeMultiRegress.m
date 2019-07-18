@@ -136,9 +136,6 @@ function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, shou
 end
 
 function plotAndSaveBarR2(filename, rsqs, threshold, titleString, fixedSortOrder, showAxis)
-	[~,~] = mkdir('img/stats'); % Read and ignore returns to suppress warning if dir exists.
-	pathstr = sprintf('img/stats/%s-%02d-%02d-%02d-%02d-%02d-%02.0f', filename, clock);
-
 	if showAxis
 		dims = [10 10 900 665];
 	else
@@ -149,12 +146,8 @@ function plotAndSaveBarR2(filename, rsqs, threshold, titleString, fixedSortOrder
 	plotBarR2(rsqs, threshold, titleString, fixedSortOrder, showAxis);
 
 	addpath lib;
-	tightenPlot();
+	savePlot(fig, true, 'img/stats', filename);
 	rmpath lib;
-
-	savefig(fig, strcat(pathstr, '.fig'), 'compact');
-	saveas(fig, strcat(pathstr, '.png'));
-	copyfile(strcat(pathstr, '.png'), strcat('img/stats/', filename, '.png')); % Also save without timestamp
 end
 
 function plotBarR2(rsqs, threshold, titleString, fixedSortOrder, showAxis)
