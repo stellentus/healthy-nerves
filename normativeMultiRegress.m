@@ -1,5 +1,5 @@
 %% normativeMultiRegress: Calculate sex/age/temperature regression in normative data.
-function normativeMultiRegress(threshold, shouldNormalize, fixedSortOrder, values, titleString, filenameSuffix)
+function normativeMultiRegress(threshold, shouldNormalize, fixedSortOrder, values, titleString)
 	if nargin < 1
 		threshold = 0.05;
 	end
@@ -16,7 +16,6 @@ function normativeMultiRegress(threshold, shouldNormalize, fixedSortOrder, value
 	if nargin < 5
 		titleString = "";
 	end
-	savePlot = nargin >= 6; % Save if a suffix was provided
 
 	sexColumn = values(:,15);
 	ageColumn = values(:,14);
@@ -50,11 +49,7 @@ function normativeMultiRegress(threshold, shouldNormalize, fixedSortOrder, value
 		end
 	end
 
-	if savePlot
-		plotAndSaveBarR2(strcat('barr2-5', filenameSuffix), rsqs, threshold, titleString, fixedSortOrder);
-	else
-		plotBarR2(rsqs, threshold, titleString, fixedSortOrder);
-	end
+	plotBarR2(rsqs, threshold, titleString, fixedSortOrder);
 
 	fprintf("\nInsignificant measures:\n")
 	fprintf("\t%s\n", insigMeasures);
@@ -154,19 +149,6 @@ function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, shou
 	if ~shouldNormalize
 		str = sprintf("%s  & %.3f", str, stats.intercept);
 	end
-end
-
-function plotAndSaveBarR2(filename, rsqs, threshold, titleString, fixedSortOrder)
-	[~,~] = mkdir('img/stats'); % Read and ignore returns to suppress warning if dir exists.
-	pathstr = sprintf('img/stats/%s-%02d-%02d-%02d-%02d-%02d-%02.0f', filename, clock);
-
-	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
-
-	plotBarR2(rsqs, threshold, titleString, fixedSortOrder);
-
-	savefig(fig, strcat(pathstr, '.fig'), 'compact');
-	saveas(fig, strcat(pathstr, '.png'));
-	copyfile(strcat(pathstr, '.png'), strcat('img/stats/', filename, '.png')); % Also save without timestamp
 end
 
 function plotBarR2(rsqs, threshold, titleString, fixedSortOrder)
