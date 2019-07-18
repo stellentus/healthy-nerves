@@ -276,16 +276,13 @@ function plotBoxes(verrs, cerrs, runtimes, algNames, numSamples, nameStr, basepa
 		vAlgNames = algNames(2:end);
 	end
 
-	pathstr = strcat(basepath, nameStr);
-	shortstr = strcat(basepath, name);
-
-	valfig = plotOne('Error in Filled Data', 'Error', 'value', verrs, vAlgNames, pathstr, shortstr, numSamples, false);
-	covfig = plotOne('Error in Covariance', 'Error', 'covar', cerrs, algNames, pathstr, shortstr, numSamples, false);
-	runfig = plotOne('Runtimes', 'Time (s)', 'times', runtimes, algNames, pathstr, shortstr, numSamples, true);
+	valfig = plotOne('Error in Filled Data', 'Error', 'value', verrs, vAlgNames, basepath, nameStr, name, numSamples, false);
+	covfig = plotOne('Error in Covariance', 'Error', 'covar', cerrs, algNames, basepath, nameStr, name, numSamples, false);
+	runfig = plotOne('Runtimes', 'Time (s)', 'times', runtimes, algNames, basepath, nameStr, name, numSamples, true);
 	close(covfig);
 end
 
-function [handle] = plotOne(figname, label, suffix, vals, names, pathstr, shortstr, numSamples, isLog)
+function [handle] = plotOne(figname, label, suffix, vals, names, basepath, nameStr, name, numSamples, isLog)
 	% Replace NaN and Inf with a really big number. This prevents errors in plotting.
 	vals(isnan(vals)) = realmax;
 	vals(isinf(vals)) = realmax;
@@ -313,7 +310,8 @@ function [handle] = plotOne(figname, label, suffix, vals, names, pathstr, shorts
 	title(sprintf("%s (%d samples)", figname, numSamples));
 	ylabel(label);
 
-	pathstr = strcat(pathstr, '-', suffix);
+	shortstr = strcat(basepath, name);
+	pathstr = strcat(basepath, nameStr, '-', suffix);
 	savefig(handle, strcat(pathstr,  '.fig'), 'compact');
 	saveas(handle, strcat(pathstr,  '.png'));
 	copyfile(strcat(pathstr, '.png'), strcat(shortstr, '-', suffix, '.png')); % Also save without timestamp
