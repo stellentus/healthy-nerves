@@ -30,8 +30,8 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 	basepath = 'img/missmiss/';
 	[~,~] = mkdir(basepath); % Read and ignore returns to suppress warning if dir exists.
 	name = sprintf('%d-%s', numSamples, p.Results.algList);
-	nameStr = sprintf('%02d-%02d-%02d-%02d-%02d-%02.0f (%s)', clock, name);
-	diary(strcat(basepath, nameStr, '.txt'));
+	timeStr = sprintf('%02d-%02d-%02d-%02d-%02d-%02.0f', clock);
+	diary(strcat(basepath, timeStr, '(', name, ')', '.txt'));
 	diary on;
 	disp(p.Results);
 
@@ -105,7 +105,7 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 		end
 
 		% Plot values
-		plotBoxes(verrs, cerrs, runtimes, algNames, numSamples, nameStr, basepath, name);
+		plotBoxes(verrs, cerrs, runtimes, algNames, numSamples, timeStr, basepath, name);
 	end
 
 	rmpath missing;
@@ -269,20 +269,20 @@ function calcStats(data, name, algNames)
 	end
 end
 
-function plotBoxes(verrs, cerrs, runtimes, algNames, numSamples, nameStr, basepath, name)
+function plotBoxes(verrs, cerrs, runtimes, algNames, numSamples, timeStr, basepath, name)
 	vAlgNames = algNames;
 	if (all(isnan(verrs(:, 1))))
 		verrs = verrs(:, 2:end);
 		vAlgNames = algNames(2:end);
 	end
 
-	valfig = plotOne('Error in Filled Data', 'Error', 'value', verrs, vAlgNames, basepath, nameStr, name, numSamples, false);
-	covfig = plotOne('Error in Covariance', 'Error', 'covar', cerrs, algNames, basepath, nameStr, name, numSamples, false);
-	runfig = plotOne('Runtimes', 'Time (s)', 'times', runtimes, algNames, basepath, nameStr, name, numSamples, true);
+	valfig = plotOne('Error in Filled Data', 'Error', 'value', verrs, vAlgNames, basepath, timeStr, name, numSamples, false);
+	covfig = plotOne('Error in Covariance', 'Error', 'covar', cerrs, algNames, basepath, timeStr, name, numSamples, false);
+	runfig = plotOne('Runtimes', 'Time (s)', 'times', runtimes, algNames, basepath, timeStr, name, numSamples, true);
 	close(covfig);
 end
 
-function [handle] = plotOne(figname, label, suffix, vals, names, basepath, nameStr, name, numSamples, isLog)
+function [handle] = plotOne(figname, label, suffix, vals, names, basepath, timeStr, name, numSamples, isLog)
 	% Replace NaN and Inf with a really big number. This prevents errors in plotting.
 	vals(isnan(vals)) = realmax;
 	vals(isinf(vals)) = realmax;
@@ -311,7 +311,7 @@ function [handle] = plotOne(figname, label, suffix, vals, names, basepath, nameS
 	ylabel(label);
 
 	shortstr = strcat(basepath, name);
-	pathstr = strcat(basepath, nameStr, '-', suffix);
+	pathstr = strcat(basepath, timeStr, '(', name, ')', '-', suffix);
 	savefig(handle, strcat(pathstr,  '.fig'), 'compact');
 	saveas(handle, strcat(pathstr,  '.png'));
 	copyfile(strcat(pathstr, '.png'), strcat(shortstr, '-', suffix, '.png')); % Also save without timestamp
