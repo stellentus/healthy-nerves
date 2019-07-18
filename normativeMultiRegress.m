@@ -1,16 +1,19 @@
 %% normativeMultiRegress: Calculate sex/age/temperature regression in normative data.
-function normativeMultiRegress(shouldNormalize, values, filenameSuffix, titleString)
+function normativeMultiRegress(shouldNormalize, fixedSortOrder, values, filenameSuffix, titleString)
 	if nargin < 1
 		shouldNormalize = true;
 	end
 	if nargin < 2
+		fixedSortOrder = false;
+	end
+	if nargin < 3
 		load("bin/batch-normative.mat");
 		values = [canValues; japValues; porValues];
 	end
-	if nargin < 3
+	if nargin < 4
 		filenameSuffix = '';
 	end
-	if nargin < 4
+	if nargin < 5
 		titleString = "";
 	end
 
@@ -52,8 +55,8 @@ function normativeMultiRegress(shouldNormalize, values, filenameSuffix, titleStr
 		end
 	end
 
-	plotBarR2(strcat('barr2-5', filenameSuffix), rsqs, threshold, titleString);
-	plotBarR2(strcat('barr2-0', filenameSuffix), rsqs, 0, titleString);
+	plotBarR2(strcat('barr2-5', filenameSuffix), rsqs, threshold, titleString, fixedSortOrder);
+	plotBarR2(strcat('barr2-0', filenameSuffix), rsqs, 0, titleString, fixedSortOrder);
 
 	fprintf("\nInsignificant measures:\n")
 	fprintf("\t%s\n", insigMeasures);
@@ -109,6 +112,14 @@ function [ids] = altInds()
 	ids = [16,5,1,4,3,2,18,10,22,20,24,19,21,27,11,17,28,23,25,7,6,12,13,26,9,29,31,30];
 end
 
+function [meas, rsqs] = sortedInds(rsqs)
+	sortOrder = [20,19,28,6,27,2,10,1,22,25,24,11,8,17,26,12,14,15,21,7,4,9,23,3,5,13,16,18];
+	meas = altNames();
+	ids = altInds();
+	rsqs = rsqs(ids(sortOrder), :);
+	meas = meas(sortOrder);
+end
+
 function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, shouldNormalize)
 	if shouldNormalize
 		% Divide by feature mean, so the results are relative coefficients.
@@ -147,24 +158,31 @@ function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, shou
 	end
 end
 
-function plotBarR2(filename, rsqs, threshold, titleString)
-	inds = altInds();
-	measures = altNames();
-	rsqs = rsqs(inds, [1,3,2]); % Put in order age, temperature, sex. Only keep desired indicies.
+function plotBarR2(filename, rsqs, threshold, titleString, fixedSortOrder)
+	if fixedSortOrder
+		[measures, rsqs] = sortedInds(rsqs);
+		rsqs = rsqs(:, [1,3,2]); % Put in order age, temperature, sex.
+	else
+		inds = altInds();
+		measures = altNames();
+		rsqs = rsqs(inds, [1,3,2]); % Put in order age, temperature, sex. Only keep desired indicies.
+	end
 
 	rsqs(rsqs<threshold) = 0;
 
-	% Sort in reverse order
-	[rsqs, ind] = sortrows(rsqs, 3, 'descend');
-	measures = measures(ind);
-	[rsqs, ind] = sortrows(rsqs, 2, 'descend');
-	measures = measures(ind);
-	[rsqs, ind] = sortrows(rsqs, 1, 'descend');
-	measures = measures(ind);
+	if ~fixedSortOrder
+		% Sort in reverse order
+		[rsqs, ind] = sortrows(rsqs, 3, 'descend');
+		measures = measures(ind);
+		[rsqs, ind] = sortrows(rsqs, 2, 'descend');
+		measures = measures(ind);
+		[rsqs, ind] = sortrows(rsqs, 1, 'descend');
+		measures = measures(ind);
 
-	sums = sum(rsqs, 2);
-	measures = measures(sums>0);
-	rsqs = rsqs(sums>0,:);
+		sums = sum(rsqs, 2);
+		measures = measures(sums>0);
+		rsqs = rsqs(sums>0,:);
+	end
 
 	[~,~] = mkdir('img/stats'); % Read and ignore returns to suppress warning if dir exists.
 	pathstr = sprintf('img/stats/%s-%02d-%02d-%02d-%02d-%02d-%02.0f', filename, clock);
