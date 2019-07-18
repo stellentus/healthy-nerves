@@ -28,13 +28,13 @@ function savePlot(newPath, filename, threshold, values, canValues, japValues, po
 	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
 
 	subplot(2, 2, 1);
-	normativeMultiRegress(threshold, true, true, values, "Combined Dataset");
+	normativeMultiRegress(threshold, true, true, values, "Combined Dataset", false);
 	subplot(2, 2, 2);
-	normativeMultiRegress(threshold, true, true, canValues, "Canada");
+	normativeMultiRegress(threshold, true, true, canValues, "Canada", false);
 	subplot(2, 2, 3);
-	normativeMultiRegress(threshold, true, true, japValues, "Japan");
+	normativeMultiRegress(threshold, true, true, japValues, "Japan", true);
 	subplot(2, 2, 4);
-	normativeMultiRegress(threshold, true, true, porValues, "Portugal");
+	normativeMultiRegress(threshold, true, true, porValues, "Portugal", true);
 
 	suptitle("Contribution of Age, Temperature, and Sex to Variance in Excitability Variables");
 

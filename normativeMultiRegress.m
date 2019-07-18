@@ -1,5 +1,5 @@
 %% normativeMultiRegress: Calculate sex/age/temperature regression in normative data.
-function normativeMultiRegress(threshold, shouldNormalize, fixedSortOrder, values, titleString)
+function normativeMultiRegress(threshold, shouldNormalize, fixedSortOrder, values, titleString, showAxis)
 	sexColumn = values(:,15);
 	ageColumn = values(:,14);
 	tempColumn = values(:,8);
@@ -32,7 +32,7 @@ function normativeMultiRegress(threshold, shouldNormalize, fixedSortOrder, value
 		end
 	end
 
-	plotBarR2(rsqs, threshold, titleString, fixedSortOrder);
+	plotBarR2(rsqs, threshold, titleString, fixedSortOrder, showAxis);
 
 	fprintf("\nInsignificant measures:\n")
 	fprintf("\t%s\n", insigMeasures);
@@ -134,7 +134,7 @@ function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, shou
 	end
 end
 
-function plotBarR2(rsqs, threshold, titleString, fixedSortOrder)
+function plotBarR2(rsqs, threshold, titleString, fixedSortOrder, showAxis)
 	if fixedSortOrder
 		[measures, rsqs] = sortedInds(rsqs);
 		rsqs = rsqs(:, [1,3,2]); % Put in order age, temperature, sex.
@@ -166,9 +166,13 @@ function plotBarR2(rsqs, threshold, titleString, fixedSortOrder)
 	legend({'Age', 'Temperature', 'Sex'});
 	ylim([0 .5]);
 
-	xtickangle(45);
-	set(gca,'xtick',1:length(measures));
-	set(gca, 'xticklabel', prettyMeasures(measures));
+	if showAxis
+		xtickangle(45);
+		set(gca,'xtick',1:length(measures));
+		set(gca, 'xticklabel', prettyMeasures(measures));
+	else
+		set(gca, 'XTickLabel', []);
+	end
 end
 
 function [measures] = prettyMeasures(measures)
