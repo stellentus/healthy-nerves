@@ -178,6 +178,7 @@ function plotBarR2(rsqs, threshold, titleString, fixedSortOrder, showAxis)
 		measures = measures(sums>0);
 		rsqs = rsqs(sums>0,:);
 	end
+	fprintf("%s had mean (std) variance of %.1f%% (%.1f%%)\n", titleString, mean(sum(rsqs, 2)*100), std(sum(rsqs, 2)*100));
 
 	bar(rsqs, 'stacked');
 	title(titleString);
