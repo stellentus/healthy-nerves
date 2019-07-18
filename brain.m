@@ -12,33 +12,23 @@ function brain(newPath)
 	normativeSex(false, values, measures);
 
 	% Create table and figure for regression.
-	savePlot(newPath, 'barr2-5', 0.05, values, canValues, japValues, porValues);
-	savePlot(newPath, 'barr2-0', 0, values, canValues, japValues, porValues);
+	threshold = 0.05;
+	normativeMultiRegress(threshold, true, true, values, "Combined Dataset", false, '-All');
+	normativeMultiRegress(threshold, true, true, canValues, "Canada", false, '-Can');
+	normativeMultiRegress(threshold, true, true, japValues, "Japan", true, '-Jap');
+	normativeMultiRegress(threshold, true, true, porValues, "Portugal", true, '-Por');
+	copyfile('img/stats/barr2-5-all.png', strcat(newPath, 'barr2-5-all.png'));
+	copyfile('img/stats/barr2-0-all.png', strcat(newPath, 'barr2-0-all.png'));
+	copyfile('img/stats/barr2-5-can.png', strcat(newPath, 'barr2-5-can.png'));
+	copyfile('img/stats/barr2-0-can.png', strcat(newPath, 'barr2-0-can.png'));
+	copyfile('img/stats/barr2-5-jap.png', strcat(newPath, 'barr2-5-jap.png'));
+	copyfile('img/stats/barr2-0-jap.png', strcat(newPath, 'barr2-0-jap.png'));
+	copyfile('img/stats/barr2-5-por.png', strcat(newPath, 'barr2-5-por.png'));
+	copyfile('img/stats/barr2-0-por.png', strcat(newPath, 'barr2-0-por.png'));
 
 	close all;
 
 	addpath batches;
 	printStats('bin/batch-normative.mat');
 	rmpath batches;
-end
-
-function savePlot(newPath, filename, threshold, values, canValues, japValues, porValues)
-	pathstr = sprintf('%s/%s-%02d-%02d-%02d-%02d-%02d-%02.0f', newPath, filename, clock);
-
-	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
-
-	subplot(2, 2, 1);
-	normativeMultiRegress(threshold, true, true, values, "Combined Dataset", false);
-	subplot(2, 2, 2);
-	normativeMultiRegress(threshold, true, true, canValues, "Canada", false);
-	subplot(2, 2, 3);
-	normativeMultiRegress(threshold, true, true, japValues, "Japan", true);
-	subplot(2, 2, 4);
-	normativeMultiRegress(threshold, true, true, porValues, "Portugal", true);
-
-	suptitle("Contribution of Age, Temperature, and Sex to Variance in Excitability Variables");
-
-	savefig(fig, strcat(pathstr, '.fig'), 'compact');
-	saveas(fig, strcat(pathstr, '.png'));
-	copyfile(strcat(pathstr, '.png'), strcat(newPath, filename, '.png')); % Also save without timestamp
 end
