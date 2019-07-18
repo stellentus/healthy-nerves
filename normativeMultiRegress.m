@@ -178,6 +178,7 @@ function plotBarR2(filename, rsqs, inds, measures, threshold, titleString)
 	title(titleStrings);
 	ylabel("r^2 (%)");
 	legend({'Age', 'Temperature', 'Sex'});
+	ylim([0 .5]);
 
 	xtickangle(45);
 	set(gca,'xtick',1:length(measures));
