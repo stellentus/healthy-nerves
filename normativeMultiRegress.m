@@ -181,18 +181,20 @@ function plotBarR2(rsqs, threshold, titleString, fixedSortOrder, showAxis)
 	fprintf("%s had mean (std) variance of %.1f%% (%.1f%%)\n", titleString, mean(sum(rsqs, 2)*100), std(sum(rsqs, 2)*100));
 
 	bar(rsqs, 'stacked');
-	title(titleString);
-	ylabel("r^2 (%)");
-	legend({'Age', 'Temperature', 'Sex'});
 	ylim([0 .5]);
 
 	if showAxis
+		titleFontSize = 18;
+		ylabel("r^2 (%)");
+		legend({'Age', 'Temperature', 'Sex'});
 		xtickangle(45);
 		set(gca,'xtick',1:length(measures));
 		set(gca, 'xticklabel', prettyMeasures(measures));
 	else
+		titleFontSize = 36;
 		set(gca, 'XTickLabel', []);
 	end
+	title(titleString, 'FontSize', titleFontSize);
 end
 
 function [measures] = prettyMeasures(measures)
