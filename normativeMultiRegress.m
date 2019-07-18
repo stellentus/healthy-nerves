@@ -52,8 +52,8 @@ function normativeMultiRegress(shouldNormalize, values, filenameSuffix, titleStr
 		end
 	end
 
-	plotBarR2(strcat('barr2-5', filenameSuffix), rsqs, altInds(), altNames(), threshold, titleString);
-	plotBarR2(strcat('barr2-0', filenameSuffix), rsqs, altInds(), altNames(), 0, titleString);
+	plotBarR2(strcat('barr2-5', filenameSuffix), rsqs, threshold, titleString);
+	plotBarR2(strcat('barr2-0', filenameSuffix), rsqs, 0, titleString);
 
 	fprintf("\nInsignificant measures:\n")
 	fprintf("\t%s\n", insigMeasures);
@@ -147,8 +147,9 @@ function [str, rsq] = stepWiseString(thisMeas, astCols, thisCol, threshold, shou
 	end
 end
 
-function plotBarR2(filename, rsqs, inds, measures, threshold, titleString)
-	disp(filename)
+function plotBarR2(filename, rsqs, threshold, titleString)
+	inds = altInds();
+	measures = altNames();
 	rsqs = rsqs(inds, [1,3,2]); % Put in order age, temperature, sex. Only keep desired indicies.
 
 	rsqs(rsqs<threshold) = 0;
