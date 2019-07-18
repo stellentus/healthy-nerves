@@ -161,11 +161,7 @@ function plotBarR2(rsqs, threshold, titleString, fixedSortOrder)
 	end
 
 	bar(rsqs, 'stacked');
-	titleStrings = {"Contribution of Age, Temperature, and Sex to","Variance in Excitability Variables",titleString};
-	if threshold > 0
-		titleStrings{end+1} = sprintf('(minimum %d%% variance)', threshold*100);
-	end
-	title(titleStrings);
+	title(titleString);
 	ylabel("r^2 (%)");
 	legend({'Age', 'Temperature', 'Sex'});
 	ylim([0 .5]);
