@@ -12,9 +12,18 @@ function brain(newPath)
 	normativeSex(false, values, measures);
 
 	% Create table and figure for regression.
-	normativeMultiRegress(true, values);
-	copyfile('img/stats/barr2-5.png', strcat(newPath, 'barr2-5.png'));
-	copyfile('img/stats/barr2-0.png', strcat(newPath, 'barr2-0.png'));
+	normativeMultiRegress(true, values, '-all', "in All Three Countries");
+	normativeMultiRegress(true, canValues, '-can', "in Canada");
+	normativeMultiRegress(true, japValues, '-jap', "in Japan");
+	normativeMultiRegress(true, porValues, '-por', "in Portugal");
+	copyfile('img/stats/barr2-5-all.png', strcat(newPath, 'barr2-5-all.png'));
+	copyfile('img/stats/barr2-0-all.png', strcat(newPath, 'barr2-0-all.png'));
+	copyfile('img/stats/barr2-5-can.png', strcat(newPath, 'barr2-5-can.png'));
+	copyfile('img/stats/barr2-0-can.png', strcat(newPath, 'barr2-0-can.png'));
+	copyfile('img/stats/barr2-5-jap.png', strcat(newPath, 'barr2-5-jap.png'));
+	copyfile('img/stats/barr2-0-jap.png', strcat(newPath, 'barr2-0-jap.png'));
+	copyfile('img/stats/barr2-5-por.png', strcat(newPath, 'barr2-5-por.png'));
+	copyfile('img/stats/barr2-0-por.png', strcat(newPath, 'barr2-0-por.png'));
 
 	close all;
 
