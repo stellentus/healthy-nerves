@@ -14,8 +14,6 @@ function batchDemos()
 	data2 = mvnrnd(mu2, sigma2, 5000);
 	data3 = mvnrnd(mu3, sigma2, 5000);
 
-	[~,~] = mkdir('img/batch'); % Read and ignore returns to suppress warning if dir exists.
-
 	addpath batches;
 
 	padLen = 4;
@@ -35,7 +33,9 @@ function makePosterPlot(name, data1, data2, data3)
 	plotWithRange(3, data1, data2, 400, 0, 100, 500, 30, "C");
 	plotWithRange(4, data1, data3, 500, 0, 0, 500, 30, "D");
 
-	saveFigureToBatchDir(name, fig);
+	addpath lib;
+	savePlot(fig, false, 'img/batch', name);
+	rmpath lib;
 end
 
 function makePaperPlot(name, data1, data2, data3)
@@ -48,14 +48,9 @@ function makePaperPlot(name, data1, data2, data3)
 	plotWithRange(5, data1, data3, 500, 0, 0, 500, 30, "E");
 	plotWithRange(6, data1, data3, 63, 0, 63, 126, 30, "F");
 
-	saveFigureToBatchDir(name, fig);
-end
-
-function saveFigureToBatchDir(name, fig)
-	pathstr = sprintf('img/batch/%s-%02d-%02d-%02d-%02d-%02d-%02.0f',name,  clock);
-	savefig(fig, strcat(pathstr, '.fig'), 'compact');
-	saveas(fig, strcat(pathstr, '.png'));
-	copyfile(strcat(pathstr, '.png'), strcat('img/batch/', name, '.png')); % Also save without timestamp
+	addpath lib;
+	savePlot(fig, false, 'img/batch', name);
+	rmpath lib;
 end
 
 function plotWithRange(plotId, data1, data2, n1a, n2a, n1b, n2b, iters, letterLabel)

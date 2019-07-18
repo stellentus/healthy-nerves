@@ -38,9 +38,6 @@ end
 function plotBoxes(titleLabel, filename, scores, scoreName, bas, fontSize, showTitle)
 	addpath lib/CategoricalScatterplot
 
-	[~,~] = mkdir('img/batch'); % Read and ignore returns to suppress warning if dir exists.
-	pathstr = sprintf('img/batch/%s-%02d-%02d-%02d-%02d-%02d-%02.0f', filename, clock);
-
 	fig = figure('DefaultAxesFontSize', fontSize, 'Position', [10 10 200*length(bas) 600]);
 
 	CategoricalScatterplot(scores, [], 'MarkerSize', 50, 'BoxAlpha', .29, 'LadderLines', true, 'MedianColor', [193,27,36]/255);
@@ -67,9 +64,9 @@ function plotBoxes(titleLabel, filename, scores, scoreName, bas, fontSize, showT
 		ta1 = annotation('textbox', namePos, 'string', bas(i).Name, 'HorizontalAlignment', 'center', 'VerticalAlignment', 'cap', 'FontSize', fontSize);
 	end
 
-	savefig(fig, strcat(pathstr, '.fig'), 'compact');
-	saveas(fig, strcat(pathstr, '.png'));
-	copyfile(strcat(pathstr, '.png'), strcat('img/batch/', filename, '.png')); % Also save without timestamp
-
 	rmpath lib/CategoricalScatterplot
+
+	addpath lib;
+	savePlot(fig, false, 'img/batch', filename);
+	rmpath lib;
 end

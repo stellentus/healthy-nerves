@@ -3,10 +3,6 @@ function plotBatches()
 	labels = [ones(canNum, 1); ones(japNum, 1) * 2; repmat(3, porNum, 1)];
 	values = [canValues; japValues; porValues];
 
-	filename = sprintf("scatters");
-	[~,~] = mkdir('img/pairs'); % Read and ignore returns to suppress warning if dir exists.
-	pathstr = sprintf('img/pairs/%s-%02d-%02d-%02d-%02d-%02d-%02.0f', filename, clock);
-
 	fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
 
 	subplot(2, 2, 1)
@@ -19,7 +15,7 @@ function plotBatches()
 	subplot(2, 2, 4)
 	plotPair("Threshold I/V", values, labels, measures, 6, 25);
 
-	savefig(fig, strcat(pathstr, '.fig'), 'compact');
-	saveas(fig, strcat(pathstr, '.png'));
-	copyfile(strcat(pathstr, '.png'), strcat('img/pairs/', filename, '.png')); % Also save without timestamp
+	addpath lib;
+	savePlot(fig, false, 'img/pairs', 'scatters');
+	rmpath lib;
 end

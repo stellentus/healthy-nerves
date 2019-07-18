@@ -28,7 +28,6 @@ function [X, covr, verrs, cerrs, algs] = missmiss(varargin)
 
 	% Log all output to a file
 	basepath = 'img/missmiss/';
-	[~,~] = mkdir(basepath); % Read and ignore returns to suppress warning if dir exists.
 	name = sprintf('%d-%s', numSamples, p.Results.algList);
 	timeStr = sprintf('%02d-%02d-%02d-%02d-%02d-%02.0f', clock);
 	diary(strcat(basepath, timeStr, '(', name, ')', '.txt'));
@@ -310,11 +309,9 @@ function [handle] = plotOne(figname, label, suffix, vals, names, basepath, timeS
 	title(sprintf("%s (%d samples)", figname, numSamples));
 	ylabel(label);
 
-	nameStr = strcat(name, '-', suffix);
-	pathstr = strcat(basepath, nameStr, timeStr);
-	savefig(handle, strcat(pathstr,  '.fig'), 'compact');
-	saveas(handle, strcat(pathstr,  '.png'));
-	copyfile(strcat(pathstr, '.png'), strcat(basepath, nameStr, '.png')); % Also save without timestamp
+	addpath lib;
+	savePlot(handle, false, basepath, nameStr, timeStr);
+	rmpath lib;
 end
 
 function parallelPrint(str, parallelize)

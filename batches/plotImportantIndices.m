@@ -25,10 +25,9 @@ function plotImportantIndices(bas, measures)
 	title("Measures Causing BE (Worst on Left)")
 	ylabel("Average change to CRI when index is removed")
 
-	[~,~] = mkdir('img/batch'); % Read and ignore returns to suppress warning if dir exists.
-	pathstr = sprintf('img/batch/impind-%02d-%02d-%02d-%02d-%02d-%02.0f', clock);
-	savefig(figref, strcat(pathstr, '.fig'), 'compact');
-	saveas(figref, strcat(pathstr, '.png'));
+	addpath lib;
+	savePlot(figref, false, 'img/batch', 'impind');
+	rmpath lib;
 end
 
 % 18 TEd(90-100ms)

@@ -161,7 +161,9 @@ function makeThePlots(name, data1, data2, numSamples, iters)
 	plotWithRange(3, data1, data2, .1, .9, 0, 1, iters, numSamples, "92%");
 	plotWithRange(4, data1, data2, 0, 1, 0, 1, iters, numSamples, "100%");
 
-	saveFigureToBatchDir(name, fig);
+	addpath lib;
+	savePlot(fig, false, 'img/batch', name);
+	rmpath lib;
 end
 
 function [data1, data2] = getStandardData(covMat, distBetween, covrScale)
@@ -189,13 +191,6 @@ function [data1, data2] = getOtherData()
 
 	data1 = mvnrnd(mu1, sigma1, 100000);
 	data2 = mvnrnd(mu2, sigma2, 100000);
-end
-
-function saveFigureToBatchDir(name, fig)
-	pathstr = sprintf('img/batch/%s-%02d-%02d-%02d-%02d-%02d-%02.0f', name, clock);
-	savefig(fig, strcat(pathstr, '.fig'), 'compact');
-	saveas(fig, strcat(pathstr, '.png'));
-	copyfile(strcat(pathstr, '.png'), strcat('img/batch/', name, '.png')); % Also save without timestamp
 end
 
 function plotWithRange(plotId, data1, data2, n1a, n2a, n1b, n2b, iters, numSamples, letterLabel)

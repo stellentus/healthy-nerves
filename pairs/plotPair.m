@@ -4,11 +4,6 @@ function plotPair(name, values, labels, measures, idx1, idx2, newFig)
 	end
 
 	if newFig
-		filename = sprintf("scatter-%d-%d", idx1, idx2);
-
-		[~,~] = mkdir('img/pairs'); % Read and ignore returns to suppress warning if dir exists.
-		pathstr = sprintf('img/pairs/%s-%02d-%02d-%02d-%02d-%02d-%02.0f', filename, clock);
-
 		fig = figure('DefaultAxesFontSize', 18, 'Position', [10 10 900 600]);
 		markSize = 30;
 	else
@@ -36,9 +31,9 @@ function plotPair(name, values, labels, measures, idx1, idx2, newFig)
 	ylabel(measures(idx2));
 
 	if newFig
-		savefig(fig, strcat(pathstr, '.fig'), 'compact');
-		saveas(fig, strcat(pathstr, '.png'));
-		copyfile(strcat(pathstr, '.png'), strcat('img/pairs/', filename, '.png')); % Also save without timestamp
+		addpath lib;
+		savePlot(fig, false, 'img/pairs', sprintf("scatter-%d-%d", idx1, idx2));
+		rmpath lib;
 	end
 end
 
