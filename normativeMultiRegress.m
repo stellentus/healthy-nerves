@@ -148,6 +148,10 @@ function plotAndSaveBarR2(filename, rsqs, threshold, titleString, fixedSortOrder
 
 	plotBarR2(rsqs, threshold, titleString, fixedSortOrder, showAxis);
 
+	addpath lib;
+	tightenPlot();
+	rmpath lib;
+
 	savefig(fig, strcat(pathstr, '.fig'), 'compact');
 	saveas(fig, strcat(pathstr, '.png'));
 	copyfile(strcat(pathstr, '.png'), strcat('img/stats/', filename, '.png')); % Also save without timestamp
