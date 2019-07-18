@@ -1,19 +1,22 @@
 %% normativeMultiRegress: Calculate sex/age/temperature regression in normative data.
-function normativeMultiRegress(shouldNormalize, fixedSortOrder, values, titleString, filenameSuffix)
+function normativeMultiRegress(threshold, shouldNormalize, fixedSortOrder, values, titleString, filenameSuffix)
 	if nargin < 1
-		shouldNormalize = true;
+		threshold = 0.05;
 	end
 	if nargin < 2
-		fixedSortOrder = false;
+		shouldNormalize = true;
 	end
 	if nargin < 3
+		fixedSortOrder = false;
+	end
+	if nargin < 4
 		load("bin/batch-normative.mat");
 		values = [canValues; japValues; porValues];
 	end
-	if nargin < 4
+	if nargin < 5
 		titleString = "";
 	end
-	savePlot = nargin >= 5; % Save if a suffix was provided
+	savePlot = nargin >= 6; % Save if a suffix was provided
 
 	sexColumn = values(:,15);
 	ageColumn = values(:,14);
@@ -28,12 +31,6 @@ function normativeMultiRegress(shouldNormalize, fixedSortOrder, values, titleStr
 			fprintf(" Measure Name        & Age Coeff (r^2) & Temp Coeff (r^2) & Sex Coeff (r^2)\n");
 			fprintf("-------------------- & --------------- & --------------- & ---------------\n");
 		end
-	end
-
-	if shouldNormalize
-		threshold = 0.05;
-	else
-		threshold = 0;
 	end
 
 	measures = altNames();
@@ -55,10 +52,8 @@ function normativeMultiRegress(shouldNormalize, fixedSortOrder, values, titleStr
 
 	if savePlot
 		plotAndSaveBarR2(strcat('barr2-5', filenameSuffix), rsqs, threshold, titleString, fixedSortOrder);
-		plotAndSaveBarR2(strcat('barr2-0', filenameSuffix), rsqs, 0, titleString, fixedSortOrder);
 	else
 		plotBarR2(rsqs, threshold, titleString, fixedSortOrder);
-		plotBarR2(rsqs, 0, titleString, fixedSortOrder);
 	end
 
 	fprintf("\nInsignificant measures:\n")
