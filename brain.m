@@ -13,10 +13,10 @@ function brain(newPath)
 
 	% Create table and figure for regression.
 	threshold = 0.05;
-	normativeMultiRegress(threshold, true, true, values, "Combined Dataset", false, '-All');
+	normativeMultiRegress(threshold, true, true, values, "Combined Dataset", true, '-All');
 	normativeMultiRegress(threshold, true, true, canValues, "Canada", false, '-Can');
-	normativeMultiRegress(threshold, true, true, japValues, "Japan", true, '-Jap');
-	normativeMultiRegress(threshold, true, true, porValues, "Portugal", true, '-Por');
+	normativeMultiRegress(threshold, true, true, japValues, "Japan", false, '-Jap');
+	normativeMultiRegress(threshold, true, true, porValues, "Portugal", false, '-Por');
 	copyfile('img/stats/barr2-5-all.png', strcat(newPath, 'barr2-5-all.png'));
 	copyfile('img/stats/barr2-0-all.png', strcat(newPath, 'barr2-0-all.png'));
 	copyfile('img/stats/barr2-5-can.png', strcat(newPath, 'barr2-5-can.png'));
