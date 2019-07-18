@@ -310,11 +310,10 @@ function [handle] = plotOne(figname, label, suffix, vals, names, basepath, timeS
 	title(sprintf("%s (%d samples)", figname, numSamples));
 	ylabel(label);
 
-	shortstr = strcat(basepath, name);
 	pathstr = strcat(basepath, timeStr, '(', name, ')', '-', suffix);
 	savefig(handle, strcat(pathstr,  '.fig'), 'compact');
 	saveas(handle, strcat(pathstr,  '.png'));
-	copyfile(strcat(pathstr, '.png'), strcat(shortstr, '-', suffix, '.png')); % Also save without timestamp
+	copyfile(strcat(pathstr, '.png'), strcat(basepath, name, '-', suffix, '.png')); % Also save without timestamp
 end
 
 function parallelPrint(str, parallelize)
