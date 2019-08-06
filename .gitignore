@@ -7,3 +7,5 @@ bin
 lethPresent*.png
 batch-effects.pdf
 batch-effects-not-significant.pdf
+lib/info_entropy/
+lib/rand_index/
