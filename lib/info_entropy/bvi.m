@@ -10,5 +10,11 @@ function bv = bvi(x, y, nclust)
 %   nclust: the maximum number of clusters in x or y
 % Ouput:
 %   bv: variation of information for batch effects: bv=1-(H(x)+H(y)-2I(x,y))/(2*log2(nclust))
-% A variation of nmi, which was written by Mo Chen (sth4nth@gmail.com).
+
+% Makes use of voi, a variation of nmi, which was written by Mo Chen (sth4nth@gmail.com).
+% The nmi code can be found at https://github.com/PRML/PRMLT/tree/master/chapter01
+% To implement voi, copy nmi, but append the following two lines and return 'vi':
+% MI = Hx + Hy - Hxy; % mutual information
+% vi = Hx+Hy-2*MI; % variation of information
+
 bv = 1-voi(x,y)/(2*log2(nclust));
