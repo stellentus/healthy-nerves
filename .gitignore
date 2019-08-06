@@ -1,7 +1,4 @@
-data/*
-!data/Portugal
-data/Portugal/*.xlsx
-data/Portugal/*.zip
+data/
 img
 bin
 lethPresent*.png
